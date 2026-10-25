@@ -3,8 +3,16 @@
   "eol_date": "2026-10-20",
   "files": {
     "aliases.json": {
-      "sha256": "514e672b0ab1a9282ced2f67aa77b4bad6271ec7d39094e15031d638e84474aa",
-      "size": 283
+      "sha256": "08c26545d0878ba97e18c9bcc63d19081a253bf9c417201a397237c40f9d15b2",
+      "size": 2236
+    },
+    "eol/brightlineeditor.json": {
+      "sha256": "b921ad386c96ba6d762607e609fa02186e56b7115dc1292c34d3a79dc20659de",
+      "size": 148
+    },
+    "eol/copperfieldnotes.json": {
+      "sha256": "ed94f6341412455e945aa138dc4d51fd56b2d20e58b3a209c35a0c53e6c20b0f",
+      "size": 83
     },
     "eol/demoos.json": {
       "sha256": "db2b2d0df9f15dfe88cf5955ddcba026a4921e133ee965cfd8c01024b0712e7d",
@@ -14,9 +22,45 @@
       "sha256": "89e4a34f40234bad361ae1643da3127f7a68366e85711705c4abbce7deb85003",
       "size": 253
     },
+    "eol/harborviewcrm.json": {
+      "sha256": "087aec14735b62d0b3028a73d8429efb3fcf9eefdc62bcb952f75e0f0598e79b",
+      "size": 75
+    },
+    "eol/ironwoodscheduler.json": {
+      "sha256": "82402e16613c2d32bc6f5ae1bb685c8e802c61f49605193f90fe73d3dbcc6cb4",
+      "size": 75
+    },
+    "eol/lanternviewer.json": {
+      "sha256": "fbf2f0b8f3d2b92d999119388441ff6eff45e4a315139b6e30a90679bc9b3b53",
+      "size": 69
+    },
+    "eol/mapletonreports.json": {
+      "sha256": "f1e8417781cdcadc82032c441c8efb71281d29f77b7efc0dc738914bf69c7aca",
+      "size": 50
+    },
+    "eol/northwindgateway.json": {
+      "sha256": "e5e10216e939aaa080c220ae74320f4455ef25c6aab7d921a9208fdc44708cf1",
+      "size": 163
+    },
+    "eol/pineconearchive.json": {
+      "sha256": "25e148b8450fbc976092d584b725bcd11927aa7c997f6f26002e6e0693ac56ff",
+      "size": 83
+    },
+    "eol/quillbase.json": {
+      "sha256": "b195428e94fe5f9561c4419fc6eda992431ef2d400365ac0bced9a2fb1b9b6ac",
+      "size": 169
+    },
+    "eol/redwoodbackup.json": {
+      "sha256": "406c4b0fe542c33cda3c9d6e47e4530052fc7d4b52b370e79e7cc7300e54a554",
+      "size": 163
+    },
+    "eol/tidewatersuite.json": {
+      "sha256": "c922f96dbcd270392b1a6366d9b25785abbfcf797cc76c788d109eb88d868120",
+      "size": 483
+    },
     "kev.json": {
-      "sha256": "0c71ad5c573d7175b2435eb788936ef06b486e44142b5b581078d42b0c2bc97d",
-      "size": 262
+      "sha256": "740e8a0bb66c7a9449cebc704424506a9578be74499145f0e710c9b87967edda",
+      "size": 413
     },
     "profiles.json": {
       "sha256": "d4570242ac5a6218454a078251397b756bd877ed9f6bcb056626f45333e28544",

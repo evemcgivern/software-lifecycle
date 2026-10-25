@@ -1,0 +1,404 @@
+{
+  "as_of": "2026-10-24",
+  "cases": {
+    "0a668be21645": {
+      "case": "past_eol_flag",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "past_eol"
+      ],
+      "name": "Example SQL",
+      "reason": null,
+      "state": "past_eol",
+      "version": "14"
+    },
+    "1261552c85af": {
+      "case": "no_alias",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Mystery Tool",
+      "reason": "NO_ALIAS",
+      "state": "unmatched",
+      "version": "3.1"
+    },
+    "153057dabd68": {
+      "case": "eol_on_check_date",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "past_eol"
+      ],
+      "name": "Tidewater Suite",
+      "reason": null,
+      "state": "past_eol",
+      "version": "1.0"
+    },
+    "17559088ded2": {
+      "case": "golden_expired",
+      "dates_disagree": "GOLDEN_EXPIRED",
+      "decision_needed": [
+        "GOLDEN_EXPIRED"
+      ],
+      "lists": [
+        "dates_disagree",
+        "ends_soon"
+      ],
+      "name": "Pinecone Archive",
+      "reason": null,
+      "state": "ends_soon",
+      "version": "2.0"
+    },
+    "321fceafbdce": {
+      "case": "no_endoflife_date",
+      "dates_disagree": "NO_ENDOFLIFE_DATE",
+      "decision_needed": [
+        "NO_ENDOFLIFE_DATE"
+      ],
+      "lists": [
+        "dates_disagree"
+      ],
+      "name": "Mapleton Reports",
+      "reason": null,
+      "state": "supported",
+      "version": "3.1"
+    },
+    "34f37eea99c2": {
+      "case": "build_number_mapped",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "past_eol"
+      ],
+      "name": "Quillbase Database",
+      "reason": null,
+      "state": "past_eol",
+      "version": "12.0.6024.0"
+    },
+    "3dbe716847ae": {
+      "case": "window_edge_in",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "ends_soon"
+      ],
+      "name": "Tidewater Suite",
+      "reason": null,
+      "state": "ends_soon",
+      "version": "2.0"
+    },
+    "5095e8b556dd": {
+      "case": "golden_active_moves_state",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "golden_overrides",
+        "past_eol"
+      ],
+      "name": "Harborview CRM",
+      "reason": null,
+      "state": "past_eol",
+      "version": "5.1"
+    },
+    "55be4cfcc848": {
+      "case": "exception_expired",
+      "dates_disagree": null,
+      "decision_needed": [
+        "EXCEPTION_EXPIRED"
+      ],
+      "lists": [
+        "past_eol"
+      ],
+      "name": "Redwood Backup",
+      "reason": null,
+      "state": "past_eol",
+      "version": "1.0"
+    },
+    "588512447e35": {
+      "case": "kev_alias_pair_supported_no_overlay",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [],
+      "name": "Northwind Gateway",
+      "reason": null,
+      "state": "supported",
+      "version": "5.0"
+    },
+    "61053426d57d": {
+      "case": "hostile_pipe_backtick",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Util | `rm -rf` tool",
+      "reason": "NO_ALIAS",
+      "state": "unmatched",
+      "version": "2"
+    },
+    "769398c5545d": {
+      "case": "dates_differ",
+      "dates_disagree": "DIFFERENT_DATE",
+      "decision_needed": [],
+      "lists": [
+        "dates_disagree",
+        "ends_soon"
+      ],
+      "name": "Tidewater Suite",
+      "reason": null,
+      "state": "ends_soon",
+      "version": "5.1"
+    },
+    "79b1d425e6e6": {
+      "case": "build_number_supported",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [],
+      "name": "Quillbase Database",
+      "reason": null,
+      "state": "supported",
+      "version": "15.0.2000.5"
+    },
+    "7ba2dda739a2": {
+      "case": "hostile_markup",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "unmatched"
+      ],
+      "name": "<script>alert(1)</script>",
+      "reason": "NO_ALIAS",
+      "state": "unmatched",
+      "version": "1"
+    },
+    "800d6329e8a3": {
+      "case": "export_dates_conflict",
+      "dates_disagree": "EXPORT_DATES_CONFLICT",
+      "decision_needed": [
+        "EXPORT_DATES_CONFLICT"
+      ],
+      "lists": [
+        "dates_disagree"
+      ],
+      "name": "Ironwood Scheduler",
+      "reason": null,
+      "state": "supported",
+      "version": "2.0"
+    },
+    "82408e267f6e": {
+      "case": "window_edge_out",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [],
+      "name": "Tidewater Suite",
+      "reason": null,
+      "state": "supported",
+      "version": "3.0"
+    },
+    "865a640f2016": {
+      "case": "ownerless",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "ownerless"
+      ],
+      "name": "Tidewater Suite",
+      "reason": null,
+      "state": "supported",
+      "version": "6.0"
+    },
+    "8961717c4400": {
+      "case": "support_true_supported",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [],
+      "name": "Brightline Editor",
+      "reason": null,
+      "state": "supported",
+      "version": "8.0"
+    },
+    "8e099c3b6863": {
+      "case": "past_eol_date",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "past_eol"
+      ],
+      "name": "Tidewater Suite",
+      "reason": null,
+      "state": "past_eol",
+      "version": "4.2"
+    },
+    "a3f0e99e87b4": {
+      "case": "kev_product_ends_soon",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "ends_soon",
+        "review_urgently"
+      ],
+      "name": "Example SQL",
+      "reason": null,
+      "state": "ends_soon",
+      "version": "15"
+    },
+    "ad4e62eba26b": {
+      "case": "kev_product_supported_no_overlay",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [],
+      "name": "Example SQL",
+      "reason": null,
+      "state": "supported",
+      "version": "16"
+    },
+    "b3e080c410cc": {
+      "case": "no_version",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Brightline Editor",
+      "reason": "NO_VERSION",
+      "state": "unmatched",
+      "version": ""
+    },
+    "bbccc7b93adf": {
+      "case": "no_cycle",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Brightline Editor",
+      "reason": "NO_CYCLE",
+      "state": "unmatched",
+      "version": "9.0"
+    },
+    "c3756f7f9c32": {
+      "case": "kev_alias_pair_past_eol",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "past_eol",
+        "review_urgently"
+      ],
+      "name": "Northwind Gateway",
+      "reason": null,
+      "state": "past_eol",
+      "version": "4.1"
+    },
+    "c858e48b1462": {
+      "case": "support_false_mainstream_ended",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [],
+      "name": "Brightline Editor",
+      "reason": null,
+      "state": "mainstream_ended",
+      "version": "7.0"
+    },
+    "f08603b790e5": {
+      "case": "hostile_formula",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "unmatched"
+      ],
+      "name": "=cmd|' /C calc'!A0",
+      "reason": "NO_ALIAS",
+      "state": "unmatched",
+      "version": "9"
+    },
+    "f3d465853a7a": {
+      "case": "ambiguous",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Orbit Client",
+      "reason": "AMBIGUOUS",
+      "state": "unmatched",
+      "version": "2"
+    },
+    "faa0f833f626": {
+      "case": "exception_active",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "accepted_risk",
+        "past_eol"
+      ],
+      "name": "Demo OS 1.0",
+      "reason": null,
+      "state": "past_eol",
+      "version": "1.0"
+    },
+    "ffc50ca894b4": {
+      "case": "ends_within_12_months",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "lists": [
+        "ends_soon"
+      ],
+      "name": "Tidewater Suite",
+      "reason": null,
+      "state": "ends_soon",
+      "version": "5.0"
+    }
+  },
+  "format": 1,
+  "lists": {
+    "accepted_risk": [
+      "faa0f833f626"
+    ],
+    "dates_disagree": [
+      "17559088ded2",
+      "321fceafbdce",
+      "769398c5545d",
+      "800d6329e8a3"
+    ],
+    "ends_soon": [
+      "17559088ded2",
+      "3dbe716847ae",
+      "769398c5545d",
+      "a3f0e99e87b4",
+      "ffc50ca894b4"
+    ],
+    "golden_overrides": [
+      "5095e8b556dd"
+    ],
+    "ownerless": [
+      "865a640f2016"
+    ],
+    "past_eol": [
+      "0a668be21645",
+      "153057dabd68",
+      "34f37eea99c2",
+      "5095e8b556dd",
+      "55be4cfcc848",
+      "8e099c3b6863",
+      "c3756f7f9c32",
+      "faa0f833f626"
+    ],
+    "review_urgently": [
+      "a3f0e99e87b4",
+      "c3756f7f9c32"
+    ],
+    "unmatched": [
+      "1261552c85af",
+      "61053426d57d",
+      "7ba2dda739a2",
+      "b3e080c410cc",
+      "bbccc7b93adf",
+      "f08603b790e5",
+      "f3d465853a7a"
+    ]
+  },
+  "lookahead_months": 12
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "cycle": "7",
+    "eol": "2029-01-01",
+    "support": false
+  },
+  {
+    "cycle": "8",
+    "eol": "2029-01-01",
+    "support": true
+  }
+]

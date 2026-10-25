@@ -47,10 +47,15 @@ class LoadTests(DataCase):
     def test_valid_dir_loads(self):
         d = load_data(self.make(), AS_OF)
         self.assertEqual(d.release_id, "fixture-1")
+        demo = {"tidewatersuite", "brightlineeditor", "mapletonreports",
+                "ironwoodscheduler", "northwindgateway", "quillbase",
+                "harborviewcrm", "pineconearchive", "redwoodbackup",
+                "copperfieldnotes", "lanternviewer"}
         self.assertEqual(set(d.file_hashes), {
             "aliases.json", "profiles.json", "kev.json",
-            "eol/examplesql.json", "eol/demoos.json"})
-        self.assertEqual(set(d.products), {"examplesql", "demoos"})
+            "eol/examplesql.json", "eol/demoos.json"}
+            | {"eol/%s.json" % name for name in demo})
+        self.assertEqual(set(d.products), {"examplesql", "demoos"} | demo)
         self.assertEqual(d.kev_catalog_version, "2026.10.22")
         self.assertEqual(d.kev_age_days, 1)
         self.assertEqual(d.eol_age_days, 1)
@@ -58,7 +63,9 @@ class LoadTests(DataCase):
         self.assertEqual(d.warnings, [])
         self.assertEqual(d.kev, [{
             "vendor": "example vendor", "product": "example sql",
-            "date_added": date(2026, 9, 1), "cve": "CVE-2099-0001"}])
+            "date_added": date(2026, 9, 1), "cve": "CVE-2099-0001"}, {
+            "vendor": "example corp", "product": "gateway server",
+            "date_added": date(2026, 8, 15), "cve": "CVE-2099-0002"}])
 
     def test_cycle_dates_and_flags_parse(self):
         d = load_data(self.make(), AS_OF)

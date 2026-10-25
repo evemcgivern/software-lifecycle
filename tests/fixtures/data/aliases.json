@@ -11,6 +11,92 @@
       "match": "prefix",
       "product": "demoos",
       "version_from": "name"
+    },
+    {
+      "key": "tidewater suite",
+      "match": "exact",
+      "product": "tidewatersuite",
+      "version_from": "version"
+    },
+    {
+      "key": "brightline editor",
+      "match": "exact",
+      "product": "brightlineeditor",
+      "version_from": "version"
+    },
+    {
+      "key": "mapleton reports",
+      "match": "exact",
+      "product": "mapletonreports",
+      "version_from": "version"
+    },
+    {
+      "key": "ironwood scheduler",
+      "match": "exact",
+      "product": "ironwoodscheduler",
+      "version_from": "version"
+    },
+    {
+      "kev": {
+        "product": "Gateway Server",
+        "vendor": "Example Corp"
+      },
+      "key": "northwind gateway",
+      "match": "exact",
+      "product": "northwindgateway",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "12.0.6024": "2014",
+        "15.0.2000": "2019"
+      },
+      "key": "quillbase database",
+      "match": "exact",
+      "product": "quillbase",
+      "version_from": "version"
+    },
+    {
+      "key": "harborview crm",
+      "match": "exact",
+      "product": "harborviewcrm",
+      "version_from": "version"
+    },
+    {
+      "key": "pinecone archive",
+      "match": "exact",
+      "product": "pineconearchive",
+      "version_from": "version"
+    },
+    {
+      "key": "redwood backup",
+      "match": "exact",
+      "product": "redwoodbackup",
+      "version_from": "version"
+    },
+    {
+      "key": "copperfield notes",
+      "match": "exact",
+      "product": "copperfieldnotes",
+      "version_from": "version"
+    },
+    {
+      "key": "lantern viewer",
+      "match": "exact",
+      "product": "lanternviewer",
+      "version_from": "version"
+    },
+    {
+      "key": "orbit",
+      "match": "prefix",
+      "product": "tidewatersuite",
+      "version_from": "version"
+    },
+    {
+      "key": "orbit client",
+      "match": "prefix",
+      "product": "mapletonreports",
+      "version_from": "version"
     }
   ],
   "format": 1

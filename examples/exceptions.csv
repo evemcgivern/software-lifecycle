@@ -1,0 +1,3 @@
+schema_version,product,scope,compensating_controls,risk_owner,approver,requested_by,expires_on,reference
+1,demoos,1.0,Isolated network segment; no internet access,Infrastructure lead,Security lead,Asset owner,2027-03-31,EXC-0001
+1,redwoodbackup,1,Offline copies only; restore tested quarterly,Records lead,Security lead,Asset owner,2026-09-30,EXC-0002

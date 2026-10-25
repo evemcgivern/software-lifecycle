@@ -7,6 +7,12 @@
       "dateAdded": "2026-09-01",
       "product": "Example SQL",
       "vendorProject": "Example Vendor"
+    },
+    {
+      "cveID": "CVE-2099-0002",
+      "dateAdded": "2026-08-15",
+      "product": "Gateway Server",
+      "vendorProject": "Example Corp"
     }
   ],
   "license": "CC0 1.0"
