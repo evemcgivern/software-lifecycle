@@ -1,4 +1,6 @@
+import csv
 import hashlib
+import io
 import json
 import os
 import sys
@@ -10,8 +12,8 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from helpers import (FIXTURE_NAMES, FIXTURE_ROWS, make_data_dir, run_main,
-                     write_inventory)
+from helpers import (FIXTURE_NAMES, FIXTURE_ROWS, PARENT_HEADER, PARENT_ROWS,
+                     make_data_dir, run_main, write_inventory)
 from swlc import cli
 
 AS_OF = "2026-10-24"
@@ -279,6 +281,132 @@ class CountsOnlyTests(CliBase):
         self.assertEqual(code, 10)
         for name in FIXTURE_NAMES:
             self.assertNotIn(name.lower(), (out + err).lower())
+
+
+class PartsCliBase(CliBase):
+    def setUp(self):
+        super().setUp()
+        self.inv = write_inventory(self.root / "parts.csv", PARENT_ROWS,
+                                   PARENT_HEADER)
+
+    def report(self, *extra, name="out"):
+        out = self.root / name
+        code, stdout, err = self.check("--out", str(out), *extra)
+        self.assertEqual(code, 0, err)
+        return out, stdout
+
+    def items(self, out):
+        return json.loads((out / "report.json").read_text())["items"]
+
+
+class InheritedDatesTests(PartsCliBase):
+    def test_fail_on_ignores_inherited_dates(self):
+        out, _ = self.report()
+        obj = json.loads((out / "report.json").read_text())
+        part = next(i for i in obj["items"] if i["name"] == "Demo Addon")
+        self.assertEqual(part["inherited_lifecycle"]["state"], "past_eol")
+        self.assertEqual(part["state"], "unmatched")
+        self.assertNotIn(part["id"], obj["lists"]["past_eol"])
+        self.assertNotIn(part["id"], obj["lists"]["ends_soon"])
+        # The parent's date is mainstream_ended with no look-ahead, so no
+        # row of its own is in a --fail-on list, while the part carries it.
+        rows = [["Example SQL", "15", "Example Vendor", "bob", "", ""],
+                ["Sql Addon", "1", "Example Vendor", "hal", "",
+                 "Example SQL"]]
+        inv = write_inventory(self.root / "two.csv", rows, PARENT_HEADER)
+        code, _o, err = self.check(
+            "--lookahead-months", "0", "--fail-on", "past_eol,ends_soon",
+            "--out", str(self.root / "two"), inv=inv)
+        self.assertEqual(code, 0, err)
+        obj = json.loads((self.root / "two" / "report.json").read_text())
+        child = next(i for i in obj["items"] if i["name"] == "Sql Addon")
+        self.assertEqual(child["inherited_lifecycle"]["state"],
+                         "mainstream_ended")
+        self.assertEqual(obj["counts"]["inherited_attention"], 1)
+        self.assertEqual(obj["lists"]["past_eol"], [])
+        self.assertEqual(obj["lists"]["ends_soon"], [])
+
+
+class GovernableOnlyTests(PartsCliBase):
+    def test_governable_only_never_hides_unknown_or_json(self):
+        full, _ = self.report(name="full")
+        view, stdout = self.report("--governable-only", name="view")
+        self.assertEqual((full / "report.json").read_bytes(),
+                         (view / "report.json").read_bytes())
+        items = self.items(view)
+        md = (view / "report.md").read_text()
+        rows = list(csv.DictReader(io.StringIO(
+            (view / "report.csv").read_text())))
+        parts = [i for i in items
+                 if i["classification"] in ("component", "bundle_member")]
+        self.assertGreater(len(parts), 3)
+        for it in items:
+            if it["classification"] in ("unknown", "governable"):
+                self.assertIn("(id `%s`)" % it["id"], md)
+                self.assertIn(it["id"], [r["id"] for r in rows])
+            else:
+                self.assertNotIn("(id `%s`)" % it["id"], md)
+                self.assertNotIn(it["id"], [r["id"] for r in rows])
+        self.assertEqual(len(rows), len(items) - len(parts))
+        comp = sum(1 for i in parts if i["classification"] == "component")
+        line = "%d items hidden: %d components, %d bundle members" % (
+            len(parts), comp, len(parts) - comp)
+        self.assertIn(line, md)
+        self.assertIn(line, stdout)
+        # The closing findings block still mirrors every JSON list.
+        findings = json.loads(md.split("```findings\n")[1].split("\n```")[0])
+        obj = json.loads((view / "report.json").read_text())
+        want = sum(len(obj["lists"][t]) for t in (
+            "past_eol", "ends_soon", "dates_disagree", "unmatched",
+            "review_urgently"))
+        self.assertEqual(len(findings), want)
+        self.assertIn("## Couldn't match (%d)" % obj["counts"]["lists"][
+            "unmatched"], md)
+
+    def test_governable_only_off_by_default(self):
+        out, stdout = self.report()
+        md = (out / "report.md").read_text()
+        self.assertNotIn("items hidden", md)
+        self.assertNotIn("items hidden", stdout)
+        for it in self.items(out):
+            self.assertIn("(id `%s`)" % it["id"], md)
+        rows = list(csv.DictReader(io.StringIO(
+            (out / "report.csv").read_text())))
+        self.assertEqual(len(rows), len(self.items(out)))
+
+    def test_governable_only_on_stdout_markdown(self):
+        code, out, err = self.check("--governable-only")
+        self.assertEqual(code, 0, err)
+        self.assertIn("items hidden: ", out)
+
+
+class CountsOnlyClassTests(PartsCliBase):
+    def test_counts_only_prints_classification_and_no_names(self):
+        code, out, err = self.check("--counts-only", "--out",
+                                    str(self.out))
+        self.assertEqual(code, 0, err)
+        counts = json.loads((self.out / "report.json").read_text())[
+            "counts"]["classification"]
+        lines = out.split("\n")
+        states = next(i for i, l in enumerate(lines)
+                      if l.startswith("states "))
+        self.assertEqual(lines[states + 1], (
+            "classification bundle_member=%d component=%d governable=%d "
+            "unknown=%d" % (counts["bundle_member"], counts["component"],
+                            counts["governable"], counts["unknown"])))
+        for row in PARENT_ROWS:
+            for cell in (row[0], row[2], row[3], row[5]):
+                if cell:
+                    self.assertNotIn(cell, out)
+        self.assertNotIn("Parent", out)
+
+    def test_counts_only_same_with_governable_only(self):
+        _c, plain, _e = self.check("--counts-only", "--out",
+                                   str(self.root / "a"))
+        _c, view, _e = self.check("--counts-only", "--governable-only",
+                                  "--out", str(self.root / "b"))
+        self.assertEqual(plain, view)
+        self.assertNotIn("hidden", view)
 
 
 class VerifyDataTests(CliBase):

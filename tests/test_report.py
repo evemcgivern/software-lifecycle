@@ -11,7 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from helpers import EVIL, make_data_dir, write_inventory
+from helpers import (EVIL, PARENT_HEADER, PARENT_ROWS, SCRIPT, make_data_dir,
+                     write_inventory)
 from swlc import report
 from swlc.cli import build
 
@@ -27,12 +28,15 @@ CAVEAT = ("Matches rest on name and publisher only. Rows we could not tell "
 
 class Base(unittest.TestCase):
     kev_date = "2026-10-22"
+    inv_rows = None
+    inv_header = None
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.data = make_data_dir(self.tmp.name, self.kev_date, "2026-10-20")
-        self.inv = write_inventory(Path(self.tmp.name) / "inv.csv")
+        self.inv = write_inventory(Path(self.tmp.name) / "inv.csv", self.inv_rows,
+                                   self.inv_header)
         self.result, self.meta = build(self.inv, as_of=AS_OF, data=self.data)
         self.md = report.render_markdown(self.result, self.meta)
 
@@ -42,6 +46,122 @@ class Base(unittest.TestCase):
                                        or it["version"] == version):
                 return it
         raise KeyError(name)
+
+
+class PartsBase(Base):
+    inv_rows = PARENT_ROWS
+    inv_header = PARENT_HEADER
+
+    def section(self, heading):
+        start = self.md.index(heading)
+        end = self.md.index("\n## ", start + 1) if "\n## " in self.md[
+            start + 1:] else self.md.index("```findings")
+        return self.md[start:end]
+
+    def block(self, name):
+        it = self.item(name)
+        start = self.md.index("(id `%s`)" % it["id"])
+        end = self.md.index("\n- **", start) if "\n- **" in self.md[
+            start:] else len(self.md)
+        return self.md[start:end]
+
+
+class ClassViewTests(PartsBase):
+    def test_inherited_heading_and_label(self):
+        self.assertEqual(report.INHERITED_HEADING,
+                         "Parent's date (inherited, not this item's own)")
+        self.assertIn(report.INHERITED_HEADING, report.CSV_COLUMNS)
+        header = next(csv.reader(io.StringIO(
+            report.render_csv(self.result))))
+        self.assertIn(report.INHERITED_HEADING, header)
+        part = self.block("Demo Addon")
+        self.assertIn("  - Classification: bundle_member (basis: ", part)
+        self.assertIn("  - %s: end of life " % report.INHERITED_HEADING, part)
+        self.assertIn("per endoflife.date, state past end of life, from "
+                      "parent Demo OS 1.0 (id `", part)
+        self.assertNotIn("  - End of life:", part)
+        sql = self.block("Example SQL")
+        self.assertIn("  - End of life: ", sql)
+        self.assertNotIn(report.INHERITED_HEADING, sql)
+        self.assertIn("  - Classification: governable (basis: ", sql)
+
+    def test_parent_without_a_date_and_absent_parent(self):
+        self.assertIn("  - %s: parent has no date"
+                      % report.INHERITED_HEADING, self.block("Evil Child"))
+        gone = self.block("Gone Child")
+        self.assertIn("  - Parent: demoos/2.0, not in this inventory. "
+                      "No date shown.", gone)
+        self.assertNotIn(report.INHERITED_HEADING, gone)
+
+    def test_unmatched_section_leads_with_needs_review(self):
+        sec = self.section("## Couldn't match")
+        n = self.result["counts"]["unmatched_breakdown"]["needs_review"]
+        self.assertEqual(n, 6)
+        self.assertIn("## Couldn't match (11)\n\nNeeds review: 6. Parts with "
+                      "a parent are listed in their own section.\n", sec)
+        for name in ("Mystery Tool", "Lone Addon"):
+            self.assertIn(self.item(name)["id"], sec)
+        for name in ("Demo Addon", "Gone Child", "Evil Child"):
+            self.assertNotIn(self.item(name)["id"], sec)
+        parts = self.section("## Parts that could not be matched")
+        self.assertIn("## Parts that could not be matched (5)", parts)
+        for name in ("Demo Addon", "Gone Child", "Evil Child", "Script Child"):
+            self.assertIn(self.item(name)["id"], parts)
+        self.assertNotIn(self.item("Mystery Tool")["id"], parts)
+
+    def test_parts_past_parent_section(self):
+        sec = self.section("## Parts of a parent past or near end of life")
+        self.assertIn("(2)", sec.split("\n")[0])
+        self.assertEqual(self.result["counts"]["inherited_attention"], 2)
+        self.assertIn(self.item("Demo Addon")["id"], sec)
+        self.assertNotIn(self.item("Gone Child")["id"], sec)
+        types = {f["type"] for f in json.loads(re.search(
+            r"```findings\n(.*?)\n```", self.md, re.S).group(1))}
+        self.assertEqual(types, {"past_eol", "ends_soon", "dates_disagree",
+                                 "unmatched", "review_urgently"})
+        self.assertNotIn(self.item("Demo Addon")["id"],
+                         self.result["lists"]["past_eol"])
+
+    def test_csv_appends_columns_in_order(self):
+        cols = report.CSV_COLUMNS
+        self.assertEqual(len(cols), 32)
+        self.assertEqual(cols[:29], (
+            "id", "name", "version", "publisher", "owners", "rows", "state",
+            "reason", "product", "cycle", "eol_used", "eol_source",
+            "eol_endoflife", "eol_export", "eol_export_raw", "support",
+            "extended_support", "golden_applied", "golden_expired",
+            "dates_disagree", "accepted_risk", "exception_expired",
+            "decision_needed", "kev", "kev_stale", "change_ref",
+            "problem_ref", "lists", "match_source"))
+        self.assertEqual(cols[29:], ("classification", "parent_ref",
+                                     report.INHERITED_HEADING))
+        rows = list(csv.DictReader(io.StringIO(
+            report.render_csv(self.result))))
+        by = {r["name"]: r for r in rows}
+        part = by["Demo Addon"]
+        self.assertEqual(part["classification"], "bundle_member")
+        self.assertEqual(part["parent_ref"], "item:Demo OS 1.0")
+        self.assertNotEqual(part[report.INHERITED_HEADING], "")
+        self.assertEqual(by["Evil Child"][report.INHERITED_HEADING],
+                         "parent has no date")
+        self.assertEqual(by["Gone Child"]["parent_ref"], "product:demoos/2.0")
+        self.assertEqual(by["Gone Child"][report.INHERITED_HEADING], "")
+        self.assertEqual(by["Example SQL"]["parent_ref"], "")
+        self.assertEqual(by["Mystery Tool"]["classification"], "unknown")
+
+    def test_hostile_parent_cell_is_escaped(self):
+        text = report.render_csv(self.result)
+        for row in csv.reader(io.StringIO(text)):
+            for cell in row:
+                self.assertNotIn(cell[:1], ("=", "+", "@", "\t", "\r"), cell)
+        by = {r["name"]: r for r in csv.DictReader(io.StringIO(text))}
+        self.assertEqual(by["Evil Child"]["parent_ref"],
+                         "item:'" + EVIL + " Suite")
+        child = self.block("Script Child")
+        self.assertNotIn("<script>", self.md)
+        self.assertIn("Parent: &lt;script&gt;", child)
+        self.assertNotIn(EVIL, self.md)
+        self.assertNotIn(EVIL, child)
 
 
 class MarkdownTests(Base):
@@ -222,7 +342,7 @@ class MatchSourceTests(Base):
 
     def test_csv_adds_match_source_as_the_last_column(self):
         rows = list(csv.reader(io.StringIO(report.render_csv(self.result))))
-        self.assertEqual(rows[0][-2:], ["lists", "match_source"])
+        self.assertEqual(rows[0][27:29], ["lists", "match_source"])
         col = rows[0].index("match_source")
         self.assertEqual({r[col] for r in rows[1:]}, {"curated", ""})
 

@@ -14,6 +14,8 @@ import json
 import unicodedata
 from datetime import date, timedelta
 
+from .classify import PARENT_ABSENT, PARENT_NO_DATE, inherited_states
+
 MAX_DISPLAY = 120
 
 KEV_LINE = ("The vendor and product appear in CISA KEV. This does not mean "
@@ -82,13 +84,20 @@ SECTIONS = (
     ("ownerless", "Ownerless", None),
     ("golden_overrides", "Golden source overrides", None),
 )
+INHERITED_HEADING = "Parent's date (inherited, not this item's own)"
+HIDDEN_LINE = "%d items hidden: %d components, %d bundle members"
+NO_PARENT_DATE = "parent has no date"
+NEEDS_REVIEW_LEAD = ("Needs review: %d. Parts with a parent are listed in "
+                     "their own section.")
+PARTS = ("component", "bundle_member")
 CSV_COLUMNS = (
     "id", "name", "version", "publisher", "owners", "rows", "state",
     "reason", "product", "cycle", "eol_used", "eol_source", "eol_endoflife",
     "eol_export", "eol_export_raw", "support", "extended_support",
     "golden_applied", "golden_expired", "dates_disagree", "accepted_risk",
     "exception_expired", "decision_needed", "kev", "kev_stale",
-    "change_ref", "problem_ref", "lists", "match_source")
+    "change_ref", "problem_ref", "lists", "match_source",
+    "classification", "parent_ref", INHERITED_HEADING)
 
 _MD_SPECIAL = "\\`*_[]()#|~!"
 
@@ -219,13 +228,72 @@ def _unmatched_line(it: dict) -> str:
             "claimed." % (lead, reason, why))
 
 
-def _item_block(it: dict, eol_snap: str) -> list:
+def hidden_counts(result: dict) -> tuple:
+    """(components, bundle members) that --governable-only leaves out."""
+    kinds = [it["classification"] for it in result["items"]]
+    return kinds.count("component"), kinds.count("bundle_member")
+
+
+def hidden_line(result: dict) -> str:
+    comp, member = hidden_counts(result)
+    return HIDDEN_LINE % (comp + member, comp, member)
+
+
+def _needs_review(it: dict) -> bool:
+    return it["classification"] not in PARTS
+
+
+def _parent_item(it: dict, by_id: dict):
+    ref = it["parent_ref"]
+    if ref is None or ref["kind"] == "product":
+        return None
+    return by_id.get(ref["value"])
+
+
+def _parent_shown(it: dict, by_id: dict) -> str:
+    """The parent as Markdown text: its name, never the raw Parent cell."""
+    parent = _parent_item(it, by_id)
+    if parent is not None:
+        return _name(parent["name"])
+    return _disp(it["parent_ref"]["value"])
+
+
+def _parent_lines(it: dict, by_id: dict) -> list:
+    ref = it["parent_ref"]
+    life = it["inherited_lifecycle"]
+    if ref is None:
+        return []
+    if life:
+        eol = "no date given" if life["eol"] is None else _val(life["eol"])
+        return ["%s: end of life %s per endoflife.date, state %s, from "
+                "parent %s (id `%s`)" % (
+                    INHERITED_HEADING, eol,
+                    STATE_TEXT.get(life["state"], _disp(life["state"])),
+                    _parent_shown(it, by_id), life["parent_id"])]
+    if PARENT_ABSENT in it["classification_basis"]:
+        return ["Parent: %s, not in this inventory. No date shown."
+                % _parent_shown(it, by_id)]
+    parent = _parent_item(it, by_id)
+    lines = []
+    if parent is not None:
+        lines.append("Parent: %s (id `%s`)" % (_name(parent["name"]),
+                                               parent["id"]))
+    if PARENT_NO_DATE in it["classification_basis"]:
+        lines.append("%s: %s" % (INHERITED_HEADING, NO_PARENT_DATE))
+    return lines
+
+
+def _item_block(it: dict, eol_snap: str, by_id: dict) -> list:
     head = "- **%s** %s" % (_name(it["name"]), _disp(it["version"]))
     if it["publisher"]:
         head += ", publisher %s" % _disp(it["publisher"])
     out = [head + " (id `%s`)" % it["id"]]
     sub = []
     sub.append("State: %s" % STATE_TEXT[it["state"]])
+    sub.append("Classification: %s (basis: %s)" % (
+        it["classification"],
+        ", ".join(it["classification_basis"]) or "none"))
+    sub.extend(_parent_lines(it, by_id))
     if it.get("match_source") in SOURCE_TEXT:
         sub.append("Product %s." % SOURCE_TEXT[it["match_source"]])
     owners = ", ".join(_disp(o) for o in it["owners"])
@@ -262,7 +330,8 @@ def _kev_age_text(result: dict) -> str:
     return "KEV snapshot is %s old" % _days(age)
 
 
-def render_markdown(result: dict, meta: dict) -> str:
+def render_markdown(result: dict, meta: dict,
+                    governable_only: bool = False) -> str:
     rel = result["data_release"]
     eol_snap = _snapshot(result, "eol_age_days")
     kev_snap = _snapshot(result, "kev_age_days")
@@ -300,23 +369,49 @@ def render_markdown(result: dict, meta: dict) -> str:
         "; ".join("%s %d" % (h.lower(), counts[name])
                   for name, h, _ in SECTIONS))]
     out += ["", MATCH_CAVEAT]
+    if governable_only:
+        out += ["", hidden_line(result)]
 
-    for number, (name, heading, _) in enumerate(SECTIONS, 1):
+    def hidden(gid):
+        return governable_only and not _needs_review(items[gid])
+
+    def emit(heading, count, ids, lead=None, none_text="None."):
+        out.extend(["", "## %s (%d)" % (heading, count), ""])
+        if lead:
+            out.extend(lead)
+        shown = [gid for gid in ids if not hidden(gid)]
+        if not ids:
+            out.append(none_text)
+        elif not shown:
+            out.append("All of these are hidden by --governable-only.")
+        for gid in shown:
+            out.extend(_item_block(items[gid], eol_snap, items))
+
+    unmatched = result["lists"]["unmatched"]
+    review = [gid for gid in unmatched if _needs_review(items[gid])]
+    parts = [gid for gid in unmatched if not _needs_review(items[gid])]
+    attention = [it["id"] for it in result["items"]
+                 if it["inherited_lifecycle"]
+                 and it["inherited_lifecycle"]["state"] in inherited_states]
+    for name, heading, _ in SECTIONS:
         ids = result["lists"][name]
-        out += ["", "## %s (%d)" % (heading, len(ids)), ""]
+        if name == "unmatched":
+            emit(heading, len(ids), review,
+                 [NEEDS_REVIEW_LEAD % len(review), ""])
+            emit("Parts that could not be matched", len(parts), parts)
+            emit("Parts of a parent past or near end of life",
+                 len(attention), attention)
+            continue
+        lead = None
+        none_text = "None."
         if name == "review_urgently":
-            out += ["Needs review, not a finding that any version is "
+            lead = ["Needs review, not a finding that any version is "
                     "affected. KEV is checked only for matched items that "
                     "are past end of life or end within the window.", ""]
-        if not ids:
-            if name == "review_urgently" and not result["kev_current"]:
-                out.append("None listed. KEV overlay is not current, so "
-                           "this does not show there are none.")
-            else:
-                out.append("None.")
-            continue
-        for gid in ids:
-            out.extend(_item_block(items[gid], eol_snap))
+            if not result["kev_current"]:
+                none_text = ("None listed. KEV overlay is not current, so "
+                             "this does not show there are none.")
+        emit(heading, len(ids), ids, lead, none_text)
 
     diff = result["diff"]
     if diff["available"]:
@@ -355,7 +450,25 @@ def _cell(value) -> str:
     return text
 
 
-def render_csv(result: dict) -> str:
+def _parent_cell(it: dict, by_id: dict) -> str:
+    ref = it["parent_ref"]
+    if ref is None:
+        return ""
+    parent = _parent_item(it, by_id)
+    value = ref["value"] if parent is None else parent["name"]
+    return ref["kind"] + ":" + _cell(value)
+
+
+def _inherited_cell(it: dict):
+    life = it["inherited_lifecycle"]
+    if life:
+        return NO_PARENT_DATE if life["eol"] is None else life["eol"]
+    return NO_PARENT_DATE if PARENT_NO_DATE in it[
+        "classification_basis"] else ""
+
+
+def render_csv(result: dict, governable_only: bool = False) -> str:
+    by_id = {it["id"]: it for it in result["items"]}
     member = {}
     for name, ids in result["lists"].items():
         for gid in ids:
@@ -365,7 +478,11 @@ def render_csv(result: dict) -> str:
                         quoting=csv.QUOTE_ALL)
     writer.writerow(CSV_COLUMNS)
     for it in result["items"]:
+        if governable_only and not _needs_review(it):
+            continue
         row = dict(it)
+        row["parent_ref"] = _parent_cell(it, by_id)
+        row[INHERITED_HEADING] = _inherited_cell(it)
         row["owners"] = "; ".join(it["owners"])
         row["decision_needed"] = "; ".join(it["decision_needed"])
         row["lists"] = "; ".join(sorted(member.get(it["id"], [])))

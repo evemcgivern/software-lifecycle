@@ -46,7 +46,34 @@ inventory, so keep it as private as the inventory.
 | `rows` | Number of inventory rows. |
 | `states` | Count of items in each state. |
 | `lists` | Count of item IDs in each list. |
+| `classification` | Count of items in each class. See `counts.classification`. |
+| `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
+
+### counts.classification
+
+| Key | Meaning |
+|---|---|
+| `governable` | Items classed `governable`. |
+| `component` | Items classed `component`. |
+| `bundle_member` | Items classed `bundle_member`. A part's parent is counted once, under its own class (normally `governable`). |
+| `unknown` | Items classed `unknown`. |
+
+The four numbers add up to `counts.items`.
+
+### counts.unmatched_breakdown
+
+| Key | Meaning |
+|---|---|
+| `needs_review` | Unmatched items whose class is `unknown` or `governable`. |
+| `parts_with_parent` | Unmatched `bundle_member` items with `inherited_from` set. |
+| `parts_parent_absent` | Every other unmatched part: a `component`, or a `bundle_member` whose parent is not in this inventory. |
+
+The three numbers add up to `counts.lists.unmatched`. `lists.unmatched` itself
+is unchanged. `report.md` leads its "Couldn't match" section with the
+`needs_review` number and lists the other unmatched items in "Parts that could
+not be matched". The warning "N parts whose parent is not in this inventory"
+(`parent_absent` in `classification_basis`) appears in `warnings`.
 
 ### meta
 

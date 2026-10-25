@@ -27,6 +27,7 @@ screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 | `--previous REPORT.json` | An earlier `report.json`. The new report then shows what is new, gone or changed. | `--previous last-quarter/report.json` |
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
+| `--governable-only` | Leave components and bundle members out of `report.md` and `report.csv`. Prints "N items hidden: M components, K bundle members". `report.json` and `--fail-on` are unchanged, and `unknown` items are never hidden. Default off. | `--governable-only --out ../swlc-out` |
 | `--fail-on LIST` | Exit with code 10 if any named list has items. Names: `past_eol`, `ends_soon`, `review_urgently`, `dates_disagree`, `unmatched`. Comma separated. | `--fail-on past_eol,review_urgently` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
 | `-h`, `--help` | Show help. | `--help` |
@@ -321,8 +322,6 @@ entry cites its evidence and the benchmark must not get worse.
 
 ## What kind of item this is
 
-Planned, not built yet.
-
 An inventory row can be an application someone owns, a piece of something
 else, or a member of a bundle. Each row gets one of four classes. These are
 policy lines. ISO/IEC 19770-1 requires an inventory and lifecycle control but
@@ -374,6 +373,7 @@ It prints:
 
 - the checked-on date and whether the KEV data is current;
 - the number of items and rows, and the count in each state;
+- the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - each list with its count and the item IDs.
 
 It prints no names, versions, publishers or owners. In this mode an error

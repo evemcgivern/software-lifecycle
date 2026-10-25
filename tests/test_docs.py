@@ -384,6 +384,9 @@ class SchemaTests(unittest.TestCase):
             "Top-level keys": set(r),
             "data_release": set(r["data_release"]),
             "counts": set(r["counts"]),
+            "counts.classification": set(r["counts"]["classification"]),
+            "counts.unmatched_breakdown": set(
+                r["counts"]["unmatched_breakdown"]),
             "meta": set(r["meta"]),
             "meta.data_release": set(r["meta"]["data_release"]),
             "meta.override_hashes": set(r["meta"]["override_hashes"]),

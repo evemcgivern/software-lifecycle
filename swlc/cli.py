@@ -15,7 +15,7 @@ from .data import load_data, tool_version, verify_data
 from .errors import DataError, InputError
 from .inputs import GENERIC_ALIASES, group_rows, map_columns, read_rows
 from .overrides import file_hash, load_exceptions, load_golden, load_tracking
-from .report import render_csv, render_json, render_markdown
+from .report import (hidden_line, render_csv, render_json, render_markdown)
 from .safeio import write_text
 
 EXIT_OK, EXIT_USAGE, EXIT_INPUT, EXIT_DATA = 0, 2, 3, 4
@@ -200,6 +200,9 @@ def _parser() -> argparse.ArgumentParser:
                             "report.csv")
     check.add_argument("--counts-only", action="store_true",
                        help="print only counts and item IDs (needs --out)")
+    check.add_argument("--governable-only", action="store_true",
+                       help="report.md and report.csv leave out components "
+                            "and bundle members; report.json is unchanged")
     check.add_argument("--fail-on", metavar="LIST",
                        help="exit 10 if any named list has items: "
                             + ", ".join(FAIL_ON_NAMES))
@@ -245,9 +248,11 @@ def _check_out(out: str, inventory: str) -> None:
             raise OutputError("refusing to overwrite the input file")
 
 
-def _write_out(out: str, inventory: str, result: dict, meta: dict) -> None:
-    texts = (render_json(result, meta), render_markdown(result, meta),
-             render_csv(result))
+def _write_out(out: str, inventory: str, result: dict, meta: dict,
+               governable_only: bool = False) -> None:
+    texts = (render_json(result, meta),
+             render_markdown(result, meta, governable_only),
+             render_csv(result, governable_only))
     try:
         os.makedirs(out, mode=0o700, exist_ok=True)
         for name, text in zip(OUTPUT_FILES, texts):
@@ -268,7 +273,10 @@ def _counts_text(result: dict) -> str:
              "kev_current %s" % ("true" if result["kev_current"] else "false"),
              "items %d rows %d" % (counts["items"], counts["rows"]),
              "states " + " ".join("%s=%d" % (k, v) for k, v
-                                  in sorted(counts["states"].items()))]
+                                  in sorted(counts["states"].items())),
+             "classification " + " ".join(
+                 "%s=%d" % (k, v) for k, v
+                 in sorted(counts["classification"].items()))]
     for name in LISTS:
         ids = result["lists"][name]
         lines.append("%s %d%s" % (name, len(ids),
@@ -293,13 +301,16 @@ def _check(args) -> int:
         exceptions=args.exceptions, tracking=args.tracking,
         previous=args.previous, encoding=args.encoding)
     if args.out:
-        _write_out(args.out, args.inventory, result, meta)
+        _write_out(args.out, args.inventory, result, meta,
+                   args.governable_only)
     if args.counts_only:
         sys.stdout.write(_counts_text(result))
     elif args.out:
         print("Wrote %s to %s" % (", ".join(OUTPUT_FILES), args.out))
+        if args.governable_only:
+            print(hidden_line(result))
     else:
-        sys.stdout.write(render_markdown(result, meta))
+        sys.stdout.write(render_markdown(result, meta, args.governable_only))
     hit = [n for n in fail_on if result["lists"][n]]
     if hit:
         print("Findings present in: %s" % ", ".join(hit), file=sys.stderr)

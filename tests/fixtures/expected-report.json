@@ -1,6 +1,12 @@
 {
   "as_of": "2026-10-24",
   "counts": {
+    "classification": {
+      "bundle_member": 3,
+      "component": 0,
+      "governable": 42,
+      "unknown": 6
+    },
     "inherited_attention": 2,
     "items": 51,
     "lists": {
@@ -20,6 +26,11 @@
       "past_eol": 8,
       "supported": 27,
       "unmatched": 10
+    },
+    "unmatched_breakdown": {
+      "needs_review": 7,
+      "parts_parent_absent": 1,
+      "parts_with_parent": 2
     }
   },
   "data_release": {
