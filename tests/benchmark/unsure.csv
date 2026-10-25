@@ -19,3 +19,7 @@ Microsoft Office Professional Plus 2007,Microsoft Corporation,12.0.6612.1000,NON
 Microsoft Exchange Server 2007,Microsoft Corporation,8.3.517.0,NONE?,,nocycle; 2007 cycle exists
 Kibana,Elastic,7.10.2,NONE?,,nocycle; 7 cycle fits 7.10.2
 Microsoft Windows XP Professional,Microsoft Corporation,5.1.2600,NONE?,,nocycle; XP not in snapshot (5-sp3 is)
+UniversalForwarder,"Splunk, Inc.",9.2.1.0,splunk,9.2,unverified: the four-part Windows version string for the forwarder was not confirmed
+Oracle Solaris 11.4,Oracle Corporation,11.4.42.111.0,oracle-solaris,11.4,unverified: only build 11.4.42.113.1 was found on a vendor page; the 111.0 build string is not confirmed
+Windows 11 Enterprise LTSC 2024,Microsoft Corporation,10.0.26100.1742,windows,11-24h2-e-lts,unverified: no vendor page pairs LTSC 2024 with build 26100.1742
+Windows Server Core,Microsoft Corporation,10.0.20348.2849,windows-server-core,2022,"defensible either way: Server Core is an installation option of Windows Server 2022, so windows-server 2022 also fits"

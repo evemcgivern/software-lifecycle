@@ -56,10 +56,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 367 | 20 | 372 | 759 |
+| hand | 363 | 19 | 372 | 754 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1423 | 293 | 449 | 2165 |
+| all | 1419 | 292 | 449 | 2160 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -120,7 +120,7 @@ See the numbers with `SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tes
 - Clients, drivers, SDKs, add-ins and language packs are not the product.
   An agent or command-line row counts as the product only if it ships with
   the server at the same version and support dates (istioctl, Puppet Agent,
-  Salt Minion, Keycloak Admin CLI, Splunk UniversalForwarder count; MySQL
+  Salt Minion, Keycloak Admin CLI count; MySQL
   Shell and Router, Elastic and Grafana agents, Python Launcher do not).
   SQLite and OpenSSL libraries count. The .NET runtime, desktop runtime,
   ASP.NET Core and SDK count as .NET.
@@ -134,7 +134,12 @@ See the numbers with `SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tes
   build). Office with the shared build `16.0` is `office` with cycle `none`.
 - Rows whose answer is defensible either way or rests on an unverified fact
   (Harbor with the VMware publisher, Elastic Agent, `Microsoft .NET` 4.8,
-  .NET Framework 4.8.1 with build 4.8.09032) are in `unsure.csv`, not gold.
+  .NET Framework 4.8.1 with build 4.8.09032, Oracle Solaris 11.4 with an
+  unconfirmed build, Splunk UniversalForwarder, Windows 11 LTSC 2024 with
+  build 26100.1742, Windows Server Core 2022 by build, Azure DevOps Server
+  2022 by build) are in `unsure.csv`, not gold. A test compares normalized
+  names (leading "Microsoft " dropped), publishers and versions so a
+  near-duplicate cannot sit in both files.
 - Rows added by hand with mixed-granularity cycles (Jenkins, Tomcat, Docker
   Engine and others) have notes that start with "hand-added".
 

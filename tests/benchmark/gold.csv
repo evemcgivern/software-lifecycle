@@ -709,8 +709,8 @@ Nextcloud Desktop,Nextcloud GmbH,3.14.3,NONE,,trap=lookalike; desktop sync clien
 GitLab Workflow,GitLab,4.12.0,NONE,,trap=lookalike; editor extension,hand,0
 Grafana Alloy,Grafana Labs,1.5.0,NONE,,"trap=lookalike; collector, not Grafana",hand,0
 Keycloak Admin CLI,,23.0.3,keycloak,23.0,"trap=component; admin CLI ships with the server at the same version and support dates, so it counts as the product (agent/CLI policy)",hand,0
-Microsoft SQL Server 2008 R2 (64-bit),Microsoft Corporation,10.50.6000.34,mssqlserver,10.50-sp3,build 10.50.6000.34 is SQL Server 2008 R2 SP3; source https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates,hand,0
-Microsoft SQL Server 2005,Microsoft Corporation,9.00.5000.00,mssqlserver,9.0-sp4,build 9.00.5000.00 is SQL Server 2005 SP4; source https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates,hand,1
+Microsoft SQL Server 2008 R2 (64-bit),Microsoft Corporation,10.50.6000.34,mssqlserver,10.50-sp3,build 10.50.6000.34 is SQL Server 2008 R2 SP3; source https://support.microsoft.com/en-us/servicing/sql/kb321185-download-and-install-latest-updates,hand,0
+Microsoft SQL Server 2005,Microsoft Corporation,9.00.5000.00,mssqlserver,9.0-sp4,build 9.00.5000.00 is SQL Server 2005 SP4; source https://support.microsoft.com/en-us/servicing/sql/kb321185-download-and-install-latest-updates,hand,1
 Microsoft Windows Server 2008 R2 Enterprise,Microsoft Corporation,6.1.7601,windows-server,2008-r2-sp1,build 6.1.7601 is Service Pack 1; source https://endoflife.date/windows-server,hand,0
 Microsoft Windows Server 2003 Standard Edition,Microsoft Corporation,5.2.3790,windows-server,none,"product right; build 5.2.3790 is shared by 2003, 2003-sp1 and 2003-sp2, so no cycle can be decided",hand,0
 Microsoft Office 2003,Microsoft Corporation,11.0.8173.0,office,none,"trap=nocycle; 2003 not in snapshot; expected: the product, no cycle can be decided",hand,0
@@ -2141,24 +2141,19 @@ Apache Struts,Apache Software Foundation,2.5.30,apache-struts,2.5,hand-added (K1
 Squid,Squid Cache project,3.5.28,squid,3.5,hand-added (K1); cycles mix 7 and 3.5,hand,0
 Apache Log4j,Apache Software Foundation,2.12.4,log4j,2.12,hand-added (K1); cycles mix 2 and 2.12,hand,0
 Microsoft Office Professional Plus,Microsoft Corporation,16.0,office,none,"hand-added (K1); bare build 16.0 is shared by Office 2016, 2019 and 2021, so no cycle can be decided; source https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer",hand,0
-UniversalForwarder,"Splunk, Inc.",9.2.1.0,splunk,9.2,hand-added (K1); forwarder ships with Splunk Enterprise at the same version and support dates (agent policy); cycle list https://endoflife.date/splunk,hand,0
 iOS,Apple Inc.,17.4.1,ios,17,hand-added (K1); phone-management row; cycle list https://endoflife.date/ios,hand,0
 Android,Google LLC,14,android,14,hand-added (K1); phone-management row; cycle list https://endoflife.date/android,hand,0
 iPadOS,Apple Inc.,17.5.1,ipados,17,hand-added (K1); tablet-management row; cycle list https://endoflife.date/ipados,hand,0
-Azure DevOps Server 2022,Microsoft Corporation,19.225.34309.2,azure-devops-server,none,"hand-added (K1); 2022.0, 2022.1 and 2022.2 share the name and the build needs a build table, so no cycle can be decided; cycle list https://endoflife.date/azure-devops-server",hand,0
 spring-boot-3.2.1.jar,,3.2.1,spring-boot,3.2,hand-added (K1); file-inventory row; cycle list https://endoflife.date/spring-boot,hand,0
 spring-core-6.1.3.jar,,6.1.3,spring-framework,6.1,hand-added (K1); spring-core is the framework core module at the framework version; cycle list https://endoflife.date/spring-framework,hand,1
 Django,Django Software Foundation,4.2.9,django,4.2,hand-added (K1); pip list row; cycle list https://endoflife.date/django,hand,0
 react,Meta,18.2.0,react,18,hand-added (K1); npm package row; cycle list https://endoflife.date/react,hand,0
 jquery-3.6.0.min.js,,3.6.0,jquery,3,hand-added (K1); web file row; cycle list https://endoflife.date/jquery,hand,0
 CentOS Stream,"Red Hat, Inc.",9,centos-stream,9,hand-added (K1); os-release NAME and VERSION_ID; cycle list https://endoflife.date/centos-stream,hand,0
-Oracle Solaris 11.4,Oracle Corporation,11.4.42.111.0,oracle-solaris,11.4,hand-added (K1); cycle list https://endoflife.date/oracle-solaris,hand,0
-Windows 11 Enterprise LTSC 2024,Microsoft Corporation,10.0.26100.1742,windows,11-24h2-e-lts,"hand-added (K1); LTSC in the name picks the e-lts cycle (build 26100 is shared with 24H2 e, w and iot-lts); cycle list https://endoflife.date/windows",hand,0
 Mozilla Firefox ESR (x64 en-US),Mozilla,115.9.1,firefox,115,hand-added (K1); ESR shares the major-version cycle (115); cycle list https://endoflife.date/firefox,hand,0
 CockroachDB,Cockroach Labs,23.1.14,cockroachdb,23.1,hand-added (K1); cycle list https://endoflife.date/cockroachdb,hand,0
 Commvault,"Commvault Systems, Inc.",11.36.20,commvault,11.36,hand-added (K1); cycle list https://endoflife.date/commvault,hand,0
 Nutanix Prism Central,Nutanix,pc.2024.3.1,nutanix-prism,pc.2024.3,hand-added (K1); cycle list https://endoflife.date/nutanix-prism,hand,0
-Windows Server Core,Microsoft Corporation,10.0.20348.2849,windows-server-core,2022,"hand-added (K1); container base image, build 20348 is Windows Server 2022; cycle list https://endoflife.date/windows-server-core",hand,0
 Apache Tomcat 4.1.40,The Apache Software Foundation,4.1.40,tomcat,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/tomcat",hand,0
 Node.js 0.10.48,Node.js Foundation,0.10.48,nodejs,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/nodejs",hand,0
 Ruby 1.8.7,Ruby Core Team,1.8.7,ruby,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/ruby",hand,0

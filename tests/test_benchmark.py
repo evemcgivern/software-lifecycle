@@ -32,6 +32,7 @@ sys.path.insert(0, str(ROOT))
 
 from swlc import cli
 from swlc.inputs import item_id
+from swlc.normalize import normalize_name
 from test_docs import BANNED, BANNED_DIGESTS, hashed_terms
 
 BENCH = ROOT / "tests" / "benchmark"
@@ -306,6 +307,22 @@ class GoldFileTests(unittest.TestCase):
             self.assertNotIn(item_id(u["publisher"], u["name"], u["version"]),
                              have, u["name"])
             self.assertTrue(u["notes"].strip(), u["name"])
+
+    def test_unsure_rows_do_not_near_duplicate_gold(self):
+        """Compare normalized names (leading vendor prefix dropped) and
+        versions, so a pair like 'Microsoft X 2022' and 'X 2022' is caught."""
+        def key(name, publisher, version):
+            norm = normalize_name(name)
+            if norm.startswith("microsoft "):
+                norm = norm[len("microsoft "):]
+            return (norm, normalize_name(publisher), normalize_name(version))
+        with open(BENCH / "unsure.csv", encoding="utf-8", newline="") as fh:
+            unsure = list(csv.DictReader(fh))
+        have = {key(r["name"], r["publisher"], r["version"])
+                for r in self.rows}
+        for u in unsure:
+            self.assertNotIn(key(u["name"], u["publisher"], u["version"]),
+                             have, u["name"])
 
     def test_package_names_and_versions_agree(self):
         """A catalog or generated package row must carry a plausible real
