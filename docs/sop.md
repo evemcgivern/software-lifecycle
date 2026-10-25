@@ -42,7 +42,9 @@ who holds each role.
    new, gone or changed. The first run after an upgrade that adds matching
    by product title shows a long state-changed list (`diff.changed_state`):
    items that were unmatched now match, and golden-source and exception
-   rows keyed by product id now apply to them. Check those rows once.
+   rows keyed by product id now apply to them. Check those rows once. A data folder in format 1 still loads
+   with a warning and generated matching off, so its report matches by alias
+   only.
 5. **Work "Past end of life" and "Ends within the lookahead window".** For
    each item, the owner chooses: replace, upgrade, retire, or request risk
    acceptance (step 8).
@@ -50,7 +52,8 @@ who holds each role.
 6. **Work "Review urgently".** These items are past or near end of life and
    their vendor and product appear in CISA KEV. This does not mean your
    version is affected. A person checks the version against the KEV entries
-   and decides the priority.
+   and decides the priority. `kev: false` means "no match under those rules", not
+   "known safe".
    **Decision needed:** whether each item is affected, and its priority.
 7. **Settle "Dates disagree".** The ITAM lead picks the right date for each
    item. If it will keep recurring, record the choice as a row in
