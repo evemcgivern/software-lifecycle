@@ -635,6 +635,19 @@ class EolWeeklyTests(unittest.TestCase):
             self.assertIn(needle, self.text, needle)
 
 
+class ReportLabelTests(unittest.TestCase):
+    def test_both_report_jobs_create_their_label(self):
+        # A missing label makes "gh issue create --label" fail, so each
+        # report job creates its own label before it opens an issue.
+        for name, label in (("eol-weekly.yml", "eol-weekly-failed"),
+                            ("kev-daily.yml", "data-gate-failed")):
+            with self.subTest(workflow=name):
+                body = "\n".join(jobs(read(name))["report"])
+                self.assertIn("gh label create %s " % label, body)
+                self.assertLess(body.index("gh label create %s " % label),
+                                body.index("gh issue create"))
+
+
 class RepoFilesTests(unittest.TestCase):
     def test_dependabot_watches_actions_weekly(self):
         text = (GITHUB / "dependabot.yml").read_text(encoding="utf-8")
