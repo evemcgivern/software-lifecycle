@@ -1,0 +1,22 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft Office Professional Plus 2021|Microsoft Corporation|16.0.14332": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Proofing Tools 2021 - English|Microsoft Corporation|16.0.14332": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Office Professional Plus 2021|Microsoft Corporation|16.0.14332",
+      "inherited_state": "past_eol",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Microsoft Office Professional Plus 2021|Microsoft Corporation|16.0.14332"
+      }
+    }
+  },
+  "warnings_contain": []
+}

@@ -1,0 +1,37 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Contoso Orders Report Pack|Contoso Ltd|3.2.1": {
+      "classification": "bundle_member",
+      "inherited_from": "Contoso Orders Server|Contoso Ltd|3.2.1",
+      "inherited_state": "unmatched",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Contoso Orders Server|Contoso Ltd|3.2.1"
+      }
+    },
+    "Contoso Orders Server|Contoso Ltd|3.2.1": {
+      "classification": "unknown",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Professional Plus|Microsoft Corporation|16.0": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Shared MUI (English)|Microsoft Corporation|16.0.10399": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Office Professional Plus|Microsoft Corporation|16.0",
+      "inherited_state": "unmatched",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Microsoft Office Professional Plus|Microsoft Corporation|16.0"
+      }
+    }
+  },
+  "warnings_contain": []
+}

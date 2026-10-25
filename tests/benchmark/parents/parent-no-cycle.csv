@@ -1,0 +1,5 @@
+Software Name,Publisher,Version,Parent
+Microsoft Office Professional Plus,Microsoft Corporation,16.0,
+Microsoft Office Shared MUI (English),Microsoft Corporation,16.0.10399,Microsoft Office Professional Plus
+Contoso Orders Server,Contoso Ltd,3.2.1,
+Contoso Orders Report Pack,Contoso Ltd,3.2.1,Contoso Orders Server

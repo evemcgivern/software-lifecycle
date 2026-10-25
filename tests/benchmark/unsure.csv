@@ -23,3 +23,52 @@ UniversalForwarder,"Splunk, Inc.",9.2.1.0,splunk,9.2,unverified: the four-part W
 Oracle Solaris 11.4,Oracle Corporation,11.4.42.111.0,oracle-solaris,11.4,unverified: only build 11.4.42.113.1 was found on a vendor page; the 111.0 build string is not confirmed
 Windows 11 Enterprise LTSC 2024,Microsoft Corporation,10.0.26100.1742,windows,11-24h2-e-lts,unverified: no vendor page pairs LTSC 2024 with build 26100.1742
 Windows Server Core,Microsoft Corporation,10.0.20348.2849,windows-server-core,2022,"defensible either way: Server Core is an installation option of Windows Server 2022, so windows-server 2022 also fits"
+Security Update for Microsoft Windows (KB5034441),Microsoft Corporation,1,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Update for Windows 10 for x64-based Systems (KB4480730),Microsoft Corporation,2.51.0.0,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Security Update for Microsoft Windows (KB5025239),Microsoft Corporation,1,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Update for Microsoft Windows (KB890830),Microsoft Corporation,5.124.0.0,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Update for Microsoft Windows (KB4056254),Microsoft Corporation,1,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+gimp-data,,2.10.34-1,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft Word,Microsoft Corporation,16.0.15601.20000,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft Word,Microsoft Corporation,16.0.17328.20162,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft Excel,Microsoft Corporation,16.0.15601.20000,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft Excel,Microsoft Corporation,16.0.17328.20162,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft PowerPoint,Microsoft Corporation,16.0.15601.20000,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft PowerPoint,Microsoft Corporation,16.0.17328.20162,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft Access,Microsoft Corporation,16.0.15601.20000,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft Access,Microsoft Corporation,16.0.17328.20162,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft Publisher,Microsoft Corporation,16.0.15601.20000,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft OneNote,Microsoft Corporation,16.0.15601.20000,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+Microsoft OneNote,Microsoft Corporation,16.0.17328.20162,NONE,,"two labellers agreed bundle_member but named no parent; no single parent product and cycle fits, so left out of gold"
+libavcodec59,,7:5.1.6-0+deb12u1,NONE,,labellers disagreed: bundle_member vs component
+ca-certificates,,20230311,NONE,,labellers disagreed: component vs unknown
+tzdata,,2024a-0+deb12u1,NONE,,labellers disagreed: component vs unknown
+locales,,2.36-9+deb12u7,NONE,,labellers disagreed: component vs unknown
+shared-mime-info,,2.2-1,NONE,,labellers disagreed: component vs unknown
+xkb-data,,2.35.1-1,NONE,,labellers disagreed: component vs unknown
+pulseaudio-module-bluetooth,,16.1+dfsg1-2+b1,NONE,,labellers disagreed: bundle_member vs component
+ubuntu-restricted-extras,Ubuntu Developers,73ubuntu1,NONE,,labellers disagreed: bundle_member vs bundle_member
+VMware Tools,"VMware, Inc.",12.4.5.23787635,NONE,,labellers disagreed: component vs unknown
+Microsoft Outlook 2013,Microsoft Corporation,15.0.4569.1506,NONE,,labellers disagreed: component vs bundle_member
+base-files,Santiago Vila,12.4+deb12u7,NONE,,labellers disagreed: unknown vs bundle_member
+debian-archive-keyring,Debian Release Team,2023.3+deb12u2,NONE,,labellers disagreed: component vs bundle_member
+debian-ports-archive-keyring,Debian FTP Masters,2023.04.03,NONE,,labellers disagreed: component vs unknown
+Android SDK Manager,,24.4.1,NONE,,labellers disagreed: unknown vs governable
+Driver Booster 10,IObit,10.6.0.141,NONE,,labellers disagreed: unknown vs governable
+Driver Easy,Easeware,5.8.1,NONE,,labellers disagreed: unknown vs governable
+Snappy Driver Installer,Glenn Delahoy,1.23.9,NONE,,labellers disagreed: unknown vs governable
+DriverPack Solution,DriverPack Solution,17.11.6,NONE,,labellers disagreed: unknown vs governable
+Driver Talent,Driver Talent Studio,8.1.11.24,NONE,,labellers disagreed: unknown vs governable
+Microsoft Update Health Tools,Microsoft Corporation,5.72.0.0,NONE,,labellers disagreed: component vs unknown
+Microsoft Edge Update,Microsoft Corporation,1.3.195.43,NONE,,labellers disagreed: unknown vs component
+Windows Subsystem for Linux Update,Microsoft Corporation,5.10.102.1,NONE,,labellers disagreed: unknown vs component
+Microsoft Visual Studio Installer,Microsoft Corporation,3.10.2149.2,NONE,,labellers disagreed: governable vs component
+Microsoft Visual Studio Build Tools 2022,Microsoft Corporation,17.10.4,NONE,,labellers disagreed: bundle_member vs governable
+default-jre,Debian Java Maintainers,2:1.17-74,NONE,,labellers disagreed: unknown vs governable
+default-jdk-headless,Debian Java Maintainers,2:1.17-74,NONE,,labellers disagreed: unknown vs governable
+linux-image-amd64,Debian Kernel Team,6.1.99-1,NONE,,labellers disagreed: bundle_member vs governable
+linux-image-6.8.0-45-generic,Ubuntu Kernel Team,6.8.0-45.45,NONE,,labellers disagreed: bundle_member vs governable
+linux-headers-6.8.0-45,Ubuntu Kernel Team,6.8.0-45.45,NONE,,labellers disagreed: bundle_member vs component
+ubuntu-desktop,Ubuntu Developers,1.539.1,NONE,,labellers disagreed: bundle_member vs unknown
+ubuntu-server,Ubuntu Developers,1.539.1,NONE,,labellers disagreed: bundle_member vs unknown
+Adventure Works Plugin Studio,Adventure Works Cycles,2.0,NONE,,labellers disagreed: component vs unknown

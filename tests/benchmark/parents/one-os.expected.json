@@ -1,0 +1,31 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft Windows 10 Pro|Microsoft Corporation|10.0.19045.3803": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Security Update for Microsoft Windows (KB5031356)|Microsoft Corporation|1": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Windows 10 Pro|Microsoft Corporation|10.0.19045.3803",
+      "inherited_state": "past_eol",
+      "parent_ref": {
+        "kind": "os",
+        "value": "Microsoft Windows 10 Pro|Microsoft Corporation|10.0.19045.3803"
+      }
+    },
+    "Update for Windows 10 for x64-based Systems (KB5001716)|Microsoft Corporation|8.94.0.0": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Windows 10 Pro|Microsoft Corporation|10.0.19045.3803",
+      "inherited_state": "past_eol",
+      "parent_ref": {
+        "kind": "os",
+        "value": "Microsoft Windows 10 Pro|Microsoft Corporation|10.0.19045.3803"
+      }
+    }
+  },
+  "warnings_contain": []
+}

@@ -1,0 +1,31 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft Excel|Microsoft Corporation|16.0.15601.20000": {
+      "classification": "unknown",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Professional Plus 2016|Microsoft Corporation|16.0.4266.1001": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Professional Plus 2019|Microsoft Corporation|16.0.10399": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Outlook|Microsoft Corporation|16.0.15601.20000": {
+      "classification": "unknown",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

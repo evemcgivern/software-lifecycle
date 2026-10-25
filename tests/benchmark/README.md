@@ -17,6 +17,47 @@ No row comes from a real inventory. Never add one.
 | `notes` | why the row is here; every row has one |
 | `stratum` | `hand`, `catalog` or `generated` (below) |
 | `heldout` | `1` or `0` (below) |
+| `classification` | empty (the row is not scored for classification), or `governable`, `component`, `bundle_member` or `unknown`, as defined in `docs/usage.md` |
+| `expected_parent` | empty (no link is expected), `product:<id>/<cycle>` (the parent product and cycle, on `bundle_member` rows only), or `none` (no parent link may exist) |
+
+### Classification columns
+
+Rows that were in the file before the classification columns existed have both
+columns empty and are not scored for classification. New rows carry a
+`classification`. Each label is kept only where two independent reviewers who
+did not see each other's labels agree; rows they disagree on go to
+`unsure.csv` with a note. A person spot-checks a tenth of the kept rows. The
+rows are public names only (winget, Homebrew, Debian and Ubuntu package names
+and vendor product pages, cited in `SOURCES.md`). `expected_parent` is
+`product:<id>/<cycle>` only where the name and version fit one cycle of one
+product by themselves, for example `Microsoft Outlook 2019` is
+`product:office/2019`. A row with a parent signal missing from its own name
+(a runtime that might ship inside an app) is `unknown` or `governable`, not
+`bundle_member`.
+
+### Parent cases
+
+`parents/` holds small inventories for the parent link, one pair of files per
+case: `<case>.csv` (headings `Software Name,Publisher,Version,Parent`) and
+`<case>.expected.json`. The JSON has `as_of` (the bundled `eol_date`),
+`data` (`bundled`), `items` and `warnings_contain`. `items` maps
+`name|publisher|version` to the expected `classification`, `parent_ref`
+(`{"kind", "value"}` or null; `value` is the parent row key for `item` and
+`os`, and `<product>/<cycle>` for `product`), `inherited_from` (the parent row
+key, or null) and `inherited_state` (the parent row's state, or null).
+`warnings_contain` lists text that must appear in the report warnings. The
+cases are hand-designed tests of the parent rules, not gold rows.
+
+### Silver sample
+
+`silver-sample.csv` will hold a stratified sample of public rows from the
+silver catalog (winget, Homebrew, Debian, Ubuntu) with two independent labels,
+to measure classification rates per source. Columns: `source`, `name`,
+`publisher`, `version`, `label` and `label_b` (a class from each labeller),
+`agreed` (`1` if the labels match, else `0`; only `1` rows are scored),
+`heldout` (the gold rule) and `notes`. `tests/sample_silver.py` draws the
+sample from the silver file named by `SWLC_SILVER`. The suite never imports
+it. The silver file is not in the repository.
 
 ### Product, no cycle
 
@@ -65,10 +106,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 366 | 32 | 392 | 790 |
+| hand | 428 | 32 | 801 | 1261 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1422 | 305 | 469 | 2196 |
+| all | 1484 | 305 | 878 | 2667 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -77,7 +118,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 111 rows. Do not use held-out rows when writing
+are always `0`. That is 159 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks

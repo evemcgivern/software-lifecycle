@@ -31,7 +31,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from swlc import cli
+from swlc import assess, cli
 from swlc.inputs import item_id
 from swlc.normalize import normalize_name
 from test_docs import BANNED, BANNED_DIGESTS, hashed_terms
@@ -41,7 +41,19 @@ GOLD = BENCH / "gold.csv"
 FLOOR = BENCH / "floor.json"
 EOL_DIR = ROOT / "data" / "eol"
 HEADER = ["name", "publisher", "version", "expected_product",
-          "expected_cycle", "notes", "stratum", "heldout"]
+          "expected_cycle", "notes", "stratum", "heldout", "classification",
+          "expected_parent"]
+CLASSES = ("governable", "component", "bundle_member", "unknown")
+PARENTS = BENCH / "parents"
+SILVER_SAMPLE = BENCH / "silver-sample.csv"
+SILVER_HEADER = ["source", "name", "publisher", "version", "label",
+                 "label_b", "agreed", "heldout", "notes"]
+# Rows present before the classification columns were added: the first
+# ORIGINAL_ROWS rows of gold.csv, identified by a digest of their keys. A
+# pinned digest, not `git show main:tests/benchmark/gold.csv`: once this work
+# merges, main itself holds the new rows, and a git call may be missing in CI.
+ORIGINAL_ROWS = 2197
+ORIGINAL_KEYS_SHA256 = "9681fc48293f431b94805cf30bf82a03704016b9cef4bf463a8660840d237245"
 STRATA = ("hand", "catalog", "generated")
 OUTCOMES = ("correct", "hard-wrong", "soft-wrong", "missed", "right-none")
 
@@ -62,6 +74,19 @@ def read_gold() -> list:
 
 def row_key(row: dict) -> tuple:
     return (row["name"], row["publisher"], row["version"])
+
+
+def read_parent_cases() -> list:
+    """[(inventory csv path, expected dict)] for every parent case.
+
+    A case is <case>.csv (headings Software Name, Publisher, Version, Parent)
+    plus <case>.expected.json, in tests/benchmark/parents/.
+    """
+    cases = []
+    for path in sorted(PARENTS.glob("*.csv")):
+        expected = path.with_name(path.stem + ".expected.json")
+        cases.append((path, json.loads(expected.read_text(encoding="utf-8"))))
+    return cases
 
 
 def outcome(row: dict, item: dict) -> str:
@@ -263,11 +288,88 @@ class GoldFileTests(unittest.TestCase):
         with open(GOLD, encoding="utf-8", newline="") as fh:
             self.assertEqual(next(csv.reader(fh)), HEADER)
 
+    def test_classification_values(self):
+        for r in self.rows:
+            self.assertIn(r["classification"], ("",) + CLASSES, r["name"])
+
+    def test_at_least_40_rows_per_class(self):
+        counts = Counter(r["classification"] for r in self.rows)
+        for cls in CLASSES:
+            with self.subTest(cls=cls):
+                self.assertGreaterEqual(counts[cls], 40, cls)
+
+    def test_expected_parent_shape(self):
+        for r in self.rows:
+            value = r["expected_parent"]
+            if not value:
+                continue
+            self.assertIn(r["classification"], ("bundle_member",)
+                          if value != "none" else CLASSES, r["name"])
+            if value == "none":
+                continue
+            match = re.fullmatch(r"product:([^/\s]+)/(\S+)", value)
+            self.assertIsNotNone(match, "%s: %s" % (r["name"], value))
+            cycles = eol_cycles(match.group(1))
+            self.assertIsNotNone(cycles, "%s: %s" % (r["name"], value))
+            self.assertIn(match.group(2), cycles, "%s: %s"
+                          % (r["name"], value))
+
+    def test_existing_rows_unchanged(self):
+        old = self.rows[:ORIGINAL_ROWS]
+        keys = "\n".join("%s|%s|%s" % row_key(r) for r in old)
+        self.assertEqual(hashlib.sha256(keys.encode("utf-8")).hexdigest(),
+                         ORIGINAL_KEYS_SHA256)
+        for r in old:
+            self.assertEqual(r["classification"], "", r["name"])
+            self.assertEqual(r["expected_parent"], "", r["name"])
+
+    def test_required_traps_present(self):
+        def rows_named(name):
+            return [r for r in self.rows
+                    if r["name"] == name and r["classification"]]
+
+        def has(name, ok, **extra):
+            hits = [r for r in rows_named(name) if ok(r)
+                    and all(r[k] == v for k, v in extra.items())]
+            self.assertTrue(hits, "no row %r passing" % name)
+        has("Runtime", lambda r: r["classification"] == "unknown")
+        has("Android SDK Manager",
+            lambda r: r["classification"] != "component")
+        has("Driver Booster", lambda r: r["classification"] != "component")
+        has("libreoffice", lambda r: r["classification"] == "governable")
+        has("Microsoft Outlook 2019",
+            lambda r: r["classification"] == "bundle_member"
+            and r["expected_parent"] == "product:office/2019")
+        has("Microsoft Outlook",
+            lambda r: r["classification"] == "unknown"
+            and r["version"].startswith("16.0."))
+        temurin = [r for r in self.rows if "Temurin" in r["name"]
+                   and r["classification"] == "governable"]
+        self.assertTrue(temurin, "no standalone Temurin JDK row")
+        vcpp = [r for r in self.rows if "Visual C++ 2015-2022 Redistributable"
+                in r["name"] and r["classification"] == "component"]
+        self.assertTrue(vcpp, "no VC++ redistributable component row")
+        intel = [r for r in self.rows if r["name"].startswith("Intel")
+                 and "Graphics" in r["name"]
+                 and r["classification"] == "component"]
+        self.assertTrue(intel, "no Intel graphics driver component row")
+        kb = [r for r in self.rows if re.search(r"\(KB\d+\)", r["name"])
+              and r["classification"] == "component"]
+        self.assertTrue(kb, "no KB update component row")
+
+    def test_silver_sample_header(self):
+        with open(SILVER_SAMPLE, encoding="utf-8", newline="") as fh:
+            self.assertEqual(next(csv.reader(fh)), SILVER_HEADER)
+
     def test_floor_file_shape(self):
         floor = json.loads(FLOOR.read_text(encoding="utf-8"))
         self.assertEqual(sorted(floor), ["generated_correct_min",
+                                         "governable_as_part_max",
                                          "hand_catalog_correct_min", "note",
-                                         "soft_wrong_max"])
+                                         "soft_wrong_max",
+                                         "wrong_parent_max"])
+        self.assertEqual(floor["governable_as_part_max"], 0)
+        self.assertEqual(floor["wrong_parent_max"], 0)
         self.assertIsInstance(floor["generated_correct_min"], int)
         self.assertGreater(floor["generated_correct_min"], 0)
         self.assertIsInstance(floor["soft_wrong_max"], int)
@@ -420,8 +522,69 @@ class CurationCitesGoldTests(unittest.TestCase):
                 self.assertEqual(row["expected_product"], item["product"])
 
 
+class ParentCaseFileTests(unittest.TestCase):
+    NEEDED = ("one-os", "two-os", "no-os", "column-item", "column-product",
+              "column-absent", "column-duplicate-name",
+              "column-names-a-part", "group-two-parents", "runtime-in-app",
+              "parent-past-eol", "parent-no-cycle")
+    HEADINGS = ["Software Name", "Publisher", "Version", "Parent"]
+
+    def test_cases_present(self):
+        have = {p.stem for p, _e in read_parent_cases()}
+        for name in self.NEEDED:
+            self.assertIn(name, have)
+
+    def test_every_csv_has_an_expected_file(self):
+        for path in PARENTS.glob("*.csv"):
+            self.assertTrue(path.with_name(path.stem + ".expected.json")
+                            .is_file(), path.name)
+        for path in PARENTS.glob("*.expected.json"):
+            self.assertTrue(path.with_name(
+                path.name[:-len(".expected.json")] + ".csv").is_file(),
+                path.name)
+
+    def test_expected_files_parse(self):
+        manifest = json.loads((ROOT / "data" / "manifest.json").read_text(
+            encoding="utf-8"))
+        for path, exp in read_parent_cases():
+            with self.subTest(case=path.stem):
+                with open(path, encoding="utf-8", newline="") as fh:
+                    reader = csv.DictReader(fh)
+                    self.assertEqual(reader.fieldnames, self.HEADINGS)
+                    keys = {"%s|%s|%s" % (r["Software Name"], r["Publisher"],
+                                          r["Version"]) for r in reader}
+                self.assertEqual(sorted(exp), ["as_of", "data", "items",
+                                               "warnings_contain"])
+                # The weekly job and its simulation change the data date;
+                # the cases then keep the date they were written for.
+                if not (os.environ.get("SWLC_WEEKLY_JOB")
+                        or os.environ.get("SWLC_GATE_SIM")):
+                    self.assertEqual(exp["as_of"], manifest["eol_date"])
+                date.fromisoformat(exp["as_of"])
+                self.assertEqual(exp["data"], "bundled")
+                self.assertIsInstance(exp["warnings_contain"], list)
+                self.assertEqual(set(exp["items"]), keys)
+                for key, want in exp["items"].items():
+                    self.assertEqual(sorted(want), [
+                        "classification", "inherited_from",
+                        "inherited_state", "parent_ref"], key)
+                    self.assertIn(want["classification"], CLASSES, key)
+                    ref = want["parent_ref"]
+                    if ref is not None:
+                        self.assertEqual(sorted(ref), ["kind", "value"], key)
+                        self.assertIn(ref["kind"], ("item", "product", "os"))
+                    src = want["inherited_from"]
+                    if src is not None:
+                        self.assertIn(src, keys, key)
+                        self.assertIsNotNone(ref, key)
+                        self.assertIn(want["inherited_state"],
+                                      assess.STATES, key)
+                    else:
+                        self.assertIsNone(want["inherited_state"], key)
+
+
 def benchmark_files() -> list:
-    return sorted(p for p in BENCH.iterdir() if p.is_file()
+    return sorted(p for p in BENCH.rglob("*") if p.is_file()
                   and p.suffix in (".csv", ".md", ".json"))
 
 

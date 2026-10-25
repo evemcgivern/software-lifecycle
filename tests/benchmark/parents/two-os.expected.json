@@ -1,0 +1,25 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft Windows 10 Pro|Microsoft Corporation|10.0.19045.3803": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Security Update for Microsoft Windows (KB5031356)|Microsoft Corporation|1": {
+      "classification": "component",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Windows Server 2022 Standard|Microsoft Corporation|10.0.20348": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

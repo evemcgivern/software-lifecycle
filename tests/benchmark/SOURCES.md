@@ -76,3 +76,11 @@
   each row note. Their notes start with "hand-added".
 - Rows that could not be settled are in `unsure.csv`, not in gold.
 - No row comes from a real inventory.
+- Classification rows (columns `classification`, `expected_parent`): public
+  names only, from the winget, Homebrew, Debian and Ubuntu catalogs above and
+  the vendor naming pages above (VC++ redistributable, Office, Windows
+  update and .NET runtime names). Labels come from two independent reviewers
+  and are kept only where both agree. The parent cases in `parents/` are
+  hand-designed from the same naming pages, with made-up names for
+  vendor-neutral cases. The silver sample is drawn from the same public
+  catalogs.

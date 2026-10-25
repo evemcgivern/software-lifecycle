@@ -1,0 +1,28 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft .NET Runtime - 6.0.25 (x64)|Microsoft Corporation|6.0.25.33121": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft .NET Runtime - 8.0.10 (x64)|Microsoft Corporation|8.0.10.34104": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft SQL Server 2019 (64-bit)|Microsoft Corporation|15.0.2000.5",
+      "inherited_state": "mainstream_ended",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Microsoft SQL Server 2019 (64-bit)|Microsoft Corporation|15.0.2000.5"
+      }
+    },
+    "Microsoft SQL Server 2019 (64-bit)|Microsoft Corporation|15.0.2000.5": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

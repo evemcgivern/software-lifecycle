@@ -1,0 +1,33 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Ubuntu 22.04.3 LTS|Canonical Ltd.|22.04.3": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Ubuntu Advantage Tools|Canonical Ltd.|27.14.4": {
+      "classification": "bundle_member",
+      "inherited_from": "Ubuntu 22.04.3 LTS|Canonical Ltd.|22.04.3",
+      "inherited_state": "ends_soon",
+      "parent_ref": {
+        "kind": "product",
+        "value": "ubuntu/22.04"
+      }
+    },
+    "Update Manager Core|Canonical Ltd.|1:22.04.18": {
+      "classification": "bundle_member",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": {
+        "kind": "product",
+        "value": "ubuntu/24.04"
+      }
+    }
+  },
+  "warnings_contain": [
+    "parent is not in this inventory"
+  ]
+}
