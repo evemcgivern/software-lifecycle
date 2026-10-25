@@ -94,6 +94,12 @@ class Golden:
                 return self.rows[key]
         return None
 
+    def has_two_rows(self, product_id: str, normalized_name: str) -> bool:
+        """True when the product-id row and the name row are different
+        rows. for_product then returns the product-id row."""
+        return (product_id != normalized_name
+                and product_id in self.rows and normalized_name in self.rows)
+
     @staticmethod
     def is_expired(row: dict, as_of: date) -> bool:
         """review_by is inclusive: expired the day after."""

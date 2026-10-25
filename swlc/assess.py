@@ -35,6 +35,8 @@ EXCEPTION_EXPIRED = "EXCEPTION_EXPIRED"
 
 KEV_NOT_CURRENT = ("KEV snapshot is not current; the KEV overlay may be "
                    "out of date")
+GOLDEN_CLASH = ("%d item(s) matched two golden-source rows; the product-id "
+                "row was used.")
 PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
 
 # ISO date, optionally followed by a time ("2026-01-15 00:00:00",
@@ -115,7 +117,8 @@ def _exception(exceptions: Exceptions, products: list, scopes: list,
 
 
 def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
-          tracking: dict, as_of: date, window_end: date) -> dict:
+          tracking: dict, as_of: date, window_end: date,
+          golden_clashes: list) -> dict:
     name, version = group["name"], group["version"]
     norm_name = normalize_name(name)
     match = match_product(name, version, data.aliases, data.products)
@@ -135,6 +138,8 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
     else:
         eol_used, eol_source = eol_endoflife, "endoflife.date"
         row = golden.for_product(match.product, norm_name)
+        if golden.has_two_rows(match.product, norm_name):
+            golden_clashes.append(group["id"])
         if row is not None and Golden.is_expired(row, as_of):
             golden_expired = True
             disagree = GOLDEN_EXPIRED
@@ -285,13 +290,16 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
                          "0 to %d" % MAX_LOOKAHEAD_MONTHS)
     window_end = add_months(as_of, lookahead_months)
 
+    clashes: list = []
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
-                   window_end) for gid in sorted(groups)]
+                   window_end, clashes) for gid in sorted(groups)]
     lists = _lists(items)
 
     warnings = list(data.warnings)
     if not data.kev_current and not any("not current" in w for w in warnings):
         warnings.append(KEV_NOT_CURRENT)
+    if clashes:
+        warnings.append(GOLDEN_CLASH % len(clashes))
     before = None
     if previous is not None:
         before = _previous_states(previous)
