@@ -170,23 +170,44 @@ def _parser() -> argparse.ArgumentParser:
                     "end-of-life and KEV snapshots. Runs offline.")
     sub = parser.add_subparsers(dest="command", required=True)
     check = sub.add_parser("check", help="check an inventory CSV")
-    check.add_argument("inventory", metavar="INVENTORY")
-    check.add_argument("--data", metavar="DIR")
-    check.add_argument("--as-of", type=_iso_date, metavar="YYYY-MM-DD")
+    check.add_argument("inventory", metavar="INVENTORY",
+                       help="the inventory CSV export, with a header row")
+    check.add_argument("--data", metavar="DIR",
+                       help="data folder to use instead of the bundled data")
+    check.add_argument("--as-of", type=_iso_date, metavar="YYYY-MM-DD",
+                       help="check as of this date (default: today)")
     check.add_argument("--lookahead-months", type=int, default=12,
-                       metavar="N")
-    check.add_argument("--profile", default="generic", metavar="NAME")
-    check.add_argument("--columns", metavar="FILE")
-    check.add_argument("--golden", metavar="FILE")
-    check.add_argument("--exceptions", metavar="FILE")
-    check.add_argument("--tracking", metavar="FILE")
-    check.add_argument("--previous", metavar="REPORT.json")
-    check.add_argument("--out", metavar="DIR")
-    check.add_argument("--counts-only", action="store_true")
-    check.add_argument("--fail-on", metavar="LIST")
-    check.add_argument("--encoding", metavar="NAME")
+                       metavar="N",
+                       help="months ahead that count as ends soon, 0 to "
+                            "600 (default: 12)")
+    check.add_argument("--profile", default="generic", metavar="NAME",
+                       help="extra column headings for an export source: "
+                            "flexera, servicenow-mbs or rapid7 (default: "
+                            "generic)")
+    check.add_argument("--columns", metavar="FILE",
+                       help="JSON file that adds column headings")
+    check.add_argument("--golden", metavar="FILE",
+                       help="golden-sources CSV: which end-of-life date is "
+                            "right for a product")
+    check.add_argument("--exceptions", metavar="FILE",
+                       help="exceptions CSV: accepted risk")
+    check.add_argument("--tracking", metavar="FILE",
+                       help="tracking CSV: change and problem references")
+    check.add_argument("--previous", metavar="REPORT.json",
+                       help="an earlier report.json, to show what changed")
+    check.add_argument("--out", metavar="DIR",
+                       help="folder for report.json, report.md and "
+                            "report.csv")
+    check.add_argument("--counts-only", action="store_true",
+                       help="print only counts and item IDs (needs --out)")
+    check.add_argument("--fail-on", metavar="LIST",
+                       help="exit 10 if any named list has items: "
+                            + ", ".join(FAIL_ON_NAMES))
+    check.add_argument("--encoding", metavar="NAME",
+                       help="text encoding of the inventory if not UTF-8")
     verify = sub.add_parser("verify-data", help="verify the data directory")
-    verify.add_argument("--data", metavar="DIR")
+    verify.add_argument("--data", metavar="DIR",
+                        help="data folder to verify (default: bundled data)")
     return parser
 
 
