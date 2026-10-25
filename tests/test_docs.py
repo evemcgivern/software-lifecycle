@@ -6,6 +6,8 @@ import csv
 import hashlib
 import json
 import re
+import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -309,6 +311,76 @@ class PlatformGuideTests(unittest.TestCase):
     def test_mbs_not_expanded(self):
         body = text(DOCS / "platform-guide.md").replace("servicenow-mbs", "")
         self.assertIsNone(re.search(r"\bmbs\b", body, re.I))
+
+
+class CoverageAndDataTextTests(unittest.TestCase):
+    def test_alias_counts_match_the_files(self):
+        aliases = json.loads(text(ROOT / "data" / "aliases.json"))["aliases"]
+        products = {a["product"] for a in aliases}
+        body = " ".join(text(README).split())
+        self.assertIn("%d aliases for %d products (%s)" % (
+            len(aliases), len(products), ", ".join(sorted(
+                products, key=lambda p: [a["product"] for a in aliases
+                                         ].index(p)))), body)
+        self.assertGreater(len(list((ROOT / "data" / "eol").glob("*.json"))),
+                           400)
+        self.assertIn("more than 400 products", body)
+
+    def test_no_stale_release_or_commit_text(self):
+        manifest = json.loads(text(ROOT / "data" / "manifest.json"))
+        for path in (README, ROOT / "THIRD-PARTY.md"):
+            body = text(path)
+            for sha in re.findall(r"\b[0-9a-f]{40}\b", body):
+                self.assertEqual(sha, manifest["upstream_commit"], path.name)
+            self.assertIsNone(re.search(r"bundled-[0-9]{4}", body), path.name)
+
+
+class ExtendingAliasesTests(unittest.TestCase):
+    def section(self):
+        body = text(DOCS / "usage.md")
+        start = body.index("## Extending the alias table")
+        return body[start:body.index("\n## ", start + 5)]
+
+    def test_worked_example_and_manifest_command_work(self):
+        sec = self.section()
+        block = re.search(r"\n       (\{\n.*?\n       \})\n", sec, re.S)
+        entry = json.loads(re.sub(r"\n       ", "\n", block.group(1)))
+        self.assertTrue((ROOT / "data" / "eol" /
+                         (entry["product"] + ".json")).is_file())
+        command = [l for l in sec.split("\n")
+                   if "refresh_data.py manifest" in l][0].strip()
+        manifest = json.loads(text(ROOT / "data" / "manifest.json"))
+        with tempfile.TemporaryDirectory() as tmp:
+            copy = Path(tmp) / "my-data"
+            shutil.copytree(ROOT / "data", copy)
+            path = copy / "aliases.json"
+            obj = json.loads(text(path))
+            obj["aliases"].append(entry)
+            path.write_text(json.dumps(obj), encoding="utf-8")
+            for token, value in (
+                    ("KEV_CATALOG_VERSION", manifest["kev_catalog_version"]),
+                    ("KEV_DATE", manifest["kev_date"]),
+                    ("EOL_DATE", manifest["eol_date"]),
+                    ("UPSTREAM_COMMIT", manifest["upstream_commit"]),
+                    ("../my-data", str(copy))):
+                command = command.replace(token, value)
+            argv = command.split()
+            self.assertEqual(argv[:2], ["python3", "refresh_data.py"])
+            argv[0] = sys.executable
+            proc = subprocess.run(argv, cwd=str(ROOT), stdout=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT,
+                                  universal_newlines=True)
+            self.assertEqual(proc.returncode, 0, proc.stdout)
+            inv = Path(tmp) / "inv.csv"
+            inv.write_text("name,version\nnginx,1.24\n", encoding="utf-8")
+            from datetime import date
+            report = cli.run(str(inv), data=str(copy),
+                             as_of=date.fromisoformat(manifest["kev_date"]))
+            self.assertEqual(report["items"][0]["product"], "nginx")
+            self.assertNotEqual(report["items"][0]["state"], "unmatched")
+            plain = cli.run(str(inv), as_of=date.fromisoformat(
+                manifest["kev_date"]))
+            self.assertEqual(plain["items"][0]["state"], "unmatched")
 
 
 if __name__ == "__main__":
