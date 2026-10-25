@@ -30,9 +30,12 @@ STATE_TEXT = {
 }
 REASON_TEXT = {
     "NO_ALIAS": "no alias entry for this name",
-    "NO_CYCLE": "product known, but no cycle matches this version",
+    "NO_CYCLE": "no cycle matches this version",
     "NO_VERSION": "no version given",
     "AMBIGUOUS": "more than one cycle fits this version",
+}
+REASON_TEXT_NO_PRODUCT = {
+    "AMBIGUOUS": "the name fits aliases for more than one product",
 }
 DECISION_TEXT = {
     "DIFFERENT_DATE": (
@@ -122,6 +125,10 @@ def _snapshot(result: dict, key: str) -> str:
     return (as_of - timedelta(days=result["data_release"][key])).isoformat()
 
 
+def _days(n: int) -> str:
+    return "%d day" % n if n == 1 else "%d days" % n
+
+
 def _val(value) -> str:
     if value is True:
         return "reached (no date given)"
@@ -189,6 +196,20 @@ def _date_lines(it: dict, eol_snap: str) -> list:
     return lines
 
 
+def _unmatched_line(it: dict) -> str:
+    reason = it["reason"]
+    if it["product"]:
+        why = REASON_TEXT.get(reason, "unknown")
+        lead = ("product known (%s), but no cycle was matched"
+                % _disp(it["product"]))
+    else:
+        why = REASON_TEXT_NO_PRODUCT.get(reason) or REASON_TEXT.get(
+            reason, "unknown")
+        lead = "no known product was matched"
+    return ("**Unverified:** %s. Reason %s: %s. No end-of-life date is "
+            "claimed." % (lead, reason, why))
+
+
 def _item_block(it: dict, eol_snap: str) -> list:
     head = "- **%s** %s" % (_name(it["name"]), _disp(it["version"]))
     if it["publisher"]:
@@ -196,12 +217,14 @@ def _item_block(it: dict, eol_snap: str) -> list:
     out = [head + " (id `%s`)" % it["id"]]
     sub = []
     sub.append("State: %s" % STATE_TEXT[it["state"]])
-    owners = ", ".join(_disp(o) for o in it["owners"]) or "none listed"
-    sub.append("Owners: %s. Rows: %d" % (owners, it["rows"]))
+    owners = ", ".join(_disp(o) for o in it["owners"])
+    if owners:
+        sub.append("Owners: %s. Rows: %d" % (owners, it["rows"]))
+    else:
+        sub.append("Owners: none listed. This item cannot be actioned until "
+                   "an owner is named. Rows: %d" % it["rows"])
     if it["state"] == "unmatched":
-        sub.append("**Unverified:** not matched to a known product. Reason "
-                   "%s: %s. No end-of-life date is claimed."
-                   % (it["reason"], REASON_TEXT.get(it["reason"], "unknown")))
+        sub.append(_unmatched_line(it))
     sub.extend(_date_lines(it, eol_snap))
     if it["dates_disagree"]:
         sub.append("Dates disagree: %s" % it["dates_disagree"])
@@ -225,7 +248,7 @@ def _kev_age_text(result: dict) -> str:
     age = result["data_release"]["kev_age_days"]
     if age < 0:
         return "KEV snapshot date is later than the checked-on date"
-    return "KEV snapshot is %d days old" % age
+    return "KEV snapshot is %s old" % _days(age)
 
 
 def render_markdown(result: dict, meta: dict) -> str:
@@ -240,10 +263,10 @@ def render_markdown(result: dict, meta: dict) -> str:
     out.append("Tool version: %s. Data release: %s."
                % (_disp(meta.get("tool_version", "")), _disp(rel["id"])))
     out.append("End-of-life dates: per endoflife.date, snapshot %s "
-               "(%d days old)." % (eol_snap, rel["eol_age_days"]))
-    out.append("KEV: CISA KEV catalog %s, snapshot %s (%d days old)."
+               "(%s old)." % (eol_snap, _days(rel["eol_age_days"])))
+    out.append("KEV: CISA KEV catalog %s, snapshot %s (%s old)."
                % (_disp(rel["kev_catalog_version"]), kev_snap,
-                  rel["kev_age_days"]))
+                  _days(rel["kev_age_days"])))
     profile = meta.get("profile") or {}
     if profile.get("name") and profile["name"] != "generic":
         out.append("Profile: %s. **Unverified:** this profile has not been "
