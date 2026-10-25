@@ -3,12 +3,12 @@
   "eol_date": "2026-10-24",
   "files": {
     "aliases.json": {
-      "sha256": "8407c978cad49b3909aa8fc1b170d6dc48b2fbb016f6bfce3ed850cf7ae1c44d",
-      "size": 8772
+      "sha256": "20d6ee4be882f4f0dd340c93affd0cf850af66d1214621ee5d705f0bc06238e5",
+      "size": 9580
     },
     "curation.json": {
-      "sha256": "d80c2f8429e356f5445149da5a3d7966c4b1abd38b527e50d4b6d349b63e012b",
-      "size": 11109
+      "sha256": "c1e8d2a30c4f3e5ed704287f93b6451e43c8b6760dc6f15626b32992b75a2faf",
+      "size": 17266
     },
     "eol/adonisjs.json": {
       "sha256": "becaf3f1f663a31df0a8db2cc922988cfd2e6bd012ced57c18ee2872d6b1704d",

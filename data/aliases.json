@@ -312,6 +312,27 @@
       "product": "eclipse-temurin",
       "source": "https://github.com/adoptium/installer/blob/master/wix/Includes/OpenJDK.Variables.wxi.template",
       "version_from": "name"
+    },
+    {
+      "key": "windows powershell",
+      "match": "exact",
+      "product": "windows-powershell",
+      "source": "https://learn.microsoft.com/en-us/powershell/scripting/what-is-windows-powershell",
+      "version_from": "version"
+    },
+    {
+      "key": "mysql server",
+      "match": "prefix",
+      "product": "mysql",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/Oracle/MySQL/8.4.9/Oracle.MySQL.installer.yaml",
+      "version_from": "name"
+    },
+    {
+      "key": "liberica jdk",
+      "match": "prefix",
+      "product": "bellsoft-liberica",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/b/BellSoft/LibericaJDK/17/17.0.9.11/BellSoft.LibericaJDK.17.installer.yaml",
+      "version_from": "name"
     }
   ],
   "format": 1

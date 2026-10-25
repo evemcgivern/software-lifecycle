@@ -64,3 +64,9 @@ Microsoft Office Standard 2013,16.0.4266.1001,,NONE,https://learn.microsoft.com/
 Microsoft Office Standard 2013,15.0.4569.1506,office,2013,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer,
 Node.js,1.0.1,,NONE,https://github.com/microsoft/winget-pkgs/tree/master/manifests/k/KashishNaresh/CollabFS/1.0.1,CollabFS
 Ubuntu,22.04,,NONE,https://formulae.brew.sh/cask/font-ubuntu,Google Fonts
+Windows PowerShell,5.1.19041.4648,windows-powershell,5.1,https://learn.microsoft.com/en-us/powershell/scripting/what-is-windows-powershell,Microsoft Corporation
+Windows PowerShell ISE,10.0.19041.1,,NONE,https://learn.microsoft.com/en-us/powershell/scripting/what-is-windows-powershell,Microsoft Corporation
+MySQL Server 8.4,8.4.9,mysql,8.4,https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/Oracle/MySQL/8.4.9/Oracle.MySQL.installer.yaml,Oracle Corporation
+MySQL Server 8.4 Samples and Examples,8.4.9,,NONE,https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/Oracle/MySQL/8.4.9/Oracle.MySQL.installer.yaml,Oracle Corporation
+Liberica JDK 17 (64-bit),17.0.9.11,bellsoft-liberica,17,https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/b/BellSoft/LibericaJDK/17/17.0.9.11/BellSoft.LibericaJDK.17.installer.yaml,BellSoft
+Liberica JDK 17 Documentation,17.0.9.11,,NONE,https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/b/BellSoft/LibericaJDK/17/17.0.9.11/BellSoft.LibericaJDK.17.installer.yaml,BellSoft

@@ -902,7 +902,10 @@ class BundledSpeedTests(unittest.TestCase):
                 ("Python", "Microsoft Corporation", "2023.22.1"),
                 ("Prometheus", "Prometheus Group Inc.", "3.5.0"),
                 ("Composer", "Bot Framework Composer", "2.1.2"),
-                ("Nextcloud 3.11.0", "Nextcloud GmbH", "3.11.0")):
+                ("Nextcloud 3.11.0", "Nextcloud GmbH", "3.11.0"),
+                ("ClamAV", "ClamWin Pty Ltd", "0.103.2"),
+                ("Harbor", "", "2.15.4"),
+                ("Kotlin", "", "1.9.22")):
             with self.subTest(name=name, pub=pub, ver=ver):
                 r = match_product(name, ver, data.aliases, data.products,
                                   catalog_index=data.matching_index(),
@@ -916,7 +919,15 @@ class BundledSpeedTests(unittest.TestCase):
                 ("Python 3.12.1 (64-bit)", "Python Software Foundation",
                  "3.12.1150.0", "3.12"),
                 ("Grafana", "Grafana Labs", "10.2.3", "10.2"),
-                ("Prometheus", "The Prometheus Authors", "2.53.1", "2.53")):
+                ("Prometheus", "The Prometheus Authors", "2.53.1", "2.53"),
+                ("Valkey", "", "9.1.2", "9.1"),
+                ("OpenTofu", "The Linux Foundation", "1.13.1", "1.13"),
+                ("Harbor", "CNCF", "2.15.4", "2.15"),
+                ("Kotlin", "JetBrains", "1.9.22", "1.9"),
+                ("Windows PowerShell", "Microsoft Corporation",
+                 "5.1.19041.4648", "5.1"),
+                ("MySQL Server 8.4", "Oracle Corporation", "8.4.9", "8.4"),
+                ("Liberica JDK 17 (64-bit)", "BellSoft", "17.0.9.11", "17")):
             with self.subTest(name=name, pub=pub, ver=ver):
                 r = match_product(name, ver, data.aliases, data.products,
                                   catalog_index=data.matching_index(),

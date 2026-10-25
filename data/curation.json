@@ -63,12 +63,33 @@
       "reason": "The Discourse site names the copyright holder Civilized Discourse Construction Kit, Inc.",
       "source": "https://www.discourse.org/"
     },
+    "dovecot": {
+      "phrases": [
+        "open-xchange"
+      ],
+      "reason": "The Dovecot site names the copyright holder Open-Xchange Oy.",
+      "source": "https://www.dovecot.org/"
+    },
     "drupal": {
       "phrases": [
         "drupal association"
       ],
       "reason": "The Drupal Association administers Drupal.org for the Drupal project, and is named as the publisher in catalog rows.",
       "source": "https://www.drupal.org/association"
+    },
+    "electron": {
+      "phrases": [
+        "openjs foundation"
+      ],
+      "reason": "The Electron site says Electron is a project under the OpenJS Foundation.",
+      "source": "https://www.electronjs.org/"
+    },
+    "elixir": {
+      "phrases": [
+        "elixir team"
+      ],
+      "reason": "The Elixir site says the Elixir Team steers the language.",
+      "source": "https://elixir-lang.org/"
     },
     "erlang": {
       "phrases": [
@@ -77,6 +98,13 @@
       ],
       "reason": "The winget manifest for Erlang OTP gives the publisher \"Ericsson AB\". Debian's erlang source package names the maintainer \"Debian Erlang Packagers\" (https://sources.debian.org/data/main/e/erlang/1:25.2.3+dfsg-1+deb12u4/debian/control).",
       "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/e/Erlang/ErlangOTP/29.1.2/Erlang.ErlangOTP.locale.en-US.yaml"
+    },
+    "flux": {
+      "phrases": [
+        "flux project"
+      ],
+      "reason": "The Flux site calls the project the Flux project.",
+      "source": "https://fluxcd.io/"
     },
     "grafana": {
       "phrases": [
@@ -93,12 +121,41 @@
       "reason": "HAProxy Technologies is the company behind HAProxy and is named on its site. Debian's haproxy source package names the maintainer \"Debian HAProxy Maintainers\" (https://sources.debian.org/data/main/h/haproxy/2.6.12-1+deb12u3/debian/control).",
       "source": "https://www.haproxy.com/"
     },
+    "harbor": {
+      "phrases": [
+        "cloud native computing foundation",
+        "cncf"
+      ],
+      "reason": "The Harbor site says Harbor is a Cloud Native Computing Foundation (CNCF) graduated project.",
+      "source": "https://goharbor.io/"
+    },
     "istio": {
       "phrases": [
         "istio authors"
       ],
       "reason": "The Istio site footer reads \"the Istio Authors\", the copyright holder used in the project's files.",
       "source": "https://istio.io/"
+    },
+    "joomla": {
+      "phrases": [
+        "open source matters"
+      ],
+      "reason": "The Joomla site names the copyright holder Open Source Matters, Inc.",
+      "source": "https://www.joomla.org/"
+    },
+    "julia": {
+      "phrases": [
+        "julia language"
+      ],
+      "reason": "The winget manifest for Julia gives the publisher \"Julia Language\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/j/Julialang/Julia/1.9.4/Julialang.Julia.locale.en-US.yaml"
+    },
+    "kotlin": {
+      "phrases": [
+        "jetbrains"
+      ],
+      "reason": "The Kotlin site says Kotlin is supported and developed by JetBrains.",
+      "source": "https://kotlinlang.org/"
     },
     "kubernetes": {
       "phrases": [
@@ -196,6 +253,20 @@
       "reason": "Debian's puppet-agent copyright file names the copyright holder \"Puppet Labs Inc\", the company's earlier name. Its control file (https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/control) names the maintainer \"Puppet Package Maintainers\".",
       "source": "https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/copyright"
     },
+    "salt": {
+      "phrases": [
+        "salt project"
+      ],
+      "reason": "Salt is published by the Salt Project, named on its site.",
+      "source": "https://saltproject.io/"
+    },
+    "samba": {
+      "phrases": [
+        "samba team"
+      ],
+      "reason": "The Samba site names the Samba Team.",
+      "source": "https://www.samba.org/"
+    },
     "scala": {
       "phrases": [
         "epfl"
@@ -209,6 +280,13 @@
       ],
       "reason": "The SQLite Consortium page on sqlite.org describes the consortium that funds SQLite development; catalog rows name it as the publisher.",
       "source": "https://www.sqlite.org/consortium.html"
+    },
+    "squid": {
+      "phrases": [
+        "squid project"
+      ],
+      "reason": "The Squid site calls the project the Squid project.",
+      "source": "https://www.squid-cache.org/"
     },
     "telegraf": {
       "phrases": [
@@ -231,6 +309,13 @@
       "reason": "The winget manifest for Wireshark gives the publisher \"The Wireshark developer community, https://www.wireshark.org\".",
       "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/w/WiresharkFoundation/Wireshark/4.6.9/WiresharkFoundation.Wireshark.locale.en-US.yaml"
     },
+    "yarn": {
+      "phrases": [
+        "yarn contributors"
+      ],
+      "reason": "The winget manifest for Yarn gives the publisher \"Yarn Contributors\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/y/Yarn/Yarn/1.22.22/Yarn.Yarn.locale.en-US.yaml"
+    },
     "zabbix": {
       "phrases": [
         "zabbix sia"
@@ -239,5 +324,90 @@
       "source": "https://www.zabbix.com/contact"
     }
   },
-  "single_word_allowlist": []
+  "single_word_allowlist": [
+    {
+      "gold": "Bazel||9.3.1",
+      "product": "bazel",
+      "reason": "Bazel is a coined build-tool name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/bazel"
+    },
+    {
+      "gold": "CFEngine|Northern.tech|3.28.0",
+      "product": "cfengine",
+      "reason": "CFEngine is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/cfengine"
+    },
+    {
+      "gold": "etcd|etcd|3.7.3",
+      "product": "etcd",
+      "reason": "etcd is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/etcd"
+    },
+    {
+      "gold": "GStreamer||1.28.8",
+      "product": "gstreamer",
+      "reason": "GStreamer is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/gstreamer"
+    },
+    {
+      "gold": "JReleaser||1.26.0",
+      "product": "jreleaser",
+      "reason": "JReleaser is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/jreleaser"
+    },
+    {
+      "gold": "Keycloak|Red Hat|23.0.3",
+      "product": "keycloak",
+      "reason": "Keycloak is a coined product name, not an ordinary word and not another catalog product. Its CPE vendor, redhat, never equals the two words Red Hat.",
+      "source": "https://endoflife.date/keycloak"
+    },
+    {
+      "gold": "Liquibase||5.0.4",
+      "product": "liquibase",
+      "reason": "Liquibase is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/liquibase"
+    },
+    {
+      "gold": "Notepad++|Notepad++ Team|8.9.8.1",
+      "product": "notepad-plus-plus",
+      "reason": "Notepad++ is a distinctive product name; the catalog has no vendor for it, and the publisher Notepad++ Team cannot confirm a name with symbols.",
+      "source": "https://endoflife.date/notepad-plus-plus"
+    },
+    {
+      "gold": "OpenBao||2.7.1",
+      "product": "openbao",
+      "reason": "OpenBao is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/openbao"
+    },
+    {
+      "gold": "OpenTofu||1.13.2",
+      "product": "opentofu",
+      "reason": "OpenTofu is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/opentofu"
+    },
+    {
+      "gold": "Podman|Red Hat|6.1.4",
+      "product": "podman",
+      "reason": "Podman is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/podman"
+    },
+    {
+      "gold": "RabbitMQ|Broadcom Inc.|4.3.7",
+      "product": "rabbitmq",
+      "reason": "RabbitMQ is a coined product name, not an ordinary word and not another catalog product. Its publisher changed (Pivotal, VMware, Broadcom), so a vendor check misses current rows.",
+      "source": "https://endoflife.date/rabbitmq"
+    },
+    {
+      "gold": "Valkey|Valkey|9.1.2",
+      "product": "valkey",
+      "reason": "Valkey is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/valkey"
+    },
+    {
+      "gold": "XCP-ng|Vates|8.2.1",
+      "product": "xcp-ng",
+      "reason": "XCP-ng is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/xcp-ng"
+    }
+  ]
 }

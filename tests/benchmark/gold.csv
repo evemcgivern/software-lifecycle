@@ -2183,3 +2183,4 @@ Composer,Bot Framework Composer,2.1.2,NONE,,"trap=vendor-lookalike; Bot Framewor
 Node.js,CollabFS,1.0.1,NONE,,"trap=lookalike; a third-party winget package named Node.js (KashishNaresh.CollabFS), not the Node.js runtime",hand,0
 Ubuntu,Google Fonts,22.04,NONE,,"trap=lookalike; the Ubuntu font (Homebrew cask font-ubuntu), not the Ubuntu operating system",hand,0
 Python,Microsoft Corporation,2023.22.1,NONE,,"trap=lookalike; the Python extension for Visual Studio Code, versioned by year, not the Python language",hand,0
+MySQL Server 8.4,Oracle Corporation,8.4.9,mysql,8.4,"hand-added: the MySQL installer's display name, from the winget Oracle.MySQL 8.4.9 installer manifest",hand,0

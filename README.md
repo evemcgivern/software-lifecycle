@@ -181,9 +181,10 @@ artifact attestation, check it online before you use the release:
 
 ## How it can be wrong
 
-- Coverage is small. `data/aliases.json` holds 16 aliases for
-  8 products (mssqlserver, windows-server, windows, office,
-  python, nodejs, ubuntu, eclipse-temurin), out of more than 400 products
+- Coverage is small. `data/aliases.json` holds 19 aliases for
+  11 products (mssqlserver, windows-server, windows, office,
+  python, nodejs, ubuntu, eclipse-temurin, windows-powershell, mysql,
+  bellsoft-liberica), out of more than 400 products
   in `data/eol/`. A realistic inventory leaves many rows unmatched.
   Examples that are unmatched today: nginx, PHP, Tomcat, Chrome, Firefox,
   vCenter, Exchange. To add your own, see "Extending the alias table" in
