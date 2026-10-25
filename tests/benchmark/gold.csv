@@ -2180,3 +2180,6 @@ Apple iPad,Apple,17.5,NONE,,"trap=device; a device with its OS or kernel version
 Samsung Galaxy S24,Samsung,14,NONE,,"trap=device; a device with its OS or kernel version, never matched by product title",hand,0
 Prometheus,Prometheus Group Inc.,3.5.0,NONE,,"trap=vendor-lookalike; Prometheus Group is another company, not the Prometheus monitoring project",hand,0
 Composer,Bot Framework Composer,2.1.2,NONE,,"trap=vendor-lookalike; Bot Framework Composer is another tool, not PHP Composer",hand,0
+Node.js,CollabFS,1.0.1,NONE,,"trap=lookalike; a third-party winget package named Node.js (KashishNaresh.CollabFS), not the Node.js runtime",hand,0
+Ubuntu,Google Fonts,22.04,NONE,,"trap=lookalike; the Ubuntu font (Homebrew cask font-ubuntu), not the Ubuntu operating system",hand,0
+Python,Microsoft Corporation,2023.22.1,NONE,,"trap=lookalike; the Python extension for Visual Studio Code, versioned by year, not the Python language",hand,0

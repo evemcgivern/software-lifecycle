@@ -337,6 +337,61 @@ class RuleTests(unittest.TestCase):
         self.assertIsNone(match_product("x", "9", [alias("x", "x", kev=kev)],
                                         products).kev)
 
+    def test_publisher_guard_needs_a_whole_word_run(self):
+        products = {"nodejs": cycles("18", "20")}
+        a = [alias("Node.js", "nodejs",
+                   publisher=["node.js foundation", "openjs foundation"])]
+        for pub, want in (("Node.js Foundation", "18"),
+                          ("OpenJS Foundation", "18"),
+                          ("The OpenJS Foundation, Inc.", "18"),
+                          ("CollabFS", None), ("", None),
+                          ("OpenJSFoundation", None),
+                          ("Foundation OpenJS", None)):
+            with self.subTest(pub=pub):
+                r = match_product("Node.js", "18.19.0", a, products,
+                                  publisher=pub)
+                self.assertEqual(r.cycle["cycle"] if r.cycle else None, want)
+                self.assertEqual(r.product, "nodejs" if want else None)
+                if not want:
+                    self.assertEqual(r.reason, NO_ALIAS)
+
+    def test_publisher_guard_failing_is_no_hit(self):
+        # A guarded alias that does not apply leaves the row to other
+        # aliases (and to title matching), as if it were absent.
+        products = {"a": cycles("1"), "b": cycles("1")}
+        aliases = [alias("x", "a", publisher=["acme"]), alias("x", "b")]
+        self.assertEqual(match_product("x", "1", aliases, products,
+                                       publisher="Other").product, "b")
+        self.assertEqual(match_product("x", "1", aliases, products,
+                                       publisher="Acme").reason, AMBIGUOUS)
+
+    def test_bad_publisher_guard_is_data_error(self):
+        products = {"x": cycles("1")}
+        for pubs in ([], "acme", [1], [""], ["  "], ["..."], None, {"a": 1}):
+            with self.assertRaises(DataError, msg=repr(pubs)):
+                match_product("x", "1", [alias("x", "x", publisher=pubs)],
+                              products, publisher="acme")
+
+    def test_year_version_for_a_name_reading_alias_is_another_product(self):
+        products = {"python": cycles("3.12", "3.11", "2.7")}
+        a = [alias("python", "python", match="prefix", version_from="name")]
+        r = match_product("Python", "2023.22.1", a, products,
+                          publisher="Microsoft Corporation")
+        self.assertEqual((r.product, r.cycle, r.reason),
+                         (None, None, NO_ALIAS))
+        # Not a year, or the name carries the version: unchanged.
+        self.assertEqual(match_product("Python", "1.0.1", a, products).reason,
+                         NO_VERSION)
+        self.assertEqual(match_product("Python", "", a, products).reason,
+                         NO_VERSION)
+        self.assertEqual(match_product("Python 3.12.1", "2023.22.1", a,
+                                       products).product, "python")
+        # A product whose cycles are years keeps the year.
+        years = {"office": cycles("2019", "2021")}
+        o = [alias("office", "office", match="prefix", version_from="name")]
+        self.assertEqual(match_product("Office", "2021.1", o, years).product,
+                         "office")
+
 
 def _hits(name, key, mode):
     n, k = normalize_name(name), normalize_name(key)
@@ -498,7 +553,7 @@ class AliasFileTests(unittest.TestCase):
         self.assertGreaterEqual(len(entries), 12)
         allowed = {"key", "match", "product", "version_from", "cycle",
                    "build_map", "column_map", "source", "edition_words",
-                   "kev", "note"}
+                   "kev", "note", "publisher"}
         for e in entries:
             self.assertLessEqual(set(e), allowed, e)
             self.assertIn(e["match"], ("exact", "prefix"))
@@ -506,6 +561,8 @@ class AliasFileTests(unittest.TestCase):
             self.assertEqual(e["key"], normalize_name(e["key"]), e)
             self.assertTrue(e["source"].startswith("https://"), e)
             self.assertIn(e["product"], EOL_CYCLE_LABELS, e)
+            for p in e.get("publisher", []):
+                self.assertEqual(p, normalize_name(p), e)
             for w in e.get("edition_words", []):
                 self.assertEqual(w, normalize_name(w), e)
                 self.assertEqual(len(w.split()), 1, e)
@@ -554,7 +611,7 @@ class CorpusTests(unittest.TestCase):
         false_matches, missed, hits = [], [], 0
         for row in rows:
             r = match_product(row["name"], row["version"], doc["aliases"],
-                              EOL_PRODUCTS)
+                              EOL_PRODUCTS, publisher=row["publisher"])
             got = r.cycle["cycle"] if r.cycle else "NONE"
             want = row["expected_cycle"]
             self.assertTrue(row["source"].startswith("https://"), row)

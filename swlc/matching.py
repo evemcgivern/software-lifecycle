@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from functools import lru_cache
 
+from .catalog_match import _has_run, tokens
 from .errors import DataError
 from .normalize import best_cycle, normalize_name, split_version
 
@@ -81,6 +82,21 @@ def _check(entry: dict, pos: int) -> None:
         if not isinstance(words, list) or not all(
                 isinstance(w, str) and w.strip() for w in words):
             raise bad("'edition_words' must be a list of words")
+    if "publisher" in entry:
+        pubs = entry["publisher"]
+        if not isinstance(pubs, list) or not pubs or not all(
+                isinstance(p, str) and tokens(p) for p in pubs):
+            raise bad("'publisher' must be a non-empty list of publisher "
+                      "words")
+
+
+def _publisher_ok(entry: dict, publisher: str) -> bool:
+    """An alias with a 'publisher' list applies only when the row's
+    publisher holds one of those phrases as a run of whole words."""
+    if "publisher" not in entry:
+        return True
+    pub = tokens(publisher)
+    return any(_has_run(pub, tokens(p)) for p in entry["publisher"])
 
 
 def _hits(name: str, key: str, mode: str) -> bool:
@@ -128,7 +144,7 @@ def match_product(name: str, version: str, aliases: list[dict],
     AMBIGUOUS. Generated matching runs only when no alias hits. Without
     catalog_index, generated matching is off and only aliases are used.
     """
-    hit, result = _curated(name, version, aliases, products)
+    hit, result = _curated(name, version, aliases, products, publisher)
     if result.product is not None:
         result = replace(result, source=CURATED)
     if catalog_index is None:
@@ -224,16 +240,18 @@ def _disagree(name_parts: list[str], column: list[str],
 
 
 def _curated(name: str, version: str, aliases: list[dict],
-             products: dict[str, list[dict]]) -> tuple:
+             products: dict[str, list[dict]], publisher: str = "") -> tuple:
     """(hit, MatchResult) from the alias table. hit is True when any alias
     key hits the name, whatever the result: a hit with no result still
-    decides the row and stops generated matching."""
+    decides the row and stops generated matching. An alias whose
+    'publisher' list the row's publisher does not satisfy does not hit."""
     norm = normalize_name(name or "")
     hits: list[tuple[str, dict]] = []
     for pos, entry in enumerate(aliases, 1):
         _check(entry, pos)
         key = _norm_key(entry["key"])
-        if _hits(norm, key, entry["match"]):
+        if _hits(norm, key, entry["match"]) \
+                and _publisher_ok(entry, publisher):
             hits.append((key, entry))
     if not hits:
         return False, MatchResult(None, None, NO_ALIAS)
@@ -283,6 +301,11 @@ def _decide(norm: str, version: str, hits: list,
     text = " ".join(rest) if from_name else (version or "")
     parts = split_version(text)
     if not parts:
+        if from_name and _year_clash(split_version(version or ""), labels):
+            # The name gives no version and the column is a calendar
+            # version (2023.22.1) for a product whose cycles are not years
+            # (Python 3.x): another product with the same name.
+            return finish(MatchResult(None, None, NO_ALIAS), 0)
         return finish(MatchResult(product, None, NO_VERSION), 0)
 
     # When no version matched, treat the first name word as the version,
@@ -342,6 +365,19 @@ def _map_disagrees(column: list[str], targets: list[str], bmap: dict,
             return True
     by_label = _picks(column, labels)
     return bool(by_label) and not want <= by_label
+
+
+def _is_year(part: str) -> bool:
+    return len(part) == 4 and part.isdigit() and 1990 <= int(part) <= 2100
+
+
+def _year_clash(column: list[str], labels: list[str]) -> bool:
+    """Whether the column's first part is a year while no cycle of the
+    product starts with one."""
+    if not column or not _is_year(column[0]):
+        return False
+    return not any(_is_year((split_version(label) or [""])[0])
+                   for label in labels)
 
 
 def _versionish(word: str) -> bool:

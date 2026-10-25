@@ -891,6 +891,38 @@ class BundledSpeedTests(unittest.TestCase):
                                   publisher=pub)
                 self.assertIsNone(r.product)
 
+    def test_same_name_rows_from_other_publishers_do_not_match(self):
+        data = self.data
+        for name, pub, ver in (
+                ("Node.js", "CollabFS", "1.0.1"),
+                ("Node.js", "Visual Studio Code extension", "0.3.1"),
+                ("Ubuntu", "Google Fonts", "0.83"),
+                ("Ubuntu", "Google Fonts", "22.04"),
+                ("Ubuntu", "", "latest"),
+                ("Python", "Microsoft Corporation", "2023.22.1"),
+                ("Prometheus", "Prometheus Group Inc.", "3.5.0"),
+                ("Composer", "Bot Framework Composer", "2.1.2"),
+                ("Nextcloud 3.11.0", "Nextcloud GmbH", "3.11.0")):
+            with self.subTest(name=name, pub=pub, ver=ver):
+                r = match_product(name, ver, data.aliases, data.products,
+                                  catalog_index=data.matching_index(),
+                                  publisher=pub)
+                self.assertIsNone(r.product)
+        for name, pub, ver, want in (
+                ("Node.js", "Node.js Foundation", "20.10.0", "20"),
+                ("Node.js", "OpenJS Foundation", "18.19.0", "18"),
+                ("Ubuntu", "Canonical Group Limited", "22.04", "22.04"),
+                ("Ubuntu 22.04 LTS", "Canonical", "", "22.04"),
+                ("Python 3.12.1 (64-bit)", "Python Software Foundation",
+                 "3.12.1150.0", "3.12"),
+                ("Grafana", "Grafana Labs", "10.2.3", "10.2"),
+                ("Prometheus", "The Prometheus Authors", "2.53.1", "2.53")):
+            with self.subTest(name=name, pub=pub, ver=ver):
+                r = match_product(name, ver, data.aliases, data.products,
+                                  catalog_index=data.matching_index(),
+                                  publisher=pub)
+                self.assertEqual(r.cycle and r.cycle["cycle"], want)
+
     def test_hostile_long_names_are_fast(self):
         data = self.data
         index = data.matching_index()

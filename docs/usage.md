@@ -72,8 +72,16 @@ which one found the product.
 1. **Curated aliases** (`aliases.json`). An alias that hits the name decides
    the item, even when it then finds no cycle or its strict tail-word rule
    rejects the name. A curated alias matches by name regardless of
-   publisher. When an alias reads the version from the name and the version
-   column is not empty, the column is checked:
+   publisher, unless it has a `publisher` list: then it applies only when
+   the row's publisher holds one of those phrases as whole words (the
+   `node.js` alias needs the Node.js Foundation or the OpenJS Foundation,
+   the `ubuntu` aliases need Canonical), and otherwise it does not hit at
+   all. When an alias reads the version from the name, the name carries no
+   version and the column is a calendar version such as `2023.22.1` while
+   the product's cycles are not years (the Python extension for VS Code
+   against Python 3.x), the row is another product: no match. When an
+   alias reads the version from the name and the version column is not
+   empty, the column is checked:
    - an alias without a `build_map`: the name's version and the column must
      pick the same cycle (or, when either picks none, be equal on their
      shared leading parts);
@@ -227,7 +235,9 @@ add one, edit a copy of the data folder. Do not edit `data/` in place.
    cycle label), `build_map`, `column_map` (for an alias that reads the
    version from the name: version-column builds to the cycles they can be,
    used only to check the name), `kev` (an object with `vendor` and
-   `product`), `note` and `edition_words`. `source` is a link to where you
+   `product`), `note`, `edition_words` and `publisher` (a non-empty list of
+   lowercase publisher phrases; the alias then applies only when the row's
+   publisher holds one of them as whole words). `source` is a link to where you
    confirmed the mapping.
 3. Rebuild the manifest. Copy the dates, catalog version and upstream commit
    from `data/manifest.json` into the placeholders:

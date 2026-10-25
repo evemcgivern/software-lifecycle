@@ -255,14 +255,23 @@
     {
       "key": "node.js",
       "match": "exact",
+      "note": "Applies only when the publisher names the Node.js Foundation or the OpenJS Foundation, as the official installer does (winget OpenJS.NodeJS gives Node.js Foundation), so third-party packages named Node.js do not match.",
       "product": "nodejs",
+      "publisher": [
+        "node.js foundation",
+        "openjs foundation"
+      ],
       "source": "https://nodejs.org/en/about/previous-releases",
       "version_from": "version"
     },
     {
       "key": "ubuntu",
       "match": "exact",
+      "note": "Applies only when the publisher names Canonical (winget gives Canonical Group Limited), so the Ubuntu font and other same-name packages do not match. Rows with a blank publisher are not matched by this alias.",
       "product": "ubuntu",
+      "publisher": [
+        "canonical"
+      ],
       "source": "https://ubuntu.com/about/release-cycle",
       "version_from": "version"
     },
@@ -272,7 +281,11 @@
       ],
       "key": "ubuntu",
       "match": "prefix",
+      "note": "Applies only when the publisher names Canonical (winget gives Canonical Group Limited), so the Ubuntu font and other same-name packages do not match. Rows with a blank publisher are not matched by this alias.",
       "product": "ubuntu",
+      "publisher": [
+        "canonical"
+      ],
       "source": "https://ubuntu.com/about/release-cycle",
       "version_from": "name"
     },
