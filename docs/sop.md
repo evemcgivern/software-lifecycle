@@ -39,7 +39,10 @@ who holds each role.
    If an AI agent runs it, use `--counts-only` and keep the output folder
    out of the agent's reach. No model should read the full report.
 4. **Read the "Changes since the previous report" section** to see what is
-   new, gone or changed.
+   new, gone or changed. The first run after an upgrade that adds matching
+   by product title shows a long state-changed list (`diff.changed_state`):
+   items that were unmatched now match, and golden-source and exception
+   rows keyed by product id now apply to them. Check those rows once.
 5. **Work "Past end of life" and "Ends within the lookahead window".** For
    each item, the owner chooses: replace, upgrade, retire, or request risk
    acceptance (step 8).
