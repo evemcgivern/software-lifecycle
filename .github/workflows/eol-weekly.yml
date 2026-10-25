@@ -5,7 +5,8 @@ name: endoflife.date weekly pull request
 # the regenerated data/products.json. A person reviews and merges it. The job
 # runs the full test suite, curation checks and benchmark included, before it
 # pushes: when a data change makes one of them fail, no pull request is opened
-# until the maintainer edits data/curation.json. Nothing here pushes to main or publishes
+# until the maintainer fixes it (docs/sop.md, "Maintainer: when the weekly
+# data job fails"). Nothing here pushes to main or publishes
 # a release: after a merge, the next "KEV daily data release" run (or a
 # manual run of it with dry_run set to false) publishes the new dates.
 #
@@ -99,6 +100,8 @@ jobs:
         env:
           UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
           UPSTREAM_DAY: ${{ steps.upstream.outputs.day }}
+          # The generated benchmark floor is reported here, not gating.
+          SWLC_WEEKLY_JOB: "1"
         run: |
           rm -f data/eol/*.json
           cp "$RUNNER_TEMP/eol/"*.json data/eol/
@@ -116,7 +119,7 @@ jobs:
           # A pull request opened with the job token does not start the CI
           # workflow, so the full test suite runs here before the push.
           python3 -B -m unittest discover -s tests || {
-            echo "A test failed after the data change. If a curation or benchmark test failed, no pull request was opened: the maintainer edits data/curation.json, then the next weekly run opens it." >> "$GITHUB_STEP_SUMMARY"
+            echo "A test failed after the data change. If a curation or benchmark test failed, no pull request was opened. Follow \"Maintainer: when the weekly data job fails\" in docs/sop.md." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           }
 
@@ -138,7 +141,7 @@ jobs:
             echo "The full test suite, with the curation checks and the benchmark,"
             echo "passed before this pull request was opened. When a data change"
             echo "makes a curation or benchmark test fail, the job stops and opens"
-            echo "no pull request until the maintainer edits data/curation.json."
+            echo "no pull request until the maintainer fixes it (see docs/sop.md)."
             echo
             echo "After the merge, the next KEV daily data release publishes"
             echo "these files."
@@ -257,10 +260,10 @@ jobs:
           Run: $run_url
 
           The run summary names the step that failed. If a curation or
-          benchmark test failed after a data change, edit data/curation.json
-          on main, then run "endoflife.date weekly pull request" by hand or
-          wait for the next weekly run. Close this issue once a pull request
-          opens.
+          benchmark test failed after a data change, follow "Maintainer:
+          when the weekly data job fails" in docs/sop.md: fix it on main,
+          then run "endoflife.date weekly pull request" by hand or wait for
+          the next weekly run. Close this issue once a pull request opens.
           EOF
           if ! gh label list --limit 200 --json name --jq '.[].name' | grep -qx eol-weekly-failed; then
             gh label create eol-weekly-failed --color B60205 \

@@ -93,7 +93,10 @@ exclusions, aliases or rules. The test reports them separately.
   that earns the gain. Never lower it.
 - The count of `correct` rows in `generated` must be at least
   `generated_correct_min` in `floor.json`. The same rule: raise it by hand
-  in the commit that earns the gain, never lower it.
+  in the commit that earns the gain, never lower it. This check gates every
+  pull request and local run. The weekly data job sets `SWLC_WEEKLY_JOB`
+  and only reports it, because an upstream rename changes generated rows
+  (see "Maintainer: when the weekly data job fails" in `docs/sop.md`).
 - Every product id and cycle exists in `data/eol/`. No two rows share an
   item id (names are normalized as the tool does). Rows in `unsure.csv` are
   not in gold.

@@ -123,3 +123,39 @@ standard. CISA's current binding directive for US federal civilian agencies, BOD
 
 **What is the support level?** Maintained as time allows, best effort, no
 SLA. This is an experiment with a review date of 2027-01-31. On that date the maintainer decides whether to keep it, archive it, or fold it into another project.
+
+## Maintainer: when the weekly data job fails
+
+This part is for the project maintainer, not for a quarterly review. The
+"endoflife.date weekly pull request" job runs the full test suite on the
+new data before it opens a pull request. When a test fails, it opens no
+pull request and opens or updates one issue labelled `eol-weekly-failed`.
+
+1. **Find the failing test.** Open the run linked from the issue. The
+   step that failed is either `verify-data` (the data check) or the test
+   suite. In the suite's output, find the failing test's name and message.
+2. **Find the product.** Usually upstream renamed or removed a product
+   that a gold row in `tests/benchmark/gold.csv` or an entry in
+   `data/curation.json` names. A data check that stops with
+   "curation.json: a product named here is not in the catalog" means a
+   curation entry names a removed product. Compare the run's catalog
+   summary with `data/products.json` on main to see which one.
+3. **Fix it on main.**
+   - A curation entry names a removed or renamed product: update or
+     remove that entry in `data/curation.json` with its reason and source,
+     rebuild the manifest (see "Extending the curation file" in
+     [usage.md](usage.md)) and run the full suite.
+   - A gold row or a floor no longer holds: open an issue that names the
+     product and the test. Do not merge a workaround.
+   - Never lower `tests/benchmark/floor.json` and never edit a gold row
+     to make a test pass, unless the maintainer has recorded the decision
+     and its reason in the commit and in `tests/benchmark/README.md`.
+4. **Run it again.** After the fix is on main, run "endoflife.date weekly
+   pull request" by hand from the Actions tab, or wait for the next weekly
+   run. Close the issue once a pull request opens.
+
+The weekly job sets `SWLC_WEEKLY_JOB`. With it, the generated-row floor of
+the benchmark is reported (in the test's skip message), not checked,
+because an ordinary upstream rename changes generated rows. The hand and
+catalog floor, hard wrong and soft wrong are checked in every run. Every
+pull request and local run checks the generated floor too.

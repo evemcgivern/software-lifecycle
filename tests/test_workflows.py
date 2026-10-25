@@ -620,11 +620,16 @@ class EolWeeklyTests(unittest.TestCase):
         script = step_script(
             self.text, "Update data/eol and the manifest, then run the checks")
         for needle in ("curation checks and the benchmark",
-                       "no pull request until the maintainer edits "
-                       "data/curation.json"):
+                       "no pull request until the maintainer fixes it "
+                       "(see docs/sop.md)",
+                       'Follow \\"Maintainer: when the weekly data job '
+                       'fails\\" in docs/sop.md'):
             self.assertIn(needle, " ".join(script.split()), needle)
         self.assertIn("python3 -B -m unittest discover -s tests || {",
                       script)
+        sop = (WORKFLOWS.parents[1] / "docs" / "sop.md").read_text("utf-8")
+        self.assertIn("\n## Maintainer: when the weekly data job fails\n",
+                      sop)
 
     def test_steps(self):
         for needle in ("refresh_data.py eol --upstream-commit",
