@@ -55,8 +55,11 @@ CATALOG = {r["id"]: r for r in (
     rec("gadget-suite", "Gadget Suite"),
     rec("widget-pro", "Widget Pro"),
     rec("dbms", "Northwind DBMS"),
+    rec("tabby", "Tabby Tablet", category="device"),
+    rec("promo", "Promo", vendors=["promo"]),
     rec("frame-work", "Frame Work"),
     rec("weekly", "Weekly Builder"),
+    rec("lexicon", "Lexicon", vendors=["lexicon"]),
 )}
 CURATION = {
     "format": 1,
@@ -80,9 +83,9 @@ CYCLES = {
     "catalina": ["9.0"], "vaulty": ["1.17"], "jsrun": ["20"],
     "plainword": ["1"], "listed": ["4"], "gizmo": ["8"], "chatter": ["9.3"],
     "alpha-beta": ["2"], "beta-2": ["2"], "gadget-suite": ["1"],
-    "widget-pro": ["1"], "dbms": ["7"],
+    "widget-pro": ["1"], "dbms": ["7"], "tabby": ["8"], "promo": ["3.5"],
     "frame-work": ["4.6", "4.6.1", "4.6.2", "4.8", "4.8.1"],
-    "weekly": ["2", "2.426", "2.440"],
+    "weekly": ["2", "2.426", "2.440"], "lexicon": ["1"],
 }
 PRODUCTS = {p: [{"cycle": c} for c in labels] for p, labels in CYCLES.items()}
 INDEX = build_index(CATALOG, CURATION)
@@ -300,8 +303,6 @@ class OneWordAndCurationTests(unittest.TestCase):
     def test_exclusion_needs_name_and_publisher_token(self):
         self.assertIsNone(gen("Chatter", "9.3.0", "Chatter, Inc.").product)
         self.assertIsNone(gen("Chatter (x64)", "9.3.0", "Chatter").product)
-        # Another publisher that still confirms is not excluded... none here:
-        # the only confirming phrase is the excluded one, so test the name.
         self.assertEqual(gen("Chatter 9.3", "", "Chatter").product,
                          "chatter")
 
@@ -319,8 +320,8 @@ class OneWordAndCurationTests(unittest.TestCase):
 
     def test_exclusion_names_are_cleaned(self):
         self.assertIsNone(gen("Foo Tool Helper", "2.1").product)
-        self.assertEqual(INDEX.exclusions[("foo tool helper", "foo-tool")],
-                         ((),))
+        self.assertEqual(INDEX.exclusions["foo tool helper"],
+                         (("foo-tool", ()),))
 
     def test_exclusions_never_silence_curated_aliases(self):
         a = [alias("chatter", "chatter")]
@@ -441,7 +442,6 @@ class CuratedCrossCheckTests(unittest.TestCase):
         self.assertEqual(m("Windows Server 2022 Standard", "10.0.99999"),
                          ("windows-server", "2022", None, CURATED))
 
-
     def test_bad_column_map_is_a_data_error(self):
         from swlc.errors import DataError
         for bad in ({}, [], {"1": []}, {"1": ""}, {"1": [1]}):
@@ -449,7 +449,6 @@ class CuratedCrossCheckTests(unittest.TestCase):
                        column_map=bad)]
             with self.assertRaises(DataError):
                 match_product("x 1", "1", a, {"x": [{"cycle": "1"}]})
-
 
     def test_year_name_with_build_column_still_decides(self):
         # Windows Server cycles are years and the column is a build: the
@@ -498,7 +497,23 @@ class DeterminismTests(unittest.TestCase):
                                  gen(name, ver, "Mozilla"))
 
 
-class MixedGranularityTests(unittest.TestCase):
+class FixRoundTests(unittest.TestCase):
+    """Rules added after the adversarial review."""
+
+    def test_device_products_never_match_by_title(self):
+        self.assertIsNone(gen("Tabby Tablet", "8").product)
+        self.assertIsNone(gen("Tabby Tablet 8", "", "Tabby").product)
+        self.assertIn("tabby", INDEX.devices)
+        # A curated alias may still name a device on purpose.
+        a = [alias("tabby tablet", "tabby")]
+        self.assertEqual(gen("Tabby Tablet", "8", aliases=a).product,
+                         "tabby")
+
+    def test_other_vendor_words_keep_the_run_rule(self):
+        # Mozilla is not Firefox's own title: any run of it confirms.
+        self.assertEqual(gen("Firefox", "128.1", "Mozilla Labs").product,
+                         "firefox")
+
     def test_mixed_granularity_guard(self):
         def m(name, ver):
             return got(gen(name, ver))
@@ -525,7 +540,6 @@ class MixedGranularityTests(unittest.TestCase):
         self.assertEqual(m("Foo Tool", "2.1.1150.0"),
                          ("foo-tool", "2.1", None, GENERATED))
 
-
     def test_mixed_granularity_guard_for_curated_aliases(self):
         a = [alias("frame work", "frame-work")]
         self.assertEqual(got(gen("Frame Work", "4.6.01590", aliases=a)),
@@ -533,6 +547,23 @@ class MixedGranularityTests(unittest.TestCase):
         self.assertEqual(got(gen("Frame Work", "4.6.1.5", aliases=a)),
                          ("frame-work", "4.6.1", None, CURATED))
 
+    def test_locale_strip_needs_a_real_locale_tag(self):
+        self.assertEqual(strip_arch("foo go-to"), "foo go-to")
+        self.assertEqual(strip_arch("foo (go-to)"), "foo (go-to)")
+        self.assertEqual(strip_arch("foo ab-cd"), "foo ab-cd")
+        for tag in ("en-us", "en_gb", "de-ch", "pt-br", "zh_tw", "ar-sa"):
+            with self.subTest(tag=tag):
+                self.assertEqual(strip_arch("foo " + tag), "foo")
+                self.assertEqual(strip_arch("foo (x64 %s)" % tag), "foo")
+        self.assertIsNone(gen("Foo Tool go-to", "2.1").product)
+
+    def test_long_names_are_never_matched_by_title(self):
+        name = "Foo Tool " + " ".join(["x"] * 70)
+        self.assertEqual(INDEX.lookup(name, ""), ((), {}))
+        self.assertEqual(INDEX.lookup("Foo " * 31 + "Tool", ""), ((), {}))
+
+    def test_max_lead_is_the_longest_phrase(self):
+        self.assertEqual(INDEX.max_lead, 3)   # clam anti virus
 
 
 # --- assess: match_source, overrides on generated rows, format 1 -----------
@@ -642,7 +673,7 @@ class AssessTests(unittest.TestCase):
 
 # --- the bundled data: speed -----------------------------------------------
 
-MAX_SECONDS_100K = 20.0   # measured 3.4 s (3.15) and 4.4 s (3.9) here
+MAX_SECONDS_100K = 20.0   # measured 3.8 s (3.15) and 5.0 s (3.9) here
 
 
 def synthetic_rows(catalog: dict, count: int, seed: int = 11):
@@ -705,6 +736,37 @@ class BundledSpeedTests(unittest.TestCase):
         self.assertEqual(first, run())
         self.assertTrue(any(r.source == GENERATED for r in first))
 
+    def test_device_rows_do_not_match(self):
+        data = self.data
+        for name, pub, ver in (
+                ("Apple iPhone", "Apple", "17.5.1"),
+                ("Apple iPhone", "", "13.7"),
+                ("Google Pixel", "Google", "11"),
+                ("Raspberry Pi", "Raspberry Pi Ltd", "5.15.84"),
+                ("Amazon Kindle", "Amazon", "2.9.1.71006"),
+                ("Samsung Galaxy Tab", "Samsung", "14"),
+                ("Samsung Galaxy Watch", "Samsung", "5.0")):
+            with self.subTest(name=name, ver=ver):
+                r = match_product(name, ver, data.aliases, data.products,
+                                  catalog_index=data.matching_index(),
+                                  publisher=pub)
+                self.assertIsNone(r.product)
+
+    def test_hostile_long_names_are_fast(self):
+        data = self.data
+        index = data.matching_index()
+        words = ("a " * 32768)[:65536]
+        lts = ("Ubuntu " + "LTS " * 16384)[:65536]
+        pub = ("Apache " * 9363)[:65536]
+        for name, publisher in ((words, ""), (lts, ""), (words, pub),
+                                (lts, pub)):
+            start = time.perf_counter()
+            r = match_product(name, "22.04", data.aliases, data.products,
+                              catalog_index=index, publisher=publisher)
+            elapsed = time.perf_counter() - start
+            self.assertLess(elapsed, 1.0, "%.2f s" % elapsed)
+            self.assertNotEqual(r.source, GENERATED)
+
     def test_every_title_matches_itself_or_needs_a_publisher(self):
         # Each multi-word title, as a row name with no publisher, finds its
         # own product (or nothing for generated_off); never another product.
@@ -713,7 +775,10 @@ class BundledSpeedTests(unittest.TestCase):
         for pid, rec_ in sorted(data.catalog.items()):
             ids, _ = index.lookup(rec_["title"], "")
             self.assertIn(ids, ((pid,), ()), pid)
-            if " " in normalize_name(rec_["title"]) and pid not in index.off:
+            if " " in normalize_name(rec_["title"]) and pid not in index.off \
+                    and pid not in index.devices \
+                    and not index._excluded({normalize_name(
+                        rec_["title"])}, ()):
                 self.assertEqual(ids, (pid,), pid)
 
 

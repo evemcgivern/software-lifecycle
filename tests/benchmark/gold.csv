@@ -2167,3 +2167,8 @@ Microsoft .NET Framework,Microsoft Corporation,4.8.09032,dotnetfx,none,"hand-add
 Microsoft .NET Framework,Microsoft Corporation,4.5.51209,dotnetfx,none,"hand-added: registry Version of a .NET Framework 4.x install; 4.5 has child cycles 4.5.1 and 4.5.2; the build-to-cycle mapping is not on a Microsoft Learn page, so no cycle",hand,0
 Microsoft .NET Framework,Microsoft Corporation,4.7.02558,dotnetfx,none,"hand-added: registry Version of a .NET Framework 4.x install; 4.7 has child cycles 4.7.1 and 4.7.2; the build-to-cycle mapping is not on a Microsoft Learn page, so no cycle",hand,0
 Microsoft .NET Framework,Microsoft Corporation,4.6.01055,dotnetfx,none,"hand-added: registry Version of a .NET Framework 4.x install; 4.6 has child cycles 4.6.1 and 4.6.2; the build-to-cycle mapping is not on a Microsoft Learn page, so no cycle",hand,0
+Redis,Redistributable Packages Inc,7.2.4,NONE,,trap=vendor-lookalike; the publisher word starts with the vendor token redis but is another word,hand,0
+Puppet,Puppetry Studio,8.4.0,NONE,,trap=vendor-lookalike; the publisher word starts with the vendor token puppet but is another word,hand,0
+Amazon OpenSearch 2.11,Amazon Web Services,2.11.1,NONE,,trap=ambiguous; fits Amazon OpenSearch (title plus version) and OpenSearch (vendor word amazon dropped); two products,hand,0
+Amazon Kindle,Amazon,2.9.1.71006,NONE,,"trap=device; the Kindle for PC reading app, not the Kindle e-reader device",hand,0
+Kibana,Elasticity Labs,8.17.3,NONE,,"trap=vendor-lookalike; the publisher word starts with the vendor token elastic but is another word (made-up publisher)",hand,0

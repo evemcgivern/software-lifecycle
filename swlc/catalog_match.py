@@ -38,9 +38,12 @@ joined-up strings.
 
 A one-word title matches only when the publisher confirms the product (or a
 step c drop did, which needs the same confirmation) or the product is on
-single_word_allowlist. Products on generated_off never match here.
-Exclusions block one product for one cleaned name (and, when given, a
-publisher token); they never touch curated aliases.
+single_word_allowlist. Products on generated_off and products whose catalog
+category is "device" never match here. An exclusion blocks one product when
+its cleaned name equals the row's whole or cleaned name and, when given,
+its publisher token is in the publisher; exclusions never touch curated
+aliases. A name of more than
+MAX_WORDS words is never matched by title.
 """
 from __future__ import annotations
 
@@ -54,9 +57,20 @@ _TOKEN_RE = re.compile(r"[^\W_]+")
 _TAIL_RE = re.compile(r"v?\d+(?:\.\d+)*[a-z]?")
 _ARCH_WORDS = frozenset(("x64", "x86", "amd64", "arm64", "aarch64",
                          "32-bit", "64-bit"))
-_LOCALE_RE = re.compile(r"[a-z]{2}[-_][a-z]{2}")
+# Real language-region tags only (with "-" or "_"), so a word such as
+# "go-to" is never taken for a locale.
+_LOCALE_PAIRS = (
+    "en-us", "en-gb", "en-au", "en-ca", "de-de", "de-at", "de-ch", "fr-fr",
+    "fr-ca", "es-es", "es-mx", "it-it", "pt-br", "pt-pt", "nl-nl", "sv-se",
+    "da-dk", "nb-no", "fi-fi", "pl-pl", "cs-cz", "ru-ru", "tr-tr", "ja-jp",
+    "ko-kr", "zh-cn", "zh-tw", "zh-hk", "hu-hu", "el-gr", "he-il", "ar-sa")
+_LOCALES = frozenset(_LOCALE_PAIRS) | frozenset(
+    p.replace("-", "_") for p in _LOCALE_PAIRS)
 _GROUP_RE = re.compile(r"[(\[]([^()\[\]]*)[)\]]")
 _VENDOR_SPLIT_RE = re.compile(r"[_.-]+")
+# Names with more words than this are never matched by title: no product
+# title is that long, and it bounds the work on a hostile row.
+MAX_WORDS = 64
 
 
 def tokens(text: str) -> tuple:
@@ -65,7 +79,7 @@ def tokens(text: str) -> tuple:
 
 
 def _arch_or_locale(word: str) -> bool:
-    return word in _ARCH_WORDS or bool(_LOCALE_RE.fullmatch(word))
+    return word in _ARCH_WORDS or word in _LOCALES
 
 
 def strip_arch(norm: str) -> str:
@@ -104,24 +118,29 @@ class CatalogIndex:
     one_word: frozenset           # ids whose normalized title is one word
     phrases: MappingProxyType     # id -> confirming token phrases (sorted)
     leads: MappingProxyType       # leading phrase -> ids it confirms
+    max_lead: int                 # longest leading phrase, in tokens
     allow: frozenset              # single_word_allowlist ids
     off: frozenset                # generated_off ids
-    exclusions: MappingProxyType  # (cleaned name, id) -> publisher phrases
+    devices: frozenset            # ids with category "device"
+    exclusions: MappingProxyType  # cleaned name -> ((id, publisher), ...)
+
+    def phrase_ok(self, pid: str, phrase: tuple, pub: tuple) -> bool:
+        """Whether this confirming phrase of pid is in the publisher, as a
+        contiguous run of whole tokens."""
+        return _has_run(pub, phrase)
 
     def confirms(self, pid: str, pub: tuple) -> bool:
-        return any(_has_run(pub, p) for p in self.phrases.get(pid, ()))
+        return any(self.phrase_ok(pid, p, pub)
+                   for p in self.phrases.get(pid, ()))
 
-    def _allowed(self, pid: str, clean: str, norm: str, pub: tuple,
-                 confirmed: bool) -> bool:
-        if pid in self.off:
-            return False
-        for name in (clean, norm):
-            for phrase in self.exclusions.get((name, pid), ()):
+    def _excluded(self, forms: set, pub: tuple) -> set:
+        """Ids an exclusion blocks for any candidate form of this row."""
+        out = set()
+        for form in forms:
+            for pid, phrase in self.exclusions.get(form, ()):
                 if not phrase or _has_run(pub, phrase):
-                    return False
-        if pid in self.one_word and pid not in self.allow:
-            return confirmed or self.confirms(pid, pub)
-        return True
+                    out.add(pid)
+        return out
 
     def lookup(self, name: str, publisher: str = "") -> tuple:
         """(product ids, {id: version token or None}).
@@ -130,38 +149,57 @@ class CatalogIndex:
         """
         norm = normalize_name(name or "")
         clean = strip_arch(norm)
+        words = clean.split(" ")
+        if len(words) > MAX_WORDS:
+            return (), {}
         pub = tokens(publisher)
+
+        # Leading phrases that are runs of the publisher, at most max_lead
+        # words, each position looked at once.
+        leading = []
+        for k in range(1, min(len(words), self.max_lead + 1)):
+            if not _TOKEN_RE.fullmatch(words[k - 1]):
+                break
+            lead = tuple(words[:k])
+            if _has_run(pub, lead):
+                leading.append((lead, " ".join(words[k:])))
+
+        # The forms an exclusion is compared with: the whole and the
+        # cleaned name.
+        blocked = self._excluded({norm, clean}, pub)
+
+        def allowed(pid, confirmed):
+            if pid in self.off or pid in self.devices or pid in blocked:
+                return False
+            if pid in self.one_word and pid not in self.allow:
+                return confirmed or self.confirms(pid, pub)
+            return True
 
         # Level 1: the whole name, then the name without arch/locale groups.
         for cand in (norm, clean):
             pids = self.titles.get(cand)
             if pids:
-                ok = tuple(p for p in pids
-                           if self._allowed(p, clean, norm, pub, False))
+                ok = tuple(p for p in pids if allowed(p, False))
                 return ok, {p: None for p in ok}
 
         # Level 2: vendor-dropped forms and version-split forms, pooled.
         found = {}
 
-        def take(cand, tail, only=None, confirmed=False):
+        def take(cand, tail, only=None):
             for pid in self.titles.get(cand, ()):
                 if only is not None and pid not in only:
                     continue
-                if pid not in found and self._allowed(
-                        pid, clean, norm, pub, confirmed):
+                if pid not in found and allowed(pid, only is not None):
                     found[pid] = tail
 
         dropped = []
-        words = clean.split(" ")
-        for k in range(1, len(words)):
-            lead = tuple(words[:k])
-            if not all(_TOKEN_RE.fullmatch(w) for w in lead):
-                break
-            pids = self.leads.get(lead)
-            if pids and _has_run(pub, lead):
-                dropped.append((" ".join(words[k:]), pids))
+        for lead, rest in leading:
+            pids = frozenset(p for p in self.leads.get(lead, ())
+                             if self.phrase_ok(p, lead, pub))
+            if pids:
+                dropped.append((rest, pids))
         for cand, pids in dropped:
-            take(cand, None, pids, True)
+            take(cand, None, pids)
         for cand in (norm, clean):
             split = split_tail(cand)
             if split:
@@ -169,7 +207,7 @@ class CatalogIndex:
         for cand, pids in dropped:
             split = split_tail(cand)
             if split:
-                take(split[0], split[1], pids, True)
+                take(split[0], split[1], pids)
         ids = tuple(sorted(found))
         return ids, {p: found[p] for p in ids}
 
@@ -183,6 +221,7 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
     curation: the validated curation.json, or None for an empty one."""
     cur = curation or {}
     titles, one_word, phrases, leads = {}, set(), {}, {}
+    devices = set()
     aliases = cur.get("publisher_aliases") or {}
     for pid in sorted(catalog):
         rec = catalog[pid]
@@ -190,6 +229,8 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
         titles.setdefault(title, []).append(pid)
         if " " not in title:
             one_word.add(pid)
+        if rec.get("category") == "device":
+            devices.add(pid)
         found = set()
         for vendor in rec.get("vendors") or ():
             found.add(_vendor_phrase(vendor))
@@ -203,15 +244,18 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
             leads.setdefault(phrase, set()).add(pid)
     exclusions = {}
     for item in cur.get("exclusions") or ():
-        key = (strip_arch(normalize_name(item["name"])), item["product"])
-        exclusions.setdefault(key, set()).add(tokens(item["publisher"]))
+        name = strip_arch(normalize_name(item["name"]))
+        exclusions.setdefault(name, set()).add(
+            (item["product"], tokens(item["publisher"])))
     return CatalogIndex(
         titles=MappingProxyType({k: tuple(v) for k, v in titles.items()}),
         one_word=frozenset(one_word),
         phrases=MappingProxyType(phrases),
         leads=MappingProxyType({k: frozenset(v) for k, v in leads.items()}),
+        max_lead=max((len(k) for k in leads), default=0),
         allow=frozenset(i["product"]
                         for i in cur.get("single_word_allowlist") or ()),
         off=frozenset(cur.get("generated_off") or ()),
+        devices=frozenset(devices),
         exclusions=MappingProxyType(
             {k: tuple(sorted(v)) for k, v in exclusions.items()}))

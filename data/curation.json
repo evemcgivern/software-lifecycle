@@ -16,7 +16,10 @@
     }
   ],
   "format": 1,
-  "generated_off": [],
+  "generated_off": [
+    "claude",
+    "openai-api-models"
+  ],
   "publisher_aliases": {},
   "single_word_allowlist": []
 }
