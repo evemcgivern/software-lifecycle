@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+import unicodedata
 from datetime import date
 
 from .errors import InputError
@@ -30,7 +31,9 @@ def _product_key(value: str) -> str:
 
 
 def _who(value: str) -> str:
-    return normalize_name(value).strip()
+    """Plain comparison key: NFKC, casefold, collapse spaces, strip."""
+    text = unicodedata.normalize("NFKC", value).casefold()
+    return " ".join(text.split())
 
 
 def _read(path: str, columns: tuple) -> list:
@@ -39,7 +42,7 @@ def _read(path: str, columns: tuple) -> list:
     Returns [(data_row_number, {column: stripped text})]. Errors name the
     data row number and column names only, never cell text.
     """
-    rows, headers = read_rows(path)
+    rows, headers = read_rows(path, allow_empty=True)
     by_fold = {h.casefold(): h for h in headers}
     missing = [c for c in columns if c not in by_fold]
     if missing:
@@ -50,8 +53,8 @@ def _read(path: str, columns: tuple) -> list:
         row = {c: (raw.get(by_fold[c]) or "").strip() for c in columns}
         if row["schema_version"] != SCHEMA_VERSION:
             raise InputError(
-                "unsupported schema_version in data row %d; this tool reads "
-                "version %s" % (n, SCHEMA_VERSION))
+                "unsupported schema_version in data row %d (not counting the "
+                "header); this tool reads version %s" % (n, SCHEMA_VERSION))
         out.append((n, row))
     return out
 
@@ -60,18 +63,21 @@ def _date(text: str, column: str, n: int) -> date | None:
     if not text:
         return None
     if not _ISO.match(text):
-        raise InputError("%s in data row %d is not a date in YYYY-MM-DD form"
+        raise InputError("%s in data row %d (not counting the header) is not a date in "
+                         "YYYY-MM-DD form"
                          % (column, n))
     try:
         return date.fromisoformat(text)
     except ValueError:
-        raise InputError("%s in data row %d is not a real date"
+        raise InputError("%s in data row %d (not counting the header) is not a "
+                         "real date"
                          % (column, n)) from None
 
 
 def _require(row: dict, column: str, n: int) -> None:
     if not row[column]:
-        raise InputError("%s is required in data row %d" % (column, n))
+        raise InputError("%s is required in data row %d (not counting the header)"
+                         % (column, n))
 
 
 class Golden:
@@ -131,17 +137,21 @@ def load_golden(path: str | None) -> Golden:
         _require(r, "product", n)
         if r["source"] not in SOURCES:
             raise InputError(
-                "source in data row %d must be one of: %s"
-                % (n, ", ".join(SOURCES)))
+                "source in data row %d (not counting the header) must be one "
+                "of: %s" % (n, ", ".join(SOURCES)))
         manual = _date(r["manual_eol"], "manual_eol", n)
         if r["source"] == "manual" and manual is None:
             raise InputError(
-                "manual_eol is required in data row %d when source is manual"
-                % n)
+                "manual_eol is required in data row %d (not counting the "
+                "header) when source is manual" % n)
+        if r["source"] != "manual" and manual is not None:
+            raise InputError(
+                "manual_eol in data row %d (not counting the header) is only "
+                "allowed when source is manual" % n)
         key = _product_key(r["product"])
         if key in rows:
-            raise InputError("data row %d repeats a product already listed"
-                             % n)
+            raise InputError("data row %d (not counting the header) repeats "
+                             "a product already listed" % n)
         rows[key] = {
             "product": key, "source": r["source"], "manual_eol": manual,
             "reason": r["reason"], "set_by": r["set_by"],
@@ -157,16 +167,19 @@ def load_exceptions(path: str | None) -> Exceptions:
     rows: dict[tuple, dict] = {}
     for n, r in _read(path, _EXC_COLS):
         _require(r, "product", n)
-        for col in ("risk_owner", "approver", "expires_on", "reference"):
+        for col in ("risk_owner", "approver", "requested_by", "expires_on",
+                    "reference"):
             _require(r, col, n)
         if _who(r["approver"]) == _who(r["requested_by"]):
             raise InputError(
-                "approver and requested_by are the same person in data row "
-                "%d; an exception needs a different approver" % n)
+                "approver and requested_by are the same person in data row %d "
+                "(not counting the header); an exception needs a different "
+                "approver" % n)
         key = (_product_key(r["product"]), _who(r["scope"]))
         if key in rows:
             raise InputError(
-                "data row %d repeats a product and scope already listed" % n)
+                "data row %d (not counting the header) repeats a product and "
+                "scope already listed" % n)
         rows[key] = {
             "product": key[0], "scope": r["scope"],
             "compensating_controls": r["compensating_controls"],
@@ -185,8 +198,8 @@ def load_tracking(path: str | None) -> dict[str, dict]:
     for n, r in _read(path, _TRACK_COLS):
         _require(r, "item_id", n)
         if r["item_id"] in out:
-            raise InputError("data row %d repeats an item_id already listed"
-                             % n)
+            raise InputError("data row %d (not counting the header) repeats an "
+                             "item_id already listed" % n)
         out[r["item_id"]] = {"change_ref": r["change_ref"],
                              "problem_ref": r["problem_ref"]}
     return out

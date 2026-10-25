@@ -101,10 +101,24 @@ class GoldenTests(Base):
         p = self.write(b"\xef\xbb\xbf" + (GH + "1,nginx,export,,,,,\n").encode())
         self.assertIsNotNone(load_golden(p).for_product("nginx", "nginx"))
 
-    def test_header_only_and_empty_use_reader_behavior(self):
-        for data in (GH, ""):
+    def test_header_only_loads_empty_zero_byte_raises(self):
+        self.assertEqual(load_golden(self.write(GH)).rows, {})
+        self.assertEqual(load_exceptions(self.write(EH)).rows, {})
+        self.assertEqual(load_tracking(self.write(TH)), {})
+        for load in (load_golden, load_exceptions, load_tracking):
             with self.assertRaises(InputError):
-                load_golden(self.write(data))
+                load(self.write(""))
+
+    def test_header_only_missing_column_still_raises(self):
+        with self.assertRaises(InputError):
+            load_golden(self.write("schema_version,product\n"))
+
+    def test_manual_eol_with_other_source_raises(self):
+        p = self.write(GH + "1,nginx,export,2026-01-01,,,,\n")
+        with self.assertRaises(InputError) as cm:
+            load_golden(p)
+        self.assertIn("manual_eol", str(cm.exception))
+        self.assertIn("not counting the header", str(cm.exception))
 
     def test_bad_encoding_uses_reader_behavior(self):
         p = self.write(GH.encode() + b"1,caf\xe9,export,,,,,\n")
@@ -147,9 +161,23 @@ class ExceptionsTests(Base):
             load_exceptions(p)
         self.assertNotIn("Eve", str(cm.exception))
 
+    def test_scope_plain_key(self):
+        e = load_exceptions(self.write(
+            EH + "1,nginx,x64,,r,a,b,2026-06-30,R\n"
+            "1,nginx,x86,,r,a,b,2026-06-30,R\n"))
+        self.assertTrue(e.active("nginx", "x64", date(2026, 1, 1)))
+        self.assertTrue(e.active("nginx", "X86", date(2026, 1, 1)))
+        self.assertFalse(e.active("nginx", "", date(2026, 1, 1)))
+
+    def test_approver_comparison_key(self):
+        for a, b in (("A  Smith", "a smith"), ("\uff21 Smith", "A Smith")):
+            with self.assertRaises(InputError):
+                load_exceptions(self.write(
+                    EH + "1,nginx,s,,r,%s,%s,2026-06-30,R\n" % (a, b)))
+
     def test_required_fields(self):
         for col in range(3, 9):
-            if col in (3, 6):  # controls, requested_by are not required
+            if col == 3:  # controls are not required
                 continue
             cells = ["1", "nginx", "s", "c", "r", "a", "b", "2026-06-30", "R"]
             cells[col] = ""

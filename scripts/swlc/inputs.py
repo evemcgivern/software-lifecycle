@@ -84,8 +84,12 @@ def _decode(data: bytes, encoding: str | None) -> str:
 def read_rows(path: str, encoding: str | None = None,
               max_rows: int = 200_000,
               max_field: int = 65_536,
-              max_bytes: int = 256 * 1024 * 1024) -> tuple[list[dict], list[str]]:
-    """Read a CSV into (rows, headers). Errors name line numbers only."""
+              max_bytes: int = 256 * 1024 * 1024,
+              allow_empty: bool = False) -> tuple[list[dict], list[str]]:
+    """Read a CSV into (rows, headers). Errors name line numbers only.
+
+    With ``allow_empty`` a header-only file returns ``([], headers)``; a
+    zero-byte file still raises."""
     try:
         with open(path, "rb") as fh:
             data = fh.read(max_bytes + 1)
@@ -137,7 +141,7 @@ def read_rows(path: str, encoding: str | None = None,
     except csv.Error:
         raise InputError(
             "malformed CSV at line %d" % reader.line_num) from None
-    if headers is None or not rows:
+    if headers is None or (not rows and not allow_empty):
         raise InputError("input has a header but no data rows")
     return rows, headers
 

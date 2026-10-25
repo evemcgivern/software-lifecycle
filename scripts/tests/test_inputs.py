@@ -25,6 +25,14 @@ class TempCase(unittest.TestCase):
 
 
 class ReadRowsTests(TempCase):
+    def test_allow_empty_header_only(self):
+        p = self.write("Name,Version\n")
+        self.assertEqual(read_rows(p, allow_empty=True), ([], ["Name", "Version"]))
+        with self.assertRaises(InputError):
+            read_rows(p)
+        with self.assertRaises(InputError):
+            read_rows(self.write(""), allow_empty=True)
+
     def test_reads_rows_and_headers(self):
         p = self.write("Name,Version\nAlpha,1.0\nBeta,2\n")
         rows, headers = read_rows(p)
