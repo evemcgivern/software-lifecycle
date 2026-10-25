@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from .catalog_match import strip_arch, tokens
+from .catalog_match import CORPORATE_WORDS, strip_arch, tokens
 from .matching import NO_CYCLE, match_product
 from .normalize import best_cycle, normalize_name, split_version
 
@@ -46,6 +46,8 @@ PARENT_NOT_FOUND = "parent_not_found"
 PARENT_IS_PART = "parent_is_part"
 PARENT_ABSENT = "parent_absent"
 PARENT_NO_DATE = "parent_no_date"
+PARENT_IS_SELF = "parent_is_self"
+PARENT_CYCLE = "parent_cycle"
 
 INHERITED_LABEL = "inherited from parent"
 # Parent states that count toward counts.inherited_attention.
@@ -369,10 +371,125 @@ def _link(it: dict, kind: str, value: str, code: str) -> None:
         it["inherited_from"] = value
 
 
-def _column(it: dict, value: str, by_name: dict, data, index) -> bool:
+# Parent cells that mean "no parent": treated as blank.
+_PLACEHOLDERS = frozenset(("n/a", "na", "none", "null", "nil", "unknown",
+                           "tbd", "-", "--", "n.a.", "n.a"))
+
+
+def _parent_cells(group: dict) -> list:
+    return [p for p in group.get("parents") or []
+            if p.strip().casefold() not in _PLACEHOLDERS]
+
+
+def _firm(publisher: str) -> set:
+    return set(tokens(publisher)) - CORPORATE_WORDS
+
+
+def _same_firm(a: str, b: str) -> bool:
+    """Publishers agree when either is empty (after corporate words) or they
+    share a word."""
+    fa, fb = _firm(a), _firm(b)
+    return not fa or not fb or bool(fa & fb)
+
+
+def _padded(name: str) -> str:
+    """The normalized name without bracket groups, with a space at each
+    end, so a phrase test with spaces is a whole-word test."""
+    words = _GROUPS.sub(" ", strip_arch(normalize_name(name or ""))).split()
+    return " %s " % " ".join(words)
+
+
+class _Inventory:
+    """Lookups built once per resolve_parents call."""
+
+    def __init__(self, items: list, data) -> None:
+        self.items = items
+        self.catalog = data.catalog or {}
+        self.index = data.matching_index()
+        self.by_id = {it["id"]: it for it in items}
+        self.by_name: dict = {}
+        self.by_product: dict = {}
+        self.by_cycle: dict = {}
+        self.os_items = []
+        self.padded = {}
+        # parts as classify left them, so the order of resolution does not
+        # change which rows count as a second OS fit
+        self.parts = {it["id"] for it in items
+                      if it["classification"] in PART_CLASSES}
+        for it in items:
+            self.by_name.setdefault(normalize_name(it.get("name") or ""),
+                                    []).append(it)
+            self.padded[it["id"]] = _padded(it.get("name"))
+            product = it.get("product")
+            if product:
+                self.by_product.setdefault(product, []).append(it)
+                self.by_cycle.setdefault((product, it.get("cycle")),
+                                         []).append(it)
+                if self.category(product) == "os":
+                    self.os_items.append(it)
+        self._forms: dict = {}
+        self._lookalike: dict = {}
+
+    def category(self, product: str):
+        return (self.catalog.get(product) or {}).get("category")
+
+    def forms(self, product: str) -> tuple:
+        """Phrases that name the OS: its normalized title, and the title
+        without leading vendor words ("microsoft windows", "windows")."""
+        if product not in self._forms:
+            rec = self.catalog.get(product) or {}
+            title = normalize_name(rec.get("title") or product).split()
+            vendor = set(rec.get("vendors") or [])
+            for phrase in self.index.phrases.get(product, ()):
+                vendor.update(phrase)
+            out = [" ".join(title)]
+            while len(title) > 1 and title[0] in vendor:
+                title = title[1:]
+                out.append(" ".join(title))
+            self._forms[product] = tuple(" %s " % f for f in out)
+        return self._forms[product]
+
+    def names(self, it: dict, product: str) -> bool:
+        padded = self.padded[it["id"]]
+        return any(form in padded for form in self.forms(product))
+
+    def confirms(self, product: str, publisher: str) -> bool:
+        return self.index.confirms(product, tokens(publisher or ""))
+
+    def has_lookalike(self, os_item: dict, token) -> bool:
+        """Whether another row, not a part, also looks like this OS: an OS
+        item, or an unmatched row, whose name holds the OS's title, whose
+        publisher the OS product confirms, and whose version can agree."""
+        key = (os_item["id"], tuple(token) if token else None)
+        if key not in self._lookalike:
+            product = os_item["product"]
+            found = False
+            for x in self.items:
+                if x is os_item or x["id"] in self.parts:
+                    continue
+                other = x.get("product")
+                if other and self.category(other) != "os":
+                    continue
+                if not self.names(x, product) \
+                        or not self.confirms(product, x.get("publisher")):
+                    continue
+                if other:
+                    fits = _agrees(token, x.get("cycle"))
+                else:
+                    mine = _os_token(x.get("name"))
+                    fits = token is None or mine is None or (
+                        token[:len(mine)] == mine[:len(token)])
+                if fits:
+                    found = True
+                    break
+            self._lookalike[key] = found
+        return self._lookalike[key]
+
+
+def _column(it: dict, value: str, inv: _Inventory, data) -> bool:
     """Link from the Parent column. True when the cycle-less product link
     came from a version that fits no cycle (so no item can be the parent)."""
-    hits = [o for o in by_name.get(normalize_name(value), []) if o is not it]
+    hits = _name_hits(it, value, inv)
     if len(hits) > 1:
         _no_link(it, PARENT_AMBIGUOUS)
         return False
@@ -380,7 +497,7 @@ def _column(it: dict, value: str, by_name: dict, data, index) -> bool:
         _link(it, "item", hits[0]["id"], PARENT_COLUMN)
         return False
     match = match_product(value, "", data.aliases, data.products,
-                          catalog_index=index,
+                          catalog_index=inv.index,
                           publisher=it.get("publisher") or "")
     if match.product is None:
         _no_link(it, PARENT_NOT_FOUND)
@@ -391,31 +508,52 @@ def _column(it: dict, value: str, by_name: dict, data, index) -> bool:
     return cycle is None and match.reason == NO_CYCLE
 
 
-def _os_parent(it: dict, items: list, catalog: dict, index) -> None:
-    """Link an OS part to the one OS item that fits by publisher and, when
-    the part names one, by version. Otherwise the class is left as it is.
-    An OS product with no vendor phrase cannot refute the publisher, so it
-    still counts as a second fit; only a confirmed fit is linked."""
-    if index is None:
+def _name_hits(it: dict, value: str, inv: _Inventory) -> list:
+    """Other rows whose normalized name equals the value. Two or more stay
+    ambiguous whatever their publishers; a single row counts only when its
+    publisher agrees with the part's."""
+    hits = [o for o in inv.by_name.get(normalize_name(value), [])
+            if o is not it]
+    if len(hits) == 1 and not _same_firm(hits[0].get("publisher") or "",
+                                         it.get("publisher") or ""):
+        return []
+    return hits
+
+
+def _is_self(it: dict, value: str) -> bool:
+    norm = normalize_name(value)
+    return norm in (normalize_name(it.get("name") or ""),
+                    _base(it.get("name")))
+
+
+def _os_parent(it: dict, inv: _Inventory) -> None:
+    """Link an OS part to the one OS item its name names, that fits by
+    publisher and, when the part names one, by version. Otherwise the class
+    is left as it is. An OS product with no vendor phrase cannot refute the
+    publisher, so it still counts as a second fit; another row that looks
+    like the same OS also counts. Only a confirmed single fit is linked."""
+    if inv.index is None:
         return
-    pub = tokens(it.get("publisher") or "")
+    pub = it.get("publisher") or ""
     token = _os_token(it.get("name"))
-    found = [o for o in items if o is not it and o.get("product")
-             and (catalog.get(o["product"]) or {}).get("category") == "os"
-             and (index.confirms(o["product"], pub)
-                  or not index.phrases.get(o["product"]))
-             and _agrees(token, o.get("cycle"))]
-    if len(found) == 1 and index.confirms(found[0]["product"], pub):
-        _link(it, "os", found[0]["id"], OS_PARENT)
+    found = [o for o in inv.os_items if o is not it
+             and (inv.confirms(o["product"], pub)
+                  or not inv.index.phrases.get(o["product"]))
+             and _agrees(token, o.get("cycle"))
+             and inv.names(it, o["product"])]
+    if len(found) != 1 or not inv.confirms(found[0]["product"], pub) \
+            or inv.has_lookalike(found[0], token):
+        return
+    _link(it, "os", found[0]["id"], OS_PARENT)
 
 
-def _product_parent(it: dict, items: list, unfit: bool) -> None:
+def _product_parent(it: dict, inv: _Inventory, unfit: bool) -> None:
     """D4: a product parent passes on dates only when exactly one item has
     that product (and cycle, when the link has one)."""
     product, _sep, cycle = it["parent_ref"]["value"].partition("/")
-    found = [] if unfit else [
-        o for o in items if o is not it and o.get("product") == product
-        and (not cycle or o.get("cycle") == cycle)]
+    pool = [] if unfit else (inv.by_cycle.get((product, cycle), [])
+                             if cycle else inv.by_product.get(product, []))
+    found = [o for o in pool if o is not it]
     if len(found) == 1:
         it["inherited_from"] = found[0]["id"]
     else:
@@ -448,27 +586,36 @@ def resolve_parents(items: list, groups: dict, data) -> None:
     item for an OS part, then a product parent (column or curated) to the
     one item with that product. The part's own state and dates never
     change, and a part never takes a list from its parent."""
-    catalog = data.catalog or {}
-    index = data.matching_index()
-    by_name: dict = {}
+    inv = _Inventory(items, data)
+    cells = {it["id"]: _parent_cells(groups.get(it["id"]) or {})
+             for it in items}
+    # One named row per item, for spotting two rows that name each other.
+    target = {}
     for it in items:
-        by_name.setdefault(normalize_name(it.get("name") or ""), []).append(it)
+        mine = cells[it["id"]]
+        if len(mine) == 1 and not _is_self(it, mine[0]):
+            hits = _name_hits(it, mine[0], inv)
+            if len(hits) == 1:
+                target[it["id"]] = hits[0]["id"]
     for it in items:
         if _locked(it):
             continue
-        parents = (groups.get(it["id"]) or {}).get("parents") or []
+        parents = cells[it["id"]]
         unfit = False
         if len(parents) > 1:
             _no_link(it, PARENT_AMBIGUOUS)
+        elif parents and _is_self(it, parents[0]):
+            it["classification_basis"].append(PARENT_IS_SELF)
+        elif parents and target.get(target.get(it["id"])) == it["id"]:
+            it["classification_basis"].append(PARENT_CYCLE)
         elif parents:
-            unfit = _column(it, parents[0], by_name, data, index)
+            unfit = _column(it, parents[0], inv, data)
         elif it["parent_ref"] is None \
                 and NAME_OS_PART in it["classification_basis"]:
-            _os_parent(it, items, catalog, index)
+            _os_parent(it, inv)
         ref = it["parent_ref"]
         if ref is not None and ref["kind"] == "product":
-            _product_parent(it, items, unfit)
-    by_id = {it["id"]: it for it in items}
+            _product_parent(it, inv, unfit)
     for it in items:
         if it["inherited_from"] is not None:
-            _inherit(it, by_id[it["inherited_from"]])
+            _inherit(it, inv.by_id[it["inherited_from"]])

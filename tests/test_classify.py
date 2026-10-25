@@ -548,13 +548,14 @@ class ParentTests(unittest.TestCase):
     def test_parent_column_beats_a_curated_suite_link(self):
         data = make_data(bundle_parents=[OUTLOOK])
         _r, items = check([
-            ("Contoso Mail Suite", "Contoso Ltd", "3.0"),
+            ("Contoso Mail Suite", "Microsoft Corporation", "3.0"),
             ("Microsoft Outlook 2019", "Microsoft Corporation", "16.0",
              "Contoso Mail Suite")], data)
         got = items[("Microsoft Outlook 2019", "16.0")]
         self.assertEqual(got["parent_ref"]["kind"], "item")
         self.assertEqual(got["inherited_from"],
-                         ident("Contoso Mail Suite", "Contoso Ltd", "3.0"))
+                         ident("Contoso Mail Suite", "Microsoft Corporation",
+                               "3.0"))
 
     def test_curated_suite_link_inherits_from_the_one_item(self):
         data = make_data(bundle_parents=[OUTLOOK])
@@ -648,6 +649,155 @@ class ParentTests(unittest.TestCase):
                               parent=False)
         self.assertEqual(report["counts"]["inherited_attention"], 0)
         self.assertIsNone(items[("Contoso Widget", "1.0")]["parent_ref"])
+
+
+_BUNDLED: list = []
+MS = "Microsoft Corporation"
+WIN10 = ("Microsoft Windows 10 Enterprise", MS, "10.0.19045")
+KB = ("Security Update for Windows (KB5031356)", MS, "1")
+
+
+def bundled():
+    """The bundled data, loaded once, on its own data date (classes and
+    links only are asserted, never dated states)."""
+    if not _BUNDLED:
+        manifest = json.loads((ROOT / "data" / "manifest.json").read_text(
+            encoding="utf-8"))
+        _BUNDLED.append(load_data(str(ROOT / "data"), as_of=date.fromisoformat(
+            manifest["eol_date"])))
+    return _BUNDLED[0]
+
+
+class WrongParentTests(unittest.TestCase):
+    """Each path that once named a wrong parent."""
+
+    def test_os_part_must_name_the_os(self):
+        office = ("Security Update for Microsoft Office (KB5002469)", MS, "1")
+        _r, items = check([WIN10, office, KB], bundled())
+        got = items[(office[0], "1")]
+        self.assertEqual(got["classification"], "component")
+        self.assertIsNone(got["parent_ref"])
+        self.assertIsNone(got["inherited_from"])
+        self.assertIsNone(got["inherited_lifecycle"])
+        win = items[(KB[0], "1")]
+        self.assertEqual(win["classification"], "bundle_member")
+        self.assertEqual(win["inherited_from"], ident(*WIN10))
+
+    def test_unmatched_lookalike_os_is_a_second_fit(self):
+        win11 = ("Microsoft Windows 11 Enterprise", MS, "10.0.22631")
+        _r, items = check([WIN10, win11, KB], bundled())
+        self.assertIsNone(items[(win11[0], win11[2])]["product"])
+        got = items[(KB[0], "1")]
+        self.assertEqual(got["classification"], "component")
+        self.assertIsNone(got["parent_ref"])
+        self.assertIsNone(got["inherited_from"])
+        self.assertIsNone(got["inherited_lifecycle"])
+
+    def test_parent_naming_itself_is_no_link(self):
+        for old in (("Python", "Python Software Foundation", "3.8.10",
+                     "Python"),
+                    ("Python 3.8.10", "Python Software Foundation", "3.8.10",
+                     "Python")):
+            with self.subTest(name=old[0]):
+                _r, items = check([old, ("Python", "Python Software "
+                                         "Foundation", "3.12.1")],
+                                  bundled())
+                _r, plain = check([old[:3]], bundled())
+                got = items[(old[0], old[2])]
+                self.assertIn(C.PARENT_IS_SELF, got["classification_basis"])
+                self.assertIsNone(got["parent_ref"])
+                self.assertIsNone(got["inherited_from"])
+                self.assertEqual(got["classification"],
+                                 plain[(old[0], old[2])]["classification"])
+
+    def test_name_match_needs_publisher_agreement(self):
+        _r, items = check([("Contoso Suite", "Other Co", "1.0"),
+                           ("Contoso Charts", "Contoso", "1",
+                            "Contoso Suite")])
+        got = items[("Contoso Charts", "1")]
+        self.assertIsNone(got["parent_ref"])
+        self.assertIsNone(got["inherited_from"])
+        self.assertIn(C.PARENT_NOT_FOUND, got["classification_basis"])
+        # an empty publisher on either side does not block
+        _r, items = check([("Contoso Suite", "", "1.0"),
+                           ("Contoso Charts", "Contoso", "1",
+                            "Contoso Suite")])
+        self.assertEqual(items[("Contoso Charts", "1")]["inherited_from"],
+                         ident("Contoso Suite", "", "1.0"))
+        # two rows of that name stay ambiguous, whatever their publishers
+        _r, items = check([("Contoso Suite", "A Co", "1.0"),
+                           ("Contoso Suite", "B Co", "1.0"),
+                           ("Contoso Charts", "Contoso", "1",
+                            "Contoso Suite")])
+        got = items[("Contoso Charts", "1")]
+        self.assertIn(C.PARENT_AMBIGUOUS, got["classification_basis"])
+        self.assertIsNone(got["parent_ref"])
+        # corporate words alone do not agree
+        _r, items = check([("Contoso Suite", "Other Ltd", "1.0"),
+                           ("Contoso Charts", "Contoso Ltd", "1",
+                            "Contoso Suite")])
+        self.assertIsNone(items[("Contoso Charts", "1")]["inherited_from"])
+
+    def test_mutual_parents_are_a_cycle(self):
+        _r, items = check([("Alpha Tool", "Ex", "1", "Beta Tool"),
+                           ("Beta Tool", "Ex", "1", "Alpha Tool")])
+        for name in ("Alpha Tool", "Beta Tool"):
+            got = items[(name, "1")]
+            self.assertEqual(got["classification"], "unknown")
+            self.assertIn(C.PARENT_CYCLE, got["classification_basis"])
+            self.assertIsNone(got["parent_ref"])
+            self.assertIsNone(got["inherited_from"])
+        data = make_data(classification_rows=[DOTNET_ROW])
+        _r, items = check([
+            ("Microsoft .NET Runtime - 8.0.10 (x64)", MS, "8.0.10",
+             "Contoso App"),
+            ("Contoso App", "Microsoft", "2.0",
+             "Microsoft .NET Runtime - 8.0.10 (x64)")], data)
+        got = items[("Microsoft .NET Runtime - 8.0.10 (x64)", "8.0.10")]
+        self.assertEqual(got["classification"], "governable")
+        self.assertIn(C.PARENT_CYCLE, got["classification_basis"])
+
+    def test_placeholder_parent_cells_are_blank(self):
+        for cell in ("N/A", "None", "n.a.", "-", "TBD", "unknown", " null "):
+            with self.subTest(cell=cell):
+                rows = [("Example SQL", "Example Vendor", "16", cell)]
+                _r, items = check(rows)
+                _r, plain = check(rows, parent=False)
+                got = items[("Example SQL", "16")]
+                self.assertEqual(got["classification"], "governable")
+                self.assertEqual(got["classification_basis"],
+                                 plain[("Example SQL", "16")][
+                                     "classification_basis"])
+                self.assertIsNone(got["parent_ref"])
+
+
+class ParentSpeedTests(unittest.TestCase):
+    def test_many_patches_resolve_fast(self):
+        data = bundled()
+        items = [{"id": "w", "name": WIN10[0], "publisher": MS,
+                  "version": WIN10[2], "product": "windows",
+                  "cycle": "10-22h2", "state": "past_eol", "eol_used": True,
+                  "support": False, "extended_support": None,
+                  "classification": "governable",
+                  "classification_basis": [C.CATEGORY], "parent_ref": None,
+                  "inherited_from": None, "inherited_lifecycle": None}]
+        for i in range(10000):
+            items.append(dict(items[0], id="k%d" % i, product=None,
+                              cycle=None, name="Security Update for Windows "
+                              "(KB%07d)" % (5000000 + i), version="1",
+                              classification="component",
+                              classification_basis=[C.NAME_OS_PART]))
+            items.append(dict(items[0], id="t%d" % i, product=None,
+                              cycle=None, name="Tool %d" % i,
+                              publisher="Ex %d" % i, version="1.%d" % i,
+                              classification="unknown",
+                              classification_basis=[C.NO_SIGNAL]))
+        for it in items:
+            it["classification_basis"] = list(it["classification_basis"])
+        start = time.time()
+        C.resolve_parents(items, {}, data)
+        self.assertLess(time.time() - start, 3.0)
+        self.assertEqual(items[1]["inherited_from"], "w")
 
 
 if __name__ == "__main__":

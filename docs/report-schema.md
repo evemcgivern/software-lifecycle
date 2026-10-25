@@ -232,10 +232,12 @@ is listed. Publisher only confirms a curated entry and never decides a class.
 | `category_unknown` | The matched product's category is `framework` or `standard`; the item is `unknown`. |
 | `no_signal` | No product matched and no other signal fired; the item is `unknown`. |
 | `version_shape` | The item would be governable, but it has no version in the column or the name; the item is `unknown`. |
-| `parent_column` | The inventory's Parent column names the parent: one other row with the same normalized name, or else a product. The item is a `bundle_member`. It overrides `governable`, also from a curated row, but never a curated row of class `component` or `unknown`. |
-| `os_parent` | An OS part (see `name_os_part`) fits exactly one OS item in the inventory, by publisher and, when the name carries a version, by cycle. The item is a `bundle_member`. With none or two or more, no link. |
+| `parent_column` | The inventory's Parent column names the parent: one other row with the same normalized name (and, when both rows have a publisher, a publisher word in common), or else a product. A blank cell, or a placeholder such as N/A, None, null, unknown, TBD or -, is no parent signal. The item is a `bundle_member`. It overrides `governable`, also from a curated row, but never a curated row of class `component` or `unknown`. |
+| `os_parent` | An OS part (see `name_os_part`) names an OS in its own name (the OS title, or the title without its vendor word) and fits exactly one OS item in the inventory, by publisher and, when the name carries a version, by cycle. Another row that looks like the same OS (an OS item, or an unmatched row whose name holds the title, from a publisher the OS confirms) counts as a second fit. The item is a `bundle_member`. With none or two or more fits, no link and the class is unchanged. |
 | `parent_ambiguous` | The Parent column holds two different values for the item, or its value names two or more rows. No link; the item is `unknown`, or stays `component` when its own name says so. |
 | `parent_not_found` | The Parent column value names no row and no product. No link; the item is `unknown`, or stays `component` when its own name says so. |
+| `parent_is_self` | The Parent column names the row itself (its own name, or its name without a trailing version). No link; the class is unchanged. |
+| `parent_cycle` | Two rows name each other in the Parent column. No link for either; the classes are unchanged. |
 | `parent_is_part` | The named parent is itself a `component` or `bundle_member`. The link and `inherited_from` stay; `inherited_lifecycle` is `null` (one hop only). |
 | `parent_absent` | The parent is a product, and not exactly one item in the inventory has that product and cycle. No dates are shown. |
 | `parent_no_date` | The parent item is unmatched or has no cycle. The link stays; `inherited_lifecycle` is `null` (the parent has no date). |
