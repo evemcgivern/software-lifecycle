@@ -705,91 +705,214 @@ class ProductsSummaryTests(unittest.TestCase):
     OLD = {"a": rec("a", "Alpha"), "b": rec("b", "Beta"),
            "c": rec("c", "Gamma"), "d": rec("d", "Delta")}
 
-    def test_unchanged(self):
+    def summary(self, new):
+        return rd.products_change_summary(new, self.OLD)
+
+    def test_unchanged_is_not_flagged(self):
         s = rd.products_change_summary(dict(self.OLD), dict(self.OLD))
         self.assertEqual((s["added"], s["removed"], s["retitled"],
-                          s["collisions"]), ([], [], [], []))
+                          s["collisions"], s["list_changes"], s["flagged"]),
+                         ([], [], [], [], [], False))
         self.assertEqual((s["products_old"], s["products_new"]), (4, 4))
 
-    def test_added_removed_retitled(self):
+    def test_added_removed_retitled_do_not_flag_by_themselves(self):
         new = dict(self.OLD)
         del new["b"]
-        new["e"] = rec("e", "Epsilon")
+        new["e"] = rec("e", "Epsilon", ["acme"])
         new["c"] = rec("c", "Gamma Pro")
-        s = rd.products_change_summary(new, self.OLD)
+        s = self.summary(new)
         self.assertEqual(s["added"], ["e"])
         self.assertEqual(s["removed"], ["b"])
         self.assertEqual(s["retitled"],
                          [{"id": "c", "old": "Gamma", "new": "Gamma Pro"}])
-        self.assertEqual(s["collisions"], [])
+        self.assertEqual((s["collisions"], s["list_changes"], s["flagged"]),
+                         ([], [], False))
 
-    def test_vendor_only_change_is_not_a_retitle(self):
+    def test_a_new_product_with_no_collision_does_not_flag(self):
+        new = dict(self.OLD)
+        new["z"] = rec("z", "Zeta", ["zed"])
+        self.assertFalse(self.summary(new)["flagged"])
+
+    def test_vendor_and_namespace_changes_on_existing_products_flag(self):
         new = dict(self.OLD)
         new["a"] = rec("a", "Alpha", ["acme"])
-        s = rd.products_change_summary(new, self.OLD)
-        self.assertEqual(s["retitled"], [])
+        s = self.summary(new)
+        self.assertTrue(s["flagged"])
+        self.assertEqual(s["list_changes"], [{
+            "id": "a", "vendors_added": ["acme"], "vendors_removed": [],
+            "namespaces_added": [], "namespaces_removed": []}])
+        old = dict(self.OLD)
+        old["a"] = rec("a", "Alpha", ["acme", "zed"])
+        s = rd.products_change_summary(self.OLD, old)
+        self.assertEqual(s["list_changes"][0]["vendors_removed"],
+                         ["acme", "zed"])
+        self.assertTrue(s["flagged"])
+        new = dict(self.OLD)
+        new["b"] = dict(rec("b", "Beta"), namespaces=["owner"])
+        s = self.summary(new)
+        self.assertEqual(s["list_changes"][0]["namespaces_added"], ["owner"])
+        self.assertTrue(s["flagged"])
 
-    def test_normalized_title_collisions_in_the_new_catalog(self):
+    def test_normalized_title_collisions_flag_only_when_new(self):
         new = dict(self.OLD)
         new["e"] = rec("e", "ALPHA")
         new["f"] = rec("f", "  Alpha  ")
         new["g"] = rec("g", "Delta Server")
-        s = rd.products_change_summary(new, self.OLD)
+        s = self.summary(new)
         self.assertEqual(len(s["collisions"]), 1)
         self.assertEqual(s["collisions"][0]["ids"], ["a", "e", "f"])
-        # Old collisions are not reported: only the new catalog is checked.
+        self.assertEqual(s["new_collisions"], s["collisions"])
+        self.assertTrue(s["flagged"])
+        # The same collision on both sides is old news: not flagged again.
+        s = rd.products_change_summary(new, new)
+        self.assertEqual(len(s["collisions"]), 1)
+        self.assertEqual((s["new_collisions"], s["flagged"]), ([], False))
+        # Fixing the collision is not a flag either.
         s = rd.products_change_summary(self.OLD, new)
-        self.assertEqual(s["collisions"], [])
+        self.assertEqual((s["collisions"], s["flagged"]), ([], False))
 
     def test_text_is_fixed_and_escapes_titles(self):
         new = dict(self.OLD)
         new["c"] = rec("c", "Gamma `x` [y](http://z)")
         new["e"] = rec("e", "Alpha")
-        text = rd.products_summary_text(
-            rd.products_change_summary(new, self.OLD))
+        new["a"] = rec("a", "Alpha", ["acme"])
+        text = rd.products_summary_text(self.summary(new))
         self.assertTrue(text.startswith("## Product catalog change summary"))
+        self.assertIn("**Flagged for a careful review:**", text)
         for line in ("- Products: 4 before, 5 after",
                      "- Products added: `e`",
-                     "- Products removed: none"):
+                     "- Products removed: none",
+                     "- Vendor and namespace changes:",
+                     "  - `a`: vendor added `acme`"):
             self.assertIn(line, text)
         self.assertIn("`c` (`Gamma` to `Gamma 'x' [y](http://z)`)", text)
-        self.assertIn("- Normalized-title collisions: `alpha`: `a`, `e`", text)
+        self.assertIn("- New normalized-title collisions: `alpha`: `a`, `e`",
+                      text)
         self.assertNotIn("``", text)
+        clean = rd.products_summary_text(rd.products_change_summary(
+            dict(self.OLD), dict(self.OLD)))
+        self.assertIn("Not flagged:", clean)
+        self.assertIn("- Vendor and namespace changes: none", clean)
 
-    def test_cli_adds_a_catalog_section_and_keeps_the_exit_code(self):
+    def _dirs(self, tmp, new_catalog):
         eol = {"alpha": [{"cycle": "1", "eol": "2026-01-01", "support": True}]}
+        rd.write_eol(str(tmp / "old"), eol)
+        rd.write_eol(str(tmp / "new"), eol)
+        (tmp / "old.json").write_bytes(rd.products_bytes(self.OLD))
+        (tmp / "new.json").write_bytes(rd.products_bytes(new_catalog))
+        return ["eol-summary", "--new", str(tmp / "new"),
+                "--old", str(tmp / "old")]
+
+    def test_cli_exit_codes_clean_flagged_and_error(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
-            rd.write_eol(str(tmp / "old"), eol)
-            rd.write_eol(str(tmp / "new"), eol)
-            (tmp / "old.json").write_bytes(rd.products_bytes(self.OLD))
-            changed = dict(self.OLD)
-            changed["e"] = rec("e", "Alpha")
-            (tmp / "new.json").write_bytes(rd.products_bytes(changed))
-            base = ["eol-summary", "--new", str(tmp / "new"),
-                    "--old", str(tmp / "old")]
+            added = dict(self.OLD)
+            added["e"] = rec("e", "Epsilon")
+            base = self._dirs(tmp, added)
             code, out, err = run_cli(base)
             self.assertEqual((code, "Product catalog" in out), (0, False))
-            code, out, err = run_cli(base + [
-                "--new-products", str(tmp / "new.json"),
-                "--old-products", str(tmp / "old.json")])
+            both = base + ["--new-products", str(tmp / "new.json"),
+                           "--old-products", str(tmp / "old.json")]
+            code, out, err = run_cli(both)
             self.assertEqual(code, 0, err)
             self.assertTrue(out.startswith("## endoflife.date change summary"))
             self.assertIn("## Product catalog change summary", out)
             self.assertIn("- Products added: `e`", out)
-            code, _, err = run_cli(base + [
-                "--new-products", str(tmp / "new.json")])
-            self.assertEqual(code, 1)
-            code, _, err = run_cli(base + [
-                "--new-products", str(tmp / "missing.json"),
-                "--old-products", str(tmp / "old.json")])
-            self.assertEqual(code, 1)
+            flagged = dict(self.OLD)
+            flagged["a"] = rec("a", "Alpha", ["injected"])
+            (tmp / "new.json").write_bytes(rd.products_bytes(flagged))
+            code, out, err = run_cli(both)
+            self.assertEqual(code, 1, err)
+            self.assertIn("injected", out)
+            self.assertIn("Flagged", out)
+
+    def test_errors_exit_2_and_write_no_summary(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            base = self._dirs(tmp, dict(self.OLD))
             (tmp / "bad.json").write_text('{"format": 1, "products": 5}')
-            code, _, err = run_cli(base + [
-                "--new-products", str(tmp / "bad.json"),
-                "--old-products", str(tmp / "old.json")])
-            self.assertEqual(code, 1)
-            self.assertIn("schema check", err)
+            (tmp / "junk.json").write_text("{nope")
+            for new_products in (str(tmp / "bad.json"), str(tmp / "junk.json"),
+                                 str(tmp / "missing.json")):
+                with self.subTest(new_products=new_products):
+                    code, out, err = run_cli(base + [
+                        "--new-products", new_products,
+                        "--old-products", str(tmp / "old.json")])
+                    self.assertEqual(code, 2)
+                    self.assertEqual(out, "")
+                    self.assertIn("Refresh failed", err)
+            code, out, err = run_cli(base + [
+                "--new-products", str(tmp / "new.json")])
+            self.assertEqual((code, out), (2, ""))
+            code, out, err = run_cli(
+                ["eol-summary", "--new", str(tmp / "nowhere"),
+                 "--old", str(tmp / "old")])
+            self.assertEqual((code, out), (2, ""))
+
+
+class PurlHostileInputTests(unittest.TestCase):
+    def ns(self, purl):
+        return rd.purl_namespace(purl, "demo")
+
+    def test_github_composer_npm_take_the_first_segment_only(self):
+        self.assertEqual(self.ns("pkg:github/mautic/mautic/"), "mautic")
+        self.assertEqual(self.ns("pkg:github/Owner/repo/extra/more"), "owner")
+        self.assertEqual(self.ns("pkg:composer/Vendor/pkg/x"), "vendor")
+        self.assertEqual(self.ns("pkg:npm/%40Scope/pkg"), "scope")
+        self.assertIsNone(self.ns("pkg:npm/pkg"))
+        self.assertIsNone(self.ns("pkg:github/solo"))
+
+    def test_golang_only_under_github(self):
+        self.assertEqual(self.ns("pkg:golang/github.com/Gorilla/mux"),
+                         "gorilla")
+        self.assertEqual(
+            self.ns("pkg:golang/github.com/aws/aws-cdk-go/awscdk"), "aws")
+        self.assertIsNone(self.ns("pkg:golang/golang.org/x/net"))
+        self.assertIsNone(self.ns("pkg:golang/k8s.io/api/core"))
+        self.assertIsNone(self.ns("pkg:golang/github.com/mux"))
+
+    def test_maven_keeps_the_whole_group_id(self):
+        self.assertEqual(self.ns("pkg:maven/org.Apache.Tomcat/tomcat@9"),
+                         "org.apache.tomcat")
+
+    def test_other_types_give_none(self):
+        for purl in ("pkg:deb/debian/nginx", "pkg:rpm/redhat/go",
+                     "pkg:apk/alpine/x", "pkg:alpm/arch/x",
+                     "pkg:docker/library/golang", "pkg:oci/x/y",
+                     "pkg:brew/oven-sh/bun/bun", "pkg:scoop/a/b",
+                     "pkg:pypi/django", "pkg:generic/go",
+                     "pkg:nuget/x/y", "pkg:gem/x/y"):
+            self.assertIsNone(self.ns(purl), purl)
+
+    def test_hostile_decoded_values_stop_the_refresh(self):
+        for bad in ("a%0Ab", "%E2%80%AEevil", "a%2Fb", "a%20b", "a%00b",
+                    "%C3%28", "a%1Bb", "%2Downer", "a%3Ab"):
+            for kind in ("github", "composer", "npm"):
+                with self.subTest(kind=kind, bad=bad):
+                    with self.assertRaises(rd.RefreshError) as ctx:
+                        self.ns("pkg:%s/%s/repo" % (kind, bad))
+                    self.assertNotIn("evil", str(ctx.exception))
+        with self.assertRaises(rd.RefreshError):
+            self.ns("pkg:golang/github.com/a%0Ab/x")
+        with self.assertRaises(rd.RefreshError):
+            self.ns("pkg:maven/a%2Fb/x")
+
+    def test_hostile_values_stop_the_whole_record(self):
+        text = ("---\ntitle: Demo\ncategory: app\npermalink: /demo\n"
+                "identifiers:\n  - purl: pkg:github/a%0Ab/c\n"
+                "releases:\n  - releaseCycle: \"1\"\n    eol: 2030-01-01\n"
+                "---\n")
+        with self.assertRaises(rd.RefreshError):
+            rd.product_record_from_markdown(text)
+
+    def test_cpe_vendor_characters(self):
+        self.assertEqual(rd.cpe_vendor("cpe:2.3:a:c++:x", "d"), "c++")
+        self.assertEqual(rd.cpe_vendor("cpe:/a:pivotal_software:x", "d"),
+                         "pivotal_software")
+        for bad in ("cpe:2.3:a:a%0Ab:x", "cpe:2.3:a:a b:x",
+                    "cpe:2.3:a:a\u202eb:x"):
+            with self.assertRaises(rd.RefreshError):
+                rd.cpe_vendor(bad, "d")
 
 
 class ZipTests(unittest.TestCase):

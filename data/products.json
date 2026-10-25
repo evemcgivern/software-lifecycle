@@ -2464,7 +2464,7 @@
       "category": "server-app",
       "id": "mautic",
       "namespaces": [
-        "mautic/mautic"
+        "mautic"
       ],
       "title": "Mautic",
       "vendors": []

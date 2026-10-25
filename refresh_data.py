@@ -17,7 +17,9 @@ Commands:
   eol-summary --new DIR --old DIR [--new-products F --old-products F]
                                       change summary for the weekly PR
 
-Exit codes: 0 ok; 1 gate failed or refresh failed; 2 usage error.
+Exit codes: 0 ok; 1 gate failed or refresh failed; 2 usage error. For
+eol-summary: 0 clean, 1 flagged (a summary is written either way), 2 error
+(nothing is written to stdout).
 Messages are fixed text plus counts and product ids, never feed content.
 """
 from __future__ import annotations
@@ -526,8 +528,13 @@ def product_from_markdown(text: str) -> tuple:
 # or dates.
 
 _IDENT_RE = re.compile(r"\s*-\s+([A-Za-z0-9_]+):(?:[ ]+(.*))?$")
-_VENDOR_RE = re.compile(r"[A-Za-z0-9_.\-]+")
-_OWNER_PURLS = ("github", "npm", "maven", "composer", "golang")
+_VENDOR_RE = re.compile(r"[A-Za-z0-9_.+\-]+")
+_NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
+# Purl types that give a namespace; every other type (deb, rpm, apk, alpm,
+# docker, oci, brew, scoop, chocolatey, winget, nuget, pypi, gem, cargo, hex,
+# generic, swid) gives none: their namespaces name a distribution, a tap or a
+# repackager, not the product's owner.
+_OWNER_PURLS = ("github", "npm", "composer", "golang", "maven")
 
 
 def _plain_text(value, key: str, where: str) -> str:
@@ -580,26 +587,38 @@ def cpe_vendor(value: str, where: str):
 
 
 def purl_namespace(value: str, where: str):
-    """The owner part of a purl, lower-cased; None when the type has none."""
+    """The owner part of a purl, decoded and lower-cased.
+
+    github, npm and composer: the first namespace segment (npm without its
+    @). golang: the owner segment, only for module paths on github.com.
+    maven: the whole group id. None for every other type, or when there is
+    no namespace. A decoded value with unexpected characters stops the
+    refresh."""
     if not value.startswith("pkg:"):
         raise _bad(where, "a purl identifier has an unexpected form")
     path = value[4:].split("#")[0].split("?")[0]
     segments = path.split("/")
     if len(segments) < 2 or not segments[0]:
         raise _bad(where, "a purl identifier has an unexpected form")
-    if segments[0] not in _OWNER_PURLS or len(segments) < 3:
+    kind = segments[0]
+    if kind not in _OWNER_PURLS or len(segments) < 3:
         return None
-    spaces = [urllib.parse.unquote(seg) for seg in segments[1:-1]]
-    if segments[0] == "golang":
-        if "." in spaces[0] and len(spaces) > 1:
-            spaces = spaces[1:]          # drop the host, keep the owner
-        space = spaces[0]
-    elif segments[0] == "maven":
+    spaces = [urllib.parse.unquote(seg).lower() for seg in segments[1:-1]]
+    if kind == "golang":
+        if spaces[0] != "github.com" or len(spaces) < 2:
+            return None
+        space = spaces[1]
+    elif kind == "maven":
         space = ".".join(spaces)
     else:
-        space = "/".join(spaces)
-    space = space.lstrip("@").strip().lower()
-    return space or None
+        space = spaces[0]
+    if kind == "npm" and space.startswith("@"):
+        space = space[1:]
+    if not space:
+        return None
+    if not _NAMESPACE_RE.fullmatch(space):
+        raise _bad(where, "a purl namespace has characters it cannot read")
+    return space
 
 
 def product_record_from_markdown(text: str) -> dict:
@@ -896,30 +915,62 @@ def summary_text(summary: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _collisions(catalog: dict) -> list:
+    by_title = {}
+    for pid in sorted(catalog):
+        by_title.setdefault(
+            normalize_name(catalog[pid]["title"]), []).append(pid)
+    return [{"title": title, "ids": ids}
+            for title, ids in sorted(by_title.items()) if len(ids) > 1]
+
+
 def products_change_summary(new: dict, old: dict) -> dict:
     """Compare {product id: record} catalogs: added, removed and retitled
-    products, and normalized-title collisions in the new catalog."""
-    by_title = {}
-    for pid in sorted(new):
-        by_title.setdefault(normalize_name(new[pid]["title"]), []).append(pid)
+    products, vendor and namespace changes on existing products, and
+    normalized-title collisions (all, and those not in the old catalog).
+
+    flagged is true for a new collision or for any vendor or namespace
+    change on an existing product: those two lists decide one-word matches.
+    Removed products flag through the eol summary."""
+    both = sorted(set(new) & set(old))
+    list_changes = []
+    for pid in both:
+        change = {"id": pid}
+        for key in ("vendors", "namespaces"):
+            was, now = set(old[pid][key]), set(new[pid][key])
+            change[key + "_added"] = sorted(now - was)
+            change[key + "_removed"] = sorted(was - now)
+        if any(change[k] for k in change if k != "id"):
+            list_changes.append(change)
+    collisions = _collisions(new)
+    seen = {(c["title"], tuple(c["ids"])) for c in _collisions(old)}
+    new_collisions = [c for c in collisions
+                      if (c["title"], tuple(c["ids"])) not in seen]
+    reasons = []
+    if new_collisions:
+        reasons.append("new normalized-title collisions: %d"
+                       % len(new_collisions))
+    if list_changes:
+        reasons.append("vendor or namespace changes on existing products: "
+                       "%d" % len(list_changes))
     return {
         "products_old": len(old), "products_new": len(new),
         "added": sorted(set(new) - set(old)),
         "removed": sorted(set(old) - set(new)),
         "retitled": [
             {"id": pid, "old": old[pid]["title"], "new": new[pid]["title"]}
-            for pid in sorted(set(new) & set(old))
-            if new[pid]["title"] != old[pid]["title"]],
-        "collisions": [
-            {"title": title, "ids": ids}
-            for title, ids in sorted(by_title.items()) if len(ids) > 1],
+            for pid in both if new[pid]["title"] != old[pid]["title"]],
+        "list_changes": list_changes,
+        "collisions": collisions,
+        "new_collisions": new_collisions,
+        "flagged": bool(reasons), "reasons": reasons,
     }
 
 
 def products_summary_text(summary: dict) -> str:
     """Fixed-text Markdown section for the weekly pull request body.
     Titles come from upstream, so they are shown as code with backticks
-    removed."""
+    removed. Vendors and namespaces are checked tokens."""
     def ids(names):
         return ", ".join("`%s`" % n for n in names) if names else "none"
 
@@ -928,17 +979,43 @@ def products_summary_text(summary: dict) -> str:
     retitled = ", ".join("`%s` (%s to %s)" % (r["id"], title(r["old"]),
                                             title(r["new"]))
                          for r in summary["retitled"]) or "none"
-    collisions = "; ".join("%s: %s" % (title(c["title"]), ids(c["ids"]))
-                           for c in summary["collisions"]) or "none"
-    lines = [
-        "## Product catalog change summary", "",
+
+    def collisions(items):
+        return "; ".join("%s: %s" % (title(c["title"]), ids(c["ids"]))
+                         for c in items) or "none"
+    lines = ["## Product catalog change summary", ""]
+    if summary["flagged"]:
+        lines += ["**Flagged for a careful review:** " +
+                  "; ".join(summary["reasons"]) + ".", ""]
+    else:
+        lines += ["Not flagged: no new title collision and no vendor or "
+                  "namespace change on an existing product.", ""]
+    lines += [
         "- Products: %d before, %d after" % (summary["products_old"],
                                             summary["products_new"]),
         "- Products added: %s" % ids(summary["added"]),
         "- Products removed: %s" % ids(summary["removed"]),
         "- Products retitled: %s" % retitled,
-        "- Normalized-title collisions: %s" % collisions,
+        "- New normalized-title collisions: %s"
+        % collisions(summary["new_collisions"]),
+        "- All normalized-title collisions: %s"
+        % collisions(summary["collisions"]),
     ]
+    if summary["list_changes"]:
+        lines.append("- Vendor and namespace changes:")
+        for change in summary["list_changes"]:
+            parts = []
+            for key, label in (("vendors", "vendor"),
+                               ("namespaces", "namespace")):
+                if change[key + "_added"]:
+                    parts.append("%s added %s" % (
+                        label, ids(change[key + "_added"])))
+                if change[key + "_removed"]:
+                    parts.append("%s removed %s" % (
+                        label, ids(change[key + "_removed"])))
+            lines.append("  - `%s`: %s" % (change["id"], "; ".join(parts)))
+    else:
+        lines.append("- Vendor and namespace changes: none")
     return "\n".join(lines) + "\n"
 
 
@@ -1091,27 +1168,35 @@ def _run(args) -> int:
         return 0
     if bool(args.new_products) != bool(args.old_products):
         raise RefreshError("--new-products and --old-products go together")
-    summary = eol_change_summary(_load_eol_dir(args.new),
-                                 _load_eol_dir(args.old))
-    sys.stdout.write(summary_text(summary))
+    # Load and check everything before writing a word, so an error never
+    # leaves a summary behind.
+    eol = eol_change_summary(_load_eol_dir(args.new),
+                             _load_eol_dir(args.old))
+    catalog = None
     if args.new_products:
-        sys.stdout.write("\n" + products_summary_text(products_change_summary(
+        catalog = products_change_summary(
             _load_catalog(args.new_products, "new"),
-            _load_catalog(args.old_products, "previous"))))
-    return 1 if summary["flagged"] else 0
+            _load_catalog(args.old_products, "previous"))
+    sys.stdout.write(summary_text(eol))
+    if catalog is not None:
+        sys.stdout.write("\n" + products_summary_text(catalog))
+    return 1 if eol["flagged"] or (catalog and catalog["flagged"]) else 0
 
 
 def main(argv: list | None = None) -> int:
     args = _parser().parse_args(argv)
+    # eol-summary exits 0 (clean) or 1 (flagged) with a summary written;
+    # any error is 2, so a caller can tell "flagged" from "failed".
+    failed = 2 if args.command == "eol-summary" else 1
     try:
         return _run(args)
     except RefreshError as exc:
         print("Refresh failed: %s" % exc, file=sys.stderr)
-        return 1
+        return failed
     except OSError:
         print("Refresh failed: a file could not be read or written",
               file=sys.stderr)
-        return 1
+        return failed
 
 
 if __name__ == "__main__":
