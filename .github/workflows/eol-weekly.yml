@@ -155,8 +155,13 @@ jobs:
           UPSTREAM_SHA: ${{ needs.build.outputs.sha }}
           FLAGGED: ${{ needs.build.outputs.flagged }}
         run: |
-          # Keep pull requests in order: one open data/eol pull request at a time.
-          if gh pr list --state open --limit 200 --json headRefName --jq '.[].headRefName' | grep -q '^data/eol-'; then
+          # Keep pull requests in order: one open data/eol pull request at a
+          # time. A failed lookup stops the job; it never means "none open".
+          if ! open_heads="$(gh pr list --state open --limit 200 --json headRefName --jq '.[].headRefName')"; then
+            echo "Could not list open pull requests. Nothing was pushed."
+            exit 1
+          fi
+          if printf '%s\n' "$open_heads" | grep -q '^data/eol-'; then
             echo "::notice::A data/eol pull request is already open. Review it first; no new pull request was opened."
             exit 0
           fi
@@ -176,10 +181,18 @@ jobs:
             exit 1
           fi
           branch="data/eol-$(date -u +%Y-%m-%d)"
-          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+          # Exit code 2 means the branch is absent; any other failure (such
+          # as 128 for a network or credential error) stops the job.
+          status=0
+          git ls-remote --exit-code --heads origin "$branch" > /dev/null || status=$?
+          if [ "$status" -eq 0 ]; then
             echo "Branch $branch already exists. Close or merge its pull request first."
             exit 1
+          elif [ "$status" -ne 2 ]; then
+            echo "Could not check the remote branches. Nothing was pushed."
+            exit 1
           fi
+          echo "Opening a pull request from $branch."
           rm -f data/eol/*.json
           cp "$update"/eol/*.json data/eol/
           cp "$update/manifest.json" data/manifest.json
