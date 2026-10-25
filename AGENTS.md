@@ -61,7 +61,8 @@ No install step. Run from the repo root.
   `CONTRIBUTING.md`.
 - Ratchet for `tests/benchmark/floor.json`: never lower it. It holds
   correct-row minimums (`hand_catalog_correct_min`, `generated_correct_min`,
-  `classification_correct_min`, `parent_cases_correct_min`) and ceilings
+  `classification_correct_min`, `parent_cases_correct_min`,
+  `silver_correct_min`) and ceilings
   (`soft_wrong_max`, `governable_as_part_max`, `wrong_parent_max`). Raise a
   minimum or lower a ceiling by hand in the commit that earns it. Held-out gold rows are never used
   to choose an entry. Every one-word allowlist entry and every exclusion cites

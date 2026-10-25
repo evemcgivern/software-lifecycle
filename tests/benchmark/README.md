@@ -50,14 +50,62 @@ cases are hand-designed tests of the parent rules, not gold rows.
 
 ### Silver sample
 
-`silver-sample.csv` will hold a stratified sample of public rows from the
-silver catalog (winget, Homebrew, Debian, Ubuntu) with two independent labels,
-to measure classification rates per source. Columns: `source`, `name`,
-`publisher`, `version`, `label` and `label_b` (a class from each labeller),
-`agreed` (`1` if the labels match, else `0`; only `1` rows are scored),
-`heldout` (the gold rule) and `notes`. `tests/sample_silver.py` draws the
-sample from the silver file named by `SWLC_SILVER`. The suite never imports
-it. The silver file is not in the repository.
+`silver-sample.csv` holds 2,391 public rows from the silver catalog (winget,
+Homebrew, Debian, Ubuntu; 172,522 rows, built outside the repository and not
+committed) with two independent labels, to measure classification rates per
+source. Columns: `source`, `name`, `publisher`, `version`, `label` and
+`label_b` (a class from each labeller), `agreed` (`1` if the labels match,
+else `0`), `heldout` (the gold rule) and `notes`. `tests/sample_silver.py`
+holds the held-out rule and a plain draw; the suite never imports it.
+
+How the sample was made, plainly:
+
+- It was drawn after the rule change that stopped a trailing Runtime or SDK
+  from marking a component. Rows the tool labelled `component` were drawn
+  per source (600 each for Debian and Ubuntu, all of them for Homebrew and
+  winget), plus rows the tool labelled `governable`.
+- The labellers are two AI models, not people: Sonnet wrote `label` and
+  Haiku wrote `label_b`, each reading the rows itself, blind to the other
+  and to the tool's answer. An earlier attempt that labelled rows with a
+  script was thrown away. 59 rows have `agreed` = `0`; the person running
+  the work read that list. The labels are left as the models gave them.
+- 13 Homebrew rows were dropped because their names hold an at sign
+  (versioned formulae), which no benchmark file may contain. No row hit the
+  banned-term scan.
+- A spot-check read 117 agreed rows (5%, a seeded shuffle) and found none
+  plainly wrong; two (`liblouis-bin`, `libpurple-bin`, tool packages of a
+  library) are arguable.
+- After the sample was drawn, the `-dev` and `lib*` tool rules changed (a
+  `*-dev` name needs a `lib` part or a digit; `lib*-cli`, `-tools` and the
+  like are not libraries). Debian and Ubuntu Go and tool packages that the
+  tool labelled `component` at drawing time are now `unknown`, so those two
+  sources have fewer than 600 `component` rows and no rate is claimed for
+  them.
+
+The rates below hold for this catalog sample only. They say nothing about
+any real estate, where the mix of rows is unknown. They are not coverage
+figures.
+
+### Silver sample rates
+
+One row per source; rates are never pooled. The worst error is a row the
+tool labels `component` while either labeller says `governable`, over all
+rows the tool labels `component` (agreed or not, held-out rows included).
+Precision is agreed `component` labels over agreed rows the tool labels
+`component`. A rate is claimed only where at least 600 rows the tool labels
+`component` stand behind it; the claim is a worst-error rate under 0.5% and
+a precision of at least 98%. `bundle_member` is counted only: the sample has
+almost none.
+
+| source | tool says component | worst errors | worst-error rate | component precision | held-out worst / n |
+| --- | --- | --- | --- | --- | --- |
+| winget | 187 | 2 | not claimed (n under 600) | not claimed (178 of 180 agreed) | 0 / 19 |
+| homebrew | 629 | 0 | 0.00% (0 of 629) | 100% (623 of 623) | 0 / 68 |
+| debian | 557 | 1 | not claimed (n under 600) | not claimed (554 of 554 agreed) | 0 / 64 |
+| ubuntu | 556 | 0 | not claimed (n under 600) | not claimed (553 of 553 agreed) | 0 / 71 |
+
+`silver_correct_min` in `floor.json` is the count of agreed rows where the
+tool's class equals the label.
 
 ### Product, no cycle
 

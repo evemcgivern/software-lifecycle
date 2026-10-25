@@ -17,6 +17,9 @@
   items are never hidden. `--fail-on` is unchanged and never reads
   inherited dates.
 - Known limits are in `docs/usage.md`, "Known limits".
+- The benchmark gains a labelled silver sample of public catalog rows,
+  scored per source with the floor `silver_correct_min`. See
+  `tests/benchmark/README.md`.
 
 - Data format 2: the data folder gains `products.json` (a product catalog
   generated from the endoflife.date product files: id, title, category,
