@@ -409,7 +409,10 @@ stays complete, and `unknown` items are never hidden.
   says so), not `component`.
 - A curated OS-patch prefix that fits no cycle of the OS gives `unknown`,
   not a link.
-- Daemons named `lib*`, such as libvirt, are treated as components.
+- A one-word daemon named `lib*`, such as libvirt, is treated as a component.
+  A `lib*` name ending in a tool word (`-cli`, `-server`, `-daemon`, `-rest`,
+  `-tools`, `-viewer`, `-manager`, `-gui`) is not, and a `*-dev` name counts
+  only when a part of it starts with `lib` or it holds a digit.
 - The list of Parent placeholders is closed. "Not Applicable" is not a
   placeholder yet; such a cell is read as a parent name and gives
   `parent_not_found`.

@@ -118,6 +118,19 @@ class PartKindTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertEqual(C.part_kind(name), kind)
 
+    def test_dev_and_lib_tools_are_not_libraries(self):
+        # Silver sample (Task 7): tools named -dev or lib*-cli are apps.
+        for name in ("azure-dev", "odo-dev", "librespeed-cli",
+                     "libpostal-rest", "libvirt-daemon", "libinput-tools",
+                     "libreoffice-gui"):
+            with self.subTest(name=name):
+                self.assertIsNone(C.part_kind(name))
+        for name in ("libssl-dev", "zlib1g-dev", "python3-dev",
+                     "linux-libc-dev", "libssl3", "libcurl4-openssl-dev",
+                     "libglib2.0-0"):
+            with self.subTest(name=name):
+                self.assertEqual(C.part_kind(name), "part")
+
     def test_part_words_inside_an_app_name_do_not_fire(self):
         for name in ("Redistributable Packages Helper",
                      "Fabrikam Language Pack Studio",

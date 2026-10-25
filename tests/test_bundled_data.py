@@ -184,7 +184,8 @@ class BundledClassificationCuration(unittest.TestCase):
                  "Microsoft Corporation", "3.1.30.31011"),
                 (".NET SDK", "", "8.0.404"), (".NET Runtime", "", "8.0.11"),
                 ("Microsoft .NET Framework Runtime 4.8.1",
-                 "Microsoft Corporation", "4.8.1")):
+                 "Microsoft Corporation", "4.8.1"),
+                ("Git Extensions", "Git Extensions Team", "5.2.1")):
             with self.subTest(name=name):
                 m = match_product(name, version, data.aliases, data.products,
                                   catalog_index=data.matching_index(),
@@ -207,6 +208,11 @@ class BundledClassificationCuration(unittest.TestCase):
                                 "product": None, "publisher": pub}, pub, data)
                 self.assertEqual(got.cls, "component")
                 self.assertIn("%s|%s|%s" % (name, pub, version), self.gold)
+
+    def test_classification_sources_are_vendor_pages_we_could_read(self):
+        # The Report Viewer download page could not be fetched in review.
+        for entry in self.curation.get("classification_rows", []):
+            self.assertNotIn("details.aspx?id=45496", entry["source"])
 
     def test_dotnet_and_nodejs_are_standalone_runtimes(self):
         products = self.curation.get("classification_products", {})

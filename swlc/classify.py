@@ -76,8 +76,15 @@ _LAST_PART = re.compile(
     r"\S \b(?:font|codec|extension|plugin|plug-in|add-in)s?\Z"
     r"|\S \badd-in for \S")
 # One lowercase package token: lib*, *-dev, or a font package (font-*,
-# fonts-*, ttf-*). A lib* name that is a catalog title is skipped.
-_LIB = re.compile(r"\A(?:lib\S+|\S+-dev)\Z")
+# fonts-*, ttf-*). A lib* name that is a catalog title is skipped. A *-dev
+# name counts only when a segment starts with "lib" or the name holds a
+# digit (libssl-dev, zlib1g-dev, python3-dev, linux-libc-dev; not azure-dev).
+# A lib* name ending in a tool word is an app, not a library
+# (librespeed-cli, libpostal-rest).
+_LIB = re.compile(r"\Alib\S+\Z")
+_DEV = re.compile(r"\A(?:\S*\d\S*|(?:\S+-)?lib\S*)-dev\Z")
+_LIB_TOOL = re.compile(
+    r"-(?:cli|server|daemon|rest|tools|viewer|manager|gui)\Z")
 _FONT_PACKAGE = re.compile(r"\A(?:fonts?|ttf)-\S+\Z")
 
 
@@ -111,7 +118,8 @@ def _part(name: str):
         return "part", False, last
     raw = (name or "").strip()
     if raw == raw.lower() and " " not in bare:
-        if _LIB.fullmatch(bare):
+        if _DEV.fullmatch(bare) or (_LIB.fullmatch(bare)
+                                    and not _LIB_TOOL.search(bare)):
             return "part", True, last
         if _FONT_PACKAGE.fullmatch(bare):
             return "part", False, last

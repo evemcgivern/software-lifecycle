@@ -2677,3 +2677,4 @@ Microsoft .NET Core Runtime - 3.1.30 (x64),Microsoft Corporation,3.1.30.31011,do
 .NET SDK,,8.0.404,dotnet,8,spec-defined; standalone .NET SDK package with no publisher is governable (decision 1); SDK counts as .NET,hand,0,governable,
 .NET Runtime,,8.0.11,dotnet,8,spec-defined; standalone .NET runtime package with no publisher is governable (decision 1); runtime counts as .NET,hand,0,governable,
 Microsoft .NET Framework Runtime 4.8.1,Microsoft Corporation,4.8.1,dotnetfx,4.8.1,spec-defined; standalone .NET Framework runtime download is governable (decision 1),hand,0,governable,
+Git Extensions,Git Extensions Team,5.2.1,NONE,,spec-defined; Git Extensions is a standalone UI tool for Git repositories; the plural Extensions is not a part word here,hand,0,governable,
