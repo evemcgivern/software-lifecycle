@@ -44,8 +44,8 @@ class Data:
 
 
 def tool_version() -> str:
-    """The skill's VERSION file, one level above scripts/."""
-    path = Path(__file__).resolve().parents[2] / "VERSION"
+    """The skill's VERSION file, at the repo root."""
+    path = Path(__file__).resolve().parents[1] / "VERSION"
     try:
         text = path.read_text(encoding="ascii").strip()
     except (OSError, UnicodeDecodeError):

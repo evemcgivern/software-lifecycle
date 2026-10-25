@@ -176,7 +176,7 @@ class ManifestTests(DataCase):
                 load_data(d, AS_OF)
 
     def test_tool_version_read_from_version_file(self):
-        skill = Path(__file__).resolve().parents[2]
+        skill = Path(__file__).resolve().parents[1]
         self.assertEqual(data.tool_version(),
                          (skill / "VERSION").read_text().strip())
 
@@ -416,7 +416,7 @@ class ProfilesAndAliasShapeTests(DataCase):
                 self.assertIn("profiles.json", str(ctx.exception))
 
     def test_real_profiles_and_aliases_pass(self):
-        real = Path(__file__).resolve().parents[2] / "data"
+        real = Path(__file__).resolve().parents[1] / "data"
         d = self.make()
         for name in ("aliases.json", "profiles.json"):
             replace_file(d, name, (real / name).read_bytes())

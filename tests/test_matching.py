@@ -14,7 +14,7 @@ from swlc.matching import (  # noqa: E402
 from swlc.normalize import normalize_name  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-DATA = HERE.parents[1] / "data"
+DATA = HERE.parent / "data"
 
 
 def cycles(*labels):

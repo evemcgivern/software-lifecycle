@@ -24,7 +24,7 @@ EXIT_FINDINGS, EXIT_UNEXPECTED = 10, 70
 FAIL_ON_NAMES = ("past_eol", "ends_soon", "review_urgently",
                  "dates_disagree", "unmatched")
 OUTPUT_FILES = ("report.json", "report.md", "report.csv")
-BUNDLED_DATA = str(Path(__file__).resolve().parents[2] / "data")
+BUNDLED_DATA = str(Path(__file__).resolve().parents[1] / "data")
 MAX_PREVIOUS_BYTES = 64 * 1024 * 1024
 MAX_COLUMNS_BYTES = 1024 * 1024
 MIN_YEAR, MAX_YEAR = 1990, 2200

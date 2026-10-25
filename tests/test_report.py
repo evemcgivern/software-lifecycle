@@ -175,7 +175,7 @@ class JsonTests(Base):
         text = report.render_json(self.result, self.meta)
         obj = json.loads(text)
         self.assertEqual(obj["meta"]["tool_version"],
-                         (Path(__file__).resolve().parents[2]
+                         (Path(__file__).resolve().parents[1]
                           / "VERSION").read_text().strip())
         self.assertEqual(text, report.render_json(self.result, self.meta))
         self.assertTrue(text.endswith("\n"))
