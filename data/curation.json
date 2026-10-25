@@ -60,21 +60,21 @@
       "phrases": [
         "civilized discourse construction kit"
       ],
-      "reason": "The Discourse site names the copyright holder Civilized Discourse Construction Kit, Inc.",
-      "source": "https://www.discourse.org/"
+      "reason": "The Discourse LICENSE.txt names the copyright holder Civilized Discourse Construction Kit, Inc. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
+      "source": "https://github.com/discourse/discourse/blob/main/LICENSE.txt"
     },
     "dovecot": {
       "phrases": [
         "open-xchange"
       ],
-      "reason": "The Dovecot site names the copyright holder Open-Xchange Oy.",
+      "reason": "The Dovecot site names the copyright holder Open-Xchange Oy. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
       "source": "https://www.dovecot.org/"
     },
     "drupal": {
       "phrases": [
         "drupal association"
       ],
-      "reason": "The Drupal Association administers Drupal.org for the Drupal project, and is named as the publisher in catalog rows.",
+      "reason": "The Drupal Association page says it administers Drupal.org for the Drupal community. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
       "source": "https://www.drupal.org/association"
     },
     "electron": {
@@ -126,7 +126,7 @@
         "cloud native computing foundation",
         "cncf"
       ],
-      "reason": "The Harbor site says Harbor is a Cloud Native Computing Foundation (CNCF) graduated project.",
+      "reason": "The Harbor site says Harbor is a CNCF Graduated project. The CNCF hosts Harbor; it is not shown as the publisher. A catalog row naming the CNCF as Harbor's publisher: Not found. Kept only because gold rows use it.",
       "source": "https://goharbor.io/"
     },
     "istio": {
@@ -140,8 +140,8 @@
       "phrases": [
         "open source matters"
       ],
-      "reason": "The Joomla site names the copyright holder Open Source Matters, Inc.",
-      "source": "https://www.joomla.org/"
+      "reason": "The Open Source Matters site says the Joomla name and logo are trademarks of Open Source Matters, Inc. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
+      "source": "https://www.opensourcematters.org/"
     },
     "julia": {
       "phrases": [
@@ -278,7 +278,7 @@
       "phrases": [
         "sqlite consortium"
       ],
-      "reason": "The SQLite Consortium page on sqlite.org describes the consortium that funds SQLite development; catalog rows name it as the publisher.",
+      "reason": "The SQLite Consortium page on sqlite.org describes the consortium that funds SQLite development. It does not show the consortium as a publisher string. A catalog row naming it as publisher: Not found (looked in winget, Debian and Homebrew). Kept only because gold rows use it.",
       "source": "https://www.sqlite.org/consortium.html"
     },
     "squid": {
