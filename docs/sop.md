@@ -51,7 +51,10 @@ who holds each role.
    **Decision needed:** whether each item is affected, and its priority.
 7. **Settle "Dates disagree".** The ITAM lead picks the right date for each
    item. If it will keep recurring, record the choice as a row in
-   `golden-sources.csv` with a `review_by` date.
+   `golden-sources.csv` with a `review_by` date. If two rows could apply
+   to one item (one by product ID and one by name), the product-ID row is
+   used and the report warns "N item(s) matched two golden-source rows; the
+   product-id row was used." Remove the extra row.
    **Decision needed:** the ITAM lead's choice of date and review-by date.
 8. **Handle accepted risk.** The asset owner requests risk acceptance. The
    risk owner and an independent approver sign off. Record it in
@@ -113,4 +116,4 @@ is a reference for prioritization. It does not show compliance with any
 standard. CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01. It is a reference only. It binds federal civilian agencies only. This tool does not implement it or its deadlines. Details are not reviewed here (Unverified).
 
 **What is the support level?** Maintained as time allows, best effort, no
-SLA. The repo is on the Experiment track with a review date of 2027-01-31.
+SLA. This is an experiment with a review date of 2027-01-31. On that date the maintainer decides whether to keep it, archive it, or fold it into another project.

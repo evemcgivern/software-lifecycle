@@ -64,6 +64,55 @@ On success it prints "Data check passed" with the release and file count.
 | 10 | Findings are present in a list named by `--fail-on`. Only returned with `--fail-on`. |
 | 70 | Unexpected error. The tool prints only the error type. |
 
+## How KEV is checked
+
+KEV is checked only for matched items that are past end of life or end
+within the window. The check uses the alias table's vendor and product pair
+for the matched product. If the alias has no pair, the tool compares the
+publisher and the full inventory name (version included) with KEV, exactly.
+`kev: false` therefore means "no match under those rules", not "known
+safe". The `windows-server` and Windows 10 client aliases use the broad
+Microsoft and Windows pair, so every Windows entry in KEV matches them.
+
+## Extending the alias table
+
+The bundled `data/aliases.json` covers few products (see the README). To
+add one, edit a copy of the data folder. Do not edit `data/` in place.
+
+1. Copy the folder: `cp -R data ../my-data`.
+2. Add an entry to the `aliases` list in `../my-data/aliases.json`. This one
+   maps the name "nginx" to the endoflife.date product `nginx`, which
+   exists in `data/eol/`:
+
+       {
+         "key": "nginx",
+         "match": "exact",
+         "product": "nginx",
+         "version_from": "version",
+         "source": "https://nginx.org/"
+       }
+
+   `key` is the name as the export shows it (compared after the
+   normalizing in [report-schema.md](report-schema.md)). `match` is `exact`
+   or `prefix`. `product` is the file name in `data/eol/` without `.json`.
+   `version_from` is `version` (read the version column) or `name` (read
+   the version from the end of the name). Optional fields: `cycle` (a fixed
+   cycle label), `build_map`, `kev` (an object with `vendor` and
+   `product`), `note` and `edition_words`. `source` is a link to where you
+   confirmed the mapping.
+3. Rebuild the manifest. Copy the dates, catalog version and upstream commit
+   from `data/manifest.json` into the placeholders:
+
+       python3 refresh_data.py manifest --dir ../my-data --kev-date KEV_DATE --kev-catalog-version KEV_CATALOG_VERSION --eol-date EOL_DATE --upstream-commit UPSTREAM_COMMIT --release-id my-copy-1
+
+4. Check it: `python3 software_lifecycle.py verify-data --data ../my-data`.
+5. Run with it: `python3 software_lifecycle.py check INVENTORY --data ../my-data --out ../swlc-out`.
+
+Golden sources do not apply to unmatched items. Add the alias first, and
+then a golden source if you need one. If you want the bundled table to
+cover a product, open the "Product the tool could not match" issue form
+with names only.
+
 ## Counts-only mode
 
     python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out

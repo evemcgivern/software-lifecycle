@@ -161,11 +161,11 @@ again, and the risk owner and an independent approver sign off.
 
 | Code | When |
 |---|---|
-| `NO_ENDOFLIFE_DATE` | Only when `eol_endoflife` is `null` and the export has a date. When endoflife.date gives a `true` or `false` flag instead, the item shows `NO_ENDOFLIFE_DATE` in `dates_disagree` with no decision code. |
-| `EXPORT_DATE_UNREADABLE` | As above. |
-| `EXPORT_DATES_CONFLICT` | As above. Added even when an active golden source applies. |
-| `GOLDEN_EXPIRED` | As above. |
-| `GOLDEN_EXPORT_UNUSABLE` | As above. |
+| `NO_ENDOFLIFE_DATE` | Only when `eol_endoflife` is `null` and the export has a date. When endoflife.date gives a `true` or `false` flag instead, the item shows `NO_ENDOFLIFE_DATE` in `dates_disagree` with no decision code. It can appear in `decision_needed` while `dates_disagree` is `null`, when an active golden source applies. |
+| `EXPORT_DATE_UNREADABLE` | When it appears in `dates_disagree` (see that table). |
+| `EXPORT_DATES_CONFLICT` | When it appears in `dates_disagree` (see that table), and also when an active golden source applies. |
+| `GOLDEN_EXPIRED` | When it appears in `dates_disagree` (see that table). |
+| `GOLDEN_EXPORT_UNUSABLE` | When it appears in `dates_disagree` (see that table). |
 | `EXCEPTION_EXPIRED` | An exceptions row matches the item and its `expires_on` date has passed. |
 
 `DIFFERENT_DATE` appears in `dates_disagree` but not in `decision_needed`.
@@ -227,7 +227,7 @@ Says which end-of-life date is right for a product.
 | Column | Rule |
 |---|---|
 | `schema_version` | `1`. |
-| `product` | Required. An endoflife.date product ID, or a product name. One row per product. |
+| `product` | Required. An endoflife.date product ID, or a product name. One row per product. If an item matches both a product-ID row (for example `nodejs`) and a name row (for example `node.js`), the product-ID row is used and the report adds this warning: "N item(s) matched two golden-source rows; the product-id row was used." |
 | `source` | Required. `export`, `endoflife.date` or `manual`. |
 | `manual_eol` | A date. Required when `source` is `manual`; not allowed otherwise. |
 | `reason` | Why. Free text. |
