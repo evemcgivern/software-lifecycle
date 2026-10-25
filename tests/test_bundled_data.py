@@ -173,7 +173,18 @@ class BundledClassificationCuration(unittest.TestCase):
         for name, pub, version in (
                 ("Microsoft .NET Runtime - 8.0.7 (x64)",
                  "Microsoft Corporation", "8.0.7.33814"),
-                ("Node.js runtime", "OpenJS Foundation", "20.15.1")):
+                ("Node.js runtime", "OpenJS Foundation", "20.15.1"),
+                ("Microsoft .NET Windows Desktop Runtime 8.0",
+                 "Microsoft Corporation", "8.0.10"),
+                ("Microsoft ASP.NET Core Runtime 8.0",
+                 "Microsoft Corporation", "8.0.11"),
+                ("Microsoft .NET Core SDK 3.1.426 (x64)",
+                 "Microsoft Corporation", "3.1.426"),
+                ("Microsoft .NET Core Runtime - 3.1.30 (x64)",
+                 "Microsoft Corporation", "3.1.30.31011"),
+                (".NET SDK", "", "8.0.404"), (".NET Runtime", "", "8.0.11"),
+                ("Microsoft .NET Framework Runtime 4.8.1",
+                 "Microsoft Corporation", "4.8.1")):
             with self.subTest(name=name):
                 m = match_product(name, version, data.aliases, data.products,
                                   catalog_index=data.matching_index(),
@@ -182,6 +193,19 @@ class BundledClassificationCuration(unittest.TestCase):
                                 "product": m.product, "publisher": pub},
                                pub, data)
                 self.assertEqual(got.cls, "governable")
+                self.assertIn("%s|%s|%s" % (name, pub, version), self.gold)
+
+    def test_curated_runtime_parts_stay_components(self):
+        from swlc.classify import classify
+        data = load_data(str(DATA), as_of=AS_OF)
+        for name, version in (
+                ("Microsoft Edge WebView2 Runtime", "130.0.2849.80"),
+                ("Microsoft Report Viewer 2015 Runtime", "12.0.2402.20")):
+            with self.subTest(name=name):
+                pub = "Microsoft Corporation"
+                got = classify({"name": name, "version": version,
+                                "product": None, "publisher": pub}, pub, data)
+                self.assertEqual(got.cls, "component")
                 self.assertIn("%s|%s|%s" % (name, pub, version), self.gold)
 
     def test_dotnet_and_nodejs_are_standalone_runtimes(self):

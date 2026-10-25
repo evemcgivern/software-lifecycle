@@ -67,12 +67,11 @@ _UPDATE_FOR = re.compile(r"\A(?:security )?update for\b")
 _HOTFIX = re.compile(r"\Ahotfix\b|\bhotfix\Z")
 _LANGUAGE_PACK = re.compile(r"\blanguage pack\Z")
 _DRIVER = re.compile(r"\S \bdriver(?:\Z| (?:\d+(?:\.\d+)* )?for \S)")
-# part: a C++ runtime year anywhere; "redistributable" last; "runtime" or
-# "sdk" last after another word; font, codec, extension, plugin, add-in
-# (or plural) last after another word, or "add-in for ...".
+# part: a C++ runtime year anywhere; "redistributable" last; font, codec,
+# extension, plugin, add-in (or plural) last after another word, or
+# "add-in for ...". A trailing "Runtime" or "SDK" is not a part word.
 _VCPP = re.compile(r"\bvisual c\+\+ 20\d\d\b")
 _REDIST = re.compile(r"\bredistributable\Z")
-_RUNTIME_SDK = re.compile(r"\S \b(?:runtime|sdk)\Z")
 _LAST_PART = re.compile(
     r"\S \b(?:font|codec|extension|plugin|plug-in|add-in)s?\Z"
     r"|\S \badd-in for \S")
@@ -108,7 +107,7 @@ def _part(name: str):
             or _LANGUAGE_PACK.search(bare) or _DRIVER.search(bare):
         return "os_part", False, last
     if _VCPP.search(bare) or _REDIST.search(bare) \
-            or _RUNTIME_SDK.search(bare) or _LAST_PART.search(bare):
+            or _LAST_PART.search(bare):
         return "part", False, last
     raw = (name or "").strip()
     if raw == raw.lower() and " " not in bare:
@@ -270,13 +269,11 @@ def classify(item: dict, publisher: str, data) -> Classification:
             basis.append(SUITE_NO_FIT)
             decided = decided or "unknown"
 
-    # 3. name pattern (D1: a standalone runtime keeps its trailing
-    # "Runtime" or "SDK")
+    # 3. name pattern. A trailing "Runtime" or "SDK" is not a part signal
+    # (ruling 2026-10-25): such names fall through to the rules below.
     standalone = category == "lang" or (
         prod_entry is not None and prod_entry["class"] == "governable")
-    kind, is_lib, last = _part(name)
-    if kind is not None and standalone and last in ("runtime", "sdk"):
-        kind = None
+    kind, is_lib, _last = _part(name)
     if kind is not None and is_lib and _catalog_lead(base, catalog):
         kind = None
     if kind is not None:

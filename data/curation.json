@@ -168,6 +168,46 @@
   "classification_rows": [
     {
       "class": "governable",
+      "gold": ".NET Runtime||8.0.11",
+      "name": ".net runtime",
+      "publisher": "",
+      "reason": "The .NET Runtime is a separate download that runs apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": ".NET SDK||8.0.404",
+      "name": ".net sdk",
+      "publisher": "",
+      "reason": "The .NET SDK is a separate download used to build apps; a standalone .NET is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Core Runtime - 3.1.30 (x64)|Microsoft Corporation|3.1.30.31011",
+      "name": "microsoft .net core runtime",
+      "publisher": "microsoft",
+      "reason": "The .NET Core Runtime is a separate download that runs apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/3.1"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Core SDK 3.1.426 (x64)|Microsoft Corporation|3.1.426",
+      "name": "microsoft .net core sdk",
+      "publisher": "microsoft",
+      "reason": "The .NET Core SDK is a separate download used to build apps; a standalone .NET is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/3.1"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Framework Runtime 4.8.1|Microsoft Corporation|4.8.1",
+      "name": "microsoft .net framework runtime",
+      "publisher": "microsoft",
+      "reason": "Microsoft offers the .NET Framework 4.8.1 Runtime as its own download to run apps; a standalone .NET is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481"
+    },
+    {
+      "class": "governable",
       "gold": "Microsoft .NET Runtime - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33814",
       "name": "microsoft .net runtime",
       "publisher": "microsoft",
@@ -183,6 +223,14 @@
       "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
     },
     {
+      "class": "governable",
+      "gold": "Microsoft .NET Windows Desktop Runtime 8.0|Microsoft Corporation|8.0.10",
+      "name": "microsoft .net windows desktop runtime",
+      "publisher": "microsoft",
+      "reason": "The .NET Desktop Runtime is a separate download that runs desktop apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
       "class": "component",
       "gold": "Microsoft Access Database Engine 2016 Redistributable (English)|Microsoft Corporation|16.0.4351.1000",
       "name": "microsoft access database engine 2016 redistributable (english)",
@@ -192,11 +240,35 @@
     },
     {
       "class": "governable",
+      "gold": "Microsoft ASP.NET Core Runtime 8.0|Microsoft Corporation|8.0.11",
+      "name": "microsoft asp.net core runtime",
+      "publisher": "microsoft",
+      "reason": "The ASP.NET Core Runtime is a separate download that runs web apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "component",
+      "gold": "Microsoft Edge WebView2 Runtime|Microsoft Corporation|130.0.2849.80",
+      "name": "microsoft edge webview2 runtime",
+      "publisher": "microsoft",
+      "reason": "Apps use the WebView2 Runtime to embed web content; it is a part other apps need, not an app of its own.",
+      "source": "https://developer.microsoft.com/en-us/microsoft-edge/webview2/"
+    },
+    {
+      "class": "governable",
       "gold": "Microsoft Intune Management Extension|Microsoft Corporation|1.80.201.0",
       "name": "microsoft intune management extension",
       "publisher": "microsoft",
       "reason": "The Intune Management Extension is an installer and management agent of its own, not an add-on to another app.",
       "source": "https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows"
+    },
+    {
+      "class": "component",
+      "gold": "Microsoft Report Viewer 2015 Runtime|Microsoft Corporation|12.0.2402.20",
+      "name": "microsoft report viewer 2015 runtime",
+      "publisher": "microsoft",
+      "reason": "A redistributable package of report viewing controls that other apps use.",
+      "source": "https://www.microsoft.com/en-us/download/details.aspx?id=45496"
     },
     {
       "class": "governable",

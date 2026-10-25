@@ -70,12 +70,26 @@ OUTLOOK = {"name_prefix": "microsoft outlook", "publisher": "microsoft",
 
 class PartKindTests(unittest.TestCase):
     def test_part_words_only_fire_as_last_word(self):
-        self.assertIsNone(C.part_kind("Runtime"))
-        self.assertIsNone(C.part_kind("Android SDK Manager"))
+        self.assertIsNone(C.part_kind("Driver"))
         self.assertIsNone(C.part_kind("Driver Booster"))
         self.assertEqual(C.part_kind("Intel Graphics Driver"), "os_part")
-        self.assertEqual(C.part_kind("Microsoft Windows Desktop Runtime"),
-                         "part")
+        self.assertEqual(C.part_kind("Contoso Toolkit Plugin"), "part")
+
+    def test_runtime_and_sdk_are_not_part_words(self):
+        # Ruling 2026-10-25 (silver sample): a trailing Runtime or SDK
+        # alone never makes a component; standalone runtimes and SDKs were
+        # hidden by it.
+        for name in ("Runtime", "Android SDK Manager",
+                     "Microsoft Windows Desktop Runtime", "Contoso Runtime",
+                     "Fabrikam SDK", "Contoso Toolkit SDK 3.1", "Vulkan SDK",
+                     "Google Cloud SDK", "Windows App Runtime",
+                     "Microsoft ASP.NET Core Runtime 8.0"):
+            with self.subTest(name=name):
+                self.assertIsNone(C.part_kind(name))
+        # Other part signals in the same name still fire.
+        self.assertEqual(C.part_kind(
+            "Microsoft Visual C++ 2022 X64 Minimum Runtime - 14.36.32532"),
+            "part")
 
     def test_os_part_patterns(self):
         for name in ("Security Update for Windows (KB5031356)",
@@ -87,7 +101,7 @@ class PartKindTests(unittest.TestCase):
         self.assertEqual(C.part_kind(
             "Microsoft Visual C++ 2015-2022 Redistributable (x64) - "
             "14.36.32532"), "part")
-        self.assertEqual(C.part_kind("Contoso Toolkit SDK 3.1"), "part")
+        self.assertEqual(C.part_kind("Contoso Toolkit Plugin 3.1"), "part")
 
     def test_tuned_patterns(self):
         for name, kind in (
@@ -154,10 +168,12 @@ class ClassifyTests(unittest.TestCase):
         self.assertEqual(got.cls, "governable")
         self.assertEqual(list(got.basis),
                          ["product_override", "standalone_by_default"])
-        # Without the product override, a trailing "Runtime" is a part.
+        # Without the product override, a framework product is unknown;
+        # a trailing "Runtime" never makes it a part.
         got = run(self.data, "Microsoft .NET Runtime - 8.0.7 (x64)", "8.0.7",
                   "dotnet")
-        self.assertEqual(got.cls, "component")
+        self.assertEqual((got.cls, got.basis),
+                         ("unknown", ("category_unknown",)))
 
     def test_framework_and_device_are_unknown(self):
         got = run(self.data, "Microsoft .NET", "8.0.7", "dotnet")
@@ -194,11 +210,15 @@ class ClassifyTests(unittest.TestCase):
         got = run(data, "Microsoft Windows Desktop Runtime - 8.0.7 (x64)",
                   "8.0.7.33815", publisher="Microsoft Corporation")
         self.assertEqual(got.cls, "governable")
-        self.assertEqual(got.basis[0], "row_override")
-        self.assertIn("name_part", got.basis)
+        self.assertEqual(got.basis, ("row_override",))
         # The publisher only confirms the curated entry.
         got = run(data, "Microsoft Windows Desktop Runtime - 8.0.7 (x64)",
                   "8.0.7.33815", publisher="Contoso Ltd")
+        self.assertEqual((got.cls, got.basis), ("unknown", ("no_signal",)))
+        # A curated component row beats a governable category.
+        row = dict(row, name="example sql", **{"class": "component"})
+        data = make_data(classification_rows=[row])
+        got = run(data, "Example SQL", "16", "examplesql", "Microsoft")
         self.assertEqual(got.cls, "component")
 
     def test_suite_member_needs_one_cycle(self):

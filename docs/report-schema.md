@@ -250,11 +250,11 @@ is listed. Publisher only confirms a curated entry and never decides a class.
 | `row_override` | A curated `classification_rows` entry names this row (a maintainer decision). |
 | `curated_parent` | A curated `bundle_parents` entry names the parent, and the name's year or version (else the version column) fits exactly one cycle of it. |
 | `suite_no_fit` | A curated `bundle_parents` entry matched, but the version fits no cycle or more than one; the item is `unknown`. |
-| `name_part` | The name ends like a part: Redistributable, Visual C++ 20xx, a last word Runtime or SDK after another word, font, codec, extension, plugin or add-in, or a one-word lowercase `lib*`, `*-dev` or font package. |
+| `name_part` | The name ends like a part: Redistributable, Visual C++ 20xx, font, codec, extension, plugin or add-in, or a one-word lowercase `lib*`, `*-dev` or font package. |
 | `name_os_part` | The name looks like an OS part: a KB number, a leading "Update for" or "Security Update for", Hotfix, Language Pack, or Driver after another word. |
 | `product_override` | A curated `classification_products` entry sets the class for the matched product. |
 | `category_governable` | The matched product's category is `server-app`, `app`, `os`, `database`, `lang` or `service`. |
-| `standalone_by_default` | The product is a standalone runtime (category `lang`, or curated as governable), so a last word Runtime or SDK does not make it a part. |
+| `standalone_by_default` | The product is a standalone runtime (category `lang`, or curated as governable). A last word Runtime or SDK is never a part signal on its own. |
 | `device_category` | The matched product is a device; the item is `unknown`. |
 | `category_unknown` | The matched product's category is `framework` or `standard`; the item is `unknown`. |
 | `no_signal` | No product matched and no other signal fired; the item is `unknown`. |

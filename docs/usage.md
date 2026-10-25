@@ -360,10 +360,11 @@ A curated parent links a row only when every word after the curated name is
 a year or version word, so "Microsoft Excel 2016" links to Office 2016 but
 "Microsoft Excel 2016 Viewer" does not. A row that matches a curated parent,
 including a curated OS-patch name, but fits no single cycle is `unknown`
-(`suite_no_fit`), not `component`. A name whose last word is Runtime or SDK
-after another word is a component unless a curated entry says otherwise;
-this is an accepted limit, so an app named like "Contoso Runtime" or
-"Fabrikam SDK" is treated as a component.
+(`suite_no_fit`), not `component`. A last word Runtime or SDK is not a part
+signal by itself, because standalone runtimes and SDKs (.NET, Vulkan,
+Google Cloud) end that way. Such a name gets its class from the other rules:
+a curated row, the matched product's category, or `unknown`. Known parts
+named that way, such as the WebView2 Runtime, are curated as components.
 
 ### The Parent column
 
@@ -375,8 +376,11 @@ placeholder cell (`n/a`, `na`, `none`, `null`, `nil`, `unknown`, `tbd`, `-`,
 - The column beats a `governable` result, including a governable curated row
   override, because a runtime named in a Parent column is not standalone. It
   never beats a curated row override of class `component` or `unknown`.
-- A name that matches one other row links to it. A name that matches two
-  rows, or a row with two different Parent values, gives no link and the
+- A name that matches one other row from the same publisher (when both rows
+  have one, they must share a publisher word) links to it (kind `item`). A
+  name that matches no row but matches a product links to that product
+  (kind `product`). A name that matches two rows, whatever their publishers,
+  or a row with two different Parent values, gives no link and the
   class `unknown` (or `component`, when the row's own name says so).
 - A name that matches no row and no product gives no link
   (`parent_not_found`). A row that names itself (`parent_is_self`) or two
@@ -400,8 +404,9 @@ stays complete, and `unknown` items are never hidden.
 
 ### Known limits
 
-- An app named like "Contoso Runtime" or "Fabrikam SDK" (Runtime or SDK as
-  the last word, after another word) is treated as a component.
+- A runtime or SDK that ships inside an app, with no Parent column and no
+  curated entry, is `unknown` (or `governable` when its product's category
+  says so), not `component`.
 - A curated OS-patch prefix that fits no cycle of the OS gives `unknown`,
   not a link.
 - Daemons named `lib*`, such as libvirt, are treated as components.
