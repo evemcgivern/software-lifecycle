@@ -485,8 +485,7 @@ class ParentTests(unittest.TestCase):
         self.assertIsNone(got["parent_ref"])
 
     def test_parent_that_is_a_part_gets_no_inherited_block(self):
-        # One hop only. The parent case fixture column-names-a-part fixes
-        # inherited_from as null when the parent is itself a part.
+        # One hop only: the link and inherited_from stay, no dates.
         agent = ("Example SQL Agent", "Example Vendor", "16", "Example SQL")
         pack = ("Agent Report Pack", "Example Vendor", "16",
                 "Example SQL Agent")
@@ -498,7 +497,7 @@ class ParentTests(unittest.TestCase):
         got = items[("Agent Report Pack", "16")]
         self.assertEqual(got["classification"], "bundle_member")
         self.assertEqual(got["parent_ref"]["value"], ident(*agent[:3]))
-        self.assertIsNone(got["inherited_from"])
+        self.assertEqual(got["inherited_from"], ident(*agent[:3]))
         self.assertIsNone(got["inherited_lifecycle"])
         self.assertIn(C.PARENT_IS_PART, got["classification_basis"])
 

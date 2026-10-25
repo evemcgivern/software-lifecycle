@@ -119,7 +119,7 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `classification` | What kind of item this is: `governable`, `component`, `bundle_member` or `unknown`. See "What kind of item this is" in `docs/usage.md`. |
 | `classification_basis` | List of the signal codes that fired, in rule order. See the `classification_basis` codes below. |
 | `parent_ref` | The named parent of a `bundle_member`, or `null`. See `parent_ref` below. |
-| `inherited_from` | The parent item's ID when the parent is in the same inventory and is not itself a part; otherwise `null`. |
+| `inherited_from` | The parent item's ID when the parent is in the same inventory; otherwise `null`. |
 | `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's, or `null`. See `inherited_lifecycle` below. The item's own date fields never change. |
 
 ### parent_ref
@@ -236,7 +236,7 @@ is listed. Publisher only confirms a curated entry and never decides a class.
 | `os_parent` | An OS part (see `name_os_part`) fits exactly one OS item in the inventory, by publisher and, when the name carries a version, by cycle. The item is a `bundle_member`. With none or two or more, no link. |
 | `parent_ambiguous` | The Parent column holds two different values for the item, or its value names two or more rows. No link; the item is `unknown`, or stays `component` when its own name says so. |
 | `parent_not_found` | The Parent column value names no row and no product. No link; the item is `unknown`, or stays `component` when its own name says so. |
-| `parent_is_part` | The named parent is itself a `component` or `bundle_member`. The link stays; `inherited_from` and `inherited_lifecycle` are `null` (one hop only). |
+| `parent_is_part` | The named parent is itself a `component` or `bundle_member`. The link and `inherited_from` stay; `inherited_lifecycle` is `null` (one hop only). |
 | `parent_absent` | The parent is a product, and not exactly one item in the inventory has that product and cycle. No dates are shown. |
 | `parent_no_date` | The parent item is unmatched or has no cycle. The link stays; `inherited_lifecycle` is `null` (the parent has no date). |
 

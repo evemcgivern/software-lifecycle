@@ -426,7 +426,6 @@ def _inherit(it: dict, parent: dict) -> None:
     """Fill the inherited block from the parent item; one hop only."""
     if parent["classification"] in PART_CLASSES:
         it["classification_basis"].append(PARENT_IS_PART)
-        it["inherited_from"] = None
         return
     if parent.get("cycle") is None or parent.get("state") == "unmatched":
         it["classification_basis"].append(PARENT_NO_DATE)

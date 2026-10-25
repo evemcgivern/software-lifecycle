@@ -13,8 +13,8 @@
     },
     "Microsoft Access database engine 2016 Language Pack (French)|Microsoft Corporation|16.0.4366.1000": {
       "classification": "bundle_member",
-      "inherited_from": null,
-      "inherited_state": null,
+      "inherited_from": "Microsoft Access database engine 2016 (English)|Microsoft Corporation|16.0.4366.1000",
+      "inherited_state": "unmatched",
       "parent_ref": {
         "kind": "item",
         "value": "Microsoft Access database engine 2016 (English)|Microsoft Corporation|16.0.4366.1000"
