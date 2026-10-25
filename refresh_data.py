@@ -11,6 +11,7 @@ Commands:
   eol --upstream-commit SHA --out DIR build DIR/<product>.json at SHA
   manifest --dir DIR ...              rebuild DIR/manifest.json
   check-kev --new FILE --old FILE     publish gate for a new kev.json
+  zip --dir DIR --out FILE            reproducible zip of a data folder
   eol-summary --new DIR --old DIR     change summary for the weekly PR
 
 Exit codes: 0 ok; 1 gate failed or refresh failed; 2 usage error.
@@ -28,7 +29,9 @@ import re
 import ssl
 import sys
 import tarfile
+import unicodedata
 import urllib.error
+import zipfile
 import urllib.parse
 import urllib.request
 from datetime import date
@@ -60,9 +63,14 @@ LICENCE_NOTE = "CC0 1.0"
 DATA_FORMAT = 1
 MIN_TOOL_VERSION = "0.1.0"
 COUNT_TOLERANCE = 0.20
+MAX_TEXT = 200
+ADDED_MIN, ADDED_SHARE = 50, 0.10      # a normal day adds a handful
+CHANGED_MIN, CHANGED_SHARE = 3, 0.01   # CISA renames a few entries
+ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 EOL_CHANGE_SHARE = 0.10
 
 _SHA_RE = re.compile(r"[0-9a-f]{40}")
+_CVE_RE = re.compile(r"CVE-[0-9]{4}-[0-9]{4,}")
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 _PRODUCT_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
 _CYCLE_RE = re.compile(r"[a-z0-9.\-+_]+")  # upstream's own releaseCycle rule
@@ -178,8 +186,62 @@ def kev_from_feed(raw: bytes) -> dict:
     return obj
 
 
-def check_kev(new, old, allow_removed: bool = False) -> list:
-    """Publish gate. Returns failure reasons; an empty list means publish."""
+def _bad_char(text: str) -> bool:
+    """Control, format (zero-width, bidi override) or line separator."""
+    return any(unicodedata.category(c) in ("Cc", "Cf", "Zl", "Zp")
+               for c in text)
+
+
+def _catalog_key(text: str):
+    if not re.fullmatch(r"[0-9]{1,6}(?:\.[0-9]{1,6}){0,5}", text):
+        return None
+    return tuple(int(part) for part in text.split("."))
+
+
+def _content_fails(new, old) -> list:
+    """Checks on the new file alone and against the baseline, never relaxed."""
+    fails = []
+    strings = [new.get(k) for k in ("catalogVersion", "dateReleased",
+                                    "license")]
+    strings += [v for e in new["entries"] for v in e.values()]
+    long_fields = sum(1 for v in strings
+                      if isinstance(v, str) and len(v) > MAX_TEXT)
+    if long_fields:
+        fails.append("fields longer than %d characters: %d"
+                     % (MAX_TEXT, long_fields))
+    entries = new["entries"]
+    bad_ids = sum(1 for e in entries if not _CVE_RE.fullmatch(e["cveID"]))
+    if bad_ids:
+        fails.append("cveID values not in the CVE-YYYY-NNNN form: %d" % bad_ids)
+    bad_text = sum(1 for e in entries if any(
+        _bad_char(e[k]) for k in ("cveID", "vendorProject", "product")))
+    if bad_text:
+        fails.append("entries with control, zero-width or bidi characters: %d"
+                     % bad_text)
+    if len({e["cveID"] for e in entries}) != len(entries):
+        fails.append("a cveID appears twice in the new KEV file")
+    late = sum(1 for e in entries if e["dateAdded"] > new["dateReleased"])
+    if late:
+        fails.append("entries with a dateAdded after dateReleased: %d" % late)
+    if new["dateReleased"] < old["dateReleased"]:
+        fails.append("dateReleased is older than the previous release")
+    new_key = _catalog_key(new["catalogVersion"])
+    old_key = _catalog_key(old["catalogVersion"])
+    if new_key is None or old_key is None:
+        fails.append("catalogVersion has an unexpected form")
+    elif new_key < old_key:
+        fails.append("catalogVersion is older than the previous release")
+    return fails
+
+
+def check_kev(new, old, allow_removed: bool = False,
+              allow_bulk: bool = False) -> list:
+    """Publish gate. Returns failure reasons; an empty list means publish.
+
+    allow_removed accepts entries CISA removed. allow_bulk (a person's
+    override) relaxes only the volume checks: the count range, the number
+    of additions and the number of changed entries.
+    """
     fails = []
     try:
         validate_kev(new)
@@ -191,15 +253,29 @@ def check_kev(new, old, allow_removed: bool = False) -> list:
         fails.append("previous KEV file fails the schema check: %s" % exc)
     if fails:
         return fails
+    fails += _content_fails(new, old)
     new_ids = {e["cveID"] for e in new["entries"]}
-    old_ids = {e["cveID"] for e in old["entries"]}
+    old_entries = {e["cveID"]: (e["vendorProject"], e["product"],
+                                e["dateAdded"]) for e in old["entries"]}
+    old_ids = set(old_entries)
     low = len(old_ids) * (1 - COUNT_TOLERANCE)
     high = len(old_ids) * (1 + COUNT_TOLERANCE)
     if not old_ids:
         fails.append("previous KEV file has no entries to compare against")
-    elif not low <= len(new_ids) <= high:
+    elif not low <= len(new_ids) <= high and not allow_bulk:
         fails.append("entry count %d is outside 20%% of the previous %d"
                      % (len(new_ids), len(old_ids)))
+    added = len(new_ids - old_ids)
+    if added > max(ADDED_MIN, len(old_ids) * ADDED_SHARE) and not allow_bulk:
+        fails.append("entries added in one release: %d; a bulk change needs "
+                     "a person's override" % added)
+    changed = sum(1 for e in new["entries"] if e["cveID"] in old_entries and
+                  (e["vendorProject"], e["product"], e["dateAdded"])
+                  != old_entries[e["cveID"]])
+    if changed > max(CHANGED_MIN, len(old_ids) * CHANGED_SHARE) \
+            and not allow_bulk:
+        fails.append("existing entries whose vendor, product or dateAdded "
+                     "changed: %d" % changed)
     removed = old_ids - new_ids
     if removed and not allow_removed:
         fails.append("entries removed since the previous release: %d"
@@ -551,6 +627,25 @@ def build_manifest(data_dir: str, kev_date: str, eol_date: str,
     return raw
 
 
+def write_zip(data_dir: str, out_path: str) -> None:
+    """Zip a data folder reproducibly: sorted names, fixed times, stored."""
+    root = Path(data_dir)
+    if root.is_symlink() or not root.is_dir():
+        raise RefreshError("--dir is not a folder")
+    paths = []
+    for path in root.rglob("*"):
+        if path.is_symlink():
+            raise RefreshError("data folder holds a symbolic link")
+        if path.is_file() and path.name != ".DS_Store":
+            paths.append((path.relative_to(root).as_posix(), path))
+    with zipfile.ZipFile(out_path, "w", zipfile.ZIP_STORED) as zf:
+        for name, path in sorted(paths):
+            info = zipfile.ZipInfo(name, date_time=ZIP_TIME)
+            info.create_system = 3
+            info.external_attr = 0o644 << 16
+            zf.writestr(info, path.read_bytes())
+
+
 # --- weekly change summary --------------------------------------------------
 
 _DATE_FIELDS = ("releaseDate", "eol", "support", "extendedSupport")
@@ -578,6 +673,12 @@ def eol_change_summary(new: dict, old: dict) -> dict:
                     changed_products.add(pid)
         if pid in new:
             cycles_added += len(set(new_cycles) - set(old_cycles))
+            for cid in set(old_cycles) & set(new_cycles):
+                for field in _DATE_FIELDS:
+                    if field in new_cycles[cid] and field not in old_cycles[cid]:
+                        total += 1
+                        changed += 1
+                        changed_products.add(pid)
     share = (changed / total) if total else 0.0
     reasons = []
     if removed:
@@ -694,8 +795,13 @@ def _parser() -> argparse.ArgumentParser:
     check.add_argument("--old", required=True, metavar="FILE")
     check.add_argument("--allow-removed", action="store_true",
                        help="accept entries removed from the catalog")
+    check.add_argument("--allow-bulk", action="store_true",
+                       help="a person's override for a bulk change")
     check.add_argument("--digest", metavar="FILE",
                        help="write a Markdown list of added entries")
+    pack = sub.add_parser("zip", help="zip a data folder reproducibly")
+    pack.add_argument("--dir", required=True, metavar="DIR")
+    pack.add_argument("--out", required=True, metavar="FILE")
     summary = sub.add_parser("eol-summary", help="weekly change summary")
     summary.add_argument("--new", required=True, metavar="DIR")
     summary.add_argument("--old", required=True, metavar="DIR")
@@ -721,10 +827,15 @@ def _run(args) -> int:
                        args.release_id)
         print("Manifest written")
         return 0
+    if args.command == "zip":
+        write_zip(args.dir, args.out)
+        print("Zip written")
+        return 0
     if args.command == "check-kev":
         new = _load_json(args.new, "new")
         old = _load_json(args.old, "previous")
-        fails = check_kev(new, old, allow_removed=args.allow_removed)
+        fails = check_kev(new, old, allow_removed=args.allow_removed,
+                          allow_bulk=args.allow_bulk)
         if fails:
             for reason in fails:
                 print("KEV gate failed: %s" % reason, file=sys.stderr)

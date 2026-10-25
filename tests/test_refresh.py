@@ -164,6 +164,93 @@ class CheckKevTests(unittest.TestCase):
         self.assertNotIn("Vendor", text)
 
 
+class KevContentGateTests(unittest.TestCase):
+    """The review's attack inputs: each one used to publish."""
+
+    def fails(self, new, old, **kw):
+        out = rd.check_kev(new, old, **kw)
+        self.assertTrue(out, "gate passed")
+        return " ".join(out)
+
+    def test_rewritten_entries_with_same_ids_fail(self):
+        new = kev_obj(100)
+        for entry in new["entries"]:
+            entry.update(vendorProject="Nobody", product="Nothing",
+                         dateAdded="2099-12-31")
+        text = self.fails(new, kev_obj(100))
+        self.assertIn("changed", text)
+        self.assertIn("dateAdded", text)
+        self.assertNotIn("Nobody", text)
+
+    def test_a_few_renames_pass(self):
+        new = kev_obj(100)
+        for entry in new["entries"][:3]:
+            entry["product"] = "Renamed"
+        self.assertEqual(rd.check_kev(new, kev_obj(100)), [])
+        new["entries"][3]["product"] = "Renamed"
+        self.assertTrue(rd.check_kev(new, kev_obj(100)))
+
+    def test_hostile_new_entries_fail(self):
+        for field, value in (("cveID", "\u202e<script>x"),
+                             ("cveID", "CVE-2026-\u0661\u0662\u0663\u0664"),
+                             ("cveID", "CVE-2026-123"),
+                             ("vendorProject", "V" * (5 * 1024 * 1024)),
+                             ("vendorProject", "x" * 201),
+                             ("product", "Gate\u200bway"),
+                             ("product", "Gate\u202eway"),
+                             ("product", "Gate\nway")):
+            new = kev_obj(101)
+            new["entries"][-1][field] = value
+            text = self.fails(new, kev_obj(100))
+            self.assertNotIn("script", text, field)
+            self.assertLess(len(text), 1000, field)
+
+    def test_real_feed_characters_pass(self):
+        new = kev_obj(101)
+        new["entries"][-1]["product"] = "Caf\u00e8 \u2013 Server\u202f2"
+        self.assertEqual(rd.check_kev(new, kev_obj(100)), [])
+
+    def test_bulk_additions_fail_without_override(self):
+        old = kev_obj(1000)
+        new = kev_obj(1200)  # 20% more: inside the count range
+        text = self.fails(new, old)
+        self.assertIn("added", text)
+        self.assertEqual(rd.check_kev(new, old, allow_bulk=True), [])
+        # Small baselines still allow a normal day of up to 50 additions.
+        self.assertEqual(rd.check_kev(kev_obj(250), kev_obj(220)), [])
+
+    def test_override_relaxes_only_volume_checks(self):
+        new = kev_obj(101)
+        new["entries"][-1]["cveID"] = "not-a-cve"
+        self.assertTrue(rd.check_kev(new, kev_obj(100), allow_bulk=True))
+        new = kev_obj(101)
+        new["dateReleased"] = "2001-01-01"
+        self.assertTrue(rd.check_kev(new, kev_obj(100), allow_bulk=True))
+
+    def test_dates_and_versions_never_move_backwards(self):
+        new = kev_obj(101)
+        new["dateReleased"] = "2001-01-01"
+        for entry in new["entries"]:
+            entry["dateAdded"] = "2000-12-31"
+        self.assertIn("dateReleased", self.fails(new, kev_obj(100)))
+        new = kev_obj(101)
+        new["catalogVersion"] = "2001.01.01"
+        self.assertIn("catalogVersion", self.fails(new, kev_obj(100)))
+        new = kev_obj(101)
+        new["catalogVersion"] = "next"
+        self.assertIn("catalogVersion", self.fails(new, kev_obj(100)))
+
+    def test_entry_added_after_the_release_date_fails(self):
+        new = kev_obj(101)
+        new["entries"][-1]["dateAdded"] = "2026-10-23"
+        self.assertIn("dateAdded", self.fails(new, kev_obj(100)))
+
+    def test_duplicate_ids_fail(self):
+        new = kev_obj(101)
+        new["entries"][-1]["cveID"] = new["entries"][0]["cveID"]
+        self.assertIn("twice", self.fails(new, kev_obj(100)))
+
+
 class KevFeedTests(unittest.TestCase):
     def test_keeps_only_ids_names_and_dates(self):
         obj = rd.kev_from_feed(cisa_feed(3))
@@ -451,6 +538,36 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(code, 2, flag)
 
 
+class ZipTests(unittest.TestCase):
+    def test_zip_is_byte_stable_sorted_and_dated_1980(self):
+        import os
+        import time
+        import zipfile
+        with tempfile.TemporaryDirectory() as tmp:
+            data = Path(make_data_dir(tmp, "2026-10-22", "2026-10-20"))
+            first = Path(tmp) / "a.zip"
+            rd.write_zip(str(data), str(first))
+            for path in data.rglob("*.json"):
+                os.utime(path, (time.time() + 99999, time.time() + 99999))
+            second = Path(tmp) / "b.zip"
+            code, _, err = run_cli(["zip", "--dir", str(data),
+                                    "--out", str(second)])
+            self.assertEqual(code, 0, err)
+            self.assertEqual(first.read_bytes(), second.read_bytes())
+            with zipfile.ZipFile(first) as zf:
+                names = zf.namelist()
+                self.assertEqual(names, sorted(names))
+                self.assertIn("manifest.json", names)
+                self.assertIn("eol/demoos.json", names)
+                for info in zf.infolist():
+                    self.assertEqual(info.date_time, (1980, 1, 1, 0, 0, 0))
+            unpacked = Path(tmp) / "unpacked"
+            with zipfile.ZipFile(first) as zf:
+                zf.extractall(unpacked)
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(verify_data(str(unpacked)), 0)
+
+
 class EolSummaryTests(unittest.TestCase):
     OLD = {
         "alpha": [{"cycle": "1", "eol": "2026-01-01", "support": True},
@@ -502,6 +619,16 @@ class EolSummaryTests(unittest.TestCase):
         self.assertEqual(summary["products_added"], ["delta"])
         self.assertEqual(summary["cycles_added"], 1)
         self.assertFalse(summary["flagged"])
+
+    def test_newly_added_date_fields_count_as_changed(self):
+        new = self._copy()
+        new["beta"][0]["extendedSupport"] = "2030-01-01"
+        new["alpha"][0]["releaseDate"] = "2020-01-01"
+        summary = rd.eol_change_summary(new, self.OLD)
+        self.assertEqual(summary["dates_changed"], 2)
+        self.assertEqual(summary["dates_total"], 18)
+        self.assertEqual(summary["products_changed"], ["alpha", "beta"])
+        self.assertTrue(summary["flagged"])
 
     def test_removed_cycle_counts_its_dates_as_changed(self):
         new = self._copy()
