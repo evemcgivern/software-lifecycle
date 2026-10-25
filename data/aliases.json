@@ -86,6 +86,7 @@
       },
       "key": "microsoft windows server",
       "match": "prefix",
+      "note": "CISA files Windows Server flaws under product Windows, so this KEV pair matches every Windows entry; the overlay means needs review, not affected.",
       "product": "windows-server",
       "source": "https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info",
       "version_from": "name"
@@ -109,6 +110,7 @@
       },
       "key": "windows server",
       "match": "prefix",
+      "note": "CISA files Windows Server flaws under product Windows, so this KEV pair matches every Windows entry; the overlay means needs review, not affected.",
       "product": "windows-server",
       "source": "https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info",
       "version_from": "name"

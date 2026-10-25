@@ -308,6 +308,18 @@ class RuleTests(unittest.TestCase):
             with self.assertRaises(DataError, msg=repr(kev)):
                 match_product("x", "1", [alias("x", "x", kev=kev)], products)
 
+    def test_bad_note_is_data_error(self):
+        products = {"x": cycles("1")}
+        for note in ("", "  ", 1, None, ["why"], {"why": "x"}):
+            with self.assertRaises(DataError, msg=repr(note)):
+                match_product("x", "1", [alias("x", "x", note=note)],
+                              products)
+
+    def test_note_string_accepted(self):
+        r = match_product("x", "1", [alias("x", "x", note="kept because")],
+                          {"x": cycles("1")})
+        self.assertIsNone(r.reason)
+
     def test_match_carries_alias_kev(self):
         products = {"x": cycles("1")}
         kev = {"vendor": "Microsoft", "product": "Windows"}
@@ -478,7 +490,8 @@ class AliasFileTests(unittest.TestCase):
         entries = self.doc["aliases"]
         self.assertGreaterEqual(len(entries), 12)
         allowed = {"key", "match", "product", "version_from", "cycle",
-                   "build_map", "source", "edition_words", "kev"}
+                   "build_map", "source", "edition_words", "kev",
+                   "note"}
         for e in entries:
             self.assertLessEqual(set(e), allowed, e)
             self.assertIn(e["match"], ("exact", "prefix"))
@@ -489,6 +502,13 @@ class AliasFileTests(unittest.TestCase):
             for w in e.get("edition_words", []):
                 self.assertEqual(w, normalize_name(w), e)
                 self.assertEqual(len(w.split()), 1, e)
+
+    def test_broad_windows_kev_pair_has_note(self):
+        for e in self.doc["aliases"]:
+            if e.get("kev") == {"vendor": "Microsoft", "product": "Windows"} \
+                    and e["product"] == "windows-server":
+                self.assertIn("note", e, e["key"])
+                self.assertLessEqual(len(e["note"]), 200)
 
     def test_targets_exist_in_endoflife_cycles(self):
         for e in self.doc["aliases"]:

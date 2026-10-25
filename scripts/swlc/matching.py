@@ -55,6 +55,9 @@ def _check(entry: dict, pos: int) -> None:
                            for v in kev.values()):
             raise bad("'kev' must be an object with non-empty 'vendor' and "
                       "'product' strings")
+    if "note" in entry and not (isinstance(entry["note"], str)
+                                and entry["note"].strip()):
+        raise bad("'note' must be a non-empty string")
     if "edition_words" in entry:
         words = entry["edition_words"]
         if not isinstance(words, list) or not all(
