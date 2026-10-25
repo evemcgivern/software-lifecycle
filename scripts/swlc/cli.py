@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import json
 import os
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -25,8 +27,18 @@ OUTPUT_FILES = ("report.json", "report.md", "report.csv")
 BUNDLED_DATA = str(Path(__file__).resolve().parents[2] / "data")
 MAX_PREVIOUS_BYTES = 64 * 1024 * 1024
 MAX_COLUMNS_BYTES = 1024 * 1024
+MIN_YEAR, MAX_YEAR = 1990, 2200
+_DATE_FLAG = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
 MAX_ALIASES_PER_FIELD = 100
 MAX_ALIAS_CHARS = 200
+
+
+QUIET_TEXT = ("the input could not be used; rerun locally without "
+              "--counts-only for details")
+
+
+class OutputError(InputError):
+    """A failure writing the output; its text never holds file content."""
 
 
 class UsageError(Exception):
@@ -108,9 +120,12 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
     groups = group_rows(rows, colmap)
     prior = _read_json(previous, MAX_PREVIOUS_BYTES, "previous report") \
         if previous else None
-    result = assess(groups, loaded, load_golden(golden),
-                    load_exceptions(exceptions), load_tracking(tracking),
-                    as_of, lookahead_months, prior)
+    try:
+        result = assess(groups, loaded, load_golden(golden),
+                        load_exceptions(exceptions), load_tracking(tracking),
+                        as_of, lookahead_months, prior)
+    except (OverflowError, ValueError):
+        raise UsageError("a date is out of range") from None
     meta = {
         "tool_version": tool_version(),
         "data_release": {"id": loaded.release_id,
@@ -134,11 +149,18 @@ def run(inventory_path: str, **options) -> dict:
 # --- command line ---
 
 def _iso_date(text: str) -> date:
+    bad = argparse.ArgumentTypeError(
+        "expected a date as YYYY-MM-DD, years %d to %d"
+        % (MIN_YEAR, MAX_YEAR))
+    if not _DATE_FLAG.fullmatch(text):
+        raise bad
     try:
-        return date.fromisoformat(text)
+        value = date.fromisoformat(text)
     except ValueError:
-        raise argparse.ArgumentTypeError("expected a date as YYYY-MM-DD") \
-            from None
+        raise bad from None
+    if not MIN_YEAR <= value.year <= MAX_YEAR:
+        raise bad
+    return value
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -175,7 +197,7 @@ def _fail_on(text: str | None) -> list:
     if not text.strip() or any(n not in FAIL_ON_NAMES for n in names):
         raise UsageError("--fail-on takes a comma list of: %s"
                          % ", ".join(FAIL_ON_NAMES))
-    return names
+    return sorted(set(names))
 
 
 def _same_file(path: str, other: str) -> bool:
@@ -191,23 +213,32 @@ def _check_out(out: str, inventory: str) -> None:
     if _same_file(out, inventory):
         raise UsageError("--out must be a directory, not the input file")
     if os.path.islink(out):
-        raise InputError("refusing to write through a symlink")
+        raise OutputError("refusing to write through a symlink")
     if os.path.exists(out) and not os.path.isdir(out):
         raise UsageError("--out must be a directory")
     for name in OUTPUT_FILES:
         target = os.path.join(out, name)
         if os.path.islink(target):
-            raise InputError("refusing to write through a symlink")
+            raise OutputError("refusing to write through a symlink")
         if _same_file(target, inventory):
-            raise InputError("refusing to overwrite the input file")
+            raise OutputError("refusing to overwrite the input file")
 
 
 def _write_out(out: str, inventory: str, result: dict, meta: dict) -> None:
-    os.makedirs(out, mode=0o700, exist_ok=True)
     texts = (render_json(result, meta), render_markdown(result, meta),
              render_csv(result))
-    for name, text in zip(OUTPUT_FILES, texts):
-        write_text(os.path.join(out, name), text, inventory)
+    try:
+        os.makedirs(out, mode=0o700, exist_ok=True)
+        for name, text in zip(OUTPUT_FILES, texts):
+            write_text(os.path.join(out, name), text, inventory)
+    except OutputError:
+        raise
+    except InputError as exc:
+        raise OutputError(str(exc)) from None
+    except OSError as exc:
+        raise OutputError("cannot write output (%s)"
+                         % errno.errorcode.get(exc.errno, "OSError")) \
+            from None
 
 
 def _counts_text(result: dict) -> str:
@@ -256,8 +287,10 @@ def _check(args) -> int:
 
 
 def main(argv: list | None = None) -> int:
+    quiet = False
     try:
         args = _parser().parse_args(argv)
+        quiet = bool(getattr(args, "counts_only", False))
         if args.command == "verify-data":
             return verify_data(args.data or BUNDLED_DATA)
         return _check(args)
@@ -267,10 +300,12 @@ def main(argv: list | None = None) -> int:
         print("Usage error: %s" % exc, file=sys.stderr)
         return EXIT_USAGE
     except InputError as exc:
-        print("Input error: %s" % exc, file=sys.stderr)
+        print("Input error: %s" % (QUIET_TEXT if quiet and not isinstance(
+            exc, OutputError) else exc), file=sys.stderr)
         return EXIT_INPUT
     except DataError as exc:
-        print("Data check failed: %s" % exc, file=sys.stderr)
+        print("Data check failed: %s" % (QUIET_TEXT if quiet else exc),
+              file=sys.stderr)
         return EXIT_DATA
     except Exception as exc:
         print(type(exc).__name__, file=sys.stderr)

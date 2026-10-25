@@ -209,6 +209,15 @@ class CsvTests(Base):
         self.assertEqual(rows[1][rows[0].index("publisher")], "'=1+1")
         self.assertTrue(rows[1][rows[0].index("owners")].startswith("'@bob"))
 
+    def test_every_cell_is_quoted(self):
+        result = copy.deepcopy(self.result)
+        result["items"][0]["name"] = "a;=1+1"
+        text = report.render_csv(result)
+        self.assertIn('"a;=1+1"', text)
+        for line in text.splitlines():
+            self.assertTrue(line.startswith('"') and line.endswith('"'))
+        self.assertEqual(self.rows(result)[1][1], "a;=1+1")
+
     def test_plain_cell_unchanged_and_rows_complete(self):
         rows = self.rows(self.result)
         self.assertEqual(len(rows) - 1, len(self.result["items"]))

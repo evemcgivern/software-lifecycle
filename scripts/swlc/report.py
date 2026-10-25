@@ -286,14 +286,14 @@ def render_markdown(result: dict, meta: dict) -> str:
     diff = result["diff"]
     if diff["available"]:
         out += ["", "## Changes since the previous report", ""]
-        out.append("New: %s" % (", ".join("`%s`" % i for i in diff["new"])
+        out.append("New: %s" % (", ".join("`%s`" % _disp(i) for i in diff["new"])
                                 or "none"))
         out.append("")
         out.append("No longer present: %s" % (
-            ", ".join("`%s`" % i for i in diff["resolved"]) or "none"))
+            ", ".join("`%s`" % _disp(i) for i in diff["resolved"]) or "none"))
         out.append("")
         out.append("State changed: %s" % (
-            ", ".join("`%s` %s to %s" % (c["id"], _disp(c["from"]),
+            ", ".join("`%s` %s to %s" % (_disp(c["id"]), _disp(c["from"]),
                                          _disp(c["to"]))
                       for c in diff["changed_state"]) or "none"))
 
@@ -326,7 +326,8 @@ def render_csv(result: dict) -> str:
         for gid in ids:
             member.setdefault(gid, []).append(name)
     buf = io.StringIO(newline="")
-    writer = csv.writer(buf, lineterminator="\n")
+    writer = csv.writer(buf, lineterminator="\n",
+                        quoting=csv.QUOTE_ALL)
     writer.writerow(CSV_COLUMNS)
     for it in result["items"]:
         row = dict(it)

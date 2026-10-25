@@ -174,6 +174,20 @@ class ReadRowsTests(TempCase):
             read_rows(str(self.dir / "nope.csv"))
 
 
+class StrictCsvTests(TempCase):
+    def test_unclosed_quote_is_refused_without_cell_text(self):
+        p = self.write('Name,Version\n"SecretCell,1\n')
+        with self.assertRaises(InputError) as ctx:
+            read_rows(p)
+        self.assertIn("malformed CSV", str(ctx.exception))
+        self.assertNotIn("Secret", str(ctx.exception))
+
+    def test_stray_quote_inside_field_is_refused(self):
+        p = self.write('Name,Version\n"a"b,1\n')
+        with self.assertRaises(InputError):
+            read_rows(p)
+
+
 class MapColumnsTests(unittest.TestCase):
     def test_missing_version_names_field(self):
         with self.assertRaises(InputError) as cm:

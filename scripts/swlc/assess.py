@@ -22,6 +22,7 @@ STATES = ("supported", "mainstream_ended", "ends_soon", "past_eol",
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
          "accepted_risk", "ownerless", "review_urgently", "golden_overrides")
 MAX_LOOKAHEAD_MONTHS = 600
+_ID = re.compile(r"[0-9a-f]{12}")
 
 # dates_disagree codes (also used in decision_needed)
 DIFFERENT_DATE = "DIFFERENT_DATE"
@@ -249,7 +250,8 @@ def _previous_states(previous) -> dict | None:
     states = {}
     for it in previous["items"]:
         if not isinstance(it, dict) or not isinstance(it.get("id"), str) \
-                or not isinstance(it.get("state"), str):
+                or not _ID.fullmatch(it["id"]) \
+                or it.get("state") not in STATES:
             return None
         states[it["id"]] = it["state"]
     return states

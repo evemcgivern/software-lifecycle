@@ -101,7 +101,7 @@ def read_rows(path: str, encoding: str | None = None,
     if not data.strip():
         raise InputError("input file is empty")
     text = _decode(data, encoding)
-    reader = csv.reader(io.StringIO(text, newline=""))
+    reader = csv.reader(io.StringIO(text, newline=""), strict=True)
     rows: list[dict] = []
     headers: list[str] | None = None
     try:

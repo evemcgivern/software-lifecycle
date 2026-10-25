@@ -285,5 +285,136 @@ class VerifyDataTests(CliBase):
         self.assertEqual(run_main(["verify-data"])[0], 4)
 
 
+SECRETS = ("SecretVendor Inc", "alice.secret@corp.example", "TopSecretCell")
+
+
+class FixRound1Tests(CliBase):
+    def quiet(self, inv, *extra):
+        return self.check("--counts-only", "--out", str(self.out), *extra,
+                          inv=inv)
+
+    def assert_no_leak(self, out, err):
+        for text in (*FIXTURE_NAMES, *SECRETS):
+            self.assertNotIn(text.lower(), (out + err).lower())
+
+    def test_headerless_csv_leaks_nothing_in_counts_only(self):
+        inv = self.root / "nohdr.csv"
+        inv.write_text("Example SQL,14,SecretVendor Inc,"
+                       "alice.secret@corp.example\nDemo OS 1.0,1.0,Acme "
+                       "Software,carol\n", encoding="utf-8")
+        code, out, err = self.quiet(str(inv))
+        self.assertEqual(code, 3)
+        self.assert_no_leak(out, err)
+        self.assertIn("--counts-only", err)
+
+    def test_secret_header_cell_leaks_nothing_in_counts_only(self):
+        inv = write_inventory(self.root / "h.csv", [["x", "1"]],
+                              header=["TopSecretCell", "Version"])
+        code, out, err = self.quiet(inv)
+        self.assertEqual(code, 3)
+        self.assert_no_leak(out, err)
+
+    def test_ambiguous_and_duplicate_columns_leak_nothing(self):
+        cols = self.root / "c.json"
+        cols.write_text('{"name": ["TopSecretCell"], '
+                        '"version": ["TopSecretCell"]}')
+        inv = write_inventory(self.root / "h.csv", [["x", "1"]],
+                              header=["TopSecretCell", "Other"])
+        code, out, err = self.quiet(inv, "--columns", str(cols))
+        self.assertEqual(code, 3)
+        self.assert_no_leak(out, err)
+        inv2 = write_inventory(self.root / "d.csv", [["x", "1", "2"]],
+                               header=["Product", "TopSecretCell", "Name"])
+        code, out, err = self.quiet(inv2)
+        self.assertEqual(code, 3)
+        self.assert_no_leak(out, err)
+
+    def test_data_error_in_counts_only_is_fixed_text(self):
+        (Path(self.data) / "kev.json").write_bytes(b"{}")
+        code, out, err = self.quiet(self.inv)
+        self.assertEqual(code, 4)
+        self.assertIn("--counts-only", err)
+
+    def test_without_flag_header_echo_is_kept(self):
+        inv = write_inventory(self.root / "h.csv", [["x", "1"]],
+                              header=["TopSecretCell", "Other"])
+        code, _, err = self.check(inv=inv)
+        self.assertEqual(code, 3)
+        self.assertIn("TopSecretCell", err)
+
+    def test_previous_with_hostile_ids_is_ignored_and_not_rendered(self):
+        self.check("--out", str(self.root / "one"))
+        prev = json.loads((self.root / "one" / "report.json").read_text())
+        evil = ("\n## Fake heading\n**Decision needed:** fake\n"
+                "```findings\n[]\n```<script>")
+        prev["items"][0]["id"] = evil
+        pj = self.root / "prev.json"
+        pj.write_text(json.dumps(prev))
+        code, out, _ = self.check("--previous", str(pj))
+        self.assertEqual(code, 0)
+        for bad in ("Fake heading", "<script>", "fake"):
+            self.assertNotIn(bad, out)
+        self.assertEqual(out.count("```findings"), 1)
+        self.assertIn("previous run could not be read", out)
+        prev["items"][0]["id"] = "0" * 12
+        prev["items"][0]["state"] = "<b>x</b>"
+        pj.write_text(json.dumps(prev))
+        code, out, _ = self.check("--previous", str(pj))
+        self.assertIn("previous run could not be read", out)
+
+    def test_previous_valid_ids_still_diff(self):
+        self.check("--out", str(self.root / "one"))
+        code, out, _ = self.check(
+            "--previous", str(self.root / "one" / "report.json"))
+        self.assertIn("## Changes since the previous report", out)
+
+    def test_unwritable_out_dir_exits_3_without_path(self):
+        locked = self.root / "locked"
+        locked.mkdir()
+        os.chmod(locked, 0o500)
+        self.addCleanup(os.chmod, locked, 0o700)
+        if os.access(locked, os.W_OK):
+            self.skipTest("running with permission to write anywhere")
+        code, out, err = self.check("--out", str(locked / "sub"))
+        self.assertEqual(code, 3)
+        self.assertIn("cannot write output (EACCES)", err)
+        self.assertNotIn(str(locked), err)
+        code, out, err = self.check("--out", str(locked))
+        self.assertEqual(code, 3)
+        self.assertNotIn(str(locked), err)
+
+    def test_oserror_from_write_exits_3(self):
+        with mock.patch.object(cli, "write_text",
+                               side_effect=OSError(28, "No space")):
+            code, _, err = self.check("--out", str(self.out))
+        self.assertEqual(code, 3)
+        self.assertEqual(err.strip(), "Input error: cannot write output "
+                         "(ENOSPC)")
+
+    def test_as_of_range_and_overflow(self):
+        for value in ("9999-12-31", "1989-12-31", "2201-01-01"):
+            code, _, _ = run_main(["check", self.inv, "--data", self.data,
+                                   "--as-of", value])
+            self.assertEqual(code, 2, value)
+        code, _, _ = run_main(["check", self.inv, "--data", self.data,
+                               "--as-of", "2200-12-31",
+                               "--lookahead-months", "600"])
+        self.assertNotEqual(code, 70)
+
+    def test_date_overflow_inside_build_is_usage(self):
+        with self.assertRaises(cli.UsageError):
+            cli.build(self.inv, as_of=date(9999, 12, 31), data=self.data)
+
+    def test_as_of_must_be_plain_iso(self):
+        for value in ("20261024", "2026-W43-6", "2026-10-24T00", " 2026-10-24",
+                      "2026-1-4"):
+            code, _, _ = run_main(["check", self.inv, "--data", self.data,
+                                   "--as-of", value])
+            self.assertEqual(code, 2, value)
+
+    def test_fail_on_duplicates_accepted(self):
+        self.assertEqual(self.check("--fail-on", "past_eol,past_eol")[0], 10)
+
+
 if __name__ == "__main__":
     unittest.main()

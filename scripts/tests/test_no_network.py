@@ -19,6 +19,11 @@ def _boom(*args, **kwargs):
     raise AssertionError("network access attempted")
 
 
+class _BlockedSocket:
+    def __init__(self, *args, **kwargs):
+        raise AssertionError("network socket created")
+
+
 class NoNetworkTests(unittest.TestCase):
     def test_check_runs_with_network_calls_blocked(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -26,6 +31,7 @@ class NoNetworkTests(unittest.TestCase):
             inv = write_inventory(Path(tmp) / "inv.csv")
             out = Path(tmp) / "out"
             with mock.patch.object(socket.socket, "connect", _boom), \
+                    mock.patch.object(socket, "socket", _BlockedSocket), \
                     mock.patch.object(socket, "create_connection", _boom), \
                     mock.patch.object(urllib.request, "urlopen", _boom):
                 code, _, err = run_main(
