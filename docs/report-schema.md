@@ -52,9 +52,33 @@ inventory, so keep it as private as the inventory.
 | `profile` | `name`, and `status` (`Unverified` for a profile; `null` for `generic`). |
 | `encoding` | The inventory encoding (`utf-8` unless `--encoding` was used). |
 
+### meta.data_release
+
+| Key | Meaning |
+|---|---|
+| `id` | The data release ID. |
+| `file_hashes` | SHA-256 of each data file. |
+
+### meta.override_hashes
+
+| Key | Meaning |
+|---|---|
+| `golden` | SHA-256 of the golden-sources file; empty text if not given. |
+| `exceptions` | SHA-256 of the exceptions file; empty text if not given. |
+| `tracking` | SHA-256 of the tracking file; empty text if not given. |
+
+### meta.profile
+
+| Key | Meaning |
+|---|---|
+| `name` | The profile name; `generic` by default. |
+| `status` | `Unverified` for a profile; `null` for `generic`. |
+
 ## Items
 
 Rows with the same normalized publisher, name and version make one item.
+"Normalized" means lowercased, with extra spaces removed and a few fixed
+tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 `id` is 12 hex characters made from those three values, stable across runs.
 
 | Field | Meaning |
@@ -63,7 +87,7 @@ Rows with the same normalized publisher, name and version make one item.
 | `name`, `version`, `publisher` | As in the inventory. |
 | `owners` | Sorted list of distinct owners. |
 | `rows` | How many inventory rows made this item. |
-| `product` | The endoflife.date product, or `null` if unmatched. |
+| `product` | The endoflife.date product. `null` only when no alias matched (`NO_ALIAS`, or `AMBIGUOUS` across products). Set when the product is known but no cycle matched (`NO_VERSION`, `NO_CYCLE`, or `AMBIGUOUS` between cycles). |
 | `cycle` | The matched cycle label, or `null`. |
 | `state` | One of the states below. |
 | `state_endoflife` | The state using only the endoflife.date date. `null` if unmatched. |
@@ -82,7 +106,7 @@ Rows with the same normalized publisher, name and version make one item.
 | `exception_expired` | `true` if an exceptions row matches and has expired. |
 | `decision_needed` | Sorted list of codes for a person to settle. |
 | `kev` | `true` if the vendor and product appear in KEV; `false` if checked and not found; `null` if not checked. |
-| `kev_stale` | `true` if `kev` is `true` but the KEV data was not current. |
+| `kev_stale` | `true` when KEV was checked (`kev` is not `null`) and the KEV data was not current. |
 | `change_ref` | From the tracking file, or `null`. |
 | `problem_ref` | From the tracking file, or `null`. |
 
@@ -113,10 +137,10 @@ mean your version is affected. The tool never says "vulnerable".
 
 | Code | Meaning |
 |---|---|
-| `NO_ALIAS` | No alias entry for this name. |
+| `NO_ALIAS` | No alias entry for this name, or the name has extra words after the product name that the strict tail-word rule rejects. |
 | `NO_CYCLE` | The product is known, but no cycle matches this version. |
 | `NO_VERSION` | No version was given. |
-| `AMBIGUOUS` | More than one cycle fits this version. |
+| `AMBIGUOUS` | The name matches aliases for more than one product, or more than one cycle fits this version. |
 
 ### dates_disagree codes
 
@@ -137,7 +161,7 @@ again, and the risk owner and an independent approver sign off.
 
 | Code | When |
 |---|---|
-| `NO_ENDOFLIFE_DATE` | The export has a date and endoflife.date has none. |
+| `NO_ENDOFLIFE_DATE` | Only when `eol_endoflife` is `null` and the export has a date. When endoflife.date gives a `true` or `false` flag instead, the item shows `NO_ENDOFLIFE_DATE` in `dates_disagree` with no decision code. |
 | `EXPORT_DATE_UNREADABLE` | As above. |
 | `EXPORT_DATES_CONFLICT` | As above. Added even when an active golden source applies. |
 | `GOLDEN_EXPIRED` | As above. |
@@ -171,10 +195,22 @@ The Markdown report still prints a "Decision needed" line for it.
 | `resolved` | Item IDs in the previous report and not in this one. |
 | `changed_state` | Entries with `id`, `from` and `to`. |
 
+### diff.changed_state
+
+Each entry in `changed_state` has these keys.
+
+| Key | Meaning |
+|---|---|
+| `id` | The item ID. |
+| `from` | The state in the previous report. |
+| `to` | The state in this report. |
+
 ## Override file columns (schema_version 1)
 
 All three files are CSV with a header row. The first column is
-`schema_version` and every row must hold `1`. Header names are matched
+`schema_version` and every row must hold `1`. Every column listed below
+must appear in the header, even the optional ones; a missing one stops the
+run with "missing required column(s)". Header names are matched
 without regard to case, and extra columns are ignored. Cells are trimmed.
 A file with only the header is a valid empty file. A bad value stops the
 run with exit code 3 and an error that names the data row number and the
@@ -228,10 +264,12 @@ Links a finding to your change and problem records.
 
 ## Stability
 
-`schema_version` is an integer. The promise is that it goes up when a key
-is renamed or removed, or when a key changes meaning. A new key may be added
-without a bump. The tool only reads a `--previous` report of its own
-schema version.
+Within a `schema_version`, keys are never removed or renamed and never
+change meaning or type. New keys may be added; consumers must ignore keys
+they do not know. Adding a state, a list name, a reason code or a decision
+code bumps `schema_version`. The keyword arguments of `swlc.cli.run` follow
+the same rule. The tool only reads a `--previous` report of its own schema
+version.
 
 ## Calling it from Python
 
@@ -247,5 +285,15 @@ from the repo root, or put the repo on `sys.path`.
 Options are keyword arguments: `as_of` (required), `data`,
 `lookahead_months`, `profile`, `columns`, `golden`, `exceptions`,
 `tracking`, `previous` and `encoding`. They match the command-line flags.
-It raises `InputError` or `DataError` (in `swlc.errors`) or `UsageError`
-(in `swlc.cli`) where the command line would exit with 3, 4 or 2.
+It raises:
+
+- `InputError` (in `swlc.errors`) when the inventory, a columns file, an
+  override file or the `previous` report cannot be read or is not valid,
+  and when `lookahead_months` is not a whole number from 0 to 600. The
+  command line exits with 3.
+- `DataError` (in `swlc.errors`) when a data check fails, or when two
+  different items share one ID. The command line exits with 4.
+- `UsageError` (in `swlc.cli`) for an unknown `profile` or a date out of
+  range. The command line exits with 2.
+- `TypeError` if `as_of` is a `datetime` instead of a `date`. Pass a
+  `date`.
