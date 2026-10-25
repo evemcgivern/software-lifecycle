@@ -125,7 +125,6 @@ Microsoft ASP.NET Core 8.0.1 - Shared Framework (x64),Microsoft Corporation,8.0.
 Microsoft .NET Core Runtime - 3.1.32 (x64),Microsoft Corporation,3.1.32.31915,dotnet,3.1,curated; vmap=yes; .NET Core 3.1,hand,0
 Microsoft .NET SDK 8.0.101 (x64),Microsoft Corporation,8.1.123.58104,dotnet,8,curated; vmap=yes; SDK; upstream purl maps dotnet-sdk to dotnet; ARP version is not the SDK version,hand,0
 dotnet-sdk-8.0,Microsoft,8.0.110-1,dotnet,8,curated; vmap=yes; Linux package; upstream purl,hand,1
-Microsoft .NET Framework 4.8.1,Microsoft Corporation,4.8.09032,dotnetfx,4.8.1,"curated; vmap=no; release build 4.8.09032 is 4.8.1; version parts alone say 4.8; Unverified: the 4.8.09032 build number comes from community knowledge, not a vendor page",hand,0
 Microsoft .NET Framework 4.8,Microsoft Corporation,4.8.03761,dotnetfx,4.8,curated; vmap=yes; inventory tool row,hand,0
 Microsoft .NET Framework 4.7.2,Microsoft Corporation,4.7.03062,dotnetfx,4.7.2,curated; vmap=no; release build 4.7.03062 is 4.7.2,hand,0
 PowerShell 7-x64,Microsoft Corporation,7.4.6.0,powershell,7.4,curated; vmap=yes; MSI ARP name,hand,0
@@ -257,7 +256,6 @@ Keycloak,Red Hat,23.0.3,keycloak,23.0,curated; vmap=yes; bare title,hand,0
 JFrog Artifactory,JFrog,7.71.5,artifactory,7.71,curated; vmap=yes; vendor prefix,hand,1
 Sonatype Nexus Repository,Sonatype,3.64.0-04,nexus,3.64,curated; vmap=yes; vendor prefix,hand,0
 SonarQube Server,SonarSource,10.8.0,sonarqube-server,10,curated; vmap=yes; title,hand,0
-Harbor,VMware,2.10.0,harbor,2.10,curated; vmap=yes; publisher confirms,hand,0
 Prometheus,Prometheus,2.48.1,prometheus,2.48,curated; vmap=yes; bare title,hand,0
 prometheus,Debian Go Packaging Team,2.42.0+ds-5+b5,prometheus,2.42,curated; vmap=yes; Debian package,hand,0
 Telegraf,InfluxData,1.29.2,telegraf,1.29,curated; vmap=yes; bare title,hand,0
@@ -539,7 +537,6 @@ Cisco Secure Client - AnyConnect VPN,"Cisco Systems, Inc.",5.0.05040,NONE,,trap=
 Cisco AnyConnect Secure Mobility Client,"Cisco Systems, Inc.",4.10.07073,NONE,,trap=absent; VPN client,hand,0
 FortiClient VPN,Fortinet Technologies Inc,7.2.3.0929,NONE,,trap=lookalike; VPN client; version fits FortiOS 7.2,hand,1
 FortiClient,Fortinet Technologies Inc,7.0.9.0493,NONE,,"trap=lookalike; endpoint client, not FortiOS",hand,0
-Elastic Agent,Elastic,8.11.3,NONE,,trap=lookalike; not Beats,hand,0
 Grafana Agent,Grafana Labs,0.39.1,NONE,,trap=lookalike; not Grafana,hand,0
 windows_exporter,Prometheus,0.25.1,NONE,,"trap=lookalike; exporter, not Prometheus",hand,0
 prometheus-node-exporter,Debian Go Packaging Team,1.5.0-1+b6,NONE,,"trap=lookalike; exporter, not Prometheus",hand,0
@@ -668,18 +665,17 @@ Oracle,Oracle,19.0.0,NONE,,trap=generic; vendor name only,hand,0
 Office,,16.0,NONE,,trap=generic; which Office is unknown,hand,0
 Linux,,5.15.0-91-generic,NONE,,trap=generic; Linux alone; kernel row needs the kernel name,hand,0
 Docker,,24.0.7,NONE,,trap=generic; which Docker product is unknown,hand,0
-Windows Server,Microsoft Corporation,10.0.17763,NONE,,trap=ambiguous; build 17763 is Server 2019 or 1809 SAC,hand,0
-Microsoft .NET,Microsoft Corporation,4.8,NONE,,trap=ambiguous; .NET vs .NET Framework; version fits Framework only,hand,0
+Windows Server,Microsoft Corporation,10.0.17763,windows-server,none,"trap=ambiguous; build 17763 is Server 2019 or 1809 SAC; expected: the product, no cycle can be decided",hand,0
 Proxmox,Proxmox Server Solutions GmbH,8.1.3,NONE,,"trap=ambiguous; VE, Backup Server or Mail Gateway",hand,0
 Elastic Stack,Elastic,8.17.0,NONE,,trap=ambiguous; several Elastic products,hand,0
 Spring,VMware,6.1.2,NONE,,"trap=ambiguous; Spring Framework, Boot, Cloud or Security",hand,1
-Apache Tomcat 9.0.83,The Apache Software Foundation,10.1.17,NONE,,"trap=conflict; name says 9.0, version says 10.1",hand,0
-PostgreSQL 15,PostgreSQL Global Development Group,16.1-1,NONE,,"trap=conflict; name says 15, version says 16",hand,0
-Python 3.11.7 (64-bit),Python Software Foundation,3.12.1150.0,NONE,,"trap=conflict; name says 3.11, version says 3.12",hand,0
-nginx 1.24.0,,1.25.3,NONE,,"trap=conflict; name says 1.24, version says 1.25",hand,0
-Node.js 18,Node.js Foundation,20.10.0,NONE,,"trap=conflict; name says 18, version says 20",hand,0
-MySQL Server 8.0,Oracle Corporation,5.7.44,NONE,,"trap=conflict; name says 8.0, version says 5.7",hand,0
-Oracle JDK 17.0.9,Oracle Corporation,21.0.1,NONE,,"trap=conflict; name says 17, version says 21",hand,0
+Apache Tomcat 9.0.83,The Apache Software Foundation,10.1.17,tomcat,none,"trap=conflict; name says 9.0, version says 10.1; expected: the product, no cycle can be decided",hand,0
+PostgreSQL 15,PostgreSQL Global Development Group,16.1-1,postgresql,none,"trap=conflict; name says 15, version says 16; expected: the product, no cycle can be decided",hand,0
+Python 3.11.7 (64-bit),Python Software Foundation,3.12.1150.0,python,none,"trap=conflict; name says 3.11, version says 3.12; expected: the product, no cycle can be decided",hand,0
+nginx 1.24.0,,1.25.3,nginx,none,"trap=conflict; name says 1.24, version says 1.25; expected: the product, no cycle can be decided",hand,0
+Node.js 18,Node.js Foundation,20.10.0,nodejs,none,"trap=conflict; name says 18, version says 20; expected: the product, no cycle can be decided",hand,0
+MySQL Server 8.0,Oracle Corporation,5.7.44,mysql,none,"trap=conflict; name says 8.0, version says 5.7; expected: the product, no cycle can be decided",hand,0
+Oracle JDK 17.0.9,Oracle Corporation,21.0.1,oracle-jdk,none,"trap=conflict; name says 17, version says 21; expected: the product, no cycle can be decided",hand,0
 Teleport Pro,"Tennyson Maxwell Information Systems, Inc.",1.72,NONE,,"trap=vendor; offline browser, not Teleport access platform",hand,0
 Teleport,"Tennyson Maxwell Information Systems, Inc.",1.72,NONE,,"trap=vendor; offline browser, not Teleport access platform",hand,0
 Flux,f.lux Software LLC,4.134,NONE,,"trap=vendor; f.lux display tool, not Flux CD",hand,0
@@ -712,15 +708,15 @@ Nextcloud,Nextcloud GmbH,3.11.0,NONE,,"trap=lookalike; desktop sync client, not 
 Nextcloud Desktop,Nextcloud GmbH,3.14.3,NONE,,trap=lookalike; desktop sync client,hand,0
 GitLab Workflow,GitLab,4.12.0,NONE,,trap=lookalike; editor extension,hand,0
 Grafana Alloy,Grafana Labs,1.5.0,NONE,,"trap=lookalike; collector, not Grafana",hand,0
-Keycloak Admin CLI,,23.0.3,NONE,,trap=component; CLI,hand,0
-Microsoft SQL Server 2008 R2 (64-bit),Microsoft Corporation,10.50.6000.34,NONE,,trap=nocycle; 2008 R2 not in snapshot,hand,0
-Microsoft SQL Server 2005,Microsoft Corporation,9.00.5000.00,NONE,,trap=nocycle; 2005 not in snapshot,hand,1
-Microsoft Windows Server 2008 R2 Enterprise,Microsoft Corporation,6.1.7601,NONE,,trap=nocycle; 2008 R2 not in snapshot,hand,0
-Microsoft Windows Server 2003 Standard Edition,Microsoft Corporation,5.2.3790,NONE,,trap=nocycle; 2003 not in snapshot,hand,0
-Microsoft Office 2003,Microsoft Corporation,11.0.8173.0,NONE,,trap=nocycle; 2003 not in snapshot,hand,0
-Logstash,Elastic,8.11.3,NONE,,trap=nocycle; 8.11 is not a snapshot cycle,hand,0
-Elasticsearch,Elastic,8.11.3,NONE,,trap=nocycle; 8.11 is not a snapshot cycle,hand,0
-GitLab Runner,GitLab Inc.,16.7.0,NONE,,trap=nocycle; gitlab-runner snapshot cycles start at 18.0,hand,1
+Keycloak Admin CLI,,23.0.3,keycloak,23.0,"trap=component; admin CLI ships with the server at the same version and support dates, so it counts as the product (agent/CLI policy)",hand,0
+Microsoft SQL Server 2008 R2 (64-bit),Microsoft Corporation,10.50.6000.34,mssqlserver,10.50-sp3,build 10.50.6000.34 is SQL Server 2008 R2 SP3; source https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates,hand,0
+Microsoft SQL Server 2005,Microsoft Corporation,9.00.5000.00,mssqlserver,9.0-sp4,build 9.00.5000.00 is SQL Server 2005 SP4; source https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates,hand,1
+Microsoft Windows Server 2008 R2 Enterprise,Microsoft Corporation,6.1.7601,windows-server,2008-r2-sp1,build 6.1.7601 is Service Pack 1; source https://endoflife.date/windows-server,hand,0
+Microsoft Windows Server 2003 Standard Edition,Microsoft Corporation,5.2.3790,windows-server,none,"product right; build 5.2.3790 is shared by 2003, 2003-sp1 and 2003-sp2, so no cycle can be decided",hand,0
+Microsoft Office 2003,Microsoft Corporation,11.0.8173.0,office,none,"trap=nocycle; 2003 not in snapshot; expected: the product, no cycle can be decided",hand,0
+Logstash,Elastic,8.11.3,logstash,none,"trap=nocycle; 8.11 is not a snapshot cycle; expected: the product, no cycle can be decided",hand,0
+Elasticsearch,Elastic,8.11.3,elasticsearch,none,"trap=nocycle; 8.11 is not a snapshot cycle; expected: the product, no cycle can be decided",hand,0
+GitLab Runner,GitLab Inc.,16.7.0,gitlab-runner,none,"trap=nocycle; gitlab-runner snapshot cycles start at 18.0; expected: the product, no cycle can be decided",hand,1
 AdonisJS,,7.6.0,adonisjs,7,auto=title; vmap=yes,generated,0
 AdonisJS 6.20.0,,6.20.0,adonisjs,6,auto=title+version; vmap=yes,generated,0
 Akeneo PIM,,2026.4,akeneo-pim,2026.4,auto=title; vmap=yes,generated,0
@@ -732,10 +728,10 @@ Alibaba Dragonwell 17.0.20.0.21+8,,17.0.20.0.21+8,alibaba-dragonwell,17,auto=tit
 jdk8-dragonwell-extended,,8.30.29-1,alibaba-dragonwell,8,auto=package; vmap=yes; repology/purl name,generated,0
 AlmaLinux OS,AlmaLinux OS Foundation,10.2,almalinux,10,auto=title; vmap=yes,generated,0
 AlmaLinux OS 9.8,AlmaLinux OS Foundation,9.8,almalinux,9,auto=title+version; vmap=yes,generated,0
-AlmaLinux OS,AlmaLinux OS Foundation,7.0.1,NONE,,trap=nocycle; almalinux has no cycle for 7.0.1 in the snapshot,generated,0
+AlmaLinux OS,AlmaLinux OS Foundation,7.0.1,almalinux,none,"trap=nocycle; almalinux has no cycle for 7.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Alpine Linux,Alpine,3.24.3,alpine-linux,3.24,auto=title; vmap=yes,generated,0
 Alpine Linux 3.8.5,Alpine,3.8.5,alpine-linux,3.8,auto=title+version; vmap=yes,generated,0
-Alpine Linux,Alpine,1.0.1,NONE,,trap=nocycle; alpine-linux has no cycle for 1.0.1 in the snapshot,generated,0
+Alpine Linux,Alpine,1.0.1,alpine-linux,none,"trap=nocycle; alpine-linux has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Amazon Aurora MySQL,,8.4.8,amazon-aurora-mysql,8.4,auto=title; vmap=yes,generated,0
 Amazon Aurora MySQL 2.12,,2.12,amazon-aurora-mysql,2,auto=title+version; vmap=yes,generated,0
 Amazon Aurora PostgreSQL,,18.6,amazon-aurora-postgresql,18,auto=title; vmap=yes,generated,0
@@ -746,7 +742,7 @@ aws-cdk,,2.274.0-1,amazon-cdk,2,auto=package; vmap=yes; repology/purl name,catal
 Amazon Corretto,Amazon,27.0.1.0.10,amazon-corretto,27,auto=title; vmap=yes,generated,0
 Amazon Corretto 20.0.2.10.1,Amazon,20.0.2.10.1,amazon-corretto,20,auto=title+version; vmap=yes,generated,0
 Amazon Corretto (x64),Amazon,27.0.1.0.10,amazon-corretto,27,auto=arch-suffix; vmap=yes,generated,0
-Amazon Corretto,Amazon,7.0.1,NONE,,trap=nocycle; amazon-corretto has no cycle for 7.0.1 in the snapshot,generated,0
+Amazon Corretto,Amazon,7.0.1,amazon-corretto,none,"trap=nocycle; amazon-corretto has no cycle for 7.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Amazon DocumentDB,,8.0,amazon-documentdb,8.0,auto=title; vmap=yes,generated,0
 Amazon DocumentDB 4.0,,4.0,amazon-documentdb,4.0,auto=title+version; vmap=yes,generated,0
 Amazon EKS,,1.37-eks-4,amazon-eks,1.37,auto=title; vmap=yes,generated,0
@@ -759,7 +755,7 @@ Amazon Glue,,6.0,amazon-glue,6.0,auto=title; vmap=yes,generated,0
 Amazon Glue 3.0,,3.0,amazon-glue,3.0,auto=title+version; vmap=yes,generated,0
 Amazon Linux,Amazon,2023.12.20261021.0,amazon-linux,2023,auto=title; vmap=yes,generated,0
 Amazon Linux 2015.03,Amazon,2015.03,amazon-linux,2015.03,auto=title+version; vmap=yes,generated,0
-Amazon Linux,Amazon,2009.0.1,NONE,,trap=nocycle; amazon-linux has no cycle for 2009.0.1 in the snapshot,generated,0
+Amazon Linux,Amazon,2009.0.1,amazon-linux,none,"trap=nocycle; amazon-linux has no cycle for 2009.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Amazon MQ for ActiveMQ,,5.19,amazon-mq-activemq,5.19,auto=title; vmap=yes,generated,0
 Amazon MQ for ActiveMQ 5.17,,5.17,amazon-mq-activemq,5.17,auto=title+version; vmap=yes,generated,0
 Amazon MQ for RabbitMQ,,4.3,amazon-mq-rabbitmq,4.3,auto=title; vmap=yes,generated,0
@@ -780,7 +776,7 @@ Android OS,,17,android,17,auto=title; vmap=yes,generated,0
 Android OS 5.0,,5.0,android,5.0,auto=title+version; vmap=yes,generated,0
 Angular,Google,22.2.3,angular,22,auto=title; vmap=yes,generated,0
 Angular 15.2.10,Google,15.2.10,angular,15,auto=title+version; vmap=yes,generated,0
-Angular,Google,8.0.1,NONE,,trap=nocycle; angular has no cycle for 8.0.1 in the snapshot,generated,0
+Angular,Google,8.0.1,angular,none,"trap=nocycle; angular has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 AngularJS,,1.8.3,angularjs,1.8,auto=title; vmap=yes,generated,0
 AngularJS 1.4.14,,1.4.14,angularjs,1.4,auto=title+version; vmap=yes,generated,0
 angular.js,,1.0.8-1,angularjs,1.0,auto=package; vmap=yes; repology/purl name,generated,0
@@ -788,13 +784,13 @@ Ansible,Red Hat,14.5.0,ansible,14,auto=title; vmap=yes,catalog,0
 Ansible 7.7.0,Red Hat,7.7.0,ansible,7,auto=title+version; vmap=yes,generated,0
 Red Hat Ansible,Red Hat,7.7.0,ansible,7,auto=vendor+title; vmap=yes,generated,0
 Ansible (x64),Red Hat,14.5.0,ansible,14,auto=arch-suffix; vmap=yes,generated,0
-Ansible,Red Hat,1.0.1,NONE,,trap=nocycle; ansible has no cycle for 1.0.1 in the snapshot,catalog,0
-Ansible 21.0.0,Red Hat,21.0.0,NONE,,trap=nocycle; 21.0.0 newer than any snapshot cycle,generated,0
-Ansible 14.5.0,Red Hat,2.9.27,NONE,,"trap=conflict; name says 14, version says 2.9",generated,0
+Ansible,Red Hat,1.0.1,ansible,none,"trap=nocycle; ansible has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Ansible 21.0.0,Red Hat,21.0.0,ansible,none,"trap=nocycle; 21.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Ansible 14.5.0,Red Hat,2.9.27,ansible,none,"trap=conflict; name says 14, version says 2.9; expected: the product, no cycle can be decided",generated,0
 Ansible-core,Red Hat,2.21.5,ansible-core,2.21,auto=title; vmap=yes,generated,0
 Ansible-core 2.15.13,Red Hat,2.15.13,ansible-core,2.15,auto=title+version; vmap=yes,generated,0
 ansible-core,,2.9.27-1,ansible-core,2.9,auto=package; vmap=yes; repology/purl name,catalog,0
-Ansible-core,Red Hat,1.0.1,NONE,,trap=nocycle; ansible-core has no cycle for 1.0.1 in the snapshot,generated,0
+Ansible-core,Red Hat,1.0.1,ansible-core,none,"trap=nocycle; ansible-core has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Ant,The Apache Software Foundation,1.10.18,ant,1.10,auto=title; vmap=yes,generated,0
 Apache Ant 1.9.16,The Apache Software Foundation,1.9.16,ant,1.9,auto=title+version; vmap=yes,generated,0
 ant,,1.8.4-1,ant,1.8,auto=package; vmap=yes; repology/purl name,catalog,0
@@ -804,7 +800,7 @@ antiX Linux 19.5,,19.5,antix,19,auto=title+version; vmap=yes,generated,0
 Apache ActiveMQ Classic,The Apache Software Foundation,6.3.3,apache-activemq,6.3,auto=title; vmap=yes,generated,0
 Apache ActiveMQ Classic 5.11.4,The Apache Software Foundation,5.11.4,apache-activemq,5.11,auto=title+version; vmap=yes,generated,0
 activemq,,5.0.0-1,apache-activemq,5.0,auto=package; vmap=yes; repology/purl name,catalog,1
-Apache ActiveMQ Classic,The Apache Software Foundation,4.0.1,NONE,,trap=nocycle; apache-activemq has no cycle for 4.0.1 in the snapshot,generated,0
+Apache ActiveMQ Classic,The Apache Software Foundation,4.0.1,apache-activemq,none,"trap=nocycle; apache-activemq has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Airflow,The Apache Software Foundation,3.3.2,apache-airflow,3.3,auto=title; vmap=yes,generated,0
 Apache Airflow 2.11.2,The Apache Software Foundation,2.11.2,apache-airflow,2,auto=title+version; vmap=yes,generated,0
 Apache APISIX,,3.19.0,apache-apisix,3.19,auto=title; vmap=yes,generated,0
@@ -814,12 +810,12 @@ Apache Artemis 2.23.1,,2.23.1,apache-artemis,2.23,auto=title+version; vmap=yes,g
 activemq-artemis,,1.0.0-1,apache-artemis,1.0,auto=package; vmap=yes; repology/purl name,generated,0
 Apache Camel,The Apache Software Foundation,4.22.2,apache-camel,4.22,auto=title; vmap=yes,generated,0
 Apache Camel 4.0.6,The Apache Software Foundation,4.0.6,apache-camel,4.0,auto=title+version; vmap=yes,generated,0
-Apache Camel,The Apache Software Foundation,2.0.1,NONE,,trap=nocycle; apache-camel has no cycle for 2.0.1 in the snapshot,generated,0
+Apache Camel,The Apache Software Foundation,2.0.1,apache-camel,none,"trap=nocycle; apache-camel has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Cassandra,The Apache Software Foundation,5.0.9,apache-cassandra,5.0,auto=title; vmap=yes,generated,0
 Apache Cassandra 4.0.21,The Apache Software Foundation,4.0.21,apache-cassandra,4.0,auto=title+version; vmap=yes,generated,0
 cassandra,,3.0.32-1,apache-cassandra,3.0,auto=package; vmap=yes; repology/purl name,catalog,0
 Apache Cassandra (x64),The Apache Software Foundation,5.0.9,apache-cassandra,5.0,auto=arch-suffix; vmap=yes,generated,0
-Apache Cassandra,The Apache Software Foundation,2.0.1,NONE,,trap=nocycle; apache-cassandra has no cycle for 2.0.1 in the snapshot,generated,0
+Apache Cassandra,The Apache Software Foundation,2.0.1,apache-cassandra,none,"trap=nocycle; apache-cassandra has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Celeborn,,0.7.0,apache-celeborn,0.7,auto=title; vmap=yes,generated,0
 Apache Celeborn 0.5.4,,0.5.4,apache-celeborn,0.5,auto=title+version; vmap=yes,generated,0
 celeborn,,0.4.3-1,apache-celeborn,0.4,auto=package; vmap=yes; repology/purl name,generated,0
@@ -827,7 +823,7 @@ Apache CouchDB,The Apache Software Foundation,3.5.3,apache-couchdb,3.5,auto=titl
 Apache CouchDB 3.3.3,The Apache Software Foundation,3.3.3,apache-couchdb,3.3,auto=title+version; vmap=yes,generated,0
 couchdb,,3.2.3-1,apache-couchdb,3.2,auto=package; vmap=yes; repology/purl name,catalog,0
 Apache CouchDB (x64),The Apache Software Foundation,3.5.3,apache-couchdb,3.5,auto=arch-suffix; vmap=yes,generated,0
-Apache CouchDB,The Apache Software Foundation,2.0.1,NONE,,trap=nocycle; apache-couchdb has no cycle for 2.0.1 in the snapshot,catalog,0
+Apache CouchDB,The Apache Software Foundation,2.0.1,apache-couchdb,none,"trap=nocycle; apache-couchdb has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Apache Flink,The Apache Software Foundation,2.3.0,apache-flink,2.3,auto=title; vmap=yes,generated,0
 Apache Flink 1.20.5,The Apache Software Foundation,1.20.5,apache-flink,1.20,auto=title+version; vmap=yes,generated,0
 flink,,1.17.2-1,apache-flink,1.17,auto=package; vmap=yes; repology/purl name,generated,0
@@ -835,7 +831,7 @@ Apache Groovy,The Apache Software Foundation,6.0.0,apache-groovy,6.0,auto=title;
 Apache Groovy 4.0.33,The Apache Software Foundation,4.0.33,apache-groovy,4.0,auto=title+version; vmap=yes,generated,0
 groovy,,2.4.21-1,apache-groovy,2.4,auto=package; vmap=yes; repology/purl name,catalog,0
 Apache Groovy (x64),The Apache Software Foundation,6.0.0,apache-groovy,6.0,auto=arch-suffix; vmap=yes,generated,0
-Apache Groovy,The Apache Software Foundation,1.0.1,NONE,,trap=nocycle; apache-groovy has no cycle for 1.0.1 in the snapshot,generated,0
+Apache Groovy,The Apache Software Foundation,1.0.1,apache-groovy,none,"trap=nocycle; apache-groovy has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Hadoop,The Apache Software Foundation,3.5.0,apache-hadoop,3.5,auto=title; vmap=yes,generated,0
 Apache Hadoop 2.7.7,The Apache Software Foundation,2.7.7,apache-hadoop,2.7,auto=title+version; vmap=yes,generated,0
 hadoop,,1.0.4-1,apache-hadoop,1.0,auto=package; vmap=yes; repology/purl name,catalog,0
@@ -850,7 +846,7 @@ Apache Kafka 2.7.2,The Apache Software Foundation,2.7.2,apache-kafka,2.7,auto=ti
 kafka,,0.7.2-1,apache-kafka,0.7,auto=package; vmap=yes; repology/purl name,catalog,0
 Apache Lucene,The Apache Software Foundation,10.5.2,apache-lucene,10,auto=title; vmap=yes,generated,0
 Apache Lucene 8.11.4,The Apache Software Foundation,8.11.4,apache-lucene,8,auto=title+version; vmap=yes,generated,0
-Apache Lucene,The Apache Software Foundation,6.0.1,NONE,,trap=nocycle; apache-lucene has no cycle for 6.0.1 in the snapshot,generated,0
+Apache Lucene,The Apache Software Foundation,6.0.1,apache-lucene,none,"trap=nocycle; apache-lucene has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Maven,The Apache Software Foundation,3.10.0,apache-maven,3.10,auto=title; vmap=yes,generated,0
 Apache Maven 3.3.9,The Apache Software Foundation,3.3.9,apache-maven,3.3,auto=title+version; vmap=yes,generated,0
 maven,,1.1-1,apache-maven,1,auto=package; vmap=yes; repology/purl name,catalog,1
@@ -860,7 +856,7 @@ Apache NiFi 2.1.0,The Apache Software Foundation,2.1.0,apache-nifi,2.1,auto=titl
 nifi,,1.19.1-1,apache-nifi,1.19,auto=package; vmap=yes; repology/purl name,catalog,0
 Apache Pulsar,The Apache Software Foundation,5.0.0,apache-pulsar,5.0,auto=title; vmap=yes,generated,0
 Apache Pulsar 3.0.17,The Apache Software Foundation,3.0.17,apache-pulsar,3.0,auto=title+version; vmap=yes,generated,0
-Apache Pulsar,The Apache Software Foundation,1.0.1,NONE,,trap=nocycle; apache-pulsar has no cycle for 1.0.1 in the snapshot,generated,0
+Apache Pulsar,The Apache Software Foundation,1.0.1,apache-pulsar,none,"trap=nocycle; apache-pulsar has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Spark,The Apache Software Foundation,4.2.0,apache-spark,4.2,auto=title; vmap=yes,generated,0
 Apache Spark 2.3.4,The Apache Software Foundation,2.3.4,apache-spark,2.3,auto=title+version; vmap=yes,generated,0
 Apache Struts,The Apache Software Foundation,7.4.0,apache-struts,7,auto=title; vmap=yes,generated,0
@@ -874,7 +870,7 @@ API Platform 3.1.29,,3.1.29,api-platform,3.1,auto=title+version; vmap=yes,genera
 ArangoDB,ArangoDB GmbH,3.12.12.1,arangodb,3.12,auto=title; vmap=yes,generated,0
 ArangoDB 3.5.7,ArangoDB GmbH,3.5.7,arangodb,3.5,auto=title+version; vmap=yes,generated,0
 ArangoDB (x64),ArangoDB GmbH,3.12.12.1,arangodb,3.12,auto=arch-suffix; vmap=yes,generated,0
-ArangoDB,ArangoDB GmbH,1.0.1,NONE,,trap=nocycle; arangodb has no cycle for 1.0.1 in the snapshot,generated,0
+ArangoDB,ArangoDB GmbH,1.0.1,arangodb,none,"trap=nocycle; arangodb has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Argo CD,Argo Project,3.5.6,argo-cd,3.5,auto=title; vmap=yes,generated,0
 Argo CD 2.5.22,Argo Project,2.5.22,argo-cd,2.5,auto=title+version; vmap=yes,generated,0
 argocd,,1.0.2-1,argo-cd,1.0,auto=package; vmap=yes; repology/purl name,catalog,0
@@ -883,9 +879,9 @@ Argo Workflows 3.6.19,,3.6.19,argo-workflows,3.6,auto=title+version; vmap=yes,ge
 Artifactory,JFrog,7.161.32,artifactory,7.161,auto=title; vmap=yes,generated,0
 Artifactory 7.55.17,JFrog,7.55.17,artifactory,7.55,auto=title+version; vmap=yes,generated,0
 JFrog Artifactory,JFrog,7.55.17,artifactory,7.55,auto=vendor+title; vmap=yes,generated,0
-Artifactory,JFrog,6.0.1,NONE,,trap=nocycle; artifactory has no cycle for 6.0.1 in the snapshot,generated,0
-Artifactory 14.0.0,JFrog,14.0.0,NONE,,trap=nocycle; 14.0.0 newer than any snapshot cycle,generated,0
-Artifactory 7.161.32,JFrog,7.24.7,NONE,,"trap=conflict; name says 7.161, version says 7.24",generated,0
+Artifactory,JFrog,6.0.1,artifactory,none,"trap=nocycle; artifactory has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Artifactory 14.0.0,JFrog,14.0.0,artifactory,none,"trap=nocycle; 14.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Artifactory 7.161.32,JFrog,7.24.7,artifactory,none,"trap=conflict; name says 7.161, version says 7.24; expected: the product, no cycle can be decided",generated,0
 authentik,,2026.8.5,authentik,2026.8,auto=title; vmap=yes,generated,0
 authentik 2025.6.4,,2025.6.4,authentik,2025.6,auto=title+version; vmap=yes,generated,0
 Azul Zulu,"Azul Systems, Inc.",27.28.101,azul-zulu,27,auto=title; vmap=yes,generated,0
@@ -898,7 +894,7 @@ Azure Database for PostgreSQL,,18,azure-database-for-postgresql,18,auto=title; v
 Azure Database for PostgreSQL 14,,14,azure-database-for-postgresql,14,auto=title+version; vmap=yes,generated,0
 Azure DevOps Server,Microsoft Corporation,2022.2,azure-devops-server,2022.2,auto=title; vmap=yes,generated,0
 Azure DevOps Server 2018.3.2patch20,Microsoft Corporation,2018.3.2patch20,azure-devops-server,2018,auto=title+version; vmap=yes,generated,0
-Azure DevOps Server,Microsoft Corporation,2004.0.1,NONE,,trap=nocycle; azure-devops-server has no cycle for 2004.0.1 in the snapshot,generated,0
+Azure DevOps Server,Microsoft Corporation,2004.0.1,azure-devops-server,none,"trap=nocycle; azure-devops-server has no cycle for 2004.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Azure Kubernetes Service,,1.36,azure-kubernetes-service,1.36,auto=title; vmap=yes,generated,0
 Azure Kubernetes Service 1.28,,1.28,azure-kubernetes-service,1.28,auto=title+version; vmap=yes,generated,0
 Backdrop,,1.35.2,NONE,,"trap=generic; bare single-word title, no publisher (backdrop)",catalog,0
@@ -911,35 +907,35 @@ Bazel 6.6.0,,6.6.0,bazel,6,auto=title+version; vmap=yes,catalog,0
 Elastic Beats,Elastic,9.5.5,beats,9.5,auto=title; vmap=yes,generated,0
 Elastic Beats 8.18.8,Elastic,8.18.8,beats,8.18,auto=title+version; vmap=yes,generated,0
 filebeat,,6.8.23-1,beats,6,auto=package; vmap=yes; repology/purl name,catalog,0
-Elastic Beats,Elastic,5.0.1,NONE,,trap=nocycle; beats has no cycle for 5.0.1 in the snapshot,generated,0
+Elastic Beats,Elastic,5.0.1,beats,none,"trap=nocycle; beats has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Behat,,4.0.0,NONE,,"trap=generic; bare single-word title, no publisher (behat)",generated,0
 Bellsoft Liberica JDK,BellSoft,27.0.1.0.2+5,bellsoft-liberica,27,auto=title; vmap=yes,generated,0
 Bellsoft Liberica JDK 17.0.21.0.2+6,BellSoft,17.0.21.0.2+6,bellsoft-liberica,17,auto=title+version; vmap=yes,generated,0
-liberica-jdk-11-full,,6-1,bellsoft-liberica,6,auto=package; vmap=yes; repology/purl name,generated,0
+liberica-jdk-11-full,,11.0.21+10-1,bellsoft-liberica,11,package name and version agree on line 11 (version was 6-1),generated,0
 Bellsoft Liberica JDK (x64),BellSoft,27.0.1.0.2+5,bellsoft-liberica,27,auto=arch-suffix; vmap=yes,generated,0
-Bellsoft Liberica JDK,BellSoft,5.0.1,NONE,,trap=nocycle; bellsoft-liberica has no cycle for 5.0.1 in the snapshot,generated,0
+Bellsoft Liberica JDK,BellSoft,5.0.1,bellsoft-liberica,none,"trap=nocycle; bellsoft-liberica has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 BIG-IP,"F5, Inc.",21.1.0,big-ip,21.1,auto=title; vmap=yes,generated,0
 BIG-IP 11.6.5,"F5, Inc.",11.6.5,big-ip,11.6,auto=title+version; vmap=yes,generated,0
-BIG-IP,"F5, Inc.",8.0.1,NONE,,trap=nocycle; big-ip has no cycle for 8.0.1 in the snapshot,generated,0
+BIG-IP,"F5, Inc.",8.0.1,big-ip,none,"trap=nocycle; big-ip has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 BigBlueButton,,3.0.39,bigbluebutton,3.0,auto=title; vmap=yes,generated,0
 BigBlueButton 2.6.18,,2.6.18,bigbluebutton,2.6,auto=title+version; vmap=yes,generated,0
 BIND 9,Internet Systems Consortium,9.21.27,bind-9,9.21,auto=title; vmap=yes,catalog,0
 BIND 9 9.18.50,Internet Systems Consortium,9.18.50,bind-9,9.18,auto=title+version; vmap=yes,catalog,0
 bind,,9.16.50-1,bind-9,9.16,auto=package; vmap=yes; repology/purl name,catalog,0
-BIND 9,Internet Systems Consortium,8.0.1,NONE,,trap=nocycle; bind-9 has no cycle for 8.0.1 in the snapshot,catalog,0
+BIND 9,Internet Systems Consortium,8.0.1,bind-9,none,"trap=nocycle; bind-9 has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Bitbucket,Atlassian,10.5.1,bitbucket,10.5,auto=title; vmap=yes,generated,0
 Bitbucket 6.2.7,Atlassian,6.2.7,bitbucket,6.2,auto=title+version; vmap=yes,generated,0
 Atlassian Bitbucket,Atlassian,6.2.7,bitbucket,6.2,auto=vendor+title; vmap=yes,generated,0
-Bitbucket 17.0.0,Atlassian,17.0.0,NONE,,trap=nocycle; 17.0.0 newer than any snapshot cycle,generated,0
-Bitbucket 10.5.1,Atlassian,1.0.3,NONE,,"trap=conflict; name says 10.5, version says 1.0",generated,0
+Bitbucket 17.0.0,Atlassian,17.0.0,bitbucket,none,"trap=nocycle; 17.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Bitbucket 10.5.1,Atlassian,1.0.3,bitbucket,none,"trap=conflict; name says 10.5, version says 1.0; expected: the product, no cycle can be decided",generated,0
 Bitcoin Core,,31.1,bitcoin-core,31,auto=title; vmap=yes,catalog,0
 Bitcoin Core 0.19.2,,0.19.2,bitcoin-core,0.19,auto=title+version; vmap=yes,catalog,0
 Blender,Blender Foundation,5.2.3,blender,5.2,auto=title; vmap=yes,catalog,0
 Blender 3.6.23,Blender Foundation,3.6.23,blender,3.6,auto=title+version; vmap=yes,catalog,0
 Blender (x64),Blender Foundation,5.2.3,blender,5.2,auto=arch-suffix; vmap=yes,generated,0
-Blender,Blender Foundation,1.0.1,NONE,,trap=nocycle; blender has no cycle for 1.0.1 in the snapshot,catalog,0
-Blender 12.0.0,Blender Foundation,12.0.0,NONE,,trap=nocycle; 12.0.0 newer than any snapshot cycle,catalog,0
-Blender 5.2.3,Blender Foundation,2.83.20,NONE,,"trap=conflict; name says 5.2, version says 2.83",catalog,0
+Blender,Blender Foundation,1.0.1,blender,none,"trap=nocycle; blender has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Blender 12.0.0,Blender Foundation,12.0.0,blender,none,"trap=nocycle; 12.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Blender 5.2.3,Blender Foundation,2.83.20,blender,none,"trap=conflict; name says 5.2, version says 2.83; expected: the product, no cycle can be decided",catalog,0
 Bootstrap,,5.3.8,NONE,,"trap=generic; bare single-word title, no publisher (bootstrap)",generated,0
 Hashicorp Boundary,HashiCorp,0.21.3,boundary,0.21,auto=title; vmap=yes,catalog,0
 Hashicorp Boundary 0.18.2,HashiCorp,0.18.2,boundary,0.18,auto=title+version; vmap=yes,catalog,0
@@ -957,19 +953,19 @@ CakePHP 3.5.18,,3.5.18,cakephp,3.5,auto=title+version; vmap=yes,generated,0
 Calico,Tigera,3.33.0,calico,3.33,auto=title; vmap=yes,generated,0
 Calico 3.29.7,Tigera,3.29.7,calico,3.29,auto=title+version; vmap=yes,generated,0
 Calico,,3.33.0,NONE,,"trap=generic; bare single-word title, no publisher (calico)",generated,0
-Calico,Tigera,2.0.1,NONE,,trap=nocycle; calico has no cycle for 2.0.1 in the snapshot,generated,0
+Calico,Tigera,2.0.1,calico,none,"trap=nocycle; calico has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 CentOS,CentOS,8,centos,8,auto=title; vmap=yes,generated,0
 CentOS 6.10,CentOS,6.10,centos,6,auto=title+version; vmap=yes,generated,0
-CentOS,CentOS,4.0.1,NONE,,trap=nocycle; centos has no cycle for 4.0.1 in the snapshot,generated,0
+CentOS,CentOS,4.0.1,centos,none,"trap=nocycle; centos has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 CentOS Stream,CentOS,10,centos-stream,10,auto=title; vmap=yes,generated,0
 CentOS Stream 9,CentOS,9,centos-stream,9,auto=title+version; vmap=yes,generated,0
-CentOS Stream,CentOS,7.0.1,NONE,,trap=nocycle; centos-stream has no cycle for 7.0.1 in the snapshot,generated,0
+CentOS Stream,CentOS,7.0.1,centos-stream,none,"trap=nocycle; centos-stream has no cycle for 7.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Centreon,Centreon,25.10.18,centreon,25.10,auto=title; vmap=yes,generated,0
 Centreon 21.10.17,Centreon,21.10.17,centreon,21.10,auto=title+version; vmap=yes,generated,0
-Centreon,Centreon,17.0.1,NONE,,trap=nocycle; centreon has no cycle for 17.0.1 in the snapshot,generated,0
+Centreon,Centreon,17.0.1,centreon,none,"trap=nocycle; centreon has no cycle for 17.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Ceph,Ceph Foundation,20.2.4,ceph,20,auto=title; vmap=yes,generated,0
 Ceph 14.2.22,Ceph Foundation,14.2.22,ceph,14,auto=title+version; vmap=yes,generated,0
-Ceph,Ceph Foundation,8.0.1,NONE,,trap=nocycle; ceph has no cycle for 8.0.1 in the snapshot,generated,0
+Ceph,Ceph Foundation,8.0.1,ceph,none,"trap=nocycle; ceph has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 cert-manager,cert-manager,1.21.3,cert-manager,1.21,auto=title; vmap=yes,generated,0
 cert-manager 1.15.5,cert-manager,1.15.5,cert-manager,1.15,auto=title+version; vmap=yes,generated,0
 cert-manager,,1.10.2-1,cert-manager,1.10,auto=package; vmap=yes; repology/purl name,generated,0
@@ -977,19 +973,19 @@ cert-manager (x64),cert-manager,1.21.3,cert-manager,1.21,auto=arch-suffix; vmap=
 CFEngine,Northern.tech,3.28.0,cfengine,3.28,auto=title; vmap=yes,catalog,0
 CFEngine 3.21.8,Northern.tech,3.21.8,cfengine,3.21,auto=title+version; vmap=yes,generated,0
 CFEngine (x64),Northern.tech,3.28.0,cfengine,3.28,auto=arch-suffix; vmap=yes,generated,0
-CFEngine,Northern.tech,2.0.1,NONE,,trap=nocycle; cfengine has no cycle for 2.0.1 in the snapshot,catalog,0
+CFEngine,Northern.tech,2.0.1,cfengine,none,"trap=nocycle; cfengine has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Checkmk,Checkmk GmbH,2.5,checkmk,2.5,auto=title; vmap=yes,generated,0
 Checkmk 2.2,Checkmk GmbH,2.2,checkmk,2.2,auto=title+version; vmap=yes,generated,0
-Checkmk,Checkmk GmbH,1.0.1,NONE,,trap=nocycle; checkmk has no cycle for 1.0.1 in the snapshot,generated,0
+Checkmk,Checkmk GmbH,1.0.1,checkmk,none,"trap=nocycle; checkmk has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Chef Infra Client,Progress Chef,19.4.46,chef-infra-client,19,auto=title; vmap=yes,catalog,0
 Chef Infra Client 14.15.6,Progress Chef,14.15.6,chef-infra-client,14,auto=title+version; vmap=yes,catalog,0
 chef-client,,10.34.6-1,chef-infra-client,10,auto=package; vmap=yes; repology/purl name,generated,0
 Chef Infra Client (x64),Progress Chef,19.4.46,chef-infra-client,19,auto=arch-suffix; vmap=yes,generated,0
-Chef Infra Client,Progress Chef,9.0.1,NONE,,trap=nocycle; chef-infra-client has no cycle for 9.0.1 in the snapshot,catalog,0
+Chef Infra Client,Progress Chef,9.0.1,chef-infra-client,none,"trap=nocycle; chef-infra-client has no cycle for 9.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Chef Infra Server,Progress Chef,15.10.125,chef-infra-server,15,auto=title; vmap=yes,generated,0
 Chef Infra Server 13.2.0,Progress Chef,13.2.0,chef-infra-server,13,auto=title+version; vmap=yes,generated,0
 chef-server,,11.1.7-1,chef-infra-server,11,auto=package; vmap=yes; repology/purl name,generated,0
-Chef Infra Server,Progress Chef,10.0.1,NONE,,trap=nocycle; chef-infra-server has no cycle for 10.0.1 in the snapshot,generated,0
+Chef Infra Server,Progress Chef,10.0.1,chef-infra-server,none,"trap=nocycle; chef-infra-server has no cycle for 10.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Chef InSpec,Progress Chef,7.3.4,chef-inspec,7,auto=title; vmap=yes,generated,0
 Chef InSpec 4.56.58,Progress Chef,4.56.58,chef-inspec,4,auto=title+version; vmap=yes,generated,0
 inspec,,1.51.31-1,chef-inspec,1,auto=package; vmap=yes; repology/purl name,catalog,0
@@ -999,22 +995,22 @@ Chef Supermarket 3.4.8,,3.4.8,chef-supermarket,3,auto=title+version; vmap=yes,ge
 Chef Workstation,Progress Chef,25.14.2,chef-workstation,25,auto=title; vmap=yes,catalog,0
 Chef Workstation 22.12.1024,Progress Chef,22.12.1024,chef-workstation,22,auto=title+version; vmap=yes,catalog,0
 Chef Workstation (x64),Progress Chef,25.14.2,chef-workstation,25,auto=arch-suffix; vmap=yes,generated,0
-Chef Workstation,Progress Chef,19.0.1,NONE,,trap=nocycle; chef-workstation has no cycle for 19.0.1 in the snapshot,catalog,0
+Chef Workstation,Progress Chef,19.0.1,chef-workstation,none,"trap=nocycle; chef-workstation has no cycle for 19.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Google Chrome,Google LLC,156,chrome,156,auto=title; vmap=yes,catalog,0
 Google Chrome 81,Google LLC,81,chrome,81,auto=title+version; vmap=yes,catalog,0
 Google Chrome (x64),Google LLC,156,chrome,156,auto=arch-suffix; vmap=yes,generated,0
-Google Chrome,Google LLC,6.0.1,NONE,,trap=nocycle; chrome has no cycle for 6.0.1 in the snapshot,catalog,0
-Google Chrome 163.0.0,Google LLC,163.0.0,NONE,,trap=nocycle; 163.0.0 newer than any snapshot cycle,catalog,0
-Google Chrome 156,Google LLC,7,NONE,,"trap=conflict; name says 156, version says 7",catalog,0
+Google Chrome,Google LLC,6.0.1,chrome,none,"trap=nocycle; chrome has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Google Chrome 163.0.0,Google LLC,163.0.0,chrome,none,"trap=nocycle; 163.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Google Chrome 156,Google LLC,7,chrome,none,"trap=conflict; name says 156, version says 7; expected: the product, no cycle can be decided",catalog,0
 Cilium,,1.20.4,cilium,1.20,auto=title; vmap=yes,generated,0
 Cilium 1.16.19,,1.16.19,cilium,1.16,auto=title+version; vmap=yes,generated,0
 Cisco IOS XE,"Cisco Systems, Inc.",26.1,cisco-ios-xe,26.1,auto=title; vmap=yes,generated,0
 Cisco IOS XE 17.9,"Cisco Systems, Inc.",17.9,cisco-ios-xe,17.9,auto=title+version; vmap=yes,generated,0
-Cisco IOS XE,"Cisco Systems, Inc.",15.0.1,NONE,,trap=nocycle; cisco-ios-xe has no cycle for 15.0.1 in the snapshot,generated,0
+Cisco IOS XE,"Cisco Systems, Inc.",15.0.1,cisco-ios-xe,none,"trap=nocycle; cisco-ios-xe has no cycle for 15.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Citrix Virtual Apps and Desktops,"Citrix Systems, Inc.",2607,citrix-vad,2607,auto=title; vmap=yes,generated,0
 Citrix Virtual Apps and Desktops 2209,"Citrix Systems, Inc.",2209,citrix-vad,2209,auto=title+version; vmap=yes,generated,0
 Citrix Virtual Apps and Desktops (x64),"Citrix Systems, Inc.",2607,citrix-vad,2607,auto=arch-suffix; vmap=yes,generated,0
-Citrix Virtual Apps and Desktops,"Citrix Systems, Inc.",6.0.1,NONE,,trap=nocycle; citrix-vad has no cycle for 6.0.1 in the snapshot,generated,0
+Citrix Virtual Apps and Desktops,"Citrix Systems, Inc.",6.0.1,citrix-vad,none,"trap=nocycle; citrix-vad has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 CKEditor,,5,ckeditor,5,auto=title; vmap=yes,generated,0
 CKEditor 4.25.2,,4.25.2,ckeditor,4,auto=title+version; vmap=yes,generated,0
 ClamAV,,1.5.4,clamav,1.5,auto=title; vmap=yes,catalog,0
@@ -1022,9 +1018,9 @@ ClamAV 0.105.2,,0.105.2,clamav,0.105,auto=title+version; vmap=yes,catalog,0
 ClickHouse,ClickHouse Inc.,26.9.25.15,clickhouse,26.9,auto=title; vmap=yes,catalog,0
 ClickHouse 25.11.9.34,ClickHouse Inc.,25.11.9.34,clickhouse,25.11,auto=title+version; vmap=yes,generated,0
 ClickHouse (x64),ClickHouse Inc.,26.9.25.15,clickhouse,26.9,auto=arch-suffix; vmap=yes,generated,0
-ClickHouse,ClickHouse Inc.,24.0.1,NONE,,trap=nocycle; clickhouse has no cycle for 24.0.1 in the snapshot,catalog,1
-ClickHouse 33.0.0,ClickHouse Inc.,33.0.0,NONE,,trap=nocycle; 33.0.0 newer than any snapshot cycle,generated,0
-ClickHouse 26.9.25.15,ClickHouse Inc.,25.1.8.25,NONE,,"trap=conflict; name says 26.9, version says 25.1",generated,0
+ClickHouse,ClickHouse Inc.,24.0.1,clickhouse,none,"trap=nocycle; clickhouse has no cycle for 24.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,1
+ClickHouse 33.0.0,ClickHouse Inc.,33.0.0,clickhouse,none,"trap=nocycle; 33.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+ClickHouse 26.9.25.15,ClickHouse Inc.,25.1.8.25,clickhouse,none,"trap=conflict; name says 26.9, version says 25.1; expected: the product, no cycle can be decided",generated,0
 Cloud SQL Auth Proxy,,2.26.3,cloud-sql-auth-proxy,2,auto=title; vmap=yes,generated,0
 Cloud SQL Auth Proxy 1.38.4,,1.38.4,cloud-sql-auth-proxy,1,auto=title+version; vmap=yes,generated,0
 cnspec,,14.8.0,cnspec,14,auto=title; vmap=yes,generated,0
@@ -1033,19 +1029,19 @@ CockroachDB,Cockroach Labs,26.3.0,cockroachdb,26.3,auto=title; vmap=yes,generate
 CockroachDB 22.2.19,Cockroach Labs,22.2.19,cockroachdb,22.2,auto=title+version; vmap=yes,generated,0
 Cockroach Labs CockroachDB,Cockroach Labs,22.2.19,cockroachdb,22.2,auto=vendor+title; vmap=yes,generated,0
 CockroachDB (x64),Cockroach Labs,26.3.0,cockroachdb,26.3,auto=arch-suffix; vmap=yes,generated,0
-CockroachDB 33.0.0,Cockroach Labs,33.0.0,NONE,,trap=nocycle; 33.0.0 newer than any snapshot cycle,generated,0
-CockroachDB 26.3.0,Cockroach Labs,1.0.7,NONE,,"trap=conflict; name says 26.3, version says 1.0",generated,0
+CockroachDB 33.0.0,Cockroach Labs,33.0.0,cockroachdb,none,"trap=nocycle; 33.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+CockroachDB 26.3.0,Cockroach Labs,1.0.7,cockroachdb,none,"trap=conflict; name says 26.3, version says 1.0; expected: the product, no cycle can be decided",generated,0
 Coder,Coder Technologies,2.38.2,coder,2.38,auto=title; vmap=yes,catalog,0
 Coder 2.22.1,Coder Technologies,2.22.1,coder,2.22,auto=title+version; vmap=yes,catalog,1
 Coder,,2.38.2,NONE,,"trap=generic; bare single-word title, no publisher (coder)",catalog,0
-Coder,Coder Technologies,1.0.1,NONE,,trap=nocycle; coder has no cycle for 1.0.1 in the snapshot,catalog,0
+Coder,Coder Technologies,1.0.1,coder,none,"trap=nocycle; coder has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Adobe ColdFusion,Adobe,2025.0.14.332029,coldfusion,2025,auto=title; vmap=yes,generated,0
 Adobe ColdFusion 2018.0.19.330149,Adobe,2018.0.19.330149,coldfusion,2018,auto=title+version; vmap=yes,generated,0
-Adobe ColdFusion,Adobe,9.0.1,NONE,,trap=nocycle; coldfusion has no cycle for 9.0.1 in the snapshot,generated,0
+Adobe ColdFusion,Adobe,9.0.1,coldfusion,none,"trap=nocycle; coldfusion has no cycle for 9.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Commvault,Commvault,11.46.40,commvault,11.46,auto=title; vmap=yes,generated,0
 Commvault 11.40.78,Commvault,11.40.78,commvault,11.40,auto=title+version; vmap=yes,generated,0
 Commvault (x64),Commvault,11.46.40,commvault,11.46,auto=arch-suffix; vmap=yes,generated,0
-Commvault,Commvault,10.0.1,NONE,,trap=nocycle; commvault has no cycle for 10.0.1 in the snapshot,generated,0
+Commvault,Commvault,10.0.1,commvault,none,"trap=nocycle; commvault has no cycle for 10.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Composer,"Nils Adermann, Jordi Boggiano",2.10.3,composer,2.10,auto=title; vmap=yes,catalog,0
 Composer 2.4.4,"Nils Adermann, Jordi Boggiano",2.4.4,composer,2.4,auto=title+version; vmap=yes,generated,0
 Composer,,2.10.3,NONE,,"trap=generic; bare single-word title, no publisher (composer)",catalog,0
@@ -1058,8 +1054,8 @@ Confluence,Atlassian,11.0.0,confluence,11.0,auto=title; vmap=yes,generated,0
 Confluence 6.11.2,Atlassian,6.11.2,confluence,6.11,auto=title+version; vmap=yes,generated,0
 atlassian-confluence,,1.0.3a-1,confluence,1.0,auto=package; vmap=yes; repology/purl name,generated,0
 Atlassian Confluence,Atlassian,6.11.2,confluence,6.11,auto=vendor+title; vmap=yes,generated,0
-Confluence 18.0.0,Atlassian,18.0.0,NONE,,trap=nocycle; 18.0.0 newer than any snapshot cycle,generated,0
-Confluence 11.0.0,Atlassian,1.0.3a,NONE,,"trap=conflict; name says 11.0, version says 1.0",generated,0
+Confluence 18.0.0,Atlassian,18.0.0,confluence,none,"trap=nocycle; 18.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Confluence 11.0.0,Atlassian,1.0.3a,confluence,none,"trap=conflict; name says 11.0, version says 1.0; expected: the product, no cycle can be decided",generated,0
 Hashicorp Consul,HashiCorp,2.0.4,consul,2.0,auto=title; vmap=yes,catalog,0
 Hashicorp Consul 1.14.11,HashiCorp,1.14.11,consul,1.14,auto=title+version; vmap=yes,catalog,0
 containerd,CNCF,2.4.2,containerd,2.4,auto=title; vmap=yes,catalog,0
@@ -1075,7 +1071,7 @@ Control-M 9.0.19.200,,9.0.19.200,controlm,9.0.19,auto=title+version; vmap=yes,ge
 Palo Alto Networks Cortex XDR agent,Palo Alto Networks,9.3.0,cortex-xdr,9.3,auto=title; vmap=yes,generated,0
 Palo Alto Networks Cortex XDR agent 7.7.2-HF,Palo Alto Networks,7.7.2-HF,cortex-xdr,7.7,auto=title+version; vmap=yes,generated,0
 Palo Alto Networks Cortex XDR agent (x64),Palo Alto Networks,9.3.0,cortex-xdr,9.3,auto=arch-suffix; vmap=yes,generated,0
-Palo Alto Networks Cortex XDR agent,Palo Alto Networks,2.0.1,NONE,,trap=nocycle; cortex-xdr has no cycle for 2.0.1 in the snapshot,generated,0
+Palo Alto Networks Cortex XDR agent,Palo Alto Networks,2.0.1,cortex-xdr,none,"trap=nocycle; cortex-xdr has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Couchbase Server,Couchbase,8.0.3,couchbase-server,8.0,auto=title; vmap=yes,catalog,0
 Couchbase Server 4.6,Couchbase,4.6,couchbase-server,4.6,auto=title+version; vmap=yes,catalog,0
 couchbase-server-community,,1.8-1,couchbase-server,1.8,auto=package; vmap=yes; repology/purl name,generated,0
@@ -1092,8 +1088,8 @@ Debian,Debian,13.7,debian,13,auto=title; vmap=yes,catalog,0
 Debian 4.0r9,Debian,4.0r9,debian,4,auto=title+version; vmap=yes,generated,0
 Deno,Deno Land Inc.,2.9.8,deno,2.9,auto=title; vmap=yes,catalog,1
 Deno 2.4.5,Deno Land Inc.,2.4.5,deno,2.4,auto=title+version; vmap=yes,catalog,0
-Deno 9.0.0,Deno Land Inc.,9.0.0,NONE,,trap=nocycle; 9.0.0 newer than any snapshot cycle,catalog,0
-Deno 2.9.8,Deno Land Inc.,1.46.3,NONE,,"trap=conflict; name says 2.9, version says 1",catalog,1
+Deno 9.0.0,Deno Land Inc.,9.0.0,deno,none,"trap=nocycle; 9.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Deno 2.9.8,Deno Land Inc.,1.46.3,deno,none,"trap=conflict; name says 2.9, version says 1; expected: the product, no cycle can be decided",catalog,1
 Dependency-Track,,5.1.2,dependency-track,5.1,auto=title; vmap=yes,generated,0
 Dependency-Track 4.11.7,,4.11.7,dependency-track,4.11,auto=title+version; vmap=yes,generated,0
 dependency-track,,4.7.1-1,dependency-track,4.7,auto=package; vmap=yes; repology/purl name,generated,0
@@ -1102,33 +1098,33 @@ Devuan 3.1.0,,3.1.0,devuan,3,auto=title+version; vmap=yes,generated,0
 Discourse,Civilized Discourse Construction Kit,2026.9.1,discourse,2026.9,auto=title; vmap=yes,generated,0
 Discourse 2026.3.1,Civilized Discourse Construction Kit,2026.3.1,discourse,2026.3,auto=title+version; vmap=yes,generated,0
 Discourse,,2026.9.1,NONE,,"trap=generic; bare single-word title, no publisher (discourse)",generated,0
-Discourse,Civilized Discourse Construction Kit,2.0.1,NONE,,trap=nocycle; discourse has no cycle for 2.0.1 in the snapshot,generated,0
+Discourse,Civilized Discourse Construction Kit,2.0.1,discourse,none,"trap=nocycle; discourse has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Django,Django Software Foundation,6.1.2,django,6.1,auto=title; vmap=yes,generated,0
 Django 2.2.28,Django Software Foundation,2.2.28,django,2.2,auto=title+version; vmap=yes,generated,0
 python:django,,1.3.7-1,django,1.3,auto=package; vmap=yes; repology/purl name,generated,0
-Django 13.0.0,Django Software Foundation,13.0.0,NONE,,trap=nocycle; 13.0.0 newer than any snapshot cycle,generated,0
-Django 6.1.2,Django Software Foundation,1.3.7,NONE,,"trap=conflict; name says 6.1, version says 1.3",generated,0
+Django 13.0.0,Django Software Foundation,13.0.0,django,none,"trap=nocycle; 13.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Django 6.1.2,Django Software Foundation,1.3.7,django,none,"trap=conflict; name says 6.1, version says 1.3; expected: the product, no cycle can be decided",generated,0
 Docker Engine,Docker Inc.,29.9.2,docker-engine,29,auto=title; vmap=yes,generated,0
 Docker Engine 18.04.0,Docker Inc.,18.04.0,docker-engine,18.04,auto=title+version; vmap=yes,generated,0
 docker-ce,,17.03.2-1,docker-engine,17.03,auto=package; vmap=yes; repology/purl name,generated,0
 Docker Engine (x64),Docker Inc.,29.9.2,docker-engine,29,auto=arch-suffix; vmap=yes,generated,0
-Docker Engine,Docker Inc.,16.0.1,NONE,,trap=nocycle; docker-engine has no cycle for 16.0.1 in the snapshot,generated,0
+Docker Engine,Docker Inc.,16.0.1,docker-engine,none,"trap=nocycle; docker-engine has no cycle for 16.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Microsoft .NET,Microsoft Corporation,10.0.13,dotnet,10,auto=title; vmap=yes,generated,0
 Microsoft .NET 3.1.32,Microsoft Corporation,3.1.32,dotnet,3.1,auto=title+version; vmap=yes,generated,0
 dotnet,,1.0.16-1,dotnet,1.0,auto=package; vmap=yes; repology/purl name,catalog,0
 Dovecot,Open-Xchange,2.4.5,dovecot,2.4,auto=title; vmap=yes,catalog,0
 Dovecot 2.2.36.4,Open-Xchange,2.2.36.4,dovecot,2.2,auto=title+version; vmap=yes,generated,0
-Dovecot,Open-Xchange,1.0.1,NONE,,trap=nocycle; dovecot has no cycle for 1.0.1 in the snapshot,catalog,1
-Dovecot 9.0.0,Open-Xchange,9.0.0,NONE,,trap=nocycle; 9.0.0 newer than any snapshot cycle,generated,0
-Dovecot 2.4.5,Open-Xchange,2.0.15,NONE,,"trap=conflict; name says 2.4, version says 2.0",generated,0
+Dovecot,Open-Xchange,1.0.1,dovecot,none,"trap=nocycle; dovecot has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,1
+Dovecot 9.0.0,Open-Xchange,9.0.0,dovecot,none,"trap=nocycle; 9.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Dovecot 2.4.5,Open-Xchange,2.0.15,dovecot,none,"trap=conflict; name says 2.4, version says 2.0; expected: the product, no cycle can be decided",generated,0
 Dropwizard,,5.0.2,dropwizard,5.0,auto=title; vmap=yes,generated,0
 Dropwizard 2.0.35,,2.0.35,dropwizard,2.0,auto=title+version; vmap=yes,generated,0
 Drupal,Drupal Association,11.4.11,drupal,11.4,auto=title; vmap=yes,generated,0
 Drupal 10.1.8,Drupal Association,10.1.8,drupal,10.1,auto=title+version; vmap=yes,generated,0
 php:drupal,,7.103-1,drupal,7,auto=package; vmap=yes; repology/purl name,generated,0
-Drupal,Drupal Association,6.0.1,NONE,,trap=nocycle; drupal has no cycle for 6.0.1 in the snapshot,generated,0
-Drupal 18.0.0,Drupal Association,18.0.0,NONE,,trap=nocycle; 18.0.0 newer than any snapshot cycle,generated,0
-Drupal 11.4.11,Drupal Association,7.103,NONE,,"trap=conflict; name says 11.4, version says 7",generated,0
+Drupal,Drupal Association,6.0.1,drupal,none,"trap=nocycle; drupal has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Drupal 18.0.0,Drupal Association,18.0.0,drupal,none,"trap=nocycle; 18.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Drupal 11.4.11,Drupal Association,7.103,drupal,none,"trap=conflict; name says 11.4, version says 7; expected: the product, no cycle can be decided",generated,0
 Drush,,13.8.0,drush,13,auto=title; vmap=yes,generated,0
 Drush 9.7.3,,9.7.3,drush,9,auto=title+version; vmap=yes,generated,0
 DuckDB,DuckDB Foundation,2.0.0,duckdb,2.0,auto=title; vmap=yes,catalog,0
@@ -1141,18 +1137,18 @@ Eclipse Temurin,Eclipse Adoptium,27.0.1.0.2+1,eclipse-temurin,27,auto=title; vma
 Eclipse Temurin 20.0.2+9,Eclipse Adoptium,20.0.2+9,eclipse-temurin,20,auto=title+version; vmap=yes,generated,0
 temurin-bin,,8-1,eclipse-temurin,8,auto=package; vmap=yes; repology/purl name,generated,0
 Eclipse Temurin (x64),Eclipse Adoptium,27.0.1.0.2+1,eclipse-temurin,27,auto=arch-suffix; vmap=yes,generated,0
-Eclipse Temurin,Eclipse Adoptium,7.0.1,NONE,,trap=nocycle; eclipse-temurin has no cycle for 7.0.1 in the snapshot,generated,0
+Eclipse Temurin,Eclipse Adoptium,7.0.1,eclipse-temurin,none,"trap=nocycle; eclipse-temurin has no cycle for 7.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Elasticsearch,Elastic,9.5.5,elasticsearch,9.5,auto=title; vmap=yes,catalog,0
 Elasticsearch 8.18.8,Elastic,8.18.8,elasticsearch,8.18,auto=title+version; vmap=yes,catalog,1
 Elasticsearch (x64),Elastic,9.5.5,elasticsearch,9.5,auto=arch-suffix; vmap=yes,generated,0
-Elasticsearch,Elastic,5.0.1,NONE,,trap=nocycle; elasticsearch has no cycle for 5.0.1 in the snapshot,catalog,0
-Elasticsearch 16.0.0,Elastic,16.0.0,NONE,,trap=nocycle; 16.0.0 newer than any snapshot cycle,catalog,0
-Elasticsearch 9.5.5,Elastic,6.8.23,NONE,,"trap=conflict; name says 9.5, version says 6",catalog,0
+Elasticsearch,Elastic,5.0.1,elasticsearch,none,"trap=nocycle; elasticsearch has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Elasticsearch 16.0.0,Elastic,16.0.0,elasticsearch,none,"trap=nocycle; 16.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Elasticsearch 9.5.5,Elastic,6.8.23,elasticsearch,none,"trap=conflict; name says 9.5, version says 6; expected: the product, no cycle can be decided",catalog,0
 Electron,OpenJS Foundation,45.0.0,electron,45,auto=title; vmap=yes,catalog,0
 Electron 23.3.13,OpenJS Foundation,23.3.13,electron,23,auto=title+version; vmap=yes,catalog,0
 Electron,,45.0.0,NONE,,"trap=generic; bare single-word title, no publisher (electron)",catalog,0
 GitHub Electron,OpenJS Foundation,23.3.13,electron,23,auto=vendor+title; vmap=yes,generated,0
-Electron,OpenJS Foundation,1.0.1,NONE,,trap=nocycle; electron has no cycle for 1.0.1 in the snapshot,catalog,0
+Electron,OpenJS Foundation,1.0.1,electron,none,"trap=nocycle; electron has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Elixir,Elixir Team,1.20.4,elixir,1.20,auto=title; vmap=yes,catalog,0
 Elixir 1.12.3,Elixir Team,1.12.3,elixir,1.12,auto=title+version; vmap=yes,catalog,0
 Elixir (x64),Elixir Team,1.20.4,elixir,1.20,auto=arch-suffix; vmap=yes,generated,0
@@ -1164,21 +1160,21 @@ envoy-proxy,,1.0.0-1,envoy,1.0,auto=package; vmap=yes; repology/purl name,genera
 Erlang,Ericsson AB,29.1.2,erlang,29,auto=title; vmap=yes,catalog,0
 Erlang 23.3.4.20,Ericsson AB,23.3.4.20,erlang,23,auto=title+version; vmap=yes,generated,0
 Erlang (x64),Ericsson AB,29.1.2,erlang,29,auto=arch-suffix; vmap=yes,generated,0
-Erlang,Ericsson AB,16.0.1,NONE,,trap=nocycle; erlang has no cycle for 16.0.1 in the snapshot,catalog,0
+Erlang,Ericsson AB,16.0.1,erlang,none,"trap=nocycle; erlang has no cycle for 16.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 ESLint,,10.13.0,eslint,10,auto=title; vmap=yes,catalog,0
 ESLint 5.16.0,,5.16.0,eslint,5,auto=title+version; vmap=yes,generated,0
 VMware ESXi,"VMware, Inc.",9.1.1.0,esxi,9.1,auto=title; vmap=yes,generated,0
 VMware ESXi 6.5,"VMware, Inc.",6.5,esxi,6.5,auto=title+version; vmap=yes,generated,0
-VMware ESXi,"VMware, Inc.",4.0.1,NONE,,trap=nocycle; esxi has no cycle for 4.0.1 in the snapshot,generated,0
+VMware ESXi,"VMware, Inc.",4.0.1,esxi,none,"trap=nocycle; esxi has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 etcd,etcd,3.7.3,etcd,3.7,auto=title; vmap=yes,catalog,0
 etcd 3.3.27,etcd,3.3.27,etcd,3.3,auto=title+version; vmap=yes,catalog,0
 etcd (x64),etcd,3.7.3,etcd,3.7,auto=arch-suffix; vmap=yes,generated,0
-etcd,etcd,2.0.1,NONE,,trap=nocycle; etcd has no cycle for 2.0.1 in the snapshot,catalog,1
+etcd,etcd,2.0.1,etcd,none,"trap=nocycle; etcd has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,1
 EuroLinux,,9.4,eurolinux,9,auto=title; vmap=yes,generated,0
 EuroLinux 7.9,,7.9,eurolinux,7,auto=title+version; vmap=yes,generated,0
 Exim,Exim,4.100.1,exim,4.100,auto=title; vmap=yes,catalog,0
 Exim 4.76,Exim,4.76,exim,4.76,auto=title+version; vmap=yes,generated,0
-Exim,Exim,3.0.1,NONE,,trap=nocycle; exim has no cycle for 3.0.1 in the snapshot,catalog,0
+Exim,Exim,3.0.1,exim,none,"trap=nocycle; exim has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Express,OpenJS Foundation,5.3.0,express,5,auto=title; vmap=yes,generated,0
 Express 3.21.2,OpenJS Foundation,3.21.2,express,3,auto=title+version; vmap=yes,generated,0
 Express,,5.3.0,NONE,,"trap=generic; bare single-word title, no publisher (express)",generated,0
@@ -1197,9 +1193,9 @@ Firefox 129.0.2,Mozilla,129.0.2,firefox,129,auto=title+version; vmap=yes,generat
 firefox-esr,,78.15.0-1,firefox,78,auto=package; vmap=yes; repology/purl name,catalog,0
 Mozilla Firefox,Mozilla,129.0.2,firefox,129,auto=vendor+title; vmap=yes,catalog,0
 Firefox (x64),Mozilla,158.0.1,firefox,158,auto=arch-suffix; vmap=yes,generated,0
-Firefox,Mozilla,77.0.1,NONE,,trap=nocycle; firefox has no cycle for 77.0.1 in the snapshot,generated,0
-Firefox 165.0.0,Mozilla,165.0.0,NONE,,trap=nocycle; 165.0.0 newer than any snapshot cycle,generated,0
-Firefox 158.0.1,Mozilla,78.15.0,NONE,,"trap=conflict; name says 158, version says 78",generated,0
+Firefox,Mozilla,77.0.1,firefox,none,"trap=nocycle; firefox has no cycle for 77.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Firefox 165.0.0,Mozilla,165.0.0,firefox,none,"trap=nocycle; 165.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Firefox 158.0.1,Mozilla,78.15.0,firefox,none,"trap=conflict; name says 158, version says 78; expected: the product, no cycle can be decided",generated,0
 Fluent Bit,,5.1.5,fluent-bit,5.1,auto=title; vmap=yes,generated,0
 Fluent Bit 1.7.9,,1.7.9,fluent-bit,1.7,auto=title+version; vmap=yes,generated,0
 Flux,Flux Project,2.9.6,flux,2.9,auto=title; vmap=yes,catalog,0
@@ -1216,11 +1212,11 @@ Forgejo,,17.0.0,forgejo,17.0,auto=title; vmap=yes,catalog,0
 Forgejo 12.0.4,,12.0.4,forgejo,12.0,auto=title+version; vmap=yes,generated,0
 FortiOS,Fortinet,8.0,fortios,8.0,auto=title; vmap=yes,generated,0
 FortiOS 7.0,Fortinet,7.0,fortios,7.0,auto=title+version; vmap=yes,generated,0
-FortiOS,Fortinet,5.0.1,NONE,,trap=nocycle; fortios has no cycle for 5.0.1 in the snapshot,generated,0
+FortiOS,Fortinet,5.0.1,fortios,none,"trap=nocycle; fortios has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 FoundationDB,Apple,7.3.77,foundationdb,7.3,auto=title; vmap=yes,generated,0
 FoundationDB 7.1.61,Apple,7.1.61,foundationdb,7.1,auto=title+version; vmap=yes,generated,0
 FoundationDB (x64),Apple,7.3.77,foundationdb,7.3,auto=arch-suffix; vmap=yes,generated,0
-FoundationDB,Apple,5.0.1,NONE,,trap=nocycle; foundationdb has no cycle for 5.0.1 in the snapshot,generated,0
+FoundationDB,Apple,5.0.1,foundationdb,none,"trap=nocycle; foundationdb has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 FreeBSD,The FreeBSD Project,14.5,freebsd,14.5,auto=title; vmap=yes,generated,0
 FreeBSD 8.1,The FreeBSD Project,8.1,freebsd,8.1,auto=title+version; vmap=yes,generated,0
 Freedesktop SDK,,26.08.3,freedesktop-sdk,26.08,auto=title; vmap=yes,generated,0
@@ -1228,7 +1224,7 @@ Freedesktop SDK 23.08.34,,23.08.34,freedesktop-sdk,23.08,auto=title+version; vma
 Gatekeeper,Open Policy Agent,3.23.1,gatekeeper,3.23,auto=title; vmap=yes,generated,0
 Gatekeeper 3.17.2,Open Policy Agent,3.17.2,gatekeeper,3.17,auto=title+version; vmap=yes,generated,0
 Gatekeeper,,3.23.1,NONE,,"trap=generic; bare single-word title, no publisher (gatekeeper)",generated,0
-Gatekeeper,Open Policy Agent,2.0.1,NONE,,trap=nocycle; gatekeeper has no cycle for 2.0.1 in the snapshot,generated,0
+Gatekeeper,Open Policy Agent,2.0.1,gatekeeper,none,"trap=nocycle; gatekeeper has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Gerrit,,3.14.4,gerrit,3.14,auto=title; vmap=yes,generated,0
 Gerrit 3.5.6,,3.5.6,gerrit,3.5,auto=title+version; vmap=yes,generated,0
 Glasgow Haskell Compiler (GHC),,9.14.1,ghc,9.14,auto=title; vmap=yes,generated,0
@@ -1236,12 +1232,12 @@ Glasgow Haskell Compiler (GHC) 9.0.2,,9.0.2,ghc,9.0,auto=title+version; vmap=yes
 ghc,,8.0.2-1,ghc,8.0,auto=package; vmap=yes; repology/purl name,catalog,0
 GitLab,GitLab Inc.,19.5.1,gitlab,19.5,auto=title; vmap=yes,generated,0
 GitLab 16.7.10,GitLab Inc.,16.7.10,gitlab,16.7,auto=title+version; vmap=yes,generated,0
-GitLab,GitLab Inc.,12.0.1,NONE,,trap=nocycle; gitlab has no cycle for 12.0.1 in the snapshot,generated,0
-GitLab 26.0.0,GitLab Inc.,26.0.0,NONE,,trap=nocycle; 26.0.0 newer than any snapshot cycle,generated,0
-GitLab 19.5.1,GitLab Inc.,13.10.5,NONE,,"trap=conflict; name says 19.5, version says 13.10",generated,0
+GitLab,GitLab Inc.,12.0.1,gitlab,none,"trap=nocycle; gitlab has no cycle for 12.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+GitLab 26.0.0,GitLab Inc.,26.0.0,gitlab,none,"trap=nocycle; 26.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+GitLab 19.5.1,GitLab Inc.,13.10.5,gitlab,none,"trap=conflict; name says 19.5, version says 13.10; expected: the product, no cycle can be decided",generated,0
 GitLab Runner,GitLab Inc.,19.5.1,gitlab-runner,19.5,auto=title; vmap=yes,catalog,0
 GitLab Runner 18.8.0,GitLab Inc.,18.8.0,gitlab-runner,18.8,auto=title+version; vmap=yes,catalog,0
-GitLab Runner,GitLab Inc.,17.0.1,NONE,,trap=nocycle; gitlab-runner has no cycle for 17.0.1 in the snapshot,catalog,0
+GitLab Runner,GitLab Inc.,17.0.1,gitlab-runner,none,"trap=nocycle; gitlab-runner has no cycle for 17.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Gleam,,1.19.2,NONE,,"trap=generic; bare single-word title, no publisher (gleam)",catalog,0
 Go,Google LLC,1.27.3,go,1.27,auto=title; vmap=yes,catalog,0
 Go 1.18.10,Google LLC,1.18.10,go,1.18,auto=title+version; vmap=yes,generated,0
@@ -1256,17 +1252,17 @@ Gorilla Toolkit 1.5.0,Gorilla,1.5.0,gorilla,1,auto=title+version; vmap=yes,gener
 go:github-gorilla-context,,1.5.0-1,gorilla,1,auto=package; vmap=yes; repology/purl name,generated,0
 GraalVM Community Edition,,25.4.4.1.1,graalvm-ce,25,auto=title; vmap=yes,generated,0
 GraalVM Community Edition 22.0.2,,22.0.2,graalvm-ce,22,auto=title+version; vmap=yes,generated,0
-graalvm,,17.0.9-1,graalvm-ce,17,auto=package; vmap=yes; repology/purl name,catalog,0
+graalvm,,17.0.9-1,NONE,,bare graalvm with no publisher: graalvm-ce or oracle-graalvm; ambiguous,catalog,0
 Gradle,Gradle Inc.,9.8.2,gradle,9,auto=title; vmap=yes,catalog,1
 Gradle 5.6.4,Gradle Inc.,5.6.4,gradle,5,auto=title+version; vmap=yes,generated,0
 Gradle (x64),Gradle Inc.,9.8.2,gradle,9,auto=arch-suffix; vmap=yes,generated,0
-Gradle 16.0.0,Gradle Inc.,16.0.0,NONE,,trap=nocycle; 16.0.0 newer than any snapshot cycle,generated,0
-Gradle 9.8.2,Gradle Inc.,1.12.0,NONE,,"trap=conflict; name says 9, version says 1",generated,0
+Gradle 16.0.0,Gradle Inc.,16.0.0,gradle,none,"trap=nocycle; 16.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Gradle 9.8.2,Gradle Inc.,1.12.0,gradle,none,"trap=conflict; name says 9, version says 1; expected: the product, no cycle can be decided",generated,0
 Grafana,Grafana Labs,13.2.4,grafana,13.2,auto=title; vmap=yes,catalog,1
 Grafana 11.0.11,Grafana Labs,11.0.11,grafana,11.0,auto=title+version; vmap=yes,generated,0
-Grafana,Grafana Labs,5.0.1,NONE,,trap=nocycle; grafana has no cycle for 5.0.1 in the snapshot,catalog,1
-Grafana 20.0.0,Grafana Labs,20.0.0,NONE,,trap=nocycle; 20.0.0 newer than any snapshot cycle,generated,0
-Grafana 13.2.4,Grafana Labs,6.7.6,NONE,,"trap=conflict; name says 13.2, version says 6",generated,0
+Grafana,Grafana Labs,5.0.1,grafana,none,"trap=nocycle; grafana has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,1
+Grafana 20.0.0,Grafana Labs,20.0.0,grafana,none,"trap=nocycle; 20.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Grafana 13.2.4,Grafana Labs,6.7.6,grafana,none,"trap=conflict; name says 13.2, version says 6; expected: the product, no cycle can be decided",generated,0
 Grafana Loki,Grafana Labs,3.7.9,grafana-loki,3.7,auto=title; vmap=yes,generated,0
 Grafana Loki 2.5.0,Grafana Labs,2.5.0,grafana-loki,2.5,auto=title+version; vmap=yes,generated,0
 Apache Grails Framework,,8.0.0,grails,8.0,auto=title; vmap=yes,generated,0
@@ -1285,8 +1281,8 @@ Guzzle,,8.3.0,guzzle,8,auto=title; vmap=yes,generated,0
 Guzzle 5.3.4,,5.3.4,guzzle,5,auto=title+version; vmap=yes,generated,0
 HAProxy,HAProxy Technologies,3.4.7,haproxy,3.4,auto=title; vmap=yes,catalog,0
 HAProxy 2.2.34,HAProxy Technologies,2.2.34,haproxy,2.2,auto=title+version; vmap=yes,generated,0
-HAProxy 10.0.0,HAProxy Technologies,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-HAProxy 3.4.7,HAProxy Technologies,1.0.2,NONE,,"trap=conflict; name says 3.4, version says 1.0",generated,0
+HAProxy 10.0.0,HAProxy Technologies,10.0.0,haproxy,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+HAProxy 3.4.7,HAProxy Technologies,1.0.2,haproxy,none,"trap=conflict; name says 3.4, version says 1.0; expected: the product, no cycle can be decided",generated,0
 HAProxy Ingress,,0.16.2,haproxy-ingress,0.16,auto=title; vmap=yes,generated,0
 HAProxy Ingress 0.14.13,,0.14.13,haproxy-ingress,0.14,auto=title+version; vmap=yes,generated,0
 Harbor,CNCF,2.15.4,harbor,2.15,auto=title; vmap=yes,catalog,0
@@ -1302,7 +1298,7 @@ Apache HBase,The Apache Software Foundation,3.0.0,hbase,3.0,auto=title; vmap=yes
 Apache HBase 2.4.18,The Apache Software Foundation,2.4.18,hbase,2.4,auto=title+version; vmap=yes,generated,0
 hbase,,2.2.7-1,hbase,2.2,auto=package; vmap=yes; repology/purl name,catalog,1
 Apache HBase (x64),The Apache Software Foundation,3.0.0,hbase,3.0,auto=arch-suffix; vmap=yes,generated,0
-Apache HBase,The Apache Software Foundation,1.0.1,NONE,,trap=nocycle; hbase has no cycle for 1.0.1 in the snapshot,generated,0
+Apache HBase,The Apache Software Foundation,1.0.1,hbase,none,"trap=nocycle; hbase has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Heroku Postgres,,18,heroku-postgres,18,auto=title; vmap=yes,generated,0
 Heroku Postgres 14,,14,heroku-postgres,14,auto=title+version; vmap=yes,generated,0
 Hibernate ORM,,7.4.13,hibernate-orm,7.4,auto=title; vmap=yes,generated,0
@@ -1310,51 +1306,51 @@ Hibernate ORM 6.3.2,,6.3.2,hibernate-orm,6.3,auto=title+version; vmap=yes,genera
 Omnissa Horizon,Omnissa,8.2606,horizon,8.2606,auto=title; vmap=yes,generated,0
 Omnissa Horizon 8.2209,Omnissa,8.2209,horizon,8.2209,auto=title+version; vmap=yes,generated,0
 Omnissa Horizon (x64),Omnissa,8.2606,horizon,8.2606,auto=arch-suffix; vmap=yes,generated,0
-Omnissa Horizon,Omnissa,6.0.1,NONE,,trap=nocycle; horizon has no cycle for 6.0.1 in the snapshot,generated,0
+Omnissa Horizon,Omnissa,6.0.1,horizon,none,"trap=nocycle; horizon has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 IBM AIX,IBM,7.3.4,ibm-aix,7.3.4,auto=title; vmap=yes,generated,0
 IBM AIX 7.2.4,IBM,7.2.4,ibm-aix,7.2.4,auto=title+version; vmap=yes,generated,0
-IBM AIX,IBM,5.0.1,NONE,,trap=nocycle; ibm-aix has no cycle for 5.0.1 in the snapshot,generated,0
+IBM AIX,IBM,5.0.1,ibm-aix,none,"trap=nocycle; ibm-aix has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 IBM Db2,IBM,12.1,ibm-db2,12.1,auto=title; vmap=yes,generated,0
 IBM Db2 10.1,IBM,10.1,ibm-db2,10.1,auto=title+version; vmap=yes,generated,0
 IBM Db2 (x64),IBM,12.1,ibm-db2,12.1,auto=arch-suffix; vmap=yes,generated,0
-IBM Db2,IBM,8.0.1,NONE,,trap=nocycle; ibm-db2 has no cycle for 8.0.1 in the snapshot,generated,0
+IBM Db2,IBM,8.0.1,ibm-db2,none,"trap=nocycle; ibm-db2 has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 IBM iSeries,,7.6.0,ibm-i,7.6,auto=title; vmap=yes,generated,0
 IBM iSeries 4.4,,4.4,ibm-i,4.4,auto=title+version; vmap=yes,generated,0
 IBM MQ,IBM,10.0,ibm-mq,10.0,auto=title; vmap=yes,generated,0
 IBM MQ 8.0,IBM,8.0,ibm-mq,8.0,auto=title+version; vmap=yes,generated,0
-IBM MQ,IBM,4.0.1,NONE,,trap=nocycle; ibm-mq has no cycle for 4.0.1 in the snapshot,generated,0
+IBM MQ,IBM,4.0.1,ibm-mq,none,"trap=nocycle; ibm-mq has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 IBM Semeru Runtime,IBM,27.0.0.0,ibm-semeru-runtime,27,auto=title; vmap=yes,generated,0
 IBM Semeru Runtime 22.0.2+9,IBM,22.0.2+9,ibm-semeru-runtime,22,auto=title+version; vmap=yes,generated,0
 IBM Semeru Runtime (x64),IBM,27.0.0.0,ibm-semeru-runtime,27,auto=arch-suffix; vmap=yes,generated,0
-IBM Semeru Runtime,IBM,7.0.1,NONE,,trap=nocycle; ibm-semeru-runtime has no cycle for 7.0.1 in the snapshot,generated,0
+IBM Semeru Runtime,IBM,7.0.1,ibm-semeru-runtime,none,"trap=nocycle; ibm-semeru-runtime has no cycle for 7.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Icinga,Icinga GmbH,2.16.5,icinga,2.16,auto=title; vmap=yes,generated,0
 Icinga 2.7.2,Icinga GmbH,2.7.2,icinga,2.7,auto=title+version; vmap=yes,generated,0
-icinga2,,1.14.2-1,icinga,1,auto=package; vmap=yes; repology/purl name,catalog,0
+icinga2,,2.14.2-1,icinga,2.14,package icinga2 with an Icinga 2 version (version was 1.14.2-1),catalog,0
 Icinga Web,,2.14.0,icinga-web,2.14,auto=title; vmap=yes,generated,0
 Icinga Web 2.6.4,,2.6.4,icinga-web,2.6,auto=title+version; vmap=yes,generated,0
-icingaweb2,,1.14.1-1,icinga-web,1,auto=package; vmap=yes; repology/purl name,catalog,0
+icingaweb2,,2.12.1-1,icinga-web,2.12,package icingaweb2 with an Icinga Web 2 version (version was 1.14.1-1),catalog,0
 IDL,,9.3.0,NONE,,"trap=generic; bare single-word title, no publisher (idl)",generated,0
 InfluxDB,InfluxData,3.12.1,influxdb,3.12,auto=title; vmap=yes,catalog,0
 InfluxDB 3.5.0,InfluxData,3.5.0,influxdb,3.5,auto=title+version; vmap=yes,generated,0
 InfluxData InfluxDB,InfluxData,3.5.0,influxdb,3.5,auto=vendor+title; vmap=yes,generated,0
-InfluxDB 10.0.0,InfluxData,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-InfluxDB 3.12.1,InfluxData,1.13.1,NONE,,"trap=conflict; name says 3.12, version says 1",generated,0
+InfluxDB 10.0.0,InfluxData,10.0.0,influxdb,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+InfluxDB 3.12.1,InfluxData,1.13.1,influxdb,none,"trap=conflict; name says 3.12, version says 1; expected: the product, no cycle can be decided",generated,0
 Internet Explorer,Microsoft Corporation,11,internet-explorer,11,auto=title; vmap=yes,generated,0
 Internet Explorer 9,Microsoft Corporation,9,internet-explorer,9,auto=title+version; vmap=yes,generated,0
 Internet Explorer (x64),Microsoft Corporation,11,internet-explorer,11,auto=arch-suffix; vmap=yes,generated,0
-Internet Explorer,Microsoft Corporation,6.0.1,NONE,,trap=nocycle; internet-explorer has no cycle for 6.0.1 in the snapshot,generated,0
+Internet Explorer,Microsoft Corporation,6.0.1,internet-explorer,none,"trap=nocycle; internet-explorer has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Ionic Framework,Ionic,9.0.9,ionic,9,auto=title; vmap=yes,generated,0
 Ionic Framework 5.9.4,Ionic,5.9.4,ionic,5,auto=title+version; vmap=yes,generated,0
 Apple iOS,Apple Inc.,27.1,ios,27,auto=title; vmap=yes,generated,0
 Apple iOS 12.5.8,Apple Inc.,12.5.8,ios,12,auto=title+version; vmap=yes,generated,0
-Apple iOS,Apple Inc.,4.0.1,NONE,,trap=nocycle; ios has no cycle for 4.0.1 in the snapshot,generated,0
+Apple iOS,Apple Inc.,4.0.1,ios,none,"trap=nocycle; ios has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apple iPadOS,Apple Inc.,27.0.1,ipados,27,auto=title; vmap=yes,generated,0
 Apple iPadOS 16.7.16,Apple Inc.,16.7.16,ipados,16,auto=title+version; vmap=yes,generated,0
-Apple iPadOS,Apple Inc.,11.0.1,NONE,,trap=nocycle; ipados has no cycle for 11.0.1 in the snapshot,generated,0
+Apple iPadOS,Apple Inc.,11.0.1,ipados,none,"trap=nocycle; ipados has no cycle for 11.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 ISC DHCP,Internet Systems Consortium,4.4.3-P1,isc-dhcp,4.4,auto=title; vmap=yes,generated,0
 ISC DHCP 4.2.8,Internet Systems Consortium,4.2.8,isc-dhcp,4.2,auto=title+version; vmap=yes,generated,0
 dhcp,,4.1-ESV-R16-P2-1,isc-dhcp,4.1,auto=package; vmap=yes; repology/purl name,generated,0
-ISC DHCP,Internet Systems Consortium,3.0.1,NONE,,trap=nocycle; isc-dhcp has no cycle for 3.0.1 in the snapshot,generated,0
+ISC DHCP,Internet Systems Consortium,3.0.1,isc-dhcp,none,"trap=nocycle; isc-dhcp has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Istio,Istio,1.31.3,istio,1.31,auto=title; vmap=yes,catalog,0
 Istio 1.19.10,Istio,1.19.10,istio,1.19,auto=title+version; vmap=yes,catalog,0
 istioctl,,1.7.8-1,istio,1.7,auto=package; vmap=yes; repology/purl name,catalog,0
@@ -1365,27 +1361,27 @@ ruby:jekyll,,0.9.0-1,jekyll,0,auto=package; vmap=yes; repology/purl name,generat
 Jenkins,Jenkins project,2.587,jenkins,2,auto=title; vmap=yes,catalog,0
 Jenkins 2.462.3,Jenkins project,2.462.3,jenkins,2.462,auto=title+version; vmap=yes,generated,0
 CloudBees Jenkins,Jenkins project,2.462.3,jenkins,2.462,auto=vendor+title; vmap=yes,generated,0
-Jenkins,Jenkins project,1.0.1,NONE,,trap=nocycle; jenkins has no cycle for 1.0.1 in the snapshot,catalog,0
-Jenkins 9.0.0,Jenkins project,9.0.0,NONE,,trap=nocycle; 9.0.0 newer than any snapshot cycle,generated,0
-Jenkins 2.587,Jenkins project,2.346.3,NONE,,"trap=conflict; name says 2, version says 2.346",generated,0
+Jenkins,Jenkins project,1.0.1,jenkins,none,"trap=nocycle; jenkins has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Jenkins 9.0.0,Jenkins project,9.0.0,jenkins,none,"trap=nocycle; 9.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Jenkins 2.587,Jenkins project,2.346.3,jenkins,none,"trap=conflict; name says 2, version says 2.346; expected: the product, no cycle can be decided",generated,0
 JFrog Xray,JFrog,3.150.17,jfrog-xray,3.150,auto=title; vmap=yes,generated,0
 JFrog Xray 3.92.7,JFrog,3.92.7,jfrog-xray,3.92,auto=title+version; vmap=yes,generated,0
-JFrog Xray,JFrog,2.0.1,NONE,,trap=nocycle; jfrog-xray has no cycle for 2.0.1 in the snapshot,generated,0
+JFrog Xray,JFrog,2.0.1,jfrog-xray,none,"trap=nocycle; jfrog-xray has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 JHipster,,9.4.0,jhipster,9,auto=title; vmap=yes,catalog,0
 JHipster 4.14.5,,4.14.5,jhipster,4,auto=title+version; vmap=yes,generated,0
 Jira Service Management,Atlassian,11.3.12,jira-service-management,11.3,auto=title; vmap=yes,generated,0
 Jira Service Management 4.17.1,Atlassian,4.17.1,jira-service-management,4.17,auto=title+version; vmap=yes,generated,0
-Jira Service Management,Atlassian,2.0.1,NONE,,trap=nocycle; jira-service-management has no cycle for 2.0.1 in the snapshot,generated,0
+Jira Service Management,Atlassian,2.0.1,jira-service-management,none,"trap=nocycle; jira-service-management has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Jira Software,Atlassian,11.3.12,jira-software,11.3,auto=title; vmap=yes,generated,0
 Jira Software 8.0.3,Atlassian,8.0.3,jira-software,8.0,auto=title+version; vmap=yes,generated,0
 jira,,1.0.0-1,jira-software,1.0,auto=package; vmap=yes; repology/purl name,generated,0
 Atlassian Jira Software,Atlassian,8.0.3,jira-software,8.0,auto=vendor+title; vmap=yes,generated,0
-Jira Software 18.0.0,Atlassian,18.0.0,NONE,,trap=nocycle; 18.0.0 newer than any snapshot cycle,generated,0
-Jira Software 11.3.12,Atlassian,1.0.0,NONE,,"trap=conflict; name says 11.3, version says 1.0",generated,0
+Jira Software 18.0.0,Atlassian,18.0.0,jira-software,none,"trap=nocycle; 18.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Jira Software 11.3.12,Atlassian,1.0.0,jira-software,none,"trap=conflict; name says 11.3, version says 1.0; expected: the product, no cycle can be decided",generated,0
 Joomla!,Open Source Matters,6.2.0,joomla,6,auto=title; vmap=yes,generated,0
 Joomla! 4.4.14,Open Source Matters,4.4.14,joomla,4,auto=title+version; vmap=yes,generated,0
 joomla,,3.10.12-1,joomla,3,auto=package; vmap=yes; repology/purl name,generated,0
-Joomla!,Open Source Matters,2.0.1,NONE,,trap=nocycle; joomla has no cycle for 2.0.1 in the snapshot,generated,0
+Joomla!,Open Source Matters,2.0.1,joomla,none,"trap=nocycle; joomla has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 jQuery,,4.0.0,jquery,4,auto=title; vmap=yes,generated,0
 jQuery 2.2.4,,2.2.4,jquery,2,auto=title+version; vmap=yes,generated,0
 js-jquery,,1.12.4-1,jquery,1,auto=package; vmap=yes; repology/purl name,generated,0
@@ -1408,17 +1404,17 @@ KEDA 2.10.1,,2.10.1,keda,2.10,auto=title+version; vmap=yes,generated,0
 Keycloak,Red Hat,26.8.1,keycloak,26.8,auto=title; vmap=yes,generated,0
 Keycloak 21.0.2,Red Hat,21.0.2,keycloak,21.0,auto=title+version; vmap=yes,generated,0
 Red Hat Keycloak,Red Hat,21.0.2,keycloak,21.0,auto=vendor+title; vmap=yes,generated,0
-Keycloak,Red Hat,9.0.1,NONE,,trap=nocycle; keycloak has no cycle for 9.0.1 in the snapshot,generated,0
-Keycloak 33.0.0,Red Hat,33.0.0,NONE,,trap=nocycle; 33.0.0 newer than any snapshot cycle,generated,0
-Keycloak 26.8.1,Red Hat,10.0.2,NONE,,"trap=conflict; name says 26.8, version says 10.0",generated,0
+Keycloak,Red Hat,9.0.1,keycloak,none,"trap=nocycle; keycloak has no cycle for 9.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Keycloak 33.0.0,Red Hat,33.0.0,keycloak,none,"trap=nocycle; 33.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Keycloak 26.8.1,Red Hat,10.0.2,keycloak,none,"trap=conflict; name says 26.8, version says 10.0; expected: the product, no cycle can be decided",generated,0
 Kiali,,2.31.0,kiali,2.31,auto=title; vmap=yes,generated,0
 Kiali 2.14.0,,2.14.0,kiali,2.14,auto=title+version; vmap=yes,generated,0
 Kibana,Elastic,9.5.5,kibana,9.5,auto=title; vmap=yes,generated,0
 Kibana 8.18.8,Elastic,8.18.8,kibana,8.18,auto=title+version; vmap=yes,generated,0
 Elastic Kibana,Elastic,8.18.8,kibana,8.18,auto=vendor+title; vmap=yes,generated,0
-Kibana,Elastic,5.0.1,NONE,,trap=nocycle; kibana has no cycle for 5.0.1 in the snapshot,generated,0
-Kibana 16.0.0,Elastic,16.0.0,NONE,,trap=nocycle; 16.0.0 newer than any snapshot cycle,generated,0
-Kibana 9.5.5,Elastic,6.8.23,NONE,,"trap=conflict; name says 9.5, version says 6",generated,0
+Kibana,Elastic,5.0.1,kibana,none,"trap=nocycle; kibana has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Kibana 16.0.0,Elastic,16.0.0,kibana,none,"trap=nocycle; 16.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Kibana 9.5.5,Elastic,6.8.23,kibana,none,"trap=conflict; name says 9.5, version says 6; expected: the product, no cycle can be decided",generated,0
 Kirby,Kirby,5.6.1,kirby,5,auto=title; vmap=yes,generated,0
 Kirby 3.2.5,Kirby,3.2.5,kirby,3.2,auto=title+version; vmap=yes,generated,0
 Kirby,,5.6.1,NONE,,"trap=generic; bare single-word title, no publisher (kirby)",generated,0
@@ -1426,20 +1422,20 @@ Knative,,1.23.0,knative,1.23,auto=title; vmap=yes,generated,0
 Knative 1.4.0,,1.4.0,knative,1.4,auto=title+version; vmap=yes,generated,0
 Kong Gateway,Kong Inc.,3.9.4,kong-gateway,3.9,auto=title; vmap=yes,generated,0
 Kong Gateway 3.4.2,Kong Inc.,3.4.2,kong-gateway,3.4,auto=title+version; vmap=yes,generated,0
-Kong Gateway,Kong Inc.,1.0.1,NONE,,trap=nocycle; kong-gateway has no cycle for 1.0.1 in the snapshot,generated,0
-Kong Gateway 10.0.0,Kong Inc.,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-Kong Gateway 3.9.4,Kong Inc.,2.8.5,NONE,,"trap=conflict; name says 3.9, version says 2.8",generated,0
+Kong Gateway,Kong Inc.,1.0.1,kong-gateway,none,"trap=nocycle; kong-gateway has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Kong Gateway 10.0.0,Kong Inc.,10.0.0,kong-gateway,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Kong Gateway 3.9.4,Kong Inc.,2.8.5,kong-gateway,none,"trap=conflict; name says 3.9, version says 2.8; expected: the product, no cycle can be decided",generated,0
 Kotlin,JetBrains,2.4.21,kotlin,2.4,auto=title; vmap=yes,catalog,0
 Kotlin 1.8.22,JetBrains,1.8.22,kotlin,1.8,auto=title+version; vmap=yes,generated,0
 JetBrains Kotlin,JetBrains,1.8.22,kotlin,1.8,auto=vendor+title; vmap=yes,generated,0
 Kotlin (x64),JetBrains,2.4.21,kotlin,2.4,auto=arch-suffix; vmap=yes,generated,0
-Kotlin 9.0.0,JetBrains,9.0.0,NONE,,trap=nocycle; 9.0.0 newer than any snapshot cycle,generated,0
-Kotlin 2.4.21,JetBrains,1.3.72,NONE,,"trap=conflict; name says 2.4, version says 1.3",generated,0
+Kotlin 9.0.0,JetBrains,9.0.0,kotlin,none,"trap=nocycle; 9.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Kotlin 2.4.21,JetBrains,1.3.72,kotlin,none,"trap=conflict; name says 2.4, version says 1.3; expected: the product, no cycle can be decided",generated,0
 Kubernetes,The Kubernetes Authors,1.37.1,kubernetes,1.37,auto=title; vmap=yes,generated,0
 Kubernetes 1.26.15,The Kubernetes Authors,1.26.15,kubernetes,1.26,auto=title+version; vmap=yes,generated,0
 CNCF Kubernetes,The Kubernetes Authors,1.26.15,kubernetes,1.26,auto=vendor+title; vmap=yes,generated,0
-Kubernetes 8.0.0,The Kubernetes Authors,8.0.0,NONE,,trap=nocycle; 8.0.0 newer than any snapshot cycle,generated,0
-Kubernetes 1.37.1,The Kubernetes Authors,1.16.15,NONE,,"trap=conflict; name says 1.37, version says 1.16",generated,0
+Kubernetes 8.0.0,The Kubernetes Authors,8.0.0,kubernetes,none,"trap=nocycle; 8.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Kubernetes 1.37.1,The Kubernetes Authors,1.16.15,kubernetes,none,"trap=conflict; name says 1.37, version says 1.16; expected: the product, no cycle can be decided",generated,0
 Kubernetes CSI Node Driver Registrar,,2.18.0,kubernetes-csi-node-driver-registrar,2.18,auto=title; vmap=yes,generated,0
 Kubernetes CSI Node Driver Registrar 2.8.0,,2.8.0,kubernetes-csi-node-driver-registrar,2.8,auto=title+version; vmap=yes,generated,0
 Kubernetes Node Feature Discovery,,0.19.0,kubernetes-node-feature-discovery,0.19,auto=title; vmap=yes,generated,0
@@ -1452,23 +1448,23 @@ Kyverno 1.13.6,,1.13.6,kyverno,1.13,auto=title+version; vmap=yes,catalog,1
 Laravel,Laravel,13.38.0,laravel,13,auto=title; vmap=yes,generated,0
 Laravel 8.83.29,Laravel,8.83.29,laravel,8,auto=title+version; vmap=yes,generated,0
 php:laravel-framework,,5.5.50-1,laravel,5.5,auto=package; vmap=yes; repology/purl name,generated,0
-Laravel,Laravel,4.0.1,NONE,,trap=nocycle; laravel has no cycle for 4.0.1 in the snapshot,generated,0
+Laravel,Laravel,4.0.1,laravel,none,"trap=nocycle; laravel has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 LDAP Account Manager,,9.7,ldap-account-manager,9.7,auto=title; vmap=yes,generated,0
 LDAP Account Manager 9.1,,9.1,ldap-account-manager,9.1,auto=title+version; vmap=yes,generated,0
 LibreOffice,The Document Foundation,26.8.1,libreoffice,26.8,auto=title; vmap=yes,catalog,0
 The Document Foundation LibreOffice,The Document Foundation,24.2.7.2,libreoffice,24.2,auto=vendor+title; vmap=yes,generated,0
 LibreOffice (x64),The Document Foundation,26.8.1,libreoffice,26.8,auto=arch-suffix; vmap=yes,generated,0
-LibreOffice,The Document Foundation,6.0.1,NONE,,trap=nocycle; libreoffice has no cycle for 6.0.1 in the snapshot,catalog,0
-LibreOffice 33.0.0,The Document Foundation,33.0.0,NONE,,trap=nocycle; 33.0.0 newer than any snapshot cycle,catalog,0
-LibreOffice 26.8.1,The Document Foundation,7.3.7.2,NONE,,"trap=conflict; name says 26.8, version says 7.3",catalog,0
+LibreOffice,The Document Foundation,6.0.1,libreoffice,none,"trap=nocycle; libreoffice has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+LibreOffice 33.0.0,The Document Foundation,33.0.0,libreoffice,none,"trap=nocycle; 33.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+LibreOffice 26.8.1,The Document Foundation,7.3.7.2,libreoffice,none,"trap=conflict; name says 26.8, version says 7.3; expected: the product, no cycle can be decided",catalog,0
 LineageOS,,24.0,lineageos,24.0,auto=title; vmap=yes,generated,0
 LineageOS 19,,19,lineageos,19,auto=title+version; vmap=yes,generated,0
 Linux Kernel,The Linux Foundation,7.3,linux,7.3,auto=title; vmap=yes,generated,0
 Linux Kernel 6.4.16,The Linux Foundation,6.4.16,linux,6.4,auto=title+version; vmap=yes,generated,0
-Linux Kernel,The Linux Foundation,3.0.1,NONE,,trap=nocycle; linux has no cycle for 3.0.1 in the snapshot,generated,0
+Linux Kernel,The Linux Foundation,3.0.1,linux,none,"trap=nocycle; linux has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Linux Mint,Linux Mint,22.3,linuxmint,22.3,auto=title; vmap=yes,generated,0
 Linux Mint 20.2,Linux Mint,20.2,linuxmint,20.2,auto=title+version; vmap=yes,generated,0
-Linux Mint,Linux Mint,17.0.1,NONE,,trap=nocycle; linuxmint has no cycle for 17.0.1 in the snapshot,generated,0
+Linux Mint,Linux Mint,17.0.1,linuxmint,none,"trap=nocycle; linuxmint has no cycle for 17.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Liquibase,,5.0.4,liquibase,5,auto=title; vmap=yes,catalog,0
 Liquibase 4.33.0,,4.33.0,liquibase,4,auto=title+version; vmap=yes,catalog,0
 Liquibase Secure,,6.0.0,liquibase-secure,6.0,auto=title; vmap=yes,catalog,0
@@ -1479,22 +1475,22 @@ log4j,,1.2.17-1,log4j,1,auto=package; vmap=yes; repology/purl name,generated,0
 Logstash,Elastic,9.5.5,logstash,9.5,auto=title; vmap=yes,catalog,0
 Logstash 8.19.23,Elastic,8.19.23,logstash,8.19,auto=title+version; vmap=yes,generated,0
 Elastic Logstash,Elastic,8.19.23,logstash,8.19,auto=vendor+title; vmap=yes,generated,0
-Logstash,Elastic,5.0.1,NONE,,trap=nocycle; logstash has no cycle for 5.0.1 in the snapshot,catalog,0
-Logstash 16.0.0,Elastic,16.0.0,NONE,,trap=nocycle; 16.0.0 newer than any snapshot cycle,generated,0
-Logstash 9.5.5,Elastic,6.8.23,NONE,,"trap=conflict; name says 9.5, version says 6",generated,0
+Logstash,Elastic,5.0.1,logstash,none,"trap=nocycle; logstash has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Logstash 16.0.0,Elastic,16.0.0,logstash,none,"trap=nocycle; 16.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Logstash 9.5.5,Elastic,6.8.23,logstash,none,"trap=conflict; name says 9.5, version says 6; expected: the product, no cycle can be decided",generated,0
 Longhorn,SUSE,1.13.0,longhorn,1.13,auto=title; vmap=yes,generated,0
 Longhorn 1.7.3,SUSE,1.7.3,longhorn,1.7,auto=title+version; vmap=yes,generated,0
 Longhorn,,1.13.0,NONE,,"trap=generic; bare single-word title, no publisher (longhorn)",generated,0
 Looker,Google,26.20,looker,26.20,auto=title; vmap=yes,generated,0
 Looker 23.18,Google,23.18,looker,23.18,auto=title+version; vmap=yes,generated,0
 Looker,,26.20,NONE,,"trap=generic; bare single-word title, no publisher (looker)",generated,0
-Looker,Google,6.0.1,NONE,,trap=nocycle; looker has no cycle for 6.0.1 in the snapshot,generated,0
+Looker,Google,6.0.1,looker,none,"trap=nocycle; looker has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Lua,Lua.org,5.5.1,lua,5.5,auto=title; vmap=yes,catalog,0
 Lua 3.2.2,Lua.org,3.2.2,lua,3.2,auto=title+version; vmap=yes,catalog,0
 Lua (x64),Lua.org,5.5.1,lua,5.5,auto=arch-suffix; vmap=yes,generated,0
 Apple macOS,Apple Inc.,27.0.1,macos,27,auto=title; vmap=yes,generated,0
 Apple macOS 10.11.6,Apple Inc.,10.11.6,macos,10.11,auto=title+version; vmap=yes,generated,0
-Apple macOS,Apple Inc.,9.0.1,NONE,,trap=nocycle; macos has no cycle for 9.0.1 in the snapshot,generated,0
+Apple macOS,Apple Inc.,9.0.1,macos,none,"trap=nocycle; macos has no cycle for 9.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Mageia,,10,mageia,10,auto=title; vmap=yes,generated,0
 Mageia 5,,5,mageia,5,auto=title+version; vmap=yes,generated,0
 Magento,,2.4.9,magento,2.4.9,auto=title; vmap=yes,generated,0
@@ -1504,9 +1500,9 @@ MariaDB,MariaDB Corporation Ab,13.0.2,mariadb,13.0,auto=title; vmap=yes,catalog,
 MariaDB 10.10.7,MariaDB Corporation Ab,10.10.7,mariadb,10.10,auto=title+version; vmap=yes,catalog,0
 mariadb-server,,5.1.67-1,mariadb,5.1,auto=package; vmap=yes; repology/purl name,catalog,0
 MariaDB (x64),MariaDB Corporation Ab,13.0.2,mariadb,13.0,auto=arch-suffix; vmap=yes,generated,0
-MariaDB,MariaDB Corporation Ab,4.0.1,NONE,,trap=nocycle; mariadb has no cycle for 4.0.1 in the snapshot,catalog,0
-MariaDB 20.0.0,MariaDB Corporation Ab,20.0.0,NONE,,trap=nocycle; 20.0.0 newer than any snapshot cycle,catalog,0
-MariaDB 13.0.2,MariaDB Corporation Ab,5.1.67,NONE,,"trap=conflict; name says 13.0, version says 5.1",catalog,0
+MariaDB,MariaDB Corporation Ab,4.0.1,mariadb,none,"trap=nocycle; mariadb has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+MariaDB 20.0.0,MariaDB Corporation Ab,20.0.0,mariadb,none,"trap=nocycle; 20.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+MariaDB 13.0.2,MariaDB Corporation Ab,5.1.67,mariadb,none,"trap=conflict; name says 13.0, version says 5.1; expected: the product, no cycle can be decided",catalog,0
 Mastodon,Mastodon gGmbH,4.7.3,mastodon,4.7,auto=title; vmap=yes,generated,0
 Mastodon 3.5.19,Mastodon gGmbH,3.5.19,mastodon,3.5,auto=title+version; vmap=yes,generated,0
 Mastodon,,4.7.3,NONE,,"trap=generic; bare single-word title, no publisher (mastodon)",generated,0
@@ -1514,9 +1510,9 @@ Matomo,,5.14.2,matomo,5,auto=title; vmap=yes,generated,0
 Matomo 3.14.1,,3.14.1,matomo,3,auto=title+version; vmap=yes,generated,0
 Mattermost,"Mattermost, Inc.",12.0.1,mattermost,12.0,auto=title; vmap=yes,catalog,0
 Mattermost 9.8.3,"Mattermost, Inc.",9.8.3,mattermost,9.8,auto=title+version; vmap=yes,catalog,0
-Mattermost,"Mattermost, Inc.",5.0.1,NONE,,trap=nocycle; mattermost has no cycle for 5.0.1 in the snapshot,catalog,0
-Mattermost 19.0.0,"Mattermost, Inc.",19.0.0,NONE,,trap=nocycle; 19.0.0 newer than any snapshot cycle,catalog,0
-Mattermost 12.0.1,"Mattermost, Inc.",6.0.4,NONE,,"trap=conflict; name says 12.0, version says 6.0",catalog,1
+Mattermost,"Mattermost, Inc.",5.0.1,mattermost,none,"trap=nocycle; mattermost has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Mattermost 19.0.0,"Mattermost, Inc.",19.0.0,mattermost,none,"trap=nocycle; 19.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Mattermost 12.0.1,"Mattermost, Inc.",6.0.4,mattermost,none,"trap=conflict; name says 12.0, version says 6.0; expected: the product, no cycle can be decided",catalog,1
 Mautic,,7.2.1,mautic,7.2,auto=title; vmap=yes,generated,0
 Mautic 4.2.2,,4.2.2,mautic,4.2,auto=title+version; vmap=yes,generated,0
 MediaWiki,Wikimedia Foundation,1.46.2,mediawiki,1.46,auto=title; vmap=yes,generated,0
@@ -1535,18 +1531,18 @@ Micronaut Framework 3.10.17,,3.10.17,micronaut,3,auto=title+version; vmap=yes,ge
 Microsoft Build of OpenJDK,Microsoft,25.0.5.0.2,microsoft-build-of-openjdk,25,auto=title; vmap=yes,catalog,0
 Microsoft Build of OpenJDK 17.0.21.0.2,Microsoft,17.0.21.0.2,microsoft-build-of-openjdk,17,auto=title+version; vmap=yes,generated,0
 Microsoft Build of OpenJDK (x64),Microsoft,25.0.5.0.2,microsoft-build-of-openjdk,25,auto=arch-suffix; vmap=yes,generated,0
-Microsoft Build of OpenJDK,Microsoft,10.0.1,NONE,,trap=nocycle; microsoft-build-of-openjdk has no cycle for 10.0.1 in the snapshot,catalog,0
+Microsoft Build of OpenJDK,Microsoft,10.0.1,microsoft-build-of-openjdk,none,"trap=nocycle; microsoft-build-of-openjdk has no cycle for 10.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 MongoDB Server,MongoDB Inc.,9.0.4,mongodb,9.0,auto=title; vmap=yes,generated,0
 MongoDB Server 5.0.34,MongoDB Inc.,5.0.34,mongodb,5.0,auto=title+version; vmap=yes,generated,0
 mongodb,,1.0.1-1,mongodb,1.0,auto=package; vmap=yes; repology/purl name,catalog,0
 MongoDB Server (x64),MongoDB Inc.,9.0.4,mongodb,9.0,auto=arch-suffix; vmap=yes,generated,0
-MongoDB Server 16.0.0,MongoDB Inc.,16.0.0,NONE,,trap=nocycle; 16.0.0 newer than any snapshot cycle,generated,0
-MongoDB Server 9.0.4,MongoDB Inc.,1.0.1,NONE,,"trap=conflict; name says 9.0, version says 1.0",generated,0
+MongoDB Server 16.0.0,MongoDB Inc.,16.0.0,mongodb,none,"trap=nocycle; 16.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+MongoDB Server 9.0.4,MongoDB Inc.,1.0.1,mongodb,none,"trap=conflict; name says 9.0, version says 1.0; expected: the product, no cycle can be decided",generated,0
 Moodle,Moodle Pty Ltd,5.3.0,moodle,5.3,auto=title; vmap=yes,generated,0
 Moodle 4.2.11,Moodle Pty Ltd,4.2.11,moodle,4.2,auto=title+version; vmap=yes,generated,0
-Moodle,Moodle Pty Ltd,2.0.1,NONE,,trap=nocycle; moodle has no cycle for 2.0.1 in the snapshot,generated,0
-Moodle 12.0.0,Moodle Pty Ltd,12.0.0,NONE,,trap=nocycle; 12.0.0 newer than any snapshot cycle,generated,0
-Moodle 5.3.0,Moodle Pty Ltd,3.8.9,NONE,,"trap=conflict; name says 5.3, version says 3.8",generated,0
+Moodle,Moodle Pty Ltd,2.0.1,moodle,none,"trap=nocycle; moodle has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Moodle 12.0.0,Moodle Pty Ltd,12.0.0,moodle,none,"trap=nocycle; 12.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Moodle 5.3.0,Moodle Pty Ltd,3.8.9,moodle,none,"trap=conflict; name says 5.3, version says 3.8; expected: the product, no cycle can be decided",generated,0
 Mule Runtime,,4.12.1,mulesoft-runtime,4.12,auto=title; vmap=yes,generated,0
 Mule Runtime 4.5.3,,4.5.3,mulesoft-runtime,4.5,auto=title+version; vmap=yes,generated,0
 MX Linux,,25.3,mxlinux,25,auto=title; vmap=yes,generated,0
@@ -1556,43 +1552,43 @@ MySQL 9.0.1,Oracle Corporation,9.0.1,mysql,9.0,auto=title+version; vmap=yes,cata
 mysql-server,,5.5.63-1,mysql,5.5,auto=package; vmap=yes; repology/purl name,catalog,0
 Oracle MySQL,Oracle Corporation,9.0.1,mysql,9.0,auto=vendor+title; vmap=yes,generated,0
 MySQL (x64),Oracle Corporation,26.7.0,mysql,26.7,auto=arch-suffix; vmap=yes,generated,0
-MySQL,Oracle Corporation,4.0.1,NONE,,trap=nocycle; mysql has no cycle for 4.0.1 in the snapshot,catalog,0
-MySQL 33.0.0,Oracle Corporation,33.0.0,NONE,,trap=nocycle; 33.0.0 newer than any snapshot cycle,catalog,0
-MySQL 26.7.0,Oracle Corporation,5.5.63,NONE,,"trap=conflict; name says 26.7, version says 5.5",catalog,0
+MySQL,Oracle Corporation,4.0.1,mysql,none,"trap=nocycle; mysql has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+MySQL 33.0.0,Oracle Corporation,33.0.0,mysql,none,"trap=nocycle; 33.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+MySQL 26.7.0,Oracle Corporation,5.5.63,mysql,none,"trap=conflict; name says 26.7, version says 5.5; expected: the product, no cycle can be decided",catalog,0
 Neo4j,"Neo4j, Inc.",2026.09.0,neo4j,2026.09,auto=title; vmap=yes,catalog,0
 Neo4j 5.11.0,"Neo4j, Inc.",5.11.0,neo4j,5.11,auto=title+version; vmap=yes,generated,0
 Neo4j (x64),"Neo4j, Inc.",2026.09.0,neo4j,2026.09,auto=arch-suffix; vmap=yes,generated,0
-Neo4j 2033.0.0,"Neo4j, Inc.",2033.0.0,NONE,,trap=nocycle; 2033.0.0 newer than any snapshot cycle,generated,0
-Neo4j 2026.09.0,"Neo4j, Inc.",1.0.0,NONE,,"trap=conflict; name says 2026.09, version says 1.0",generated,0
+Neo4j 2033.0.0,"Neo4j, Inc.",2033.0.0,neo4j,none,"trap=nocycle; 2033.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Neo4j 2026.09.0,"Neo4j, Inc.",1.0.0,neo4j,none,"trap=conflict; name says 2026.09, version says 1.0; expected: the product, no cycle can be decided",generated,0
 Neos,Neos,9.2.0,neos,9.2,auto=title; vmap=yes,generated,0
 Neos 8.3.36,Neos,8.3.36,neos,8.3,auto=title+version; vmap=yes,generated,0
 Neos,,9.2.0,NONE,,"trap=generic; bare single-word title, no publisher (neos)",generated,0
-Neos,Neos,6.0.1,NONE,,trap=nocycle; neos has no cycle for 6.0.1 in the snapshot,generated,0
+Neos,Neos,6.0.1,neos,none,"trap=nocycle; neos has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 NetApp ONTAP,NetApp,9.19.1,netapp-ontap,9.19.1,auto=title; vmap=yes,generated,0
 NetApp ONTAP 9.9.1,NetApp,9.9.1,netapp-ontap,9.9.1,auto=title+version; vmap=yes,generated,0
-NetApp ONTAP,NetApp,8.0.1,NONE,,trap=nocycle; netapp-ontap has no cycle for 8.0.1 in the snapshot,generated,0
+NetApp ONTAP,NetApp,8.0.1,netapp-ontap,none,"trap=nocycle; netapp-ontap has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 NetBackup Appliance OS,,6.1,netbackup-appliance-os,6.1,auto=title; vmap=yes,generated,0
 NetBackup Appliance OS 4.0,,4.0,netbackup-appliance-os,4.0,auto=title+version; vmap=yes,generated,0
 NetBSD,The NetBSD Foundation,11.0,netbsd,11,auto=title; vmap=yes,generated,0
 NetBSD 6.1.5,The NetBSD Foundation,6.1.5,netbsd,6,auto=title+version; vmap=yes,generated,0
 Nextcloud,Nextcloud GmbH,35.0.2,nextcloud,35,auto=title; vmap=yes,catalog,0
 Nextcloud 22.2.10,Nextcloud GmbH,22.2.10,nextcloud,22,auto=title+version; vmap=yes,catalog,0
-Nextcloud,Nextcloud GmbH,8.0.1,NONE,,trap=nocycle; nextcloud has no cycle for 8.0.1 in the snapshot,catalog,0
-Nextcloud 42.0.0,Nextcloud GmbH,42.0.0,NONE,,trap=nocycle; 42.0.0 newer than any snapshot cycle,catalog,0
-Nextcloud 35.0.2,Nextcloud GmbH,9.1.3,NONE,,"trap=conflict; name says 35, version says 9",catalog,0
+Nextcloud,Nextcloud GmbH,8.0.1,nextcloud,none,"trap=nocycle; nextcloud has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Nextcloud 42.0.0,Nextcloud GmbH,42.0.0,nextcloud,none,"trap=nocycle; 42.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Nextcloud 35.0.2,Nextcloud GmbH,9.1.3,nextcloud,none,"trap=conflict; name says 35, version says 9; expected: the product, no cycle can be decided",catalog,0
 Next.js,,16.4.3,nextjs,16,auto=title; vmap=yes,generated,0
 Next.js 12.3.7,,12.3.7,nextjs,12,auto=title+version; vmap=yes,generated,0
 Nexus Repository,Sonatype,3.97.2-02,nexus,3.97,auto=title; vmap=yes,generated,0
 Nexus Repository 3.62.0-01,Sonatype,3.62.0-01,nexus,3.62,auto=title+version; vmap=yes,generated,0
 Sonatype Nexus Repository,Sonatype,3.62.0-01,nexus,3.62,auto=vendor+title; vmap=yes,generated,0
-Nexus Repository,Sonatype,1.0.1,NONE,,trap=nocycle; nexus has no cycle for 1.0.1 in the snapshot,generated,0
-Nexus Repository 10.0.0,Sonatype,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-Nexus Repository 3.97.2-02,Sonatype,2.15.2-03,NONE,,"trap=conflict; name says 3.97, version says 2",generated,0
+Nexus Repository,Sonatype,1.0.1,nexus,none,"trap=nocycle; nexus has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Nexus Repository 10.0.0,Sonatype,10.0.0,nexus,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Nexus Repository 3.97.2-02,Sonatype,2.15.2-03,nexus,none,"trap=conflict; name says 3.97, version says 2; expected: the product, no cycle can be decided",generated,0
 nginx,"F5, Inc.",1.31.8,nginx,1.31,auto=title; vmap=yes,catalog,0
 nginx 1.15.12,"F5, Inc.",1.15.12,nginx,1.15,auto=title+version; vmap=yes,catalog,0
 F5 nginx,"F5, Inc.",1.15.12,nginx,1.15,auto=vendor+title; vmap=yes,generated,0
-nginx 8.0.0,"F5, Inc.",8.0.0,NONE,,trap=nocycle; 8.0.0 newer than any snapshot cycle,catalog,0
-nginx 1.31.8,"F5, Inc.",1.0.15,NONE,,"trap=conflict; name says 1.31, version says 1.0",catalog,0
+nginx 8.0.0,"F5, Inc.",8.0.0,nginx,none,"trap=nocycle; 8.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+nginx 1.31.8,"F5, Inc.",1.0.15,nginx,none,"trap=conflict; name says 1.31, version says 1.0; expected: the product, no cycle can be decided",catalog,0
 nix,NixOS Foundation,2.35.4,nix,2.35,auto=title; vmap=yes,generated,0
 nix 2.17.2,NixOS Foundation,2.17.2,nix,2.17,auto=title+version; vmap=yes,generated,0
 nix,,2.35.4,NONE,,"trap=generic; bare single-word title, no publisher (nix)",generated,0
@@ -1603,29 +1599,29 @@ Node.js,OpenJS Foundation,26.12.1,nodejs,26,auto=title; vmap=yes,catalog,0
 Node.js 13.14.0,OpenJS Foundation,13.14.0,nodejs,13,auto=title+version; vmap=yes,catalog,1
 node,,1.8.4-1,nodejs,1,auto=package; vmap=yes; repology/purl name,catalog,0
 OpenJS Node.js,OpenJS Foundation,13.14.0,nodejs,13,auto=vendor+title; vmap=yes,generated,0
-Node.js 33.0.0,OpenJS Foundation,33.0.0,NONE,,trap=nocycle; 33.0.0 newer than any snapshot cycle,catalog,1
-Node.js 26.12.1,OpenJS Foundation,1.8.4,NONE,,"trap=conflict; name says 26, version says 1",catalog,1
+Node.js 33.0.0,OpenJS Foundation,33.0.0,nodejs,none,"trap=nocycle; 33.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,1
+Node.js 26.12.1,OpenJS Foundation,1.8.4,nodejs,none,"trap=conflict; name says 26, version says 1; expected: the product, no cycle can be decided",catalog,1
 Nomad,HashiCorp,2.0.7,nomad,2.0,auto=title; vmap=yes,generated,0
 Nomad 1.5.17,HashiCorp,1.5.17,nomad,1.5,auto=title+version; vmap=yes,generated,0
 Nomad,,2.0.7,NONE,,"trap=generic; bare single-word title, no publisher (nomad)",generated,0
 nomad-scheduler,,0.12.12-1,nomad,0.12,auto=package; vmap=yes; repology/purl name,generated,0
 Notepad++,Notepad++ Team,8.9.8.1,notepad-plus-plus,8.9,auto=title; vmap=yes,catalog,0
 Notepad++ 8.4.9,Notepad++ Team,8.4.9,notepad-plus-plus,8.4,auto=title+version; vmap=yes,catalog,0
-notepad%2b%2b,,7.9.5-1,notepad-plus-plus,7.9,auto=package; vmap=yes; repology/purl name,generated,0
+notepad++,,7.9.5-1,notepad-plus-plus,7.9,auto=package; vmap=yes; repology/purl name; name was package-URL encoded,generated,0
 Notepad++ (x64),Notepad++ Team,8.9.8.1,notepad-plus-plus,8.9,auto=arch-suffix; vmap=yes,generated,0
-Notepad++,Notepad++ Team,6.0.1,NONE,,trap=nocycle; notepad-plus-plus has no cycle for 6.0.1 in the snapshot,catalog,0
+Notepad++,Notepad++ Team,6.0.1,notepad-plus-plus,none,"trap=nocycle; notepad-plus-plus has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 NumPy,,2.5.4,numpy,2.5,auto=title; vmap=yes,catalog,0
 NumPy 1.23.5,,1.23.5,numpy,1.23,auto=title+version; vmap=yes,generated,0
 Nura,,26.06,NONE,,"trap=generic; bare single-word title, no publisher (nura)",generated,0
 Nutanix AOS,Nutanix,7.6.0.8,nutanix-aos,7.6,auto=title; vmap=yes,generated,0
 Nutanix AOS 5.20.5.1,Nutanix,5.20.5.1,nutanix-aos,5.20,auto=title+version; vmap=yes,generated,0
-Nutanix AOS,Nutanix,4.0.1,NONE,,trap=nocycle; nutanix-aos has no cycle for 4.0.1 in the snapshot,generated,0
+Nutanix AOS,Nutanix,4.0.1,nutanix-aos,none,"trap=nocycle; nutanix-aos has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Nutanix Files,Nutanix,5.4.0,nutanix-files,5.4,auto=title; vmap=yes,generated,0
 Nutanix Files 4.2.1.1,Nutanix,4.2.1.1,nutanix-files,4.2,auto=title+version; vmap=yes,generated,0
-Nutanix Files,Nutanix,2.0.1,NONE,,trap=nocycle; nutanix-files has no cycle for 2.0.1 in the snapshot,generated,0
+Nutanix Files,Nutanix,2.0.1,nutanix-files,none,"trap=nocycle; nutanix-files has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Nutanix Prism Central,Nutanix,5.17.1.1,nutanix-prism,5.17,auto=title; vmap=yes,generated,0
 Nutanix Prism Central 5.11.3,Nutanix,5.11.3,nutanix-prism,5.11,auto=title+version; vmap=yes,generated,0
-Nutanix Prism Central,Nutanix,4.0.1,NONE,,trap=nocycle; nutanix-prism has no cycle for 4.0.1 in the snapshot,generated,0
+Nutanix Prism Central,Nutanix,4.0.1,nutanix-prism,none,"trap=nocycle; nutanix-prism has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Nuxt,,4.6.2,nuxt,4,auto=title; vmap=yes,generated,0
 Nuxt 2.18.1,,2.18.1,nuxt,2,auto=title+version; vmap=yes,generated,0
 nvm,,0.40.8,nvm,0.40,auto=title; vmap=yes,catalog,0
@@ -1637,7 +1633,7 @@ OpenBao,,2.7.1,openbao,2.7,auto=title; vmap=yes,catalog,0
 OpenBao 2.3.2,,2.3.2,openbao,2.3,auto=title+version; vmap=yes,catalog,0
 OpenBSD,OpenBSD,8.0,openbsd,8.0,auto=title; vmap=yes,generated,0
 OpenBSD 5.0,OpenBSD,5.0,openbsd,5.0,auto=title+version; vmap=yes,generated,0
-OpenBSD,OpenBSD,1.0.1,NONE,,trap=nocycle; openbsd has no cycle for 1.0.1 in the snapshot,generated,0
+OpenBSD,OpenBSD,1.0.1,openbsd,none,"trap=nocycle; openbsd has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 OpenJDK builds from Oracle,,27,openjdk-builds-from-oracle,27,auto=title; vmap=yes,generated,0
 OpenJDK builds from Oracle 18.0.2.1,,18.0.2.1,openjdk-builds-from-oracle,18,auto=title+version; vmap=yes,generated,0
 OpenSearch,OpenSearch Project,3.9.0,opensearch,3,auto=title; vmap=yes,catalog,0
@@ -1645,42 +1641,42 @@ OpenSearch 2.19.7,OpenSearch Project,2.19.7,opensearch,2,auto=title+version; vma
 OpenSearch (x64),OpenSearch Project,3.9.0,opensearch,3,auto=arch-suffix; vmap=yes,generated,0
 OpenSSL,OpenSSL Software Foundation,4.0.3,openssl,4.0,auto=title; vmap=yes,catalog,0
 OpenSSL 3.0.22,OpenSSL Software Foundation,3.0.22,openssl,3.0,auto=title+version; vmap=yes,catalog,0
-OpenSSL 11.0.0,OpenSSL Software Foundation,11.0.0,NONE,,trap=nocycle; 11.0.0 newer than any snapshot cycle,catalog,0
-OpenSSL 4.0.3,OpenSSL Software Foundation,0.9.8,NONE,,"trap=conflict; name says 4.0, version says 0.9.8",catalog,0
+OpenSSL 11.0.0,OpenSSL Software Foundation,11.0.0,openssl,none,"trap=nocycle; 11.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+OpenSSL 4.0.3,OpenSSL Software Foundation,0.9.8,openssl,none,"trap=conflict; name says 4.0, version says 0.9.8; expected: the product, no cycle can be decided",catalog,0
 openSUSE,SUSE,16.0,opensuse,16.0,auto=title; vmap=yes,generated,0
 openSUSE 42.1,SUSE,42.1,opensuse,42.1,auto=title+version; vmap=yes,generated,0
-openSUSE,SUSE,10.0.1,NONE,,trap=nocycle; opensuse has no cycle for 10.0.1 in the snapshot,generated,0
+openSUSE,SUSE,10.0.1,opensuse,none,"trap=nocycle; opensuse has no cycle for 10.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 OpenTofu,,1.13.2,opentofu,1.13,auto=title; vmap=yes,catalog,0
 OpenTofu 1.9.4,,1.9.4,opentofu,1.9,auto=title+version; vmap=yes,catalog,0
 OpenVPN,"OpenVPN, Inc.",2.7.8,openvpn,2.7,auto=title; vmap=yes,catalog,1
 OpenVPN 2.4.12,"OpenVPN, Inc.",2.4.12,openvpn,2.4,auto=title+version; vmap=yes,catalog,0
 OpenVPN (x64),"OpenVPN, Inc.",2.7.8,openvpn,2.7,auto=arch-suffix; vmap=yes,generated,0
-OpenVPN,"OpenVPN, Inc.",1.0.1,NONE,,trap=nocycle; openvpn has no cycle for 1.0.1 in the snapshot,catalog,0
+OpenVPN,"OpenVPN, Inc.",1.0.1,openvpn,none,"trap=nocycle; openvpn has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 OpenWrt,,25.12.6,openwrt,25.12,auto=title; vmap=yes,generated,0
 OpenWrt 21.02.7,,21.02.7,openwrt,21.02,auto=title+version; vmap=yes,generated,0
 OpenZFS,,2.4.4,openzfs,2.4,auto=title; vmap=yes,generated,0
 OpenZFS 2.1.16,,2.1.16,openzfs,2.1,auto=title+version; vmap=yes,generated,0
 OPNsense,Deciso B.V.,26.7.7,opnsense,26.7,auto=title; vmap=yes,generated,0
 OPNsense 20.7.8,Deciso B.V.,20.7.8,opnsense,20.7,auto=title+version; vmap=yes,generated,0
-OPNsense,Deciso B.V.,14.0.1,NONE,,trap=nocycle; opnsense has no cycle for 14.0.1 in the snapshot,generated,0
+OPNsense,Deciso B.V.,14.0.1,opnsense,none,"trap=nocycle; opnsense has no cycle for 14.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Oracle APEX,,26.1,oracle-apex,26.1,auto=title; vmap=yes,generated,0
 Oracle APEX 21.1,,21.1,oracle-apex,21.1,auto=title+version; vmap=yes,generated,0
 Oracle Database,Oracle Corporation,23,oracle-database,23,auto=title; vmap=yes,generated,0
 Oracle Database 11.2,Oracle Corporation,11.2,oracle-database,11.2,auto=title+version; vmap=yes,generated,0
 Oracle Database (x64),Oracle Corporation,23,oracle-database,23,auto=arch-suffix; vmap=yes,generated,0
-Oracle Database,Oracle Corporation,8.0.1,NONE,,trap=nocycle; oracle-database has no cycle for 8.0.1 in the snapshot,generated,0
+Oracle Database,Oracle Corporation,8.0.1,oracle-database,none,"trap=nocycle; oracle-database has no cycle for 8.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Oracle GraalVM,,25.3.4.1,oracle-graalvm,25,auto=title; vmap=yes,generated,0
 Oracle GraalVM 22.0.2,,22.0.2,oracle-graalvm,22,auto=title+version; vmap=yes,generated,0
-graalvm,,17.0.21-1,oracle-graalvm,17,auto=package; vmap=yes; repology/purl name,catalog,0
+graalvm,,17.0.21-1,NONE,,bare graalvm with no publisher: graalvm-ce or oracle-graalvm; ambiguous,catalog,0
 Oracle JDK,Oracle Corporation,27.0.1.0.2,oracle-jdk,27,auto=title; vmap=yes,generated,0
 Oracle JDK 13.0.2,Oracle Corporation,13.0.2,oracle-jdk,13,auto=title+version; vmap=yes,generated,0
 Oracle JDK (x64),Oracle Corporation,27.0.1.0.2,oracle-jdk,27,auto=arch-suffix; vmap=yes,generated,0
 Oracle Linux,Oracle,10.1,oracle-linux,10,auto=title; vmap=yes,generated,0
 Oracle Linux 8.10,Oracle,8.10,oracle-linux,8,auto=title+version; vmap=yes,catalog,0
-Oracle Linux,Oracle,5.0.1,NONE,,trap=nocycle; oracle-linux has no cycle for 5.0.1 in the snapshot,generated,0
+Oracle Linux,Oracle,5.0.1,oracle-linux,none,"trap=nocycle; oracle-linux has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Oracle Solaris,Oracle,11.4,oracle-solaris,11.4,auto=title; vmap=yes,generated,0
 Oracle Solaris 11,Oracle,11,oracle-solaris,11,auto=title+version; vmap=yes,generated,0
-Oracle Solaris,Oracle,7.0.1,NONE,,trap=nocycle; oracle-solaris has no cycle for 7.0.1 in the snapshot,generated,0
+Oracle Solaris,Oracle,7.0.1,oracle-solaris,none,"trap=nocycle; oracle-solaris has no cycle for 7.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 OTOBO,,11.0.18,otobo,11.0,auto=title; vmap=yes,generated,0
 OTOBO 10.1.19,,10.1.19,otobo,10.1,auto=title+version; vmap=yes,generated,0
 oVirt,,4.5.7,ovirt,4.5,auto=title; vmap=yes,generated,0
@@ -1689,14 +1685,14 @@ Palo Alto Networks GlobalProtect App,Palo Alto Networks,6.3.3-c1199,pangp,6.3,au
 Palo Alto Networks GlobalProtect App 5.1.12,Palo Alto Networks,5.1.12,pangp,5.1,auto=title+version; vmap=yes,generated,0
 globalprotect,,3.0-1,pangp,3.0,auto=package; vmap=yes; repology/purl name,generated,0
 Palo Alto Networks GlobalProtect App (x64),Palo Alto Networks,6.3.3-c1199,pangp,6.3,auto=arch-suffix; vmap=yes,generated,0
-Palo Alto Networks GlobalProtect App,Palo Alto Networks,2.0.1,NONE,,trap=nocycle; pangp has no cycle for 2.0.1 in the snapshot,generated,0
+Palo Alto Networks GlobalProtect App,Palo Alto Networks,2.0.1,pangp,none,"trap=nocycle; pangp has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Palo Alto Networks PAN-OS,Palo Alto Networks,12.2.4,panos,12.2,auto=title; vmap=yes,generated,0
 Palo Alto Networks PAN-OS 7.1.26,Palo Alto Networks,7.1.26,panos,7.1,auto=title+version; vmap=yes,generated,0
 Perl,Perl Foundation,5.44.0,perl,5.44,auto=title; vmap=yes,catalog,0
 Perl 5.34.3,Perl Foundation,5.34.3,perl,5.34,auto=title+version; vmap=yes,generated,0
 perl-base,,5.26.3-1,perl,5.26,auto=package; vmap=yes; repology/purl name,catalog,0
 Perl (x64),Perl Foundation,5.44.0,perl,5.44,auto=arch-suffix; vmap=yes,generated,0
-Perl,Perl Foundation,4.0.1,NONE,,trap=nocycle; perl has no cycle for 4.0.1 in the snapshot,catalog,1
+Perl,Perl Foundation,4.0.1,perl,none,"trap=nocycle; perl has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,1
 pgAdmin,The pgAdmin Development Team,9.18,pgadmin,9,auto=title; vmap=yes,catalog,0
 pgAdmin 5.7,The pgAdmin Development Team,5.7,pgadmin,5,auto=title+version; vmap=yes,catalog,0
 pgadmin4,,1.6-1,pgadmin,1,auto=package; vmap=yes; repology/purl name,catalog,0
@@ -1708,49 +1704,49 @@ PHP,The PHP Group,8.5.12,php,8.5,auto=title; vmap=yes,catalog,0
 PHP 7.1.33,The PHP Group,7.1.33,php,7.1,auto=title+version; vmap=yes,generated,0
 php-cli,,5.0.5-1,php,5.0,auto=package; vmap=yes; repology/purl name,catalog,0
 PHP (x64),The PHP Group,8.5.12,php,8.5,auto=arch-suffix; vmap=yes,generated,0
-PHP,The PHP Group,4.0.1,NONE,,trap=nocycle; php has no cycle for 4.0.1 in the snapshot,catalog,0
-PHP 15.0.0,The PHP Group,15.0.0,NONE,,trap=nocycle; 15.0.0 newer than any snapshot cycle,generated,0
-PHP 8.5.12,The PHP Group,5.0.5,NONE,,"trap=conflict; name says 8.5, version says 5.0",generated,0
+PHP,The PHP Group,4.0.1,php,none,"trap=nocycle; php has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+PHP 15.0.0,The PHP Group,15.0.0,php,none,"trap=nocycle; 15.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+PHP 8.5.12,The PHP Group,5.0.5,php,none,"trap=conflict; name says 8.5, version says 5.0; expected: the product, no cycle can be decided",generated,0
 phpBB,,3.3.19,phpbb,3.3,auto=title; vmap=yes,generated,0
 phpBB 3.1.12,,3.1.12,phpbb,3.1,auto=title+version; vmap=yes,generated,0
 phpMyAdmin,phpMyAdmin,5.2.3,phpmyadmin,5.2,auto=title; vmap=yes,catalog,0
 phpMyAdmin 4.6.6,phpMyAdmin,4.6.6,phpmyadmin,4.6,auto=title+version; vmap=yes,generated,0
-phpMyAdmin,phpMyAdmin,3.0.1,NONE,,trap=nocycle; phpmyadmin has no cycle for 3.0.1 in the snapshot,catalog,0
+phpMyAdmin,phpMyAdmin,3.0.1,phpmyadmin,none,"trap=nocycle; phpmyadmin has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Pigeonhole,,2.4.5,NONE,,"trap=generic; bare single-word title, no publisher (pigeonhole)",generated,0
 dovecot-pigeonhole,,0.1.4-1,pigeonhole,0.1,auto=package; vmap=yes; repology/purl name,generated,0
 Plesk,,18.0.81.4,plesk,18.0.81,auto=title; vmap=yes,generated,0
 Plesk 18.0.64.1,,18.0.64.1,plesk,18.0.64,auto=title+version; vmap=yes,generated,0
 Plone,Plone Foundation,6.2.2,plone,6.2,auto=title; vmap=yes,generated,0
 Plone 5.2.15,Plone Foundation,5.2.15,plone,5.2,auto=title+version; vmap=yes,generated,0
-Plone,Plone Foundation,3.0.1,NONE,,trap=nocycle; plone has no cycle for 3.0.1 in the snapshot,generated,0
+Plone,Plone Foundation,3.0.1,plone,none,"trap=nocycle; plone has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 pnpm,pnpm,12.15.0,pnpm,12,auto=title; vmap=yes,catalog,0
 pnpm 8.15.9,pnpm,8.15.9,pnpm,8,auto=title+version; vmap=yes,catalog,0
 pnpm (x64),pnpm,12.15.0,pnpm,12,auto=arch-suffix; vmap=yes,generated,0
-pnpm,pnpm,3.0.1,NONE,,trap=nocycle; pnpm has no cycle for 3.0.1 in the snapshot,catalog,0
+pnpm,pnpm,3.0.1,pnpm,none,"trap=nocycle; pnpm has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Podman,Red Hat,6.1.4,podman,6.1,auto=title; vmap=yes,catalog,0
 Podman 4.7.2,Red Hat,4.7.2,podman,4.7,auto=title+version; vmap=yes,catalog,0
 Podman (x64),Red Hat,6.1.4,podman,6.1,auto=arch-suffix; vmap=yes,generated,0
-Podman,Red Hat,2.0.1,NONE,,trap=nocycle; podman has no cycle for 2.0.1 in the snapshot,catalog,0
+Podman,Red Hat,2.0.1,podman,none,"trap=nocycle; podman has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Pop!_OS,,24.04,pop-os,24.04,auto=title; vmap=yes,generated,0
 Pop!_OS 20.04,,20.04,pop-os,20.04,auto=title+version; vmap=yes,generated,0
 Postfix,Wietse Venema,3.11.7,postfix,3.11,auto=title; vmap=yes,generated,0
 Postfix 3.2.22,Wietse Venema,3.2.22,postfix,3.2,auto=title+version; vmap=yes,generated,0
-Postfix,Wietse Venema,1.0.1,NONE,,trap=nocycle; postfix has no cycle for 1.0.1 in the snapshot,generated,0
-Postfix 10.0.0,Wietse Venema,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-Postfix 3.11.7,Wietse Venema,2.5.17,NONE,,"trap=conflict; name says 3.11, version says 2.5",generated,0
+Postfix,Wietse Venema,1.0.1,postfix,none,"trap=nocycle; postfix has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Postfix 10.0.0,Wietse Venema,10.0.0,postfix,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Postfix 3.11.7,Wietse Venema,2.5.17,postfix,none,"trap=conflict; name says 3.11, version says 2.5; expected: the product, no cycle can be decided",generated,0
 PostgreSQL,PostgreSQL Global Development Group,18.6,postgresql,18,auto=title; vmap=yes,generated,0
 PostgreSQL 9.1.24,PostgreSQL Global Development Group,9.1.24,postgresql,9.1,auto=title+version; vmap=yes,generated,0
 PostgreSQL (x64),PostgreSQL Global Development Group,18.6,postgresql,18,auto=arch-suffix; vmap=yes,generated,0
-PostgreSQL,PostgreSQL Global Development Group,5.0.1,NONE,,trap=nocycle; postgresql has no cycle for 5.0.1 in the snapshot,generated,0
-PostgreSQL 25.0.0,PostgreSQL Global Development Group,25.0.0,NONE,,trap=nocycle; 25.0.0 newer than any snapshot cycle,generated,0
-PostgreSQL 18.6,PostgreSQL Global Development Group,6.3.2,NONE,,"trap=conflict; name says 18, version says 6.3",generated,0
+PostgreSQL,PostgreSQL Global Development Group,5.0.1,postgresql,none,"trap=nocycle; postgresql has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+PostgreSQL 25.0.0,PostgreSQL Global Development Group,25.0.0,postgresql,none,"trap=nocycle; 25.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+PostgreSQL 18.6,PostgreSQL Global Development Group,6.3.2,postgresql,none,"trap=conflict; name says 18, version says 6.3; expected: the product, no cycle can be decided",generated,0
 postmarketOS,,26.06,postmarketos,26.06,auto=title; vmap=yes,generated,0
 postmarketOS 23.06,,23.06,postmarketos,23.06,auto=title+version; vmap=yes,generated,0
 Microsoft PowerShell,Microsoft Corporation,7.6.8,powershell,7.6,auto=title; vmap=yes,generated,0
 Microsoft PowerShell 7.1.7,Microsoft Corporation,7.1.7,powershell,7.1,auto=title+version; vmap=yes,generated,0
 powershell,,6.0.5-1,powershell,6.0,auto=package; vmap=yes; repology/purl name,catalog,0
 Microsoft PowerShell (x64),Microsoft Corporation,7.6.8,powershell,7.6,auto=arch-suffix; vmap=yes,generated,0
-Microsoft PowerShell,Microsoft Corporation,5.0.1,NONE,,trap=nocycle; powershell has no cycle for 5.0.1 in the snapshot,generated,0
+Microsoft PowerShell,Microsoft Corporation,5.0.1,powershell,none,"trap=nocycle; powershell has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 PrivateBin,,2.0.6,privatebin,2.0,auto=title; vmap=yes,generated,0
 PrivateBin 1.4.0,,1.4.0,privatebin,1.4,auto=title+version; vmap=yes,generated,0
 ProFTPD,,1.3.9,proftpd,1.3.9,auto=title; vmap=yes,catalog,0
@@ -1758,9 +1754,9 @@ ProFTPD 1.3.7,,1.3.7,proftpd,1.3.7,auto=title+version; vmap=yes,generated,0
 Prometheus,Prometheus,3.15.1,prometheus,3.15,auto=title; vmap=yes,catalog,0
 Prometheus 2.53.5,Prometheus,2.53.5,prometheus,2.53,auto=title+version; vmap=yes,generated,0
 CNCF Prometheus,Prometheus,2.53.5,prometheus,2.53,auto=vendor+title; vmap=yes,generated,0
-Prometheus,Prometheus,1.0.1,NONE,,trap=nocycle; prometheus has no cycle for 1.0.1 in the snapshot,catalog,0
-Prometheus 10.0.0,Prometheus,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-Prometheus 3.15.1,Prometheus,2.36.2,NONE,,"trap=conflict; name says 3.15, version says 2.36",generated,0
+Prometheus,Prometheus,1.0.1,prometheus,none,"trap=nocycle; prometheus has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Prometheus 10.0.0,Prometheus,10.0.0,prometheus,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Prometheus 3.15.1,Prometheus,2.36.2,prometheus,none,"trap=conflict; name says 3.15, version says 2.36; expected: the product, no cycle can be decided",generated,0
 Protractor,,7.0.0,NONE,,"trap=generic; bare single-word title, no publisher (protractor)",generated,0
 Proxmox Backup Server,Proxmox Server Solutions GmbH,4.2.8,proxmox-backup-server,4,auto=title; vmap=yes,generated,0
 Proxmox Backup Server 2.4.1,Proxmox Server Solutions GmbH,2.4.1,proxmox-backup-server,2,auto=title+version; vmap=yes,generated,0
@@ -1768,26 +1764,26 @@ Proxmox Datacenter Manager,,1.0,proxmox-datacenter-manager,1,auto=title; vmap=ye
 Proxmox Datacenter Manager 0.1,,0.1,proxmox-datacenter-manager,0,auto=title+version; vmap=yes,generated,0
 Proxmox Mail Gateway,Proxmox Server Solutions GmbH,9.1,proxmox-mail-gateway,9,auto=title; vmap=yes,generated,0
 Proxmox Mail Gateway 6.4,Proxmox Server Solutions GmbH,6.4,proxmox-mail-gateway,6,auto=title+version; vmap=yes,generated,0
-Proxmox Mail Gateway,Proxmox Server Solutions GmbH,3.0.1,NONE,,trap=nocycle; proxmox-mail-gateway has no cycle for 3.0.1 in the snapshot,generated,0
+Proxmox Mail Gateway,Proxmox Server Solutions GmbH,3.0.1,proxmox-mail-gateway,none,"trap=nocycle; proxmox-mail-gateway has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Proxmox VE,Proxmox Server Solutions GmbH,9.2,proxmox-ve,9,auto=title; vmap=yes,generated,0
 Proxmox VE 5.4,Proxmox Server Solutions GmbH,5.4,proxmox-ve,5,auto=title+version; vmap=yes,generated,0
 Puppet,Puppet Inc,8.18.0,puppet,8,auto=title; vmap=yes,generated,0
 Puppet 5.5.22,Puppet Inc,5.5.22,puppet,5,auto=title+version; vmap=yes,generated,0
 Puppet,,8.18.0,NONE,,"trap=generic; bare single-word title, no publisher (puppet)",generated,0
 Perforce Puppet,Puppet Inc,5.5.22,puppet,5,auto=vendor+title; vmap=yes,generated,0
-Puppet,Puppet Inc,2.0.1,NONE,,trap=nocycle; puppet has no cycle for 2.0.1 in the snapshot,generated,0
+Puppet,Puppet Inc,2.0.1,puppet,none,"trap=nocycle; puppet has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Python,Python Software Foundation,3.15.1,python,3.15,auto=title; vmap=yes,generated,0
 Python 3.6.15,Python Software Foundation,3.6.15,python,3.6,auto=title+version; vmap=yes,generated,0
-python3.15,,2.6.9-1,python,2.6,auto=package; vmap=yes; repology/purl name,generated,0
+python3.15,,2.6.9-1,python,none,"package python3.15 paired with version 2.6.9-1: name and version disagree, the name clearly names the product, no cycle can be decided",generated,0
 Python (x64),Python Software Foundation,3.15.1,python,3.15,auto=arch-suffix; vmap=yes,generated,0
-Python,Python Software Foundation,1.0.1,NONE,,trap=nocycle; python has no cycle for 1.0.1 in the snapshot,generated,0
-Python 10.0.0,Python Software Foundation,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-Python 3.15.1,Python Software Foundation,2.6.9,NONE,,"trap=conflict; name says 3.15, version says 2.6",generated,0
+Python,Python Software Foundation,1.0.1,python,none,"trap=nocycle; python has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Python 10.0.0,Python Software Foundation,10.0.0,python,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Python 3.15.1,Python Software Foundation,2.6.9,python,none,"trap=conflict; name says 3.15, version says 2.6; expected: the product, no cycle can be decided",generated,0
 Qt,The Qt Company,6.12.0,qt,6.12,auto=title; vmap=yes,catalog,0
 Qt 6.2.4,The Qt Company,6.2.4,qt,6.2,auto=title+version; vmap=yes,generated,0
-Qt,The Qt Company,3.0.1,NONE,,trap=nocycle; qt has no cycle for 3.0.1 in the snapshot,catalog,1
-Qt 13.0.0,The Qt Company,13.0.0,NONE,,trap=nocycle; 13.0.0 newer than any snapshot cycle,generated,0
-Qt 6.12.0,The Qt Company,4.8.7,NONE,,"trap=conflict; name says 6.12, version says 4.8",generated,0
+Qt,The Qt Company,3.0.1,qt,none,"trap=nocycle; qt has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,1
+Qt 13.0.0,The Qt Company,13.0.0,qt,none,"trap=nocycle; 13.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Qt 6.12.0,The Qt Company,4.8.7,qt,none,"trap=conflict; name says 6.12, version says 4.8; expected: the product, no cycle can be decided",generated,0
 Quarkus,,3.40.1.1,quarkus-framework,3.40,auto=title; vmap=yes,generated,0
 Quarkus 3.10.2,,3.10.2,quarkus-framework,3.10,auto=title+version; vmap=yes,generated,0
 Quasar,Quasar Framework,2.35.2,quasar,2,auto=title; vmap=yes,generated,0
@@ -1797,22 +1793,22 @@ RabbitMQ,Broadcom Inc.,4.3.7,rabbitmq,4.3,auto=title; vmap=yes,catalog,0
 RabbitMQ 3.8.35,Broadcom Inc.,3.8.35,rabbitmq,3.8,auto=title+version; vmap=yes,generated,0
 rabbitmq-server,,3.0.4-1,rabbitmq,3.0,auto=package; vmap=yes; repology/purl name,catalog,0
 VMware RabbitMQ,Broadcom Inc.,3.8.35,rabbitmq,3.8,auto=vendor+title; vmap=yes,generated,0
-RabbitMQ,Broadcom Inc.,2.0.1,NONE,,trap=nocycle; rabbitmq has no cycle for 2.0.1 in the snapshot,catalog,0
-RabbitMQ 11.0.0,Broadcom Inc.,11.0.0,NONE,,trap=nocycle; 11.0.0 newer than any snapshot cycle,generated,0
-RabbitMQ 4.3.7,Broadcom Inc.,3.0.4,NONE,,"trap=conflict; name says 4.3, version says 3.0",generated,0
+RabbitMQ,Broadcom Inc.,2.0.1,rabbitmq,none,"trap=nocycle; rabbitmq has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+RabbitMQ 11.0.0,Broadcom Inc.,11.0.0,rabbitmq,none,"trap=nocycle; 11.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+RabbitMQ 4.3.7,Broadcom Inc.,3.0.4,rabbitmq,none,"trap=conflict; name says 4.3, version says 3.0; expected: the product, no cycle can be decided",generated,0
 Ruby on Rails,Ruby on Rails,8.1.4,rails,8.1,auto=title; vmap=yes,generated,0
 Ruby on Rails 6.1.7.10,Ruby on Rails,6.1.7.10,rails,6.1,auto=title+version; vmap=yes,generated,0
 ruby:rails,,4.2.11.3-1,rails,4.2,auto=package; vmap=yes; repology/purl name,generated,0
-Ruby on Rails,Ruby on Rails,3.0.1,NONE,,trap=nocycle; rails has no cycle for 3.0.1 in the snapshot,generated,0
+Ruby on Rails,Ruby on Rails,3.0.1,rails,none,"trap=nocycle; rails has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Rancher,SUSE,2.15.2,rancher,2.15,auto=title; vmap=yes,generated,0
 Rancher 2.7.18,SUSE,2.7.18,rancher,2.7,auto=title+version; vmap=yes,generated,0
 SUSE Rancher,SUSE,2.7.18,rancher,2.7,auto=vendor+title; vmap=yes,generated,0
-Rancher 9.0.0,SUSE,9.0.0,NONE,,trap=nocycle; 9.0.0 newer than any snapshot cycle,generated,0
-Rancher 2.15.2,SUSE,1.6.30,NONE,,"trap=conflict; name says 2.15, version says 1.6",generated,0
+Rancher 9.0.0,SUSE,9.0.0,rancher,none,"trap=nocycle; 9.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Rancher 2.15.2,SUSE,1.6.30,rancher,none,"trap=conflict; name says 2.15, version says 1.6; expected: the product, no cycle can be decided",generated,0
 React,Meta,19.3.1,react,19,auto=title; vmap=yes,generated,0
 React 17.0.2,Meta,17.0.2,react,17,auto=title+version; vmap=yes,generated,0
 React,,19.3.1,NONE,,"trap=generic; bare single-word title, no publisher (react)",generated,0
-React,Meta,14.0.1,NONE,,trap=nocycle; react has no cycle for 14.0.1 in the snapshot,generated,0
+React,Meta,14.0.1,react,none,"trap=nocycle; react has no cycle for 14.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 React Native,,0.87.1,react-native,0.87,auto=title; vmap=yes,generated,0
 React Native 0.73.11,,0.73.11,react-native,0.73,auto=title+version; vmap=yes,generated,0
 Red Hat Ansible Automation Platform,,2.6,red-hat-ansible-automation-platform,2.6,auto=title; vmap=yes,generated,0
@@ -1820,31 +1816,31 @@ Red Hat Ansible Automation Platform 2.4,,2.4,red-hat-ansible-automation-platform
 Red Hat OpenShift,Red Hat,4.22.18,red-hat-openshift,4.22,auto=title; vmap=yes,generated,0
 Red Hat OpenShift 4.11.59,Red Hat,4.11.59,red-hat-openshift,4.11,auto=title+version; vmap=yes,generated,0
 openshift,,4.1.41-1,red-hat-openshift,4.1,auto=package; vmap=yes; repology/purl name,generated,0
-Red Hat OpenShift,Red Hat,3.0.1,NONE,,trap=nocycle; red-hat-openshift has no cycle for 3.0.1 in the snapshot,generated,0
+Red Hat OpenShift,Red Hat,3.0.1,red-hat-openshift,none,"trap=nocycle; red-hat-openshift has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Red Hat build of OpenJDK,"Red Hat, Inc.",25,redhat-build-of-openjdk,25,auto=title; vmap=yes,generated,0
 Red Hat build of OpenJDK 11.0.25.0.9-3,"Red Hat, Inc.",11.0.25.0.9-3,redhat-build-of-openjdk,11,auto=title+version; vmap=yes,generated,0
-java-1.6.0-openjdk,,6-1,redhat-build-of-openjdk,6,auto=package; vmap=yes; repology/purl name,generated,0
+java-1.6.0-openjdk,,6-1,NONE,,bare OpenJDK package with no publisher: which OpenJDK build is unknown (same as OpenJDK with no publisher); was redhat-build-of-openjdk 6,generated,0
 Red Hat build of OpenJDK (x64),"Red Hat, Inc.",25,redhat-build-of-openjdk,25,auto=arch-suffix; vmap=yes,generated,0
-Red Hat build of OpenJDK,"Red Hat, Inc.",5.0.1,NONE,,trap=nocycle; redhat-build-of-openjdk has no cycle for 5.0.1 in the snapshot,generated,0
+Red Hat build of OpenJDK,"Red Hat, Inc.",5.0.1,redhat-build-of-openjdk,none,"trap=nocycle; redhat-build-of-openjdk has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Red Hat JBoss Enterprise Application Platform,Red Hat,8.1.8,redhat-jboss-eap,8,auto=title; vmap=yes,generated,0
 Red Hat JBoss Enterprise Application Platform 5.2.0,Red Hat,5.2.0,redhat-jboss-eap,5,auto=title+version; vmap=yes,generated,0
-Red Hat JBoss Enterprise Application Platform,Red Hat,3.0.1,NONE,,trap=nocycle; redhat-jboss-eap has no cycle for 3.0.1 in the snapshot,generated,0
+Red Hat JBoss Enterprise Application Platform,Red Hat,3.0.1,redhat-jboss-eap,none,"trap=nocycle; redhat-jboss-eap has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Red Hat Satellite,Red Hat,6.19.5,redhat-satellite,6.19,auto=title; vmap=yes,generated,0
 Red Hat Satellite 6.9.10,Red Hat,6.9.10,redhat-satellite,6.9,auto=title+version; vmap=yes,generated,0
-Red Hat Satellite,Red Hat,5.0.1,NONE,,trap=nocycle; redhat-satellite has no cycle for 5.0.1 in the snapshot,generated,0
+Red Hat Satellite,Red Hat,5.0.1,redhat-satellite,none,"trap=nocycle; redhat-satellite has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Redis,Redis Ltd.,8.10.2,redis,8.10,auto=title; vmap=yes,catalog,0
 Redis 7.4.11,Redis Ltd.,7.4.11,redis,7.4,auto=title+version; vmap=yes,generated,0
 Redis (x64),Redis Ltd.,8.10.2,redis,8.10,auto=arch-suffix; vmap=yes,generated,0
-Redis,Redis Ltd.,4.0.1,NONE,,trap=nocycle; redis has no cycle for 4.0.1 in the snapshot,catalog,0
-Redis 15.0.0,Redis Ltd.,15.0.0,NONE,,trap=nocycle; 15.0.0 newer than any snapshot cycle,generated,0
-Redis 8.10.2,Redis Ltd.,5.0.14,NONE,,"trap=conflict; name says 8.10, version says 5.0",generated,0
+Redis,Redis Ltd.,4.0.1,redis,none,"trap=nocycle; redis has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Redis 15.0.0,Redis Ltd.,15.0.0,redis,none,"trap=nocycle; 15.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Redis 8.10.2,Redis Ltd.,5.0.14,redis,none,"trap=conflict; name says 8.10, version says 5.0; expected: the product, no cycle can be decided",generated,0
 Redmine,,7.0.2,redmine,7.0,auto=title; vmap=yes,generated,0
 Redmine 4.2.11,,4.2.11,redmine,4.2,auto=title+version; vmap=yes,generated,0
 Renovate CLI,,44.181.4,renovate,44,auto=title; vmap=yes,generated,0
 Renovate CLI 42.99.0,,42.99.0,renovate,42,auto=title+version; vmap=yes,generated,0
 Red Hat Enterprise Linux,"Red Hat, Inc.",10.2,rhel,10,auto=title; vmap=yes,generated,0
 Red Hat Enterprise Linux 7.9,"Red Hat, Inc.",7.9,rhel,7,auto=title+version; vmap=yes,generated,0
-Red Hat Enterprise Linux,"Red Hat, Inc.",3.0.1,NONE,,trap=nocycle; rhel has no cycle for 3.0.1 in the snapshot,generated,0
+Red Hat Enterprise Linux,"Red Hat, Inc.",3.0.1,rhel,none,"trap=nocycle; rhel has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Robo,Consolidation,5.1.1,robo,5,auto=title; vmap=yes,generated,0
 Robo 3.0.12,Consolidation,3.0.12,robo,3,auto=title+version; vmap=yes,generated,0
 Robo,,5.1.1,NONE,,"trap=generic; bare single-word title, no publisher (robo)",generated,0
@@ -1853,13 +1849,13 @@ Rocket.Chat 5.2.2,,5.2.2,rocket-chat,5.2,auto=title+version; vmap=yes,catalog,0
 rocketchat-server,,1.0.5-1,rocket-chat,1.0,auto=package; vmap=yes; repology/purl name,generated,0
 Rocky Linux,Rocky Enterprise Software Foundation,10.2,rocky-linux,10,auto=title; vmap=yes,generated,0
 Rocky Linux 9.8,Rocky Enterprise Software Foundation,9.8,rocky-linux,9,auto=title+version; vmap=yes,generated,0
-Rocky Linux,Rocky Enterprise Software Foundation,7.0.1,NONE,,trap=nocycle; rocky-linux has no cycle for 7.0.1 in the snapshot,generated,0
+Rocky Linux,Rocky Enterprise Software Foundation,7.0.1,rocky-linux,none,"trap=nocycle; rocky-linux has no cycle for 7.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Roundcube Webmail,,1.7.5,roundcube,1.7,auto=title; vmap=yes,generated,0
 Roundcube Webmail 1.3.17,,1.3.17,roundcube,1.3,auto=title+version; vmap=yes,generated,0
 roundcube,,1.0.12-1,roundcube,1.0,auto=package; vmap=yes; repology/purl name,catalog,1
 RouterOS,MikroTik,7.24.5,routeros,7.24,auto=title; vmap=yes,generated,0
 RouterOS 6.26,MikroTik,6.26,routeros,6.26,auto=title+version; vmap=yes,generated,0
-RouterOS,MikroTik,2.0.1,NONE,,trap=nocycle; routeros has no cycle for 2.0.1 in the snapshot,generated,0
+RouterOS,MikroTik,2.0.1,routeros,none,"trap=nocycle; routeros has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 rtpengine,,26.2.1.5,rtpengine,26.2,auto=title; vmap=yes,catalog,1
 rtpengine 12.3.1.6,,12.3.1.6,rtpengine,12.3,auto=title+version; vmap=yes,generated,0
 Ruby,Ruby Association,4.0.9,ruby,4.0,auto=title; vmap=yes,catalog,0
@@ -1874,23 +1870,23 @@ Salt,Salt Project,3008.4,salt,3008,auto=title; vmap=yes,catalog,1
 Salt 3000.9,Salt Project,3000.9,salt,3000,auto=title+version; vmap=yes,generated,0
 Salt,,3008.4,NONE,,"trap=generic; bare single-word title, no publisher (salt)",catalog,0
 VMware Salt,Salt Project,3000.9,salt,3000,auto=vendor+title; vmap=yes,generated,0
-Salt,Salt Project,2013.0.1,NONE,,trap=nocycle; salt has no cycle for 2013.0.1 in the snapshot,catalog,0
+Salt,Salt Project,2013.0.1,salt,none,"trap=nocycle; salt has no cycle for 2013.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Samba,Samba Team,4.25.1,samba,4.25,auto=title; vmap=yes,catalog,0
 Samba 4.9.18,Samba Team,4.9.18,samba,4.9,auto=title+version; vmap=yes,generated,0
-Samba,Samba Team,2.0.1,NONE,,trap=nocycle; samba has no cycle for 2.0.1 in the snapshot,catalog,0
-Samba 11.0.0,Samba Team,11.0.0,NONE,,trap=nocycle; 11.0.0 newer than any snapshot cycle,generated,0
-Samba 4.25.1,Samba Team,3.0.37,NONE,,"trap=conflict; name says 4.25, version says 3.0",generated,0
+Samba,Samba Team,2.0.1,samba,none,"trap=nocycle; samba has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Samba 11.0.0,Samba Team,11.0.0,samba,none,"trap=nocycle; 11.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Samba 4.25.1,Samba Team,3.0.37,samba,none,"trap=conflict; name says 4.25, version says 3.0; expected: the product, no cycle can be decided",generated,0
 SapMachine,SAP SE,27.0.1.0.2,sapmachine,27,auto=title; vmap=yes,generated,0
 SapMachine 18.0.2.1,SAP SE,18.0.2.1,sapmachine,18,auto=title+version; vmap=yes,generated,0
 SapMachine (x64),SAP SE,27.0.1.0.2,sapmachine,27,auto=arch-suffix; vmap=yes,generated,0
-SapMachine,SAP SE,9.0.1,NONE,,trap=nocycle; sapmachine has no cycle for 9.0.1 in the snapshot,generated,0
+SapMachine,SAP SE,9.0.1,sapmachine,none,"trap=nocycle; sapmachine has no cycle for 9.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Scala,EPFL,3.10.0,scala,3.10,auto=title; vmap=yes,catalog,0
 Scala 3.3.8,EPFL,3.3.8,scala,3.3,auto=title+version; vmap=yes,generated,0
 Lightbend Scala,EPFL,3.3.8,scala,3.3,auto=vendor+title; vmap=yes,generated,0
 Scala (x64),EPFL,3.10.0,scala,3.10,auto=arch-suffix; vmap=yes,generated,0
-Scala,EPFL,1.0.1,NONE,,trap=nocycle; scala has no cycle for 1.0.1 in the snapshot,catalog,0
-Scala 10.0.0,EPFL,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-Scala 3.10.0,EPFL,2.10.7,NONE,,"trap=conflict; name says 3.10, version says 2.10",generated,0
+Scala,EPFL,1.0.1,scala,none,"trap=nocycle; scala has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Scala 10.0.0,EPFL,10.0.0,scala,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Scala 3.10.0,EPFL,2.10.7,scala,none,"trap=conflict; name says 3.10, version says 2.10; expected: the product, no cycle can be decided",generated,0
 Shopware,,6.7.15.1,shopware,6.7,auto=title; vmap=yes,generated,0
 Shopware 6.1.6,,6.1.6,shopware,6.1,auto=title+version; vmap=yes,generated,0
 Silverstripe CMS,,6.2.0,silverstripe,6.2,auto=title; vmap=yes,generated,0
@@ -1899,7 +1895,7 @@ Slackware Linux,,15.0,slackware,15.0,auto=title; vmap=yes,generated,0
 Slackware Linux 12.0,,12.0,slackware,12.0,auto=title+version; vmap=yes,generated,0
 SUSE Linux Enterprise Server,SUSE,16.0,sles,16.0,auto=title; vmap=yes,generated,0
 SUSE Linux Enterprise Server 12.2,SUSE,12.2,sles,12.2,auto=title+version; vmap=yes,generated,0
-SUSE Linux Enterprise Server,SUSE,9.0.1,NONE,,trap=nocycle; sles has no cycle for 9.0.1 in the snapshot,generated,0
+SUSE Linux Enterprise Server,SUSE,9.0.1,sles,none,"trap=nocycle; sles has no cycle for 9.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Stormshield Firmware,,5.0,sns-firmware,5.0,auto=title; vmap=yes,generated,0
 Stormshield Firmware 4.2,,4.2,sns-firmware,4.2,auto=title+version; vmap=yes,generated,0
 Stormshield Management Center,,3.9,sns-smc,3.9,auto=title; vmap=yes,generated,0
@@ -1910,17 +1906,17 @@ solr,,1.4.1-1,solr,1,auto=package; vmap=yes; repology/purl name,catalog,0
 SonarQube Community Build,SonarSource,26.10.0.133078,sonarqube-community,26.10,auto=title; vmap=yes,generated,0
 SonarQube Community Build 26.2.0.119303,SonarSource,26.2.0.119303,sonarqube-community,26.2,auto=title+version; vmap=yes,generated,0
 sonarqube,,7.9.6-1,sonarqube-community,7,auto=package; vmap=yes; repology/purl name,generated,0
-SonarQube Community Build,SonarSource,6.0.1,NONE,,trap=nocycle; sonarqube-community has no cycle for 6.0.1 in the snapshot,generated,0
+SonarQube Community Build,SonarSource,6.0.1,sonarqube-community,none,"trap=nocycle; sonarqube-community has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 SonarQube Server,SonarSource,2026.5.3,sonarqube-server,2026.5,auto=title; vmap=yes,generated,0
 SonarQube Server 2025.4.10,SonarSource,2025.4.10,sonarqube-server,2025.4,auto=title+version; vmap=yes,generated,0
-SonarQube Server,SonarSource,6.0.1,NONE,,trap=nocycle; sonarqube-server has no cycle for 6.0.1 in the snapshot,generated,0
+SonarQube Server,SonarSource,6.0.1,sonarqube-server,none,"trap=nocycle; sonarqube-server has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Sourcegraph,,8.1.1335,sourcegraph,8,auto=title; vmap=yes,generated,0
 Sourcegraph 6.12.5040,,6.12.5040,sourcegraph,6,auto=title+version; vmap=yes,generated,0
 Splunk,Splunk Inc.,10.4.0,splunk,10.4,auto=title; vmap=yes,generated,0
 Splunk 9.0.10,Splunk Inc.,9.0.10,splunk,9.0,auto=title+version; vmap=yes,generated,0
-Splunk,Splunk Inc.,6.0.1,NONE,,trap=nocycle; splunk has no cycle for 6.0.1 in the snapshot,generated,0
-Splunk 17.0.0,Splunk Inc.,17.0.0,NONE,,trap=nocycle; 17.0.0 newer than any snapshot cycle,generated,0
-Splunk 10.4.0,Splunk Inc.,7.0.13.1,NONE,,"trap=conflict; name says 10.4, version says 7.0",generated,0
+Splunk,Splunk Inc.,6.0.1,splunk,none,"trap=nocycle; splunk has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
+Splunk 17.0.0,Splunk Inc.,17.0.0,splunk,none,"trap=nocycle; 17.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Splunk 10.4.0,Splunk Inc.,7.0.13.1,splunk,none,"trap=conflict; name says 10.4, version says 7.0; expected: the product, no cycle can be decided",generated,0
 Spring Boot,VMware,4.1.2,spring-boot,4.1,auto=title; vmap=yes,generated,0
 Spring Boot 2.7.18,VMware,2.7.18,spring-boot,2.7,auto=title+version; vmap=yes,generated,0
 springboot,,1.5.22-1,spring-boot,1.5,auto=package; vmap=yes; repology/purl name,generated,0
@@ -1928,18 +1924,18 @@ Spring Cloud,,2025.1.4,spring-cloud,2025.1,auto=title; vmap=yes,generated,0
 Spring Cloud 2023.0.6,,2023.0.6,spring-cloud,2023.0,auto=title+version; vmap=yes,generated,0
 Spring Framework,VMware,7.0.10,spring-framework,7.0,auto=title; vmap=yes,generated,0
 Spring Framework 5.2.25,VMware,5.2.25,spring-framework,5.2,auto=title+version; vmap=yes,generated,0
-Spring Framework,VMware,2.0.1,NONE,,trap=nocycle; spring-framework has no cycle for 2.0.1 in the snapshot,generated,0
+Spring Framework,VMware,2.0.1,spring-framework,none,"trap=nocycle; spring-framework has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Spring Security,,7.1.2,spring-security,7.1,auto=title; vmap=yes,generated,0
 Spring Security 5.7.14,,5.7.14,spring-security,5.7,auto=title+version; vmap=yes,generated,0
 SQLite,SQLite Consortium,3.54.1,sqlite,3,auto=title; vmap=yes,catalog,0
 SQLite 2.8.17,SQLite Consortium,2.8.17,sqlite,2,auto=title+version; vmap=yes,catalog,0
 SQLite (x64),SQLite Consortium,3.54.1,sqlite,3,auto=arch-suffix; vmap=yes,generated,0
-SQLite 10.0.0,SQLite Consortium,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,catalog,0
-SQLite 3.54.1,SQLite Consortium,1.0.32,NONE,,"trap=conflict; name says 3, version says 1",catalog,0
+SQLite 10.0.0,SQLite Consortium,10.0.0,sqlite,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+SQLite 3.54.1,SQLite Consortium,1.0.32,sqlite,none,"trap=conflict; name says 3, version says 1; expected: the product, no cycle can be decided",catalog,0
 Squid,Squid Project,7.7,squid,7,auto=title; vmap=yes,catalog,0
 Squid 3.2.14,Squid Project,3.2.14,squid,3.2,auto=title+version; vmap=yes,generated,0
 Squid,,7.7,NONE,,"trap=generic; bare single-word title, no publisher (squid)",catalog,0
-Squid,Squid Project,1.0.1,NONE,,trap=nocycle; squid has no cycle for 1.0.1 in the snapshot,catalog,0
+Squid,Squid Project,1.0.1,squid,none,"trap=nocycle; squid has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Statamic,,6.38.0,statamic,6,auto=title; vmap=yes,generated,0
 Statamic 4.58.3,,4.58.3,statamic,4,auto=title+version; vmap=yes,generated,0
 Strapi,,5.59.0,strapi,5,auto=title; vmap=yes,generated,0
@@ -1955,7 +1951,7 @@ Sylius 1.13.17,,1.13.17,sylius,1.13,auto=title+version; vmap=yes,generated,0
 Symfony,Symfony SAS,8.1.9,symfony,8.1,auto=title; vmap=yes,generated,0
 Symfony 5.1.11,Symfony SAS,5.1.11,symfony,5.1,auto=title+version; vmap=yes,generated,0
 php:symfony,,2.3.42-1,symfony,2.3,auto=package; vmap=yes; repology/purl name,generated,0
-Symfony,Symfony SAS,1.0.1,NONE,,trap=nocycle; symfony has no cycle for 1.0.1 in the snapshot,generated,0
+Symfony,Symfony SAS,1.0.1,symfony,none,"trap=nocycle; symfony has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Tails,Tails,7.15,tails,7,auto=title; vmap=yes,generated,0
 Tails 4.29,Tails,4.29,tails,4,auto=title+version; vmap=yes,generated,0
 Tails,,7.15,NONE,,"trap=generic; bare single-word title, no publisher (tails)",generated,0
@@ -1970,32 +1966,32 @@ tarteaucitron 1.37.0,,1.37.0,tarteaucitron,1,auto=title+version; vmap=yes,genera
 Telegraf,InfluxData,1.40.2,telegraf,1.40,auto=title; vmap=yes,catalog,0
 Telegraf 1.20.4,InfluxData,1.20.4,telegraf,1.20,auto=title+version; vmap=yes,catalog,0
 InfluxData Telegraf,InfluxData,1.20.4,telegraf,1.20,auto=vendor+title; vmap=yes,generated,0
-Telegraf 8.0.0,InfluxData,8.0.0,NONE,,trap=nocycle; 8.0.0 newer than any snapshot cycle,catalog,0
-Telegraf 1.40.2,InfluxData,1.0.1,NONE,,"trap=conflict; name says 1.40, version says 1.0",catalog,0
+Telegraf 8.0.0,InfluxData,8.0.0,telegraf,none,"trap=nocycle; 8.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Telegraf 1.40.2,InfluxData,1.0.1,telegraf,none,"trap=conflict; name says 1.40, version says 1.0; expected: the product, no cycle can be decided",catalog,0
 Teleport,"Gravitational, Inc.",18.11.1,teleport,18,auto=title; vmap=yes,catalog,0
 Teleport 17.7.29,"Gravitational, Inc.",17.7.29,teleport,17,auto=title+version; vmap=yes,catalog,1
 Teleport,,18.11.1,NONE,,"trap=generic; bare single-word title, no publisher (teleport)",catalog,0
-Teleport,"Gravitational, Inc.",15.0.1,NONE,,trap=nocycle; teleport has no cycle for 15.0.1 in the snapshot,catalog,1
+Teleport,"Gravitational, Inc.",15.0.1,teleport,none,"trap=nocycle; teleport has no cycle for 15.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,1
 Hashicorp Terraform,HashiCorp,1.16.7,terraform,1.16,auto=title; vmap=yes,catalog,0
 Hashicorp Terraform 1.8.5,HashiCorp,1.8.5,terraform,1.8,auto=title+version; vmap=yes,catalog,0
 terraform,,1.0.11-1,terraform,1.0,auto=package; vmap=yes; repology/purl name,catalog,0
 Hashicorp Terraform (x64),HashiCorp,1.16.7,terraform,1.16,auto=arch-suffix; vmap=yes,generated,0
-Hashicorp Terraform 8.0.0,HashiCorp,8.0.0,NONE,,trap=nocycle; 8.0.0 newer than any snapshot cycle,catalog,0
-Hashicorp Terraform 1.16.7,HashiCorp,1.0.11,NONE,,"trap=conflict; name says 1.16, version says 1.0",catalog,0
+Hashicorp Terraform 8.0.0,HashiCorp,8.0.0,terraform,none,"trap=nocycle; 8.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Hashicorp Terraform 1.16.7,HashiCorp,1.0.11,terraform,none,"trap=conflict; name says 1.16, version says 1.0; expected: the product, no cycle can be decided",catalog,0
 Thumbor,Thumbor,7.8.0,thumbor,7.8,auto=title; vmap=yes,generated,0
 Thumbor 7.4.7,Thumbor,7.4.7,thumbor,7.4,auto=title+version; vmap=yes,generated,0
-Thumbor,Thumbor,6.0.1,NONE,,trap=nocycle; thumbor has no cycle for 6.0.1 in the snapshot,generated,0
+Thumbor,Thumbor,6.0.1,thumbor,none,"trap=nocycle; thumbor has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apache Tomcat,The Apache Software Foundation,11.0.27,tomcat,11.0,auto=title; vmap=yes,generated,0
 Apache Tomcat 8.5.100,The Apache Software Foundation,8.5.100,tomcat,8.5,auto=title+version; vmap=yes,generated,0
 tomcat,,5.5.36-1,tomcat,5,auto=package; vmap=yes; repology/purl name,catalog,1
-Apache Tomcat,The Apache Software Foundation,4.0.1,NONE,,trap=nocycle; tomcat has no cycle for 4.0.1 in the snapshot,generated,0
+Apache Tomcat,The Apache Software Foundation,4.0.1,tomcat,none,"trap=nocycle; tomcat has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Traefik,Traefik Labs,3.7.16,traefik,3.7,auto=title; vmap=yes,catalog,0
 Traefik 2.9.10,Traefik Labs,2.9.10,traefik,2.9,auto=title+version; vmap=yes,generated,0
-Traefik 10.0.0,Traefik Labs,10.0.0,NONE,,trap=nocycle; 10.0.0 newer than any snapshot cycle,generated,0
-Traefik 3.7.16,Traefik Labs,1.7.34,NONE,,"trap=conflict; name says 3.7, version says 1.7",generated,0
+Traefik 10.0.0,Traefik Labs,10.0.0,traefik,none,"trap=nocycle; 10.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Traefik 3.7.16,Traefik Labs,1.7.34,traefik,none,"trap=conflict; name says 3.7, version says 1.7; expected: the product, no cycle can be decided",generated,0
 TrueNAS,iXsystems,25.10.7,truenas,25.10,auto=title; vmap=yes,generated,0
 TrueNAS 24.10.2.4,iXsystems,24.10.2.4,truenas,24.10,auto=title+version; vmap=yes,generated,0
-TrueNAS,iXsystems,22.0.1,NONE,,trap=nocycle; truenas has no cycle for 22.0.1 in the snapshot,generated,0
+TrueNAS,iXsystems,22.0.1,truenas,none,"trap=nocycle; truenas has no cycle for 22.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Apple tvOS,,27.0,tvos,27,auto=title; vmap=yes,generated,0
 Apple tvOS 14.7,,14.7,tvos,14,auto=title+version; vmap=yes,generated,0
 Twig,Symfony SAS,3.30.0,twig,3,auto=title; vmap=yes,generated,0
@@ -2006,17 +2002,17 @@ TYPO3,,14.3.10,typo3,14,auto=title; vmap=yes,generated,0
 TYPO3 10.4.62,,10.4.62,typo3,10,auto=title+version; vmap=yes,generated,0
 Ubuntu,Canonical,26.10,ubuntu,26.10,auto=title; vmap=yes,catalog,0
 Ubuntu 15.10,Canonical,15.10,ubuntu,15.10,auto=title+version; vmap=yes,catalog,0
-Ubuntu,Canonical,3.0.1,NONE,,trap=nocycle; ubuntu has no cycle for 3.0.1 in the snapshot,catalog,0
+Ubuntu,Canonical,3.0.1,ubuntu,none,"trap=nocycle; ubuntu has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 Umbraco CMS,,18.2.1,umbraco,18,auto=title; vmap=yes,generated,0
 Umbraco CMS 12.3.10,,12.3.10,umbraco,12,auto=title+version; vmap=yes,generated,0
 Valkey,Valkey,9.1.2,valkey,9.1,auto=title; vmap=yes,catalog,0
 Valkey 8.1.10,Valkey,8.1.10,valkey,8.1,auto=title+version; vmap=yes,generated,0
 Valkey (x64),Valkey,9.1.2,valkey,9.1,auto=arch-suffix; vmap=yes,generated,0
-Valkey,Valkey,6.0.1,NONE,,trap=nocycle; valkey has no cycle for 6.0.1 in the snapshot,catalog,0
+Valkey,Valkey,6.0.1,valkey,none,"trap=nocycle; valkey has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
 VMware vCenter Server,"VMware, Inc.",9.1.1.0,vcenter,9.1,auto=title; vmap=yes,generated,0
 VMware vCenter Server 6.5,"VMware, Inc.",6.5,vcenter,6.5,auto=title+version; vmap=yes,generated,0
 VMware vCenter Server (x64),"VMware, Inc.",9.1.1.0,vcenter,9.1,auto=arch-suffix; vmap=yes,generated,0
-VMware vCenter Server,"VMware, Inc.",3.0.1,NONE,,trap=nocycle; vcenter has no cycle for 3.0.1 in the snapshot,generated,0
+VMware vCenter Server,"VMware, Inc.",3.0.1,vcenter,none,"trap=nocycle; vcenter has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Veeam Backup & Replication,Veeam Software Group GmbH,13.1.1.18,veeam-backup-and-replication,13,auto=title; vmap=yes,generated,0
 Veeam Backup & Replication 6.5.0.144,Veeam Software Group GmbH,6.5.0.144,veeam-backup-and-replication,6.5,auto=title+version; vmap=yes,generated,0
 Veeam Backup & Replication (x64),Veeam Software Group GmbH,13.1.1.18,veeam-backup-and-replication,13,auto=arch-suffix; vmap=yes,generated,0
@@ -2025,7 +2021,7 @@ Veeam Backup for Microsoft 365 5.0.3.1063,,5.0.3.1063,veeam-backup-for-microsoft
 Veeam ONE,Veeam Software Group GmbH,13.1.0.7233,veeam-one,13,auto=title; vmap=yes,generated,0
 Veeam ONE 9.0.0.2088,Veeam Software Group GmbH,9.0.0.2088,veeam-one,9.0,auto=title+version; vmap=yes,generated,0
 Veeam ONE (x64),Veeam Software Group GmbH,13.1.0.7233,veeam-one,13,auto=arch-suffix; vmap=yes,generated,0
-Veeam ONE,Veeam Software Group GmbH,5.0.1,NONE,,trap=nocycle; veeam-one has no cycle for 5.0.1 in the snapshot,generated,0
+Veeam ONE,Veeam Software Group GmbH,5.0.1,veeam-one,none,"trap=nocycle; veeam-one has no cycle for 5.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Vinyl Cache,,9.1.0,vinyl-cache,9.1,auto=title; vmap=yes,generated,0
 Vinyl Cache 7.4.3,,7.4.3,vinyl-cache,7.4,auto=title+version; vmap=yes,generated,0
 varnish,,6.0.18-1,vinyl-cache,6.0,auto=package; vmap=yes; repology/purl name,catalog,0
@@ -2033,9 +2029,9 @@ VirtualBox,Oracle Corporation,7.2.22,virtualbox,7.2,auto=title; vmap=yes,catalog
 VirtualBox 5.1.38,Oracle Corporation,5.1.38,virtualbox,5.1,auto=title+version; vmap=yes,catalog,0
 Oracle VirtualBox,Oracle Corporation,5.1.38,virtualbox,5.1,auto=vendor+title; vmap=yes,catalog,0
 VirtualBox (x64),Oracle Corporation,7.2.22,virtualbox,7.2,auto=arch-suffix; vmap=yes,generated,0
-VirtualBox,Oracle Corporation,3.0.1,NONE,,trap=nocycle; virtualbox has no cycle for 3.0.1 in the snapshot,catalog,0
-VirtualBox 14.0.0,Oracle Corporation,14.0.0,NONE,,trap=nocycle; 14.0.0 newer than any snapshot cycle,catalog,0
-VirtualBox 7.2.22,Oracle Corporation,4.0.36,NONE,,"trap=conflict; name says 7.2, version says 4.0",catalog,0
+VirtualBox,Oracle Corporation,3.0.1,virtualbox,none,"trap=nocycle; virtualbox has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+VirtualBox 14.0.0,Oracle Corporation,14.0.0,virtualbox,none,"trap=nocycle; 14.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+VirtualBox 7.2.22,Oracle Corporation,4.0.36,virtualbox,none,"trap=conflict; name says 7.2, version says 4.0; expected: the product, no cycle can be decided",catalog,0
 Apple visionOS,,27.0.1,visionos,27,auto=title; vmap=yes,generated,0
 Apple visionOS 2.6,,2.6,visionos,2,auto=title+version; vmap=yes,generated,0
 Visual COBOL,,10.0,visual-cobol,10.0,auto=title; vmap=yes,generated,0
@@ -2044,12 +2040,12 @@ Vitess,,24.0.5,vitess,24,auto=title; vmap=yes,catalog,0
 Vitess 18.0.8,,18.0.8,vitess,18,auto=title+version; vmap=yes,generated,0
 VMware Cloud Foundation,"VMware, Inc.",9.1.1.0,vmware-cloud-foundation,9.1,auto=title; vmap=yes,generated,0
 VMware Cloud Foundation 4.3.1,"VMware, Inc.",4.3.1,vmware-cloud-foundation,4.3,auto=title+version; vmap=yes,generated,0
-VMware Cloud Foundation,"VMware, Inc.",1.0.1,NONE,,trap=nocycle; vmware-cloud-foundation has no cycle for 1.0.1 in the snapshot,generated,0
+VMware Cloud Foundation,"VMware, Inc.",1.0.1,vmware-cloud-foundation,none,"trap=nocycle; vmware-cloud-foundation has no cycle for 1.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 VMware Harbor Registry,,2.10.2,vmware-harbor-registry,2.10,auto=title; vmap=yes,generated,0
 VMware Harbor Registry 2.4.3,,2.4.3,vmware-harbor-registry,2.4,auto=title+version; vmap=yes,generated,0
 VMware Site Recovery Manager,"VMware, Inc.",9.1.0.0,vmware-srm,9.1,auto=title; vmap=yes,generated,0
 VMware Site Recovery Manager 8.3.1.6,"VMware, Inc.",8.3.1.6,vmware-srm,8.3,auto=title+version; vmap=yes,generated,0
-VMware Site Recovery Manager,"VMware, Inc.",4.0.1,NONE,,trap=nocycle; vmware-srm has no cycle for 4.0.1 in the snapshot,generated,0
+VMware Site Recovery Manager,"VMware, Inc.",4.0.1,vmware-srm,none,"trap=nocycle; vmware-srm has no cycle for 4.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Vue,Vue.js,3.5.44,vue,3.5,auto=title; vmap=yes,generated,0
 Vue 2.6.14,Vue.js,2.6.14,vue,2.6,auto=title+version; vmap=yes,generated,0
 vue.js,,1.0.28-1,vue,1,auto=package; vmap=yes; repology/purl name,generated,0
@@ -2060,7 +2056,7 @@ Wagtail 2.9.3,,2.9.3,wagtail,2.9,auto=title+version; vmap=yes,generated,0
 python:wagtail,,0.8.10-1,wagtail,0.8,auto=package; vmap=yes; repology/purl name,generated,0
 Apple watchOS,Apple Inc.,27.0.1,watchos,27,auto=title; vmap=yes,generated,0
 Apple watchOS 8.8.2,Apple Inc.,8.8.2,watchos,8,auto=title+version; vmap=yes,generated,0
-Apple watchOS,Apple Inc.,2.0.1,NONE,,trap=nocycle; watchos has no cycle for 2.0.1 in the snapshot,generated,0
+Apple watchOS,Apple Inc.,2.0.1,watchos,none,"trap=nocycle; watchos has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Weakforced,,3.2.0,weakforced,3.2,auto=title; vmap=yes,generated,0
 Weakforced 2.8.0,,2.8.0,weakforced,2.8,auto=title+version; vmap=yes,generated,0
 WeeChat,,4.10.1,weechat,4.10,auto=title; vmap=yes,catalog,0
@@ -2075,15 +2071,15 @@ Microsoft Windows Server Core 2019,,2019,windows-server-core,2019,auto=title+ver
 Wireshark,"The Wireshark developer community, https://www.wireshark.org",4.6.16,wireshark,4.6,auto=title; vmap=yes,catalog,0
 Wireshark 2.4.16,"The Wireshark developer community, https://www.wireshark.org",2.4.16,wireshark,2.4,auto=title+version; vmap=yes,catalog,1
 Wireshark (x64),"The Wireshark developer community, https://www.wireshark.org",4.6.16,wireshark,4.6,auto=arch-suffix; vmap=yes,generated,0
-Wireshark 11.0.0,"The Wireshark developer community, https://www.wireshark.org",11.0.0,NONE,,trap=nocycle; 11.0.0 newer than any snapshot cycle,catalog,0
-Wireshark 4.6.16,"The Wireshark developer community, https://www.wireshark.org",1.0.16,NONE,,"trap=conflict; name says 4.6, version says 1.0",catalog,0
+Wireshark 11.0.0,"The Wireshark developer community, https://www.wireshark.org",11.0.0,wireshark,none,"trap=nocycle; 11.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+Wireshark 4.6.16,"The Wireshark developer community, https://www.wireshark.org",1.0.16,wireshark,none,"trap=conflict; name says 4.6, version says 1.0; expected: the product, no cycle can be decided",catalog,0
 WordPress,WordPress.org,7.1.3,wordpress,7.1,auto=title; vmap=yes,catalog,1
 WordPress 4.3.35,WordPress.org,4.3.35,wordpress,4.3,auto=title+version; vmap=yes,catalog,0
-WordPress 14.0.0,WordPress.org,14.0.0,NONE,,trap=nocycle; 14.0.0 newer than any snapshot cycle,catalog,0
-WordPress 7.1.3,WordPress.org,0.71,NONE,,"trap=conflict; name says 7.1, version says 0.71",catalog,0
+WordPress 14.0.0,WordPress.org,14.0.0,wordpress,none,"trap=nocycle; 14.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",catalog,0
+WordPress 7.1.3,WordPress.org,0.71,wordpress,none,"trap=conflict; name says 7.1, version says 0.71; expected: the product, no cycle can be decided",catalog,0
 XCP-ng,Vates,8.3.0,xcp-ng,8.3,auto=title; vmap=yes,generated,0
 XCP-ng 8.0.0,Vates,8.0.0,xcp-ng,8.0,auto=title+version; vmap=yes,generated,0
-XCP-ng,Vates,6.0.1,NONE,,trap=nocycle; xcp-ng has no cycle for 6.0.1 in the snapshot,generated,0
+XCP-ng,Vates,6.0.1,xcp-ng,none,"trap=nocycle; xcp-ng has no cycle for 6.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 Yarn,Yarn Contributors,4.18.1,yarn,4,auto=title; vmap=yes,catalog,0
 Yarn 2.4.3,Yarn Contributors,2.4.3,yarn,2,auto=title+version; vmap=yes,catalog,0
 Yarn,,4.18.1,NONE,,"trap=generic; bare single-word title, no publisher (yarn)",catalog,0
@@ -2094,15 +2090,15 @@ YouTrack,,2026.2.19656,youtrack,2026.2,auto=title; vmap=yes,generated,0
 YouTrack 2022.2.65377,,2022.2.65377,youtrack,2022.2,auto=title+version; vmap=yes,generated,0
 Zabbix,Zabbix SIA,7.4.16,zabbix,7.4,auto=title; vmap=yes,catalog,0
 Zabbix 6.2.9,Zabbix SIA,6.2.9,zabbix,6.2,auto=title+version; vmap=yes,generated,0
-Zabbix,Zabbix SIA,3.0.1,NONE,,trap=nocycle; zabbix has no cycle for 3.0.1 in the snapshot,catalog,0
-Zabbix 14.0.0,Zabbix SIA,14.0.0,NONE,,trap=nocycle; 14.0.0 newer than any snapshot cycle,generated,0
-Zabbix 7.4.16,Zabbix SIA,4.0.50,NONE,,"trap=conflict; name says 7.4, version says 4.0",generated,0
+Zabbix,Zabbix SIA,3.0.1,zabbix,none,"trap=nocycle; zabbix has no cycle for 3.0.1 in the snapshot; expected: the product, no cycle can be decided",catalog,0
+Zabbix 14.0.0,Zabbix SIA,14.0.0,zabbix,none,"trap=nocycle; 14.0.0 newer than any snapshot cycle; expected: the product, no cycle can be decided",generated,0
+Zabbix 7.4.16,Zabbix SIA,4.0.50,zabbix,none,"trap=conflict; name says 7.4, version says 4.0; expected: the product, no cycle can be decided",generated,0
 Zentyal,,8,zentyal,8,auto=title; vmap=yes,generated,0
 Zentyal 4,,4,zentyal,4,auto=title+version; vmap=yes,generated,0
 Apache ZooKeeper,The Apache Software Foundation,3.9.6,zookeeper,3.9,auto=title; vmap=yes,generated,0
 Apache ZooKeeper 3.6.4,The Apache Software Foundation,3.6.4,zookeeper,3.6,auto=title+version; vmap=yes,generated,0
 zookeeper,,3.4.14-1,zookeeper,3.4,auto=package; vmap=yes; repology/purl name,catalog,0
-Apache ZooKeeper,The Apache Software Foundation,2.0.1,NONE,,trap=nocycle; zookeeper has no cycle for 2.0.1 in the snapshot,generated,0
+Apache ZooKeeper,The Apache Software Foundation,2.0.1,zookeeper,none,"trap=nocycle; zookeeper has no cycle for 2.0.1 in the snapshot; expected: the product, no cycle can be decided",generated,0
 ant-doc,Debian Java Maintainers,1.10.13-1,NONE,,trap=component; documentation package of ant,catalog,0
 clamav-doc,ClamAV Team,1.4.3+dfsg-1~deb12u2,NONE,,trap=component; documentation package of clamav,catalog,0
 erlang-doc,Debian Erlang Packagers,1:25.2.3+dfsg-1+deb12u4,NONE,,trap=component; documentation package of erlang,catalog,0
@@ -2127,13 +2123,12 @@ varnish-doc,Varnish Package Maintainers,7.1.1-2+deb12u1,NONE,,trap=component; do
 weechat-doc,Emmanuel Bouthenot,3.8-1,NONE,,trap=component; documentation package of weechat,catalog,0
 wireshark-doc,Balint Reczey,4.0.17-0+deb12u3,NONE,,trap=component; documentation package of wireshark,catalog,0
 libzookeeper-java-doc,Debian Java Maintainers,3.8.0-11+deb12u2,NONE,,trap=component; documentation package of zookeeper,catalog,0
-Jenkins,Jenkins project,2.426.3,jenkins,2.426,hand-added (K1); mixed granularity; LTS patch release of line 2.426 (cycle 2 is the weekly line),hand,0
 Jenkins,Jenkins project,2.440.1,jenkins,2.440,hand-added (K1); mixed granularity; LTS patch release of line 2.440 (cycle 2 is the weekly line),hand,1
 Jenkins,Jenkins project,2.462.3,jenkins,2.462,hand-added (K1); mixed granularity; LTS patch release of line 2.462 (cycle 2 is the weekly line),hand,0
 Jenkins,Jenkins project,2.375.4,jenkins,2.375,hand-added (K1); mixed granularity; LTS patch release of line 2.375 (cycle 2 is the weekly line),hand,0
 Jenkins,Jenkins project,2.346.1,jenkins,2.346,hand-added (K1); mixed granularity; LTS patch release of line 2.346 (cycle 2 is the weekly line),hand,0
 Jenkins,Jenkins project,2.555.1,jenkins,2.555,hand-added (K1); mixed granularity; LTS patch release of line 2.555 (cycle 2 is the weekly line),hand,0
-Microsoft Office Professional Plus 2019,Microsoft Corporation,16.0.10399,NONE,,"hand-added (K1); trap; build 16.0 is shared by several Office cycles, so the version cannot decide; the name alone is not trusted",hand,1
+Microsoft Office Professional Plus 2019,Microsoft Corporation,16.0.10399,office,2019,"hand-added (K1); build 10399 is Office 2019 volume licensed (Version 1808, build 10399.20000); source https://learn.microsoft.com/en-us/officeupdates/update-history-office-2019",hand,1
 Windows Server 2019 Standard,Microsoft Corporation,10.0.17763,windows-server,2019,"hand-added (K1); name says 2019; build 17763 is shared with 1809-sac, so the name decides",hand,0
 Apache Tomcat 7.0.109,Apache Software Foundation,7.0.109,tomcat,7,hand-added (K1); tomcat cycles mix 7 and 10.1,hand,0
 Apache Tomcat 10.1.28,Apache Software Foundation,10.1.28,tomcat,10.1,hand-added (K1); tomcat cycles mix 7 and 10.1,hand,0
@@ -2145,3 +2140,27 @@ Apache Airflow,Apache Software Foundation,2.9.1,apache-airflow,2,hand-added (K1)
 Apache Struts,Apache Software Foundation,2.5.30,apache-struts,2.5,hand-added (K1); cycles mix 7 and 2.5,hand,0
 Squid,Squid Cache project,3.5.28,squid,3.5,hand-added (K1); cycles mix 7 and 3.5,hand,0
 Apache Log4j,Apache Software Foundation,2.12.4,log4j,2.12,hand-added (K1); cycles mix 2 and 2.12,hand,0
+Microsoft Office Professional Plus,Microsoft Corporation,16.0,office,none,"hand-added (K1); bare build 16.0 is shared by Office 2016, 2019 and 2021, so no cycle can be decided; source https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer",hand,0
+UniversalForwarder,"Splunk, Inc.",9.2.1.0,splunk,9.2,hand-added (K1); forwarder ships with Splunk Enterprise at the same version and support dates (agent policy); cycle list https://endoflife.date/splunk,hand,0
+iOS,Apple Inc.,17.4.1,ios,17,hand-added (K1); phone-management row; cycle list https://endoflife.date/ios,hand,0
+Android,Google LLC,14,android,14,hand-added (K1); phone-management row; cycle list https://endoflife.date/android,hand,0
+iPadOS,Apple Inc.,17.5.1,ipados,17,hand-added (K1); tablet-management row; cycle list https://endoflife.date/ipados,hand,0
+Azure DevOps Server 2022,Microsoft Corporation,19.225.34309.2,azure-devops-server,none,"hand-added (K1); 2022.0, 2022.1 and 2022.2 share the name and the build needs a build table, so no cycle can be decided; cycle list https://endoflife.date/azure-devops-server",hand,0
+spring-boot-3.2.1.jar,,3.2.1,spring-boot,3.2,hand-added (K1); file-inventory row; cycle list https://endoflife.date/spring-boot,hand,0
+spring-core-6.1.3.jar,,6.1.3,spring-framework,6.1,hand-added (K1); spring-core is the framework core module at the framework version; cycle list https://endoflife.date/spring-framework,hand,1
+Django,Django Software Foundation,4.2.9,django,4.2,hand-added (K1); pip list row; cycle list https://endoflife.date/django,hand,0
+react,Meta,18.2.0,react,18,hand-added (K1); npm package row; cycle list https://endoflife.date/react,hand,0
+jquery-3.6.0.min.js,,3.6.0,jquery,3,hand-added (K1); web file row; cycle list https://endoflife.date/jquery,hand,0
+CentOS Stream,"Red Hat, Inc.",9,centos-stream,9,hand-added (K1); os-release NAME and VERSION_ID; cycle list https://endoflife.date/centos-stream,hand,0
+Oracle Solaris 11.4,Oracle Corporation,11.4.42.111.0,oracle-solaris,11.4,hand-added (K1); cycle list https://endoflife.date/oracle-solaris,hand,0
+Windows 11 Enterprise LTSC 2024,Microsoft Corporation,10.0.26100.1742,windows,11-24h2-e-lts,"hand-added (K1); LTSC in the name picks the e-lts cycle (build 26100 is shared with 24H2 e, w and iot-lts); cycle list https://endoflife.date/windows",hand,0
+Mozilla Firefox ESR (x64 en-US),Mozilla,115.9.1,firefox,115,hand-added (K1); ESR shares the major-version cycle (115); cycle list https://endoflife.date/firefox,hand,0
+CockroachDB,Cockroach Labs,23.1.14,cockroachdb,23.1,hand-added (K1); cycle list https://endoflife.date/cockroachdb,hand,0
+Commvault,"Commvault Systems, Inc.",11.36.20,commvault,11.36,hand-added (K1); cycle list https://endoflife.date/commvault,hand,0
+Nutanix Prism Central,Nutanix,pc.2024.3.1,nutanix-prism,pc.2024.3,hand-added (K1); cycle list https://endoflife.date/nutanix-prism,hand,0
+Windows Server Core,Microsoft Corporation,10.0.20348.2849,windows-server-core,2022,"hand-added (K1); container base image, build 20348 is Windows Server 2022; cycle list https://endoflife.date/windows-server-core",hand,0
+Apache Tomcat 4.1.40,The Apache Software Foundation,4.1.40,tomcat,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/tomcat",hand,0
+Node.js 0.10.48,Node.js Foundation,0.10.48,nodejs,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/nodejs",hand,0
+Ruby 1.8.7,Ruby Core Team,1.8.7,ruby,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/ruby",hand,0
+Docker Engine 1.13.1,Docker Inc.,1.13.1,docker-engine,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/docker-engine",hand,0
+Splunk 5.0.4,"Splunk, Inc.",5.0.4,splunk,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/splunk",hand,0

@@ -4,7 +4,8 @@ One inventory is built from every gold row and run once through the same
 function the command line uses, against the bundled data. Each item is mapped
 back to its gold row by item id. Rules:
 
-* hard wrong (a wrong cycle) must be zero except the listed KNOWN_WRONG rows;
+* hard wrong (a wrong cycle) must be zero except the listed KNOWN_WRONG rows
+  (each stores the exact wrong answer; any change makes its test fail);
   soft wrong (a wrong product, no cycle) may not exceed soft_wrong_max;
 * correct hand + catalog rows must not fall below tests/benchmark/floor.json.
   Raising the floor is a deliberate hand edit in the commit that earns it.
@@ -44,21 +45,20 @@ OUTCOMES = ("correct", "hard-wrong", "soft-wrong", "missed", "right-none")
 
 
 # HARD WRONG rows the current matcher gets wrong (a cycle, so a lifecycle
-# claim, that is wrong). Each is a defect found by this benchmark. They are marked
-# expectedFailure below, never removed from gold. When a rule fixes one, its
-# test reports an unexpected success: delete the entry in that commit.
-# Key: (name, publisher, version). Value: the alias and the cause.
+# claim, that is wrong). Each is a defect found by this benchmark, marked
+# expectedFailure below and never removed from gold. When a rule fixes one,
+# or changes its answer to anything else, its test reports an unexpected
+# success: update or delete the entry in that commit.
+# Key: (name, publisher, version). Value: (cause, (product, cycle) it gives).
 KNOWN_WRONG = {
     ("Python 3.11.7 (64-bit)", "Python Software Foundation", "3.12.1150.0"):
-        "alias 'python' (prefix, version from name) ignores a version "
-        "column that disagrees with the name",
+        ("alias 'python' (prefix, version from name) ignores a version "
+         "column that disagrees with the name; gold is python, no cycle",
+         ("python", "3.11")),
     ("Python 3.15.1", "Python Software Foundation", "2.6.9"):
-        "alias 'python' (prefix, version from name) ignores a version "
-        "column that disagrees with the name",
-    ("Microsoft Office Professional Plus 2019", "Microsoft Corporation",
-     "16.0.10399"):
-        "alias 'microsoft office professional plus' (prefix, build map by "
-        "name year) trusts the year in the name over the shared 16.0 build",
+        ("alias 'python' (prefix, version from name) ignores a version "
+         "column that disagrees with the name; gold is python, no cycle",
+         ("python", "3.15")),
 }
 
 
@@ -72,12 +72,17 @@ def row_key(row: dict) -> tuple:
 
 
 def outcome(row: dict, item: dict) -> str:
-    """Score one item against its gold row."""
+    """Score one item against its gold row.
+
+    expected_cycle: a cycle label; empty (any cycle is fine, none is used for
+    expected NONE rows); or the word none (the product is right but no cycle
+    can be decided from the row).
+    Hard wrong: the item carries a cycle (a lifecycle claim) that is wrong.
+    Soft wrong: product set, no cycle, and the product is wrong or the row
+    expects NONE.
+    """
     want, cycle = row["expected_product"], row["expected_cycle"]
     got = item["product"]
-    # Hard wrong: the item carries a cycle (a lifecycle claim) that is wrong.
-    # Soft wrong: product set, no cycle (unmatched), and the product is
-    # wrong or the row expects NONE.
     wrong = "hard-wrong" if item["cycle"] is not None else "soft-wrong"
     if want == "NONE":
         return "right-none" if got is None else wrong
@@ -85,6 +90,8 @@ def outcome(row: dict, item: dict) -> str:
         return "missed"
     if got != want:
         return wrong
+    if cycle == "none":
+        return "correct" if item["cycle"] is None else "hard-wrong"
     if not cycle:
         return "correct"
     if item["cycle"] is None:
@@ -209,20 +216,26 @@ class BenchmarkRunTests(unittest.TestCase):
             "never lower floor.json")
 
 
-def _known_wrong_test(key, cause):
+def _known_wrong_test(key, cause, stored):
     @unittest.expectedFailure
     def test(self):
-        for r, res, _it in self.results:
+        for r, res, it in self.results:
             if row_key(r) == key:
-                self.assertNotEqual(res, "hard-wrong", cause)
+                still = res == "hard-wrong" and \
+                    (it["product"], it["cycle"]) == stored
+                self.assertFalse(still, cause)
                 return
         self.fail("known-wrong row is not in gold: %s" % (key,))
     return test
 
 
-for _n, (_key, _cause) in enumerate(sorted(KNOWN_WRONG.items())):
-    setattr(BenchmarkRunTests, "test_known_wrong_%02d" % _n,
-            _known_wrong_test(_key, _cause))
+def _slug(key) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", " ".join(key).lower()).strip("_")
+
+
+for _key, (_cause, _stored) in KNOWN_WRONG.items():
+    setattr(BenchmarkRunTests, "test_known_wrong_" + _slug(_key),
+            _known_wrong_test(_key, _cause, _stored))
 
 
 def eol_cycles(product: str):
@@ -246,6 +259,7 @@ class GoldFileTests(unittest.TestCase):
         self.assertEqual(sorted(floor), ["hand_catalog_correct_min", "note",
                                          "soft_wrong_max"])
         self.assertIsInstance(floor["soft_wrong_max"], int)
+        self.assertIn("none", {r["expected_cycle"] for r in self.rows})
         self.assertIsInstance(floor["hand_catalog_correct_min"], int)
         self.assertGreater(floor["hand_catalog_correct_min"], 0)
 
@@ -265,9 +279,10 @@ class GoldFileTests(unittest.TestCase):
     def test_no_conflicting_duplicates(self):
         seen = {}
         for r in self.rows:
-            key = (r["name"], r["publisher"], r["version"])
+            gid = item_id(r["publisher"], r["name"], r["version"])
             want = (r["expected_product"], r["expected_cycle"])
-            self.assertEqual(seen.setdefault(key, want), want, key)
+            self.assertNotIn(gid, seen, "duplicate row: %s" % r["name"])
+            seen[gid] = want
 
     def test_expected_ids_and_cycles_exist_in_the_data(self):
         for r in self.rows:
@@ -278,8 +293,39 @@ class GoldFileTests(unittest.TestCase):
             cycles = eol_cycles(product)
             self.assertIsNotNone(cycles, "%s: no data/eol/%s.json"
                                  % (r["name"], product))
-            if cycle:
+            if cycle and cycle != "none":
                 self.assertIn(cycle, cycles, "%s: %s" % (r["name"], product))
+
+    def test_unsure_rows_stay_out_of_gold(self):
+        with open(BENCH / "unsure.csv", encoding="utf-8", newline="") as fh:
+            unsure = list(csv.DictReader(fh))
+        self.assertTrue(unsure)
+        have = {item_id(r["publisher"], r["name"], r["version"])
+                for r in self.rows}
+        for u in unsure:
+            self.assertNotIn(item_id(u["publisher"], u["name"], u["version"]),
+                             have, u["name"])
+            self.assertTrue(u["notes"].strip(), u["name"])
+
+    def test_package_names_and_versions_agree(self):
+        """A catalog or generated package row must carry a plausible real
+        version: a number in the package name must match the version."""
+        allow = {"pgadmin4", "log4j"}   # reviewed: names, not versions
+        for r in self.rows:
+            if r["stratum"] == "hand" or "auto=package" not in r["notes"] \
+                    or r["expected_product"] == "NONE" or r["name"] in allow:
+                continue
+            toks = re.findall(
+                r"(?<![A-Za-z0-9])\d+(?:\.\d+)*(?![A-Za-z0-9])"
+                r"|(?<=[A-Za-z])\d+(?:\.\d+)*", r["name"])
+            if not toks:
+                continue
+            ver = re.sub(r"^\d+:", "", r["version"]).replace("-", ".")
+            vp = ver.split(".")
+            ok = any(vp[:len(t.split("."))] == t.split(".") or
+                     t.split(".")[:len(vp)] == vp for t in toks)
+            self.assertTrue(ok or r["expected_cycle"] == "none",
+                            "%s / %s" % (r["name"], r["version"]))
 
     def test_every_row_has_a_name_and_a_note(self):
         for r in self.rows:
@@ -288,11 +334,13 @@ class GoldFileTests(unittest.TestCase):
 
     def test_known_judgment_rows_are_present(self):
         want = {("Microsoft Office Professional Plus 2019", "16.0.10399",
-                 "NONE"),
+                 "office", "2019"),
+                ("Microsoft Office Professional Plus", "16.0", "office",
+                 "none"),
                 ("Windows Server 2019 Standard", "10.0.17763",
-                 "windows-server")}
-        have = {(r["name"], r["version"], r["expected_product"])
-                for r in self.rows}
+                 "windows-server", "2019")}
+        have = {(r["name"], r["version"], r["expected_product"],
+                 r["expected_cycle"]) for r in self.rows}
         self.assertLessEqual(want, have)
         self.assertGreaterEqual(
             sum(1 for r in self.rows if r["expected_product"] == "jenkins"),
@@ -310,7 +358,8 @@ class BenchmarkFileHygieneTests(unittest.TestCase):
 
     def test_files_exist(self):
         names = {p.name for p in benchmark_files()}
-        for need in ("gold.csv", "floor.json", "README.md", "SOURCES.md"):
+        for need in ("gold.csv", "floor.json", "README.md", "SOURCES.md",
+                     "unsure.csv"):
             self.assertIn(need, names)
 
     def test_neutral_banned_list(self):
