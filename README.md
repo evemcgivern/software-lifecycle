@@ -222,16 +222,22 @@ project. Maintained as time allows, best effort, no SLA, not independently asses
 - The CI test matrix runs on `ubuntu-24.04`, pinned so the Python 3.9 leg
   keeps working. Python 3.9 is past end of life upstream; drop it from the
   matrix when that runner image stops offering it.
-- Before the first data release, create the `data-release` environment
-  with main as its only deployment branch (see SECURITY.md).
-- Turn on private vulnerability reporting in the repository settings.
-  SECURITY.md and the issue-template link send reporters there, and no
-  email address is given.
-- Turn on "Allow GitHub Actions to create and approve pull requests" in the
-  Actions settings. The weekly end-of-life job opens its pull request with
-  the job token.
-- Create the label `alias-request`. The "Product the tool could not match"
+
+Already set up (as of 2026-10-25):
+
+- The `data-release` environment exists, limited to main.
+- The label `alias-request` exists. The "Product the tool could not match"
   issue form applies it.
+
+The repository is currently private. When it goes public again:
+
+- Turn private vulnerability reporting back on. SECURITY.md and the
+  issue-template link send reporters there, and no email address is given.
+- Re-enable the daily KEV and weekly end-of-life workflows.
+- Check that "Allow GitHub Actions to create and approve pull requests" is
+  on in the Actions settings. The weekly end-of-life job opens its pull
+  request with the job token.
+- Re-run the dry runs.
 
 Run the tests from the repo root:
 
