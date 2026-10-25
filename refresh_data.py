@@ -202,7 +202,7 @@ def check_kev(new, old, allow_removed: bool = False) -> list:
                      % (len(new_ids), len(old_ids)))
     removed = old_ids - new_ids
     if removed and not allow_removed:
-        fails.append("%d entries were removed since the previous release"
+        fails.append("entries removed since the previous release: %d"
                      % len(removed))
     if new.get("license") != LICENCE_NOTE:
         fails.append("the CC0 licence note is missing from the new KEV file")
@@ -220,7 +220,7 @@ def kev_digest(new, old) -> str:
     old_ids = {e["cveID"] for e in old["entries"]}
     added = [e for e in new["entries"] if e["cveID"] not in old_ids]
     lines = ["## KEV entries added", "",
-             "%d entries added since the previous data release." % len(added),
+             "Entries added since the previous data release: %d." % len(added),
              ""]
     if added:
         lines += ["| CVE | Vendor | Product |", "| --- | --- | --- |"]
@@ -581,7 +581,7 @@ def eol_change_summary(new: dict, old: dict) -> dict:
     share = (changed / total) if total else 0.0
     reasons = []
     if removed:
-        reasons.append("%d products disappeared" % len(removed))
+        reasons.append("products that disappeared: %d" % len(removed))
     if share > EOL_CHANGE_SHARE:
         reasons.append("more than 10%% of dates changed (%d of %d)"
                        % (changed, total))
