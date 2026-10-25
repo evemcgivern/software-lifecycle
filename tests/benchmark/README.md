@@ -56,10 +56,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 363 | 27 | 377 | 767 |
+| hand | 363 | 27 | 382 | 772 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1419 | 300 | 454 | 2173 |
+| all | 1419 | 300 | 459 | 2178 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -68,7 +68,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 105 rows. Do not use held-out rows when writing
+are always `0`. That is 106 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks
