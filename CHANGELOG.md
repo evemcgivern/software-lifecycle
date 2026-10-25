@@ -1,5 +1,5 @@
-# Changelog — Software Lifecycle
+# Changelog
 
-## 0.1.0 — skeleton
+## Unreleased
 
-- Added the empty skill folder and registered it with the repo.
+- Moved into its own repository from the agent-skills kit.
