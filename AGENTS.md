@@ -56,6 +56,20 @@ No install step. Run from the repo root.
   a source URL, a positive corpus row and a negative corpus row. Edition
   words come only from the vendor's own edition list. See "Ground rules" in
   `CONTRIBUTING.md`.
+- Ratchet for `tests/benchmark/floor.json`: never lower it. Raise it by
+  hand in the commit that earns it. Held-out gold rows are never used to
+  choose an entry. Every one-word allowlist entry and every exclusion cites
+  a gold row. Every curated entry has a source or a reason.
+- Add a publisher alias or an exclusion in four steps: 1. find the public
+  source (a vendor page) and a gold row that shows the case, adding the row
+  to `tests/benchmark/gold.csv` if there is none. 2. Add the entry to
+  `data/curation.json` with its `reason` and `source` (and `gold` for an
+  exclusion). Keep lists sorted. 3. Run the full suite and the benchmark
+  (`SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tests -p
+  'test_benchmark.py'`): no wrong match, no drop in correct rows. 4. Raise
+  `floor.json` if correct rows went up, and commit the entry, the gold row
+  and the floor together. `curation.json` is not written by
+  `refresh_data.py`.
 - Never hand-edit any other generated file in `data/`, `tests/fixtures/data` or
   `tests/fixtures/expected-report.json`. Regenerate the first with
   `tests/make_fixtures.py` and the second with `UPDATE_GOLDEN=1` (see
