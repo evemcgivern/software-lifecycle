@@ -28,7 +28,7 @@ on:
         type: boolean
         default: false
       override_reason:
-        description: "Why the override is safe (10 to 200 plain characters; goes in the release notes)"
+        description: "Why the override is safe: 10 to 200 letters, digits, spaces and . , ; ( ) _ - only (no links); goes in the release notes"
         type: string
         default: ""
 
@@ -100,9 +100,9 @@ jobs:
             fi
             if [ "$ALLOW_REMOVED_INPUT" = "true" ]; then allow_removed=true; fi
             if [ "$OVERRIDE_INPUT" = "true" ]; then
-              pattern='^[A-Za-z0-9 .,:;()_/-]{10,200}$'
+              pattern='^[A-Za-z0-9 .,;()_-]{10,200}$'
               if ! [[ $OVERRIDE_REASON =~ $pattern ]]; then
-                echo "override_gate needs a reason of 10 to 200 plain characters."
+                echo "override_gate needs a reason of 10 to 200 letters, digits, spaces and . , ; ( ) _ - only."
                 exit 1
               fi
               allow_bulk=true
@@ -272,7 +272,7 @@ jobs:
           RELEASE_ID: ${{ needs.build.outputs.release_id }}
           OVERRIDE_REASON: ${{ needs.build.outputs.override_reason }}
         run: |
-          pattern='^[A-Za-z0-9 .,:;()_/-]{10,200}$'
+          pattern='^[A-Za-z0-9 .,;()_-]{10,200}$'
           if [ -n "$OVERRIDE_REASON" ] && ! [[ $OVERRIDE_REASON =~ $pattern ]]; then
             echo "The override reason has an unexpected form."
             exit 1
