@@ -3,3 +3,6 @@ contact_links:
   - name: Report a security problem
     url: https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md
     about: Report vulnerabilities privately, as SECURITY.md describes. Do not open a public issue.
+  - name: Contributing guide
+    url: https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md
+    about: How to report an unmatched product, propose a change, and run the tests.

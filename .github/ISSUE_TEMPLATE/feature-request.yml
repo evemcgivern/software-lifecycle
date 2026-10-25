@@ -1,0 +1,43 @@
+name: Feature request
+description: Suggest a change. Start with the problem.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public. Do not paste inventory rows, report files,
+        owner names, internal application names, host names, or any
+        confidential data.**
+
+        What this tool is not: it is not a vulnerability scanner, it gives
+        no CVE severity, it is not a hosted service, and it never sends
+        inventory data off the machine. Requests that need those will be
+        declined.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that you cannot do now?
+    validations:
+      required: true
+  - type: textarea
+    id: who
+    attributes:
+      label: Who it helps
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you tried
+      description: Other ways to solve it, including doing nothing.
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confidential data
+      options:
+        - label: This issue holds no inventory rows, owner names, internal application names or other confidential data.
+          required: true
