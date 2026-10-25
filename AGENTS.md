@@ -23,7 +23,10 @@ No install step. Run from the repo root.
 - `swlc/cli.py`: flags, exit codes, `run()`.
 - `swlc/inputs.py`: CSV reading, column aliases, item IDs.
 - `swlc/matching.py`: names to product and cycle.
+- `swlc/catalog_match.py`: matching by endoflife.date product title.
 - `swlc/normalize.py`: name and version cleanup.
+- `swlc/classify.py`: item class (governable, component, bundle member,
+  unknown) and parent links.
 - `swlc/assess.py`: states, lists, codes, the report dict.
 - `swlc/overrides.py`: golden-sources, exceptions, tracking loaders.
 - `swlc/data.py`: loads and checks bundled data.
@@ -56,11 +59,12 @@ No install step. Run from the repo root.
   a source URL, a positive corpus row and a negative corpus row. Edition
   words come only from the vendor's own edition list. See "Ground rules" in
   `CONTRIBUTING.md`.
-- Ratchet for `tests/benchmark/floor.json`: never lower it. It holds two
-  correct-row minimums, `hand_catalog_correct_min` and
-  `generated_correct_min`. Raise either by hand in the commit that earns
-  it. Held-out gold rows are never used to
-  choose an entry. Every one-word allowlist entry and every exclusion cites
+- Ratchet for `tests/benchmark/floor.json`: never lower it. It holds
+  correct-row minimums (`hand_catalog_correct_min`, `generated_correct_min`,
+  `classification_correct_min`, `parent_cases_correct_min`) and ceilings
+  (`soft_wrong_max`, `governable_as_part_max`, `wrong_parent_max`). Raise a
+  minimum or lower a ceiling by hand in the commit that earns it. Held-out gold rows are never used
+  to choose an entry. Every one-word allowlist entry and every exclusion cites
   a gold row. Every curated entry has a source or a reason.
 - Add a publisher alias or an exclusion in four steps: 1. find the public
   source (a vendor page) and a gold row that shows the case, adding the row
@@ -71,7 +75,9 @@ No install step. Run from the repo root.
   'test_benchmark.py'`): no wrong match, no drop in correct rows. 4. Raise
   `floor.json` if correct rows went up, and commit the entry, the gold row
   and the floor together. `curation.json` is not written by
-  `refresh_data.py`.
+  `refresh_data.py`. A `bundle_parents` entry (also `classification_rows` and
+  `classification_products`) follows the same four steps, with a gold row
+  that carries its `classification` and `expected_parent`.
 - Never hand-edit any other generated file in `data/`, `tests/fixtures/data` or
   `tests/fixtures/expected-report.json`. Regenerate the first with
   `tests/make_fixtures.py` and the second with `UPDATE_GOLDEN=1` (see

@@ -595,6 +595,41 @@ class DataFolderDocsTests(unittest.TestCase):
         flat = " ".join(self.section().split())
         self.assertIn(NO_CATALOG_WARNING, flat)
 
+    def test_fixed_classification_text_is_quoted(self):
+        from swlc.assess import PARENTS_ABSENT
+        from swlc.report import HIDDEN_LINE, INHERITED_HEADING
+        flat = " ".join((text(DOCS / "report-schema.md") + " " +
+                         text(DOCS / "usage.md")).split())
+        self.assertIn(PARENTS_ABSENT.replace("%d ", ""), flat)
+        self.assertIn(HIDDEN_LINE.replace("%d ", "").split(":")[0], flat)
+        self.assertIn(INHERITED_HEADING, flat)
+
+    def test_agents_and_contributing_agree_on_floor_keys(self):
+        floor = json.loads(text(ROOT / "tests" / "benchmark" / "floor.json"))
+        for name in ("AGENTS.md", "CONTRIBUTING.md"):
+            flat = " ".join(text(ROOT / name).split())
+            for key in floor:
+                if key != "note":
+                    self.assertIn("`%s`" % key, flat, (name, key))
+
+    def test_changelog_mentions_classification(self):
+        body = text(ROOT / "CHANGELOG.md")
+        start = body.index("## Unreleased")
+        end = body.find("\n## ", start + 5)
+        sec = " ".join(body[start:end if end > 0 else None].split())
+        self.assertIn("classification", sec)
+        self.assertIn("`--governable-only`", sec)
+        self.assertIn("parent column", sec)
+        self.assertIn("`--fail-on` is unchanged", sec)
+
+    def test_agents_layout_lists_every_swlc_module(self):
+        body = text(ROOT / "AGENTS.md")
+        start = body.index("## Layout")
+        layout = body[start:body.index("\n## ", start + 5)]
+        for path in sorted((ROOT / "swlc").glob("*.py")):
+            if path.name != "__init__.py":
+                self.assertIn("`swlc/%s`" % path.name, layout, path.name)
+
     def test_hand_kept_and_generated_files_match_the_agents_rule(self):
         sec = self.section()
         rows = {m.group(1): m.group(2) for m in re.finditer(

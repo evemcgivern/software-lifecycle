@@ -79,6 +79,10 @@ guesses.
 | export_support | export support, end of support, eos, end of support date, support end date, support end |
 | parent | parent, parent software, suite, bundle |
 
+The `parent` column is optional. It names the row's parent software, such
+as the suite a part belongs to. A blank or placeholder cell (`n/a`, `none`)
+means no parent. See "The Parent column" in [docs/usage.md](docs/usage.md).
+
 The `count` and `export_support` headings are accepted but not used in
 this version: the tool reads them and does nothing with them. `rows` in the
 report counts inventory rows, not installs.

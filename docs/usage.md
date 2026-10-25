@@ -365,6 +365,52 @@ after another word is a component unless a curated entry says otherwise;
 this is an accepted limit, so an app named like "Contoso Runtime" or
 "Fabrikam SDK" is treated as a component.
 
+### The Parent column
+
+An inventory can name a row's parent in a `Parent` column (also `Parent
+Software`, `Suite` or `Bundle`). The column is optional. A blank cell, or a
+placeholder cell (`n/a`, `na`, `none`, `null`, `nil`, `unknown`, `tbd`, `-`,
+`--`, `n.a.`, `n.a`), counts as no parent.
+
+- The column beats a `governable` result, including a governable curated row
+  override, because a runtime named in a Parent column is not standalone. It
+  never beats a curated row override of class `component` or `unknown`.
+- A name that matches one other row links to it. A name that matches two
+  rows, or a row with two different Parent values, gives no link and the
+  class `unknown` (or `component`, when the row's own name says so).
+- A name that matches no row and no product gives no link
+  (`parent_not_found`). A row that names itself (`parent_is_self`) or two
+  rows that name each other (`parent_cycle`) keep their class and get no
+  link.
+- A parent that is itself a part is linked, but no dates are inherited
+  (one hop only).
+- A parent that is a product and cycle passes its dates on only when exactly
+  one inventory row has that product and cycle.
+
+A linked part shows its parent's end-of-life date under the heading
+"Parent's date (inherited, not this item's own)". The date is the parent's.
+A part never enters `past_eol` or `ends_soon` through it, and `--fail-on`
+never reads it. `counts.inherited_attention` counts the parts whose parent
+needs attention. When a part's parent is not in the inventory, the report
+warns "N parts whose parent is not in this inventory".
+
+`--governable-only` is a view for `report.md` and `report.csv` only.
+`report.json` is the same with and without it, the closing findings block
+stays complete, and `unknown` items are never hidden.
+
+### Known limits
+
+- An app named like "Contoso Runtime" or "Fabrikam SDK" (Runtime or SDK as
+  the last word, after another word) is treated as a component.
+- A curated OS-patch prefix that fits no cycle of the OS gives `unknown`,
+  not a link.
+- Daemons named `lib*`, such as libvirt, are treated as components.
+- The list of Parent placeholders is closed. "Not Applicable" is not a
+  placeholder yet; such a cell is read as a parent name and gives
+  `parent_not_found`.
+- The rates on a real estate are unknown. The benchmark measures
+  classification on a gold sample, not on any inventory.
+
 ## Counts-only mode
 
     python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out

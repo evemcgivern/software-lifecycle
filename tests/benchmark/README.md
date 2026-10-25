@@ -147,6 +147,17 @@ exclusions, aliases or rules. The test reports them separately.
   pull request and local run. The weekly data job sets `SWLC_WEEKLY_JOB`
   and only reports it, because an upstream rename changes generated rows
   (see "Maintainer: when the weekly data job fails" in `docs/sop.md`).
+- Classification scoring. A gold row with a `classification` is correct when
+  the predicted class matches and, for a named parent, the parent product and
+  cycle match. The count must be at least `classification_correct_min`.
+  `governable_as_part_max` caps rows whose gold class is `governable` but
+  that the tool calls `component` or `bundle_member` (target 0). Component
+  and bundle member precision on the gold rows must stay at 0.98 or above.
+  `wrong_parent_max` caps rows that get a parent link the gold row does not
+  expect, including any link where `expected_parent` is `none` (target 0).
+- Parent cases. Every item in `parents/` must match its expected file; the
+  count must be at least `parent_cases_correct_min`. These are
+  hand-designed tests of the parent rules, not a rate for any real estate.
 - Floor lowerings: the floor is lowered only by a decision the maintainer
   records here, with the rows it loses.
   - 2026-10-25, removing the `red hat` publisher alias for `ansible`. The

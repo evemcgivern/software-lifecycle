@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- Item classification: every item gets a `classification` (`governable`,
+  `component`, `bundle_member` or `unknown`) with `classification_basis`,
+  and parts get `parent_ref`, `inherited_from` and `inherited_lifecycle`.
+  `counts` gains `classification`, `unmatched_breakdown` and
+  `inherited_attention`. `curation.json` gains `classification_rows`,
+  `classification_products` and `bundle_parents`. A part shows its
+  parent's date, labelled as the parent's.
+- The inventory gains an optional parent column (`Parent`, `Parent
+  Software`, `Suite`, `Bundle`). Placeholder cells such as `n/a` count as
+  blank.
+- `--governable-only` leaves components and bundle members out of
+  `report.md` and `report.csv`. `report.json` is unchanged and `unknown`
+  items are never hidden. `--fail-on` is unchanged and never reads
+  inherited dates.
+- Known limits are in `docs/usage.md`, "Known limits".
+
 - Data format 2: the data folder gains `products.json` (a product catalog
   generated from the endoflife.date product files: id, title, category,
   vendor and owner names) and `curation.json` (hand-kept maintainer
