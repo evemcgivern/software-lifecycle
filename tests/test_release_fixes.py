@@ -1,6 +1,7 @@
 """Tests for the release-review fixes: help text, report wording, golden
 clash warning and plural days."""
 import csv
+import json
 import sys
 import tempfile
 import unittest
@@ -10,10 +11,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from helpers import make_data_dir
 from swlc import cli
 from swlc.report import render_markdown
 
-AS_OF = date(2026, 10, 24)
+# Tests that read the bundled data take their date from its own manifest,
+# so a newer data release cannot break them.
+_MANIFEST = json.loads(
+    (ROOT / "data" / "manifest.json").read_text(encoding="utf-8"))
+AS_OF = max(date.fromisoformat(_MANIFEST["kev_date"]),
+            date.fromisoformat(_MANIFEST["eol_date"]))
 
 
 def write_csv(path, header, rows):
@@ -65,10 +72,23 @@ class ReportWordingTests(unittest.TestCase):
         self.assertIn("Owners: carol. Rows: 1", md)
 
     def test_one_day_is_singular(self):
-        md = markdown_for([["Zzz Unknown Tool", "1.0", "Nobody", "a"]])
-        self.assertIn("(1 day old)", md)
-        self.assertIn("(0 days old)", md)
-        self.assertNotIn("1 days", md)
+        # Exact dates in a fixture data folder: KEV 1 day old, end of life
+        # 2 days old, as of 2026-10-24; and a second run with 0 days.
+        rows = [["Example SQL", "14", "Example Vendor", "a"]]
+        for kev, eol, want in (
+                ("2026-10-23", "2026-10-22", ["(1 day old)", "(2 days old)"]),
+                ("2026-10-24", "2026-10-24", ["(0 days old)"])):
+            with tempfile.TemporaryDirectory() as tmp:
+                data = make_data_dir(tmp, kev, eol)
+                inv = write_csv(Path(tmp) / "inv.csv",
+                                ["name", "version", "publisher", "owner"],
+                                rows)
+                result, meta = cli.build(inv, as_of=date(2026, 10, 24),
+                                         data=data)
+            md = render_markdown(result, meta)
+            for text in want:
+                self.assertIn(text, md)
+            self.assertNotIn("1 days", md)
 
 
 class GoldenClashTests(unittest.TestCase):

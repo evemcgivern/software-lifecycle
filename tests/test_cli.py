@@ -164,7 +164,11 @@ class FailureTests(CliBase):
         self.assertNotIn("Traceback", err)
 
     def test_default_data_is_the_bundled_release(self):
-        code, _, err = run_main(["check", self.inv, "--as-of", AS_OF])
+        manifest = json.loads(
+            (Path(__file__).resolve().parents[1] / "data"
+             / "manifest.json").read_text(encoding="utf-8"))
+        code, _, err = run_main(["check", self.inv, "--as-of",
+                                 manifest["kev_date"]])
         self.assertEqual(code, 0, err)
 
     def test_unexpected_error_prints_only_class_name(self):
