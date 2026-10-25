@@ -52,15 +52,21 @@ exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks
 
-- Outcome per row: `correct`, `wrong` (a product or cycle that contradicts
-  gold, or any product where gold says `NONE`), `missed` (gold has a
-  product, the matcher gave none, or no cycle where gold names one) and
-  `right-none`.
-- `wrong` must be zero on every stratum. Known exceptions are listed in
-  `KNOWN_WRONG` in `tests/test_benchmark.py`, each with its alias and cause,
-  and run as expected failures.
+- Outcome per row: `correct`; `hard-wrong` (the item carries a cycle, so a
+  lifecycle claim, that is wrong for the row, or any cycle where gold says
+  `NONE`); `soft-wrong` (a product but no cycle, so state unmatched, and the
+  product is wrong or gold says `NONE`: no date claim, but it names a wrong
+  product in the report); `missed` (gold has a product, the matcher gave
+  none, or no cycle where gold names one); and `right-none`.
+- A wrong match is a bug in the rule. Hard wrong must be zero. Soft wrong
+  may only go down: it may not exceed `soft_wrong_max` in `floor.json`
+  (target 0; lowering it is a deliberate hand edit). Known hard-wrong rows
+  are listed in `KNOWN_WRONG` in `tests/test_benchmark.py`, each with its
+  cause, and run as expected failures. A listed row that stops being hard
+  wrong fails the test until its entry is removed; a new hard-wrong row
+  fails it too.
 - The count of `correct` rows in `hand` plus `catalog` must be at least
-  `floor.json`. Raise it by hand in the commit that earns the gain. Never
+  `hand_catalog_correct_min` in `floor.json`. Raise it by hand in the commit that earns the gain. Never
   lower it.
 - Every product id and cycle exists in `data/eol/`.
 - The benchmark files pass the banned-term scan and hold no email address.

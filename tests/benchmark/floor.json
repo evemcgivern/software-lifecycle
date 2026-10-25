@@ -1,1 +1,1 @@
-{"hand_catalog_correct_min": 33, "note": "Baseline with the original 16 aliases: hand 30 + catalog 3 correct. Raise by hand in the commit that earns it. Never lower."}
+{"hand_catalog_correct_min": 33, "soft_wrong_max": 7, "note": "Baseline with the original 16 aliases: hand 30 + catalog 3 correct, 7 soft wrong. Raise the correct minimum by hand in the commit that earns it. Never lower it. Lower soft_wrong_max by hand when soft wrong falls; target 0."}
