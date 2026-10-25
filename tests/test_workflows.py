@@ -594,6 +594,50 @@ if __name__ == "__main__":
 
 
 @unittest.skipUnless(shutil.which("bash"), "needs bash")
+class WeeklyManifestTests(unittest.TestCase):
+    """Run the weekly workflow's own manifest step on a scratch copy of the
+    data, then run the data checks against that copy."""
+
+    def test_weekly_manifest_passes_the_data_checks(self):
+        import sys
+        script = step_script(
+            read("eol-weekly.yml"),
+            "Update data/eol and the manifest, then run the checks")
+        cut = script.index("python3 -B -m unittest discover -s tests")
+        script = script[:cut]
+        self.assertIn("--release-id", script)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            repo = tmp / "repo"
+            repo.mkdir()
+            shutil.copytree(ROOT / "data", repo / "data")
+            shutil.copytree(ROOT / "swlc", repo / "swlc",
+                            ignore=shutil.ignore_patterns("__pycache__"))
+            for name in ("refresh_data.py", "software_lifecycle.py", "VERSION"):
+                shutil.copy(ROOT / name, repo / name)
+
+            def setup(runner):
+                shutil.copytree(repo / "data" / "eol", runner / "eol")
+
+            env = {"UPSTREAM_SHA": "0123456789abcdef0123456789abcdef01234567",
+                   "UPSTREAM_DAY": "2026-11-02", "_SETUP": setup}
+            code, out, _ = run_script(
+                script, env, repo,
+                stubs={"python3": 'exec "%s" "$@"' % sys.executable})
+            self.assertEqual(code, 0, out)
+            manifest = (repo / "data" / "manifest.json").read_text("utf-8")
+            self.assertIn('"release_id": "main-eol-2026-11-02"', manifest)
+            test_env = dict(os.environ,
+                            SWLC_DATA_DIR=str(repo / "data"))
+            proc = subprocess.run(
+                [sys.executable, "-B", "-m", "unittest",
+                 "tests.test_bundled_data"], cwd=str(ROOT), env=test_env,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                universal_newlines=True, timeout=300)
+            self.assertEqual(proc.returncode, 0, proc.stdout)
+
+
+@unittest.skipUnless(shutil.which("bash"), "needs bash")
 class GuardBehaviourTests(unittest.TestCase):
     """Run the guard scripts with stubs, and prove the checks catch edits."""
 

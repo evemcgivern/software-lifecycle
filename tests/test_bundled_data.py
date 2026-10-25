@@ -6,6 +6,8 @@ because the bundled data aged.
 from __future__ import annotations
 
 import json
+import os
+import re
 import sys
 import tempfile
 import unittest
@@ -19,7 +21,10 @@ sys.path.insert(0, str(ROOT / "tests"))
 from helpers import run_main, write_inventory  # noqa: E402
 from swlc.data import load_data  # noqa: E402
 
-DATA = ROOT / "data"
+# SWLC_DATA_DIR lets a test point this module at a scratch copy of data/.
+DATA = Path(os.environ.get("SWLC_DATA_DIR") or ROOT / "data")
+RELEASE_ID = re.compile(
+    r"bundled-[0-9]{4}\.[0-9]{2}\.[0-9]{2}|main-eol-[0-9]{4}-[0-9]{2}-[0-9]{2}")
 CYCLE_KEYS = {"cycle", "releaseDate", "eol", "support", "extendedSupport"}
 
 
@@ -73,7 +78,10 @@ class BundledDataTests(unittest.TestCase):
 
     def test_manifest_names_the_upstream_commit(self):
         self.assertRegex(MANIFEST["upstream_commit"], r"[0-9a-f]{40}")
-        self.assertTrue(MANIFEST["release_id"].startswith("bundled-"))
+        self.assertRegex(MANIFEST["upstream_commit"], r"^[0-9a-f]{40}$")
+        self.assertTrue(RELEASE_ID.fullmatch(MANIFEST["release_id"]),
+                        "release_id must be bundled-YYYY.MM.DD or "
+                        "main-eol-YYYY-MM-DD")
 
 
 class BundledSmokeTest(unittest.TestCase):
