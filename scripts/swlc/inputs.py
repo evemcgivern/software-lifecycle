@@ -44,10 +44,20 @@ def _line_of(data: bytes, offset: int) -> int:
     return data.count(b"\n", 0, offset) + 1
 
 
+def _show(text: str, limit: int = 60) -> str:
+    """Header text for an error message, cut to a bounded length."""
+    text = " ".join(text.split())
+    return text if len(text) <= limit else text[:limit] + "..."
+
+
+def _seen(headers: list[str], limit: int = 20) -> str:
+    shown = ", ".join("%d:%s" % (i, _show(h))
+                      for i, h in enumerate(headers[:limit], 1))
+    extra = len(headers) - limit
+    return shown + ("; and %d more" % extra if extra > 0 else "")
+
+
 def _decode(data: bytes, encoding: str | None) -> str:
-    nul = data.find(b"\x00")
-    if nul != -1:
-        raise InputError("NUL byte found at line %d" % _line_of(data, nul))
     if encoding is None:
         codec = "utf-8-sig" if data.startswith(b"\xef\xbb\xbf") else "utf-8"
     else:
@@ -55,24 +65,35 @@ def _decode(data: bytes, encoding: str | None) -> str:
     try:
         text = data.decode(codec)
     except LookupError:
-        raise InputError("unknown encoding; pass --encoding with a valid name")
+        raise InputError(
+            "unknown encoding; pass --encoding with a valid name") from None
     except UnicodeDecodeError as exc:
         raise InputError(
             "file is not valid %s: bad byte at line %d; pass --encoding "
             "(for example cp1252)" % (codec, _line_of(data, exc.start))
-        )
+        ) from None
+    nul = text.find("\x00")
+    if nul != -1:
+        hint = "" if encoding else (
+            "; if the file is UTF-16 or UTF-32, pass --encoding")
+        raise InputError("NUL character found at line %d%s"
+                         % (text.count("\n", 0, nul) + 1, hint))
     return text[1:] if text.startswith("﻿") else text
 
 
 def read_rows(path: str, encoding: str | None = None,
               max_rows: int = 200_000,
-              max_field: int = 65_536) -> tuple[list[dict], list[str]]:
+              max_field: int = 65_536,
+              max_bytes: int = 256 * 1024 * 1024) -> tuple[list[dict], list[str]]:
     """Read a CSV into (rows, headers). Errors name line numbers only."""
     try:
         with open(path, "rb") as fh:
-            data = fh.read()
+            data = fh.read(max_bytes + 1)
     except OSError as exc:
-        raise InputError("cannot read input file (%s)" % exc.strerror)
+        raise InputError(
+            "cannot read input file (%s)" % exc.strerror) from None
+    if len(data) > max_bytes:
+        raise InputError("input file is larger than %d bytes" % max_bytes)
     if not data.strip():
         raise InputError("input file is empty")
     text = _decode(data, encoding)
@@ -90,17 +111,19 @@ def read_rows(path: str, encoding: str | None = None,
                     % (max_field, line))
             if headers is None:
                 headers = [h.strip() for h in record]
-                seen: dict[str, str] = {}
-                for h in headers:
+                seen: dict[str, int] = {}
+                for pos, h in enumerate(headers, 1):
                     if not h:
                         raise InputError(
-                            "empty column name in header at line %d" % line)
+                            "empty column name at position %d in header at "
+                            "line %d" % (pos, line))
                     key = h.casefold()
                     if key in seen:
                         raise InputError(
-                            "duplicate column name '%s' in header at line %d"
-                            % (h, line))
-                    seen[key] = h
+                            "duplicate column name '%s' at positions %d and %d "
+                            "in header at line %d"
+                            % (_show(h), seen[key], pos, line))
+                    seen[key] = pos
                 continue
             if len(record) > len(headers):
                 raise InputError(
@@ -112,7 +135,8 @@ def read_rows(path: str, encoding: str | None = None,
             record = record + [""] * (len(headers) - len(record))
             rows.append(dict(zip(headers, record)))
     except csv.Error:
-        raise InputError("malformed CSV at line %d" % reader.line_num)
+        raise InputError(
+            "malformed CSV at line %d" % reader.line_num) from None
     if headers is None or not rows:
         raise InputError("input has a header but no data rows")
     return rows, headers
@@ -131,23 +155,27 @@ def map_columns(headers: list[str], profile: dict | None,
             for alias in [canon, *aliases]:
                 lookup.setdefault(_norm_header(alias), set()).add(canon)
     found: dict[str, str] = {}
-    for header in headers:
+    where: dict[str, int] = {}
+    for pos, header in enumerate(headers, 1):
         canons = lookup.get(_norm_header(header), set())
         if len(canons) > 1:
             raise InputError(
-                "column '%s' matches more than one field (%s)"
-                % (header, ", ".join(sorted(canons))))
+                "column %d '%s' matches more than one field (%s)"
+                % (pos, _show(header), ", ".join(sorted(canons))))
         for canon in canons:
             if canon in found:
                 raise InputError(
-                    "two columns map to field '%s': '%s' and '%s'"
-                    % (canon, found[canon], header))
+                    "two columns map to field '%s': column %d '%s' and "
+                    "column %d '%s'"
+                    % (canon, where[canon], _show(found[canon]), pos,
+                       _show(header)))
             found[canon] = header
+            where[canon] = pos
     for canon in REQUIRED:
         if canon not in found:
             raise InputError(
                 "no column found for required field '%s'; columns seen: %s"
-                % (canon, ", ".join(headers)))
+                % (canon, _seen(headers)))
     return found
 
 

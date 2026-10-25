@@ -106,6 +106,61 @@ class ReadRowsTests(TempCase):
         self.assertEqual(rows, [{"Name": "A", "Version": ""},
                                 {"Name": "B", "Version": "2"}])
 
+    def test_utf16_needs_and_honors_encoding(self):
+        p = self.write("Name,Version\nA,1\n".encode("utf-16"))
+        rows, headers = read_rows(p, encoding="utf-16")
+        self.assertEqual(headers, ["Name", "Version"])
+        self.assertEqual(rows, [{"Name": "A", "Version": "1"}])
+        with self.assertRaises(InputError) as cm:
+            read_rows(p)
+        self.assertIn("--encoding", str(cm.exception))
+
+    def test_utf16_without_bom_nul_message_mentions_encoding(self):
+        p = self.write("Name,Version\nA,1\n".encode("utf-16-le"))
+        with self.assertRaises(InputError) as cm:
+            read_rows(p)
+        self.assertIn("--encoding", str(cm.exception))
+        self.assertIn("line", str(cm.exception))
+
+    def test_nul_with_explicit_encoding_still_rejected(self):
+        with self.assertRaises(InputError) as cm:
+            read_rows(self.write(b"Name,Version\nA\x00,1\n"), encoding="utf-8")
+        self.assertIn("line 2", str(cm.exception))
+
+    def test_huge_header_cell_message_bounded(self):
+        big = "H" * 70_000
+        for body in ("%s,%s\nA,1\n" % (big, big),):
+            with self.assertRaises(InputError) as cm:
+                read_rows(self.write(body))
+            self.assertLess(len(str(cm.exception)), 400)
+        with self.assertRaises(InputError) as cm:
+            map_columns([big, "Other"], None, None)
+        self.assertLess(len(str(cm.exception)), 400)
+
+    def test_duplicate_header_gives_positions(self):
+        with self.assertRaises(InputError) as cm:
+            read_rows(self.write("Name,Version,name\nA,1,B\n"))
+        self.assertIn("positions 1 and 3", str(cm.exception))
+
+    def test_decode_error_has_no_chained_cause(self):
+        with self.assertRaises(InputError) as cm:
+            read_rows(self.write(b"Name,Version\nCaf\xe9,1\n"))
+        self.assertIsNone(cm.exception.__cause__)
+        self.assertTrue(cm.exception.__suppress_context__)
+        with self.assertRaises(InputError) as cm:
+            read_rows(self.write("Name,Version\nA,1\n"), encoding="no-such-codec")
+        self.assertIsNone(cm.exception.__cause__)
+        self.assertTrue(cm.exception.__suppress_context__)
+
+    def test_byte_cap(self):
+        p = self.write("Name,Version\nA,1\n")
+        size = os.path.getsize(p)
+        with self.assertRaises(InputError) as cm:
+            read_rows(p, max_bytes=size - 1)
+        self.assertNotIn("A,1", str(cm.exception))
+        rows, _ = read_rows(p, max_bytes=size)
+        self.assertEqual(len(rows), 1)
+
     def test_missing_file_is_input_error(self):
         with self.assertRaises(InputError):
             read_rows(str(self.dir / "nope.csv"))
