@@ -378,12 +378,21 @@ def _link(it: dict, kind: str, value: str, code: str) -> None:
 
 # Parent cells that mean "no parent": treated as blank.
 _PLACEHOLDERS = frozenset(("n/a", "na", "none", "null", "nil", "unknown",
-                           "tbd", "-", "--", "n.a.", "n.a"))
+                           "tbd", "-", "--", "n.a.", "n.a", "not applicable",
+                           "not available", "no parent"))
 
 
 def _parent_cells(group: dict) -> list:
-    return [p for p in group.get("parents") or []
-            if p.strip().casefold() not in _PLACEHOLDERS]
+    """The group's Parent cells without placeholders; cells that differ
+    only in case or spacing count once (the first one is kept)."""
+    out, seen = [], set()
+    for p in group.get("parents") or []:
+        key = normalize_name(p)
+        if key in _PLACEHOLDERS or key in seen:
+            continue
+        seen.add(key)
+        out.append(p)
+    return out
 
 
 def _firm(publisher: str) -> set:
@@ -507,7 +516,19 @@ def _column(it: dict, value: str, inv: _Inventory, data) -> bool:
     if match.product is None:
         _no_link(it, PARENT_NOT_FOUND)
         return False
+    if match.product == it.get("product"):
+        # The column names the item's own product family ("Microsoft
+        # Office" on an Office row): the row is not a part of itself.
+        it["classification_basis"].append(PARENT_IS_SELF)
+        return False
     cycle = match.cycle.get("cycle") if match.cycle else None
+    ref = it["parent_ref"]
+    if cycle is None and ref is not None and ref["kind"] == "product" \
+            and ref["value"].partition("/")[0] == match.product:
+        # A curated suite link already found the cycle; keep it.
+        it["classification_basis"].append(PARENT_COLUMN)
+        it["classification"] = "bundle_member"
+        return False
     _link(it, "product", "%s/%s" % (match.product, cycle) if cycle
           else match.product, PARENT_COLUMN)
     return cycle is None and match.reason == NO_CYCLE
@@ -552,13 +573,30 @@ def _os_parent(it: dict, inv: _Inventory) -> None:
     _link(it, "os", found[0]["id"], OS_PARENT)
 
 
+_YEAR = re.compile(r"(?:19|20)\d\d")
+
+
+def _name_year(name: str):
+    """The first year word in the name, outside brackets, or None."""
+    words = _GROUPS.sub(" ", strip_arch(normalize_name(name or ""))).split()
+    for word in words:
+        if _YEAR.fullmatch(word):
+            return word
+    return None
+
+
 def _product_parent(it: dict, inv: _Inventory, unfit: bool) -> None:
     """D4: a product parent passes on dates only when exactly one item has
-    that product (and cycle, when the link has one)."""
+    that product (and cycle, when the link has one). With no cycle in the
+    link, a year in the part's name must agree with the parent's cycle, so
+    a part never takes another version's dates."""
     product, _sep, cycle = it["parent_ref"]["value"].partition("/")
     pool = [] if unfit else (inv.by_cycle.get((product, cycle), [])
                              if cycle else inv.by_product.get(product, []))
     found = [o for o in pool if o is not it]
+    year = None if cycle else _name_year(it.get("name"))
+    if year is not None:
+        found = [o for o in found if _agrees([year], o.get("cycle"))]
     if len(found) == 1:
         it["inherited_from"] = found[0]["id"]
     else:

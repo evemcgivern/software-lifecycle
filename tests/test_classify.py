@@ -790,8 +790,85 @@ class WrongParentTests(unittest.TestCase):
         self.assertEqual(got["classification"], "governable")
         self.assertIn(C.PARENT_CYCLE, got["classification_basis"])
 
+    def test_parent_naming_its_own_product_is_self(self):
+        office16 = ("Microsoft Office Professional Plus 2016", MS,
+                    "16.0.4266.1001")
+        office19 = ("Microsoft Office Professional Plus 2019", MS,
+                    "16.0.10399")
+        jdk17 = ("Eclipse Temurin JDK with Hotspot 17.0.9+9 (x64)",
+                 "Eclipse Adoptium", "17.0.9.9")
+        jdk21 = ("Eclipse Temurin JDK with Hotspot 21.0.1+12 (x64)",
+                 "Eclipse Adoptium", "21.0.1.12")
+        for rows, key in (
+                ([office16 + ("Microsoft Office",), office19], office16),
+                ([office16 + ("Microsoft Office",)], office16),
+                ([office16 + ("Microsoft Office 2016",)], office16),
+                ([jdk17 + ("Eclipse Temurin",), jdk21], jdk17),
+                ([jdk17 + ("Eclipse Temurin",)], jdk17)):
+            with self.subTest(rows=rows):
+                _r, items = check(rows, data=bundled())
+                got = items[(key[0], key[2])]
+                self.assertEqual(got["classification"], "governable")
+                self.assertIn(C.PARENT_IS_SELF, got["classification_basis"])
+                self.assertIsNone(got["parent_ref"])
+                self.assertIsNone(got["inherited_from"])
+                self.assertIsNone(got["inherited_lifecycle"])
+
+    def test_suite_column_on_every_row_keeps_the_suite(self):
+        office16 = ("Microsoft Office Professional Plus 2016", MS,
+                    "16.0.4266.1001", "Microsoft Office 2016")
+        excel = ("Microsoft Excel 2016", MS, "16.0.4266.1001",
+                 "Microsoft Office 2016")
+        _r, items = check([office16, excel], data=bundled())
+        self.assertEqual(items[(office16[0], office16[2])]["classification"],
+                         "governable")
+        got = items[(excel[0], excel[2])]
+        self.assertEqual(got["classification"], "bundle_member")
+        self.assertEqual(got["inherited_from"], ident(*office16[:3]))
+
+    def test_column_with_no_cycle_keeps_the_curated_cycle(self):
+        excel = ("Microsoft Excel 2016", MS, "16.0.4266.1001",
+                 "Microsoft Office")
+        office19 = ("Microsoft Office Professional Plus 2019", MS,
+                    "16.0.10399")
+        office16 = ("Microsoft Office Professional Plus 2016", MS,
+                    "16.0.4266.1001")
+        _r, items = check([excel, office19], data=bundled())
+        got = items[(excel[0], excel[2])]
+        self.assertEqual(got["parent_ref"]["value"], "office/2016")
+        self.assertIsNone(got["inherited_from"])
+        self.assertIsNone(got["inherited_lifecycle"])
+        self.assertIn(C.PARENT_ABSENT, got["classification_basis"])
+        _r, items = check([excel, office19, office16], data=bundled())
+        self.assertEqual(items[(excel[0], excel[2])]["inherited_from"],
+                         ident(*office16))
+
+    def test_cycle_less_product_link_needs_the_same_year(self):
+        viewer = ("Contoso Viewer 2016", MS, "1.0", "Microsoft Office")
+        office19 = ("Microsoft Office Professional Plus 2019", MS,
+                    "16.0.10399")
+        office16 = ("Microsoft Office Professional Plus 2016", MS,
+                    "16.0.4266.1001")
+        _r, items = check([viewer, office19], data=bundled())
+        got = items[(viewer[0], viewer[2])]
+        self.assertEqual(got["parent_ref"]["value"], "office")
+        self.assertIsNone(got["inherited_from"])
+        _r, items = check([viewer, office19, office16], data=bundled())
+        self.assertEqual(items[(viewer[0], viewer[2])]["inherited_from"],
+                         ident(*office16))
+
+    def test_parent_cells_differing_only_in_case_are_one_parent(self):
+        rt = ("Microsoft .NET Runtime - 8.0.10 (x64)", MS, "8.0.10")
+        sql = ("Microsoft SQL Server 2019", MS, "15.0.2000.5", "")
+        _r, items = check([rt + ("SQL Server",), rt + ("sql server",), sql],
+                          data=bundled())
+        got = items[(rt[0], rt[2])]
+        self.assertNotIn(C.PARENT_AMBIGUOUS, got["classification_basis"])
+        self.assertEqual(got["classification"], "bundle_member")
+
     def test_placeholder_parent_cells_are_blank(self):
-        for cell in ("N/A", "None", "n.a.", "-", "TBD", "unknown", " null "):
+        for cell in ("N/A", "None", "n.a.", "-", "TBD", "unknown", " null ",
+                     "Not Applicable", "not available", "No Parent"):
             with self.subTest(cell=cell):
                 rows = [("Example SQL", "Example Vendor", "16", cell)]
                 _r, items = check(rows)

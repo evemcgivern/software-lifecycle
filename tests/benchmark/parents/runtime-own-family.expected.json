@@ -1,0 +1,19 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Eclipse Temurin JDK with Hotspot 17.0.9+9 (x64)|Eclipse Adoptium|17.0.9.9": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Eclipse Temurin JDK with Hotspot 21.0.1+12 (x64)|Eclipse Adoptium|21.0.1.12": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

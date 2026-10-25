@@ -1,0 +1,28 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft Excel 2016|Microsoft Corporation|16.0.4266.1001": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Office Professional Plus 2016|Microsoft Corporation|16.0.4266.1001",
+      "inherited_state": "past_eol",
+      "parent_ref": {
+        "kind": "product",
+        "value": "office/2016"
+      }
+    },
+    "Microsoft Office Professional Plus 2016|Microsoft Corporation|16.0.4266.1001": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Professional Plus 2019|Microsoft Corporation|16.0.10399": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

@@ -346,8 +346,7 @@ evidence is:
 1. a curated row override (a maintainer decision);
 2. bundle: an inventory parent column, a curated parent link, or a vendor
    suite pattern whose version fits one cycle of the parent;
-3. component: a strong name pattern or a catalog category of library,
-   runtime or driver;
+3. component: a strong name pattern or a curated entry;
 4. governable: the row matches an endoflife.date product whose category is
    app, server, OS, database or similar, and no component or bundle signal
    fired;
@@ -371,7 +370,9 @@ named that way, such as the WebView2 Runtime, are curated as components.
 An inventory can name a row's parent in a `Parent` column (also `Parent
 Software`, `Suite` or `Bundle`). The column is optional. A blank cell, or a
 placeholder cell (`n/a`, `na`, `none`, `null`, `nil`, `unknown`, `tbd`, `-`,
-`--`, `n.a.`, `n.a`), counts as no parent.
+`--`, `n.a.`, `n.a`, `not applicable`, `not available`, `no parent`), counts
+as no parent. Cells are compared without regard to case or spacing, so
+"SQL Server" and "sql server" are one parent.
 
 - The column beats a `governable` result, including a governable curated row
   override, because a runtime named in a Parent column is not standalone. It
@@ -383,13 +384,18 @@ placeholder cell (`n/a`, `na`, `none`, `null`, `nil`, `unknown`, `tbd`, `-`,
   or a row with two different Parent values, gives no link and the
   class `unknown` (or `component`, when the row's own name says so).
 - A name that matches no row and no product gives no link
-  (`parent_not_found`). A row that names itself (`parent_is_self`) or two
-  rows that name each other (`parent_cycle`) keep their class and get no
-  link.
+  (`parent_not_found`). A row that names itself or its own product family
+  ("Microsoft Office" on an Office row, "Eclipse Temurin" on a Temurin row;
+  `parent_is_self`), or two rows that name each other (`parent_cycle`), keep
+  their class and get no link.
 - A parent that is itself a part is linked, but no dates are inherited
   (one hop only).
 - A parent that is a product and cycle passes its dates on only when exactly
   one inventory row has that product and cycle.
+- A Parent cell that names a product with no cycle keeps the cycle a curated
+  suite link already found ("Microsoft Excel 2016" stays with Office 2016).
+  Without one, a year in the part's name must agree with the parent row's
+  cycle; a part never takes another version's dates.
 
 A linked part shows its parent's end-of-life date under the heading
 "Parent's date (inherited, not this item's own)". The date is the parent's.
@@ -410,12 +416,13 @@ stays complete, and `unknown` items are never hidden.
 - A curated OS-patch prefix that fits no cycle of the OS gives `unknown`,
   not a link.
 - A one-word daemon named `lib*`, such as libvirt, is treated as a component.
+  Other one-word lowercase `lib*` daemons and apps, such as libreswan and
+  librespot, are treated as components too.
   A `lib*` name ending in a tool word (`-cli`, `-server`, `-daemon`, `-rest`,
   `-tools`, `-viewer`, `-manager`, `-gui`) is not, and a `*-dev` name counts
   only when a part of it starts with `lib` or it holds a digit.
-- The list of Parent placeholders is closed. "Not Applicable" is not a
-  placeholder yet; such a cell is read as a parent name and gives
-  `parent_not_found`.
+- The list of Parent placeholders is closed. A cell such as "Not Known" is
+  read as a parent name and gives `parent_not_found`.
 - The rates on a real estate are unknown. The benchmark measures
   classification on a gold sample, not on any inventory.
 
