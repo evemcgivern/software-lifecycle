@@ -95,10 +95,17 @@ Never edit a generated file by hand. The weekly job regenerates
 `title`, `category` and the `identifiers` list. From `identifiers` it keeps
 the vendor part of each `cpe` entry (both the `cpe:/a:vendor:product` and
 `cpe:2.3:a:vendor:product` forms) as `vendors`, and the owner part of each
-`purl` entry as `namespaces`, lower-cased. A purl owner is kept only for the
-types that have one: `github`, `npm` (without the `@`), `maven` (the group
-id), `composer` and `golang`. Other identifier kinds are skipped. It holds
-no descriptions, slugs, alternate URLs, page text or dates.
+`purl` entry as `namespaces`, lower-cased and checked to hold only letters,
+digits, `_`, `.` and `-`. Five purl types give a namespace: `github` and
+`composer` (the first namespace segment), `npm` (the scope, without the
+`@`), `golang` (the owner, and only for modules on github.com) and `maven`
+(the whole group id). Every other purl type gives none: `deb`, `rpm`,
+`apk`, `alpm`, `docker`, `oci`, `brew`, `scoop`, `chocolatey`, `winget`,
+`nuget`, `pypi`, `gem`, `cargo`, `hex`, `generic` and `swid`, because their
+namespaces name a distribution, a tap or a repackager, not an owner. Other
+identifier kinds are skipped. A value with unexpected characters stops the
+refresh. The file holds no descriptions, slugs, alternate URLs, page text
+or dates.
 
 `curation.json` has the keys `format`, `publisher_aliases` (a product id to
 a sorted list of lowercase vendor phrases), `single_word_allowlist` (a list
@@ -116,7 +123,11 @@ data error that names the file. A format 1 folder, which has neither, still
 loads as before. The report then carries this warning and the product
 catalog is absent: "This data release has no product catalog; generated
 matching is off." A tool that does not know a data format stops with "data
-format is not supported by this tool" before it looks at any file name.
+format is not supported by this tool" before it looks at any file name. In a
+format 2 folder every product in `products.json` must have an `eol/` file
+and the other way round, and `curation.json` may name only products in
+`products.json`; otherwise the load stops with a data error that names the
+file and echoes no value.
 
 ## Extending the alias table
 

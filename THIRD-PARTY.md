@@ -14,9 +14,11 @@ Used for:
   `data/manifest.json`. Product descriptions are
   not included.
 - `data/products.json`: product id, title, category, the vendor part of
-  each CPE identifier and the owner part of each package URL identifier,
-  read from the same product files at the same commit. Descriptions, page
-  text and dates are not included.
+  each CPE identifier and, for the five package URL types that name an
+  owner (github, npm, composer, golang on github.com, maven), the owner
+  part, read from the same product files at the same commit. The other
+  package URL types give no owner. Descriptions, page text and dates are
+  not included.
 
 Licence of the repository (MIT):
 

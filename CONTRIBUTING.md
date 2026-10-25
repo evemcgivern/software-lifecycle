@@ -97,3 +97,7 @@ use GitHub private reporting when the repository is public (see
 
 The issue forms apply these labels, which exist in the repository: `bug`, `enhancement` and
 `alias-request`.
+
+The weekly end-of-life workflow opens or updates one issue labelled
+`eol-weekly-failed` when it stops. The maintainer creates that label once;
+the daily workflow uses `data-gate-failed` the same way.

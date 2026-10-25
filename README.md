@@ -235,6 +235,9 @@ Already set up (as of 2026-10-25):
 - The `data-release` environment exists, limited to main.
 - The label `alias-request` exists. The "Product the tool could not match"
   issue form applies it.
+- The label `eol-weekly-failed` is used by the weekly job's failure report
+  (one issue, opened or updated when the weekly update stops). Create it
+  once by hand; the job also creates it if it is missing.
 
 The repository is currently private. When it goes public again:
 
