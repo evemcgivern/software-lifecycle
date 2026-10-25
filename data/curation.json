@@ -1,5 +1,20 @@
 {
-  "exclusions": [],
+  "exclusions": [
+    {
+      "gold": "Mattermost|Mattermost, Inc.|5.6.0",
+      "name": "mattermost",
+      "product": "mattermost",
+      "publisher": "mattermost",
+      "reason": "The Mattermost desktop app is published as \"Mattermost\" by Mattermost, Inc., the same name and publisher as the server, with its own version line. Accepted cost: server rows with that exact name and publisher are not matched by product title either."
+    },
+    {
+      "gold": "Nextcloud|Nextcloud GmbH|3.11.0",
+      "name": "nextcloud",
+      "product": "nextcloud",
+      "publisher": "nextcloud",
+      "reason": "The Nextcloud desktop sync client is published as \"Nextcloud\" by Nextcloud GmbH, the same name and publisher as the server, with its own version line. Accepted cost: server rows with that exact name and publisher are not matched by product title either."
+    }
+  ],
   "format": 1,
   "generated_off": [],
   "publisher_aliases": {},
