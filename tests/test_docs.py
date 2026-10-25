@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import re
 import sys
@@ -137,13 +138,44 @@ def parser_flags() -> set:
     return flags
 
 
+def table_cells(body: str, heading: str) -> list:
+    """First cell of each row of the first table under the heading."""
+    match = re.search(r"^#+ %s\n" % re.escape(heading), body, re.M)
+    assert match, "heading not found: " + heading
+    lines = body[match.end():].split("\n")
+    out, started = [], False
+    for line in lines:
+        if line.startswith("|"):
+            started = True
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if set(cells[0]) <= set("-: ") or cells[0] in ("Key", "Field",
+                                                          "Flag", "State",
+                                                          "List", "Code"):
+                continue
+            out.append(cells[0])
+        elif started:
+            break
+    return out
+
+
+def ticks(cells: list) -> set:
+    return {t for c in cells for t in re.findall(r"`([^`]+)`", c)}
+
+
 class UsageTests(unittest.TestCase):
-    def test_every_flag_is_documented(self):
+    def test_flag_table_matches_parser(self):
         body = text(DOCS / "usage.md")
-        flags = parser_flags()
-        self.assertIn("--counts-only", flags)
-        for flag in flags:
-            self.assertIn(flag, body)
+        documented = set()
+        for cell in table_cells(body, "check"):
+            documented |= set(re.findall(r"`(--[a-z-]+)", cell))
+        real = {f for f in parser_flags() if f.startswith("--")}
+        self.assertIn("--counts-only", real)
+        self.assertEqual(documented, real)
+
+    def test_commands_documented(self):
+        body = text(DOCS / "usage.md")
+        for name in ("check", "verify-data"):
+            self.assertIn("## " + name, body)
 
 
 def code_constants() -> set:
@@ -158,26 +190,50 @@ def code_constants() -> set:
 class SchemaTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.report = cli.run(str(DEMO), data=str(FIXTURE_DATA),
-                             as_of=__import__("datetime").date(2026, 10, 24))
+        from datetime import date
+        when = date(2026, 10, 24)
+        cls.report = cli.run(str(DEMO), data=str(FIXTURE_DATA), as_of=when)
+        prev = json.loads(json.dumps(cls.report))
+        prev["items"][0]["state"] = "unmatched" \
+            if prev["items"][0]["state"] != "unmatched" else "supported"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "previous.json"
+            path.write_text(json.dumps(prev), encoding="utf-8")
+            cls.second = cli.run(str(DEMO), data=str(FIXTURE_DATA),
+                                 as_of=when, previous=str(path))
         cls.body = text(DOCS / "report-schema.md")
 
-    def test_keys_documented(self):
-        keys = set(self.report)
-        for item in self.report["items"]:
-            keys |= set(item)
-        keys |= set(self.report["meta"])
-        keys |= set(self.report["data_release"])
-        keys |= set(self.report["counts"])
-        keys |= set(self.report["diff"])
-        self.assertIn("meta", keys)
-        self.assertIn("decision_needed", keys)
-        for key in keys:
-            self.assertIn(key, self.body, key)
+    def documented(self, heading):
+        return ticks(table_cells(self.body, heading))
 
-    def test_lists_documented(self):
-        for name in assess.LISTS + assess.STATES:
-            self.assertIn(name, self.body)
+    def test_key_tables_match_real_keys(self):
+        r, second = self.report, self.second
+        item_keys = set(r["items"][0])
+        for item in r["items"]:
+            self.assertEqual(set(item), item_keys)
+        entry = second["diff"]["changed_state"][0]
+        expected = {
+            "Top-level keys": set(r),
+            "data_release": set(r["data_release"]),
+            "counts": set(r["counts"]),
+            "meta": set(r["meta"]),
+            "meta.data_release": set(r["meta"]["data_release"]),
+            "meta.override_hashes": set(r["meta"]["override_hashes"]),
+            "meta.profile": set(r["meta"]["profile"]),
+            "Items": item_keys,
+            "diff": set(r["diff"]),
+            "diff.changed_state": set(entry),
+        }
+        for heading, real in expected.items():
+            self.assertEqual(self.documented(heading), real, heading)
+
+    def test_states_lists_reasons(self):
+        self.assertEqual(self.documented("States"), set(assess.STATES))
+        self.assertEqual(self.documented("Lists"), set(assess.LISTS))
+        reasons = {matching.NO_ALIAS, matching.NO_CYCLE, matching.NO_VERSION,
+                   matching.AMBIGUOUS}
+        self.assertEqual(
+            self.documented("Reason codes (unmatched items)"), reasons)
 
     def test_codes_documented(self):
         codes = code_constants()
@@ -185,17 +241,37 @@ class SchemaTests(unittest.TestCase):
         self.assertIn("NO_ALIAS", codes)
         for code in codes:
             self.assertIn(code, self.body, code)
+        for heading in ("dates_disagree codes", "decision_needed codes"):
+            self.assertTrue(self.documented(heading) <= codes, heading)
 
-    def test_override_columns_documented(self):
-        for cols in (overrides._GOLDEN_COLS, overrides._EXC_COLS,
-                     overrides._TRACK_COLS):
-            for col in cols:
-                self.assertIn(col, self.body, col)
+    def test_override_columns_match_loader(self):
+        for heading, cols in (("golden-sources.csv", overrides._GOLDEN_COLS),
+                              ("exceptions.csv", overrides._EXC_COLS),
+                              ("tracking.csv", overrides._TRACK_COLS)):
+            self.assertEqual(self.documented(heading), set(cols), heading)
 
 
-BANNED = ["REDACTED", "REDACTED", "REDACTED", "REDACTED", "REDACTED",
-          "REDACTED", "REDACTED", "job search", "portfolio", "resume",
-          "/users/", "/applications/", "gmail"]
+# Plain words that are not identifying.
+BANNED = ["job search", "portfolio", "resume", "/users/", "/applications/",
+          "gmail"]
+# SHA-256 digests of lowercased words and lowercased adjacent word pairs.
+# Only digests are kept here; a failure prints the file and the digest.
+BANNED_DIGESTS = {
+    "405e6e0273215dab5aa088d765d9883727f078fbc89dd6fef0723476eb26d3d9",
+    "8517b64a7dfada982abdf62810e1c248d645151dc3d2352075c5cad87b3a2221",
+    "260048fecac2c70eec2c08b2ad96a098476bc27718691747028f4d9abf42e690",
+    "51e2a46721d104d9148d85b617833e7745fdbd6795cb0b502a5b6ea31d33378e",
+    "f3497d75b9f10b708886174a926d7986b1d550be7c8054bc42949a39fac2a83d",
+    "219035c2a453fa863fc625ca5ef56b07138b9e1e604142ceaf970f1eb995286f",
+    "e6a8c3c3eb2f7d82046ac47721aba4d02095bfbf3bcf9c0a1e7d163aa23887dd",
+    "702e1c9fc717e96e333f1f7767755f07c0e610056d5587dd96abeace75aede17",
+}
+
+
+def hashed_terms(body: str) -> set:
+    words = re.findall(r"[a-z0-9]+", body.lower())
+    terms = set(words) | {a + " " + b for a, b in zip(words, words[1:])}
+    return {hashlib.sha256(t.encode("utf-8")).hexdigest() for t in terms}
 
 
 class BannedWordTests(unittest.TestCase):
@@ -204,7 +280,9 @@ class BannedWordTests(unittest.TestCase):
             low = text(path).lower()
             for word in BANNED:
                 self.assertNotIn(word, low, "%s: %s" % (path.name, word))
-            self.assertIsNone(re.search(r"\bREDACTED\b", low), path.name)
+            hit = hashed_terms(low) & BANNED_DIGESTS
+            self.assertFalse(hit, "%s: banned term, digest %s"
+                             % (path.name, sorted(hit)))
             self.assertIsNone(re.search(r"\bsigned\b", low), path.name)
 
     def test_bod_22_01_only_as_superseded(self):
