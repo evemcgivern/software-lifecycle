@@ -31,8 +31,8 @@ No install step. Run from the repo root.
 - `swlc/safeio.py`: safe file writing.
 - `swlc/errors.py`: error types.
 - `refresh_data.py`: the only networked file. Builds data releases.
-- `data/`: generated data (`aliases.json` and `profiles.json` are
-  hand-kept).
+- `data/`: generated data, except `aliases.json` and `profiles.json`,
+  which are hand-kept by the maintainer.
 - `examples/`: the synthetic demo estate.
 - `docs/`: usage, report schema, procedure, checklist, platform guide,
   themes, crosswalk.
@@ -44,7 +44,13 @@ No install step. Run from the repo root.
 
 - Never put real inventory data into prompts, repo files, issues or
   commits. Use synthetic data only.
-- Never hand-edit generated files in `data/`, `tests/fixtures/data` or
+- `data/aliases.json` and `data/profiles.json` are maintainer-owned,
+  hand-kept files. Profiles are pre-filled column alias lists, unverified
+  against real exports. Edits need a source URL and tests. Each alias needs
+  a source URL, a positive corpus row and a negative corpus row. Edition
+  words come only from the vendor's own edition list. See "Ground rules" in
+  `CONTRIBUTING.md`.
+- Never hand-edit any other generated file in `data/`, `tests/fixtures/data` or
   `tests/fixtures/expected-report.json`. Regenerate the first with
   `tests/make_fixtures.py` and the second with `UPDATE_GOLDEN=1` (see
   `tests/test_e2e.py`).
@@ -67,6 +73,8 @@ No install step. Run from the repo root.
   characters or fewer.
 - Never push to main. Open a pull request.
 - Never force-push, never rewrite shared history, never skip hooks.
+- If a hook, a test, a guard or branch protection blocks you, stop and ask
+  in the issue. Do not work around it.
 
 ## Tests that guard the docs and the weekly job
 
@@ -84,4 +92,5 @@ sources, the review date, or the experiment status.
 
 ## Design intent
 
-Read the files in `docs/`. When unsure, ask in the issue.
+Read `docs/usage.md`, `docs/report-schema.md` and `docs/sop.md`. When
+unsure, ask in the issue.
