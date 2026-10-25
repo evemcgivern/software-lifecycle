@@ -228,6 +228,7 @@ class NewFilesTests(unittest.TestCase):
             flat = " ".join(text(ROOT / name).split())
             self.assertIn("data/profiles.json", flat, name)
             self.assertIn("data/aliases.json", flat, name)
+            self.assertIn("data/curation.json", flat, name)
             self.assertIn("source URL", flat, name)
             self.assertIn("negative corpus row", flat, name)
 
@@ -543,6 +544,43 @@ class CoverageAndDataTextTests(unittest.TestCase):
             for sha in re.findall(r"\b[0-9a-f]{40}\b", body):
                 self.assertEqual(sha, manifest["upstream_commit"], path.name)
             self.assertIsNone(re.search(r"bundled-[0-9]{4}", body), path.name)
+
+
+class DataFolderDocsTests(unittest.TestCase):
+    def section(self):
+        body = text(DOCS / "usage.md")
+        start = body.index("## The data folder")
+        return body[start:body.index("\n## ", start + 5)]
+
+    def test_every_bundled_data_file_is_described(self):
+        sec = self.section()
+        manifest = json.loads(text(ROOT / "data" / "manifest.json"))
+        names = {n for n in manifest["files"] if not n.startswith("eol/")}
+        for name in names | {"eol/*.json"}:
+            self.assertIn("`%s`" % name, sec, name)
+        self.assertEqual(manifest["data_format"], 2)
+        self.assertIn("`data_format` in the manifest is 2", sec)
+
+    def test_fixed_warning_text_is_quoted_from_the_code(self):
+        from swlc.data import NO_CATALOG_WARNING
+        flat = " ".join(self.section().split())
+        self.assertIn(NO_CATALOG_WARNING, flat)
+
+    def test_hand_kept_and_generated_files_match_the_agents_rule(self):
+        sec = self.section()
+        rows = {m.group(1): m.group(2) for m in re.finditer(
+            r"^\| `([a-z./*]+)` \| ([^|]+?) \|", sec, re.M)}
+        hand = {n for n, who in rows.items() if "by hand" in who}
+        self.assertEqual(hand, {"aliases.json", "profiles.json",
+                                "curation.json"})
+        agents = " ".join(text(ROOT / "AGENTS.md").split())
+        for name in hand:
+            self.assertIn("`%s`" % name, agents)
+
+    def test_documented_curation_keys_match_the_real_file(self):
+        sec = self.section()
+        for key in json.loads(text(ROOT / "data" / "curation.json")):
+            self.assertIn("`%s`" % key, sec, key)
 
 
 class ExtendingAliasesTests(unittest.TestCase):

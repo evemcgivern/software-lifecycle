@@ -152,6 +152,10 @@ is merged.
 - `data/eol/*.json` derive from endoflife.date product files (MIT).
   Product descriptions are not included. See THIRD-PARTY.md for the
   attribution and licence text.
+- `data/products.json` derives from the same endoflife.date product files:
+  product id, title, category, CPE vendor names and package owner names
+  only. `data/curation.json` is a hand-kept file of maintainer decisions.
+  See "The data folder" in [docs/usage.md](docs/usage.md).
 - `data/kev.json` derives from the CISA Known Exploited Vulnerabilities
   catalog (CC0 1.0), https://www.cisa.gov/known-exploited-vulnerabilities-catalog.
 

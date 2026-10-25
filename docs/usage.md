@@ -74,6 +74,50 @@ publisher and the full inventory name (version included) with KEV, exactly.
 safe". The `windows-server` and Windows 10 client aliases use the broad
 Microsoft and Windows pair, so every Windows entry in KEV matches them.
 
+## The data folder
+
+A data folder holds these files. `data/manifest.json` lists every one with
+its SHA-256 and size, and the tool checks them on every load.
+
+| File | Made by | Holds |
+|---|---|---|
+| `aliases.json` | the maintainer, by hand | Names that map to a product. |
+| `profiles.json` | the maintainer, by hand | Pre-filled column alias lists. |
+| `curation.json` | the maintainer, by hand | Publisher aliases, a one-word allowlist, exclusions and a list of products left out of generated matching. Each list entry carries a reason or a source URL. |
+| `products.json` | `refresh_data.py` | One record per endoflife.date product: `id`, `title`, `category`, `vendors` and `namespaces`. |
+| `kev.json` | `refresh_data.py` | The CISA KEV catalog. |
+| `eol/*.json` | `refresh_data.py` | Release cycles and end-of-life dates, one file per product. |
+
+Never edit a generated file by hand. The weekly job regenerates
+`products.json` and `eol/*.json` from the same endoflife.date commit.
+
+`products.json` reads only these upstream fields: `permalink` (the id),
+`title`, `category` and the `identifiers` list. From `identifiers` it keeps
+the vendor part of each `cpe` entry (both the `cpe:/a:vendor:product` and
+`cpe:2.3:a:vendor:product` forms) as `vendors`, and the owner part of each
+`purl` entry as `namespaces`, lower-cased. A purl owner is kept only for the
+types that have one: `github`, `npm` (without the `@`), `maven` (the group
+id), `composer` and `golang`. Other identifier kinds are skipped. It holds
+no descriptions, slugs, alternate URLs, page text or dates.
+
+`curation.json` has the keys `format`, `publisher_aliases` (a product id to
+a sorted list of lowercase vendor phrases), `single_word_allowlist` (a list
+of `product`, `reason` and `source`, where `source` is an https URL),
+`exclusions` (a list of `product`, `name`, `publisher`, `reason` and `gold`)
+and `generated_off` (a sorted list of product ids). The tool refuses a file
+with an unknown key, a wrong type, a duplicate or an unsorted list where
+sorting is promised.
+
+### Data format
+
+`data_format` in the manifest is 2. A format 2 folder must list both
+`products.json` and `curation.json`; the tool loads both or stops with a
+data error that names the file. A format 1 folder, which has neither, still
+loads as before. The report then carries this warning and the product
+catalog is absent: "This data release has no product catalog; generated
+matching is off." A tool that does not know a data format stops with "data
+format is not supported by this tool" before it looks at any file name.
+
 ## Extending the alias table
 
 The bundled `data/aliases.json` covers few products (see the README). To
