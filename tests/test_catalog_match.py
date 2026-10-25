@@ -444,11 +444,25 @@ class CuratedCrossCheckTests(unittest.TestCase):
 
     def test_bad_column_map_is_a_data_error(self):
         from swlc.errors import DataError
-        for bad in ({}, [], {"1": []}, {"1": ""}, {"1": [1]}):
+        for bad in ({}, [], {"1": []}, {"1": ""}, {"1": [1]}, {"": "1"},
+                    {" ": "1"}):
             a = [alias("x", "x", version_from="name", build_map={"1": "1"},
                        column_map=bad)]
-            with self.assertRaises(DataError):
-                match_product("x 1", "1", a, {"x": [{"cycle": "1"}]})
+            with self.subTest(bad=bad):
+                with self.assertRaises(DataError):
+                    match_product("x 1", "1", a, {"x": [{"cycle": "1"}]})
+        # Without build_map, or on an alias reading the version column,
+        # a column_map would be ignored: refused instead.
+        for extra in ({"version_from": "name"},
+                      {"version_from": "version", "build_map": {"1": "1"}}):
+            a = [dict(alias("x", "x", column_map={"1": "1"}), **extra)]
+            with self.subTest(extra=extra):
+                with self.assertRaises(DataError):
+                    match_product("x 1", "1", a, {"x": [{"cycle": "1"}]})
+        # build_map keys are checked the same way.
+        a = [alias("x", "x", build_map={"": "1"})]
+        with self.assertRaises(DataError):
+            match_product("x", "1", a, {"x": [{"cycle": "1"}]})
 
     def test_year_name_with_build_column_still_decides(self):
         # Windows Server cycles are years and the column is a build: the

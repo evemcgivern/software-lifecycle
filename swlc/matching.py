@@ -53,11 +53,19 @@ def _check(entry: dict, pos: int) -> None:
         bmap = entry[field]
         if not isinstance(bmap, dict) or not bmap:
             raise bad("'%s' must be a non-empty object" % field)
+        if not all(isinstance(k, str) and k.strip() for k in bmap):
+            raise bad("'%s' keys must be non-empty strings" % field)
         for value in bmap.values():
             values = value if isinstance(value, list) else [value]
             if not values or not all(isinstance(v, str) and v.strip()
                                      for v in values):
                 raise bad("'%s' values must be cycle strings" % field)
+    if "column_map" in entry and ("build_map" not in entry
+                                  or entry["version_from"] != "name"):
+        # column_map only checks the version column against a year read
+        # from the name through build_map; anywhere else it would be
+        # silently ignored.
+        raise bad("'column_map' needs 'build_map' and version_from name")
     if "kev" in entry:
         kev = entry["kev"]
         if not isinstance(kev, dict) or set(kev) != {"vendor", "product"} \
