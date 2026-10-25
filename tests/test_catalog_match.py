@@ -55,6 +55,8 @@ CATALOG = {r["id"]: r for r in (
     rec("gadget-suite", "Gadget Suite"),
     rec("widget-pro", "Widget Pro"),
     rec("dbms", "Northwind DBMS"),
+    rec("frame-work", "Frame Work"),
+    rec("weekly", "Weekly Builder"),
 )}
 CURATION = {
     "format": 1,
@@ -79,6 +81,8 @@ CYCLES = {
     "plainword": ["1"], "listed": ["4"], "gizmo": ["8"], "chatter": ["9.3"],
     "alpha-beta": ["2"], "beta-2": ["2"], "gadget-suite": ["1"],
     "widget-pro": ["1"], "dbms": ["7"],
+    "frame-work": ["4.6", "4.6.1", "4.6.2", "4.8", "4.8.1"],
+    "weekly": ["2", "2.426", "2.440"],
 }
 PRODUCTS = {p: [{"cycle": c} for c in labels] for p, labels in CYCLES.items()}
 INDEX = build_index(CATALOG, CURATION)
@@ -492,6 +496,43 @@ class DeterminismTests(unittest.TestCase):
             for ver in ("", "2.1", "9.18.1", "128.0"):
                 self.assertEqual(gen(name, ver, "Mozilla"),
                                  gen(name, ver, "Mozilla"))
+
+
+class MixedGranularityTests(unittest.TestCase):
+    def test_mixed_granularity_guard(self):
+        def m(name, ver):
+            return got(gen(name, ver))
+        # 4.6 has children 4.6.1 and 4.6.2: an unknown next part is not 4.6.
+        self.assertEqual(m("Frame Work", "4.6.01590"),
+                         ("frame-work", None, NO_CYCLE, GENERATED))
+        self.assertEqual(m("Frame Work", "4.8.09032"),
+                         ("frame-work", None, NO_CYCLE, GENERATED))
+        # A version that names a child, or stops at the cycle, is decided.
+        self.assertEqual(m("Frame Work", "4.6.2.1"),
+                         ("frame-work", "4.6.2", None, GENERATED))
+        self.assertEqual(m("Frame Work", "4.6"),
+                         ("frame-work", "4.6", None, GENERATED))
+        self.assertEqual(m("Frame Work", "4.8.1"),
+                         ("frame-work", "4.8.1", None, GENERATED))
+        # A child cycle with no children of its own keeps today's rule.
+        self.assertEqual(m("Weekly Builder", "2.426.3"),
+                         ("weekly", "2.426", None, GENERATED))
+        self.assertEqual(m("Weekly Builder", "2.450"),
+                         ("weekly", None, NO_CYCLE, GENERATED))
+        self.assertEqual(m("Weekly Builder", "2"),
+                         ("weekly", "2", None, GENERATED))
+        # Childless cycles are unchanged.
+        self.assertEqual(m("Foo Tool", "2.1.1150.0"),
+                         ("foo-tool", "2.1", None, GENERATED))
+
+
+    def test_mixed_granularity_guard_for_curated_aliases(self):
+        a = [alias("frame work", "frame-work")]
+        self.assertEqual(got(gen("Frame Work", "4.6.01590", aliases=a)),
+                         ("frame-work", None, NO_CYCLE, CURATED))
+        self.assertEqual(got(gen("Frame Work", "4.6.1.5", aliases=a)),
+                         ("frame-work", "4.6.1", None, CURATED))
+
 
 
 # --- assess: match_source, overrides on generated rows, format 1 -----------

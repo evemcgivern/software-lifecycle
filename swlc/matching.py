@@ -161,9 +161,31 @@ def _generated(name: str, version: str, publisher: str, index,
         return result(None, NO_CYCLE)
     if len(_distinct_by_parts(tied)) > 1:
         return result(None, AMBIGUOUS)
+    if _finer_cycle_missed(parts, best, labels):
+        return result(None, NO_CYCLE)
     if column and tail and _disagree(split_version(tail), column, labels):
         return result(None, NO_CYCLE)
     return result(_cycle_dict(products[product], best), None)
+
+
+def _finer_cycle_missed(parts: list[str], best: str,
+                        labels: list[str]) -> bool:
+    """Mixed-granularity guard. When the chosen cycle has child cycles in
+    the same product (4.6 has 4.6.1 and 4.6.2; 2 has 2.426) and the version
+    has another part after the cycle's depth that is the next part of none
+    of them (4.6.01590), the version may belong to a child the data cannot
+    name: the cycle is not decided. A cycle with no children is unchanged
+    (Python 3.12.1150.0 is 3.12)."""
+    base = split_version(best)
+    depth = len(base)
+    if len(parts) <= depth:
+        return False
+    nexts = set()
+    for label in labels:
+        lp = split_version(label)
+        if len(lp) > depth and lp[:depth] == base:
+            nexts.add(lp[depth])
+    return bool(nexts) and parts[depth] not in nexts
 
 
 def _picks(parts: list[str], labels: list[str]) -> set:
@@ -276,6 +298,8 @@ def _decide(norm: str, version: str, hits: list,
     used = len(split_version(best))
     if len(_distinct_by_parts(tied)) > 1:
         return finish(MatchResult(product, None, AMBIGUOUS), used)
+    if _finer_cycle_missed(parts, best, labels):
+        return finish(MatchResult(product, None, NO_CYCLE), used)
     if column and _disagree(parts, column, labels):
         return finish(MatchResult(product, None, NO_CYCLE), used)
     return finish(MatchResult(product, _cycle_dict(products[product], best),
