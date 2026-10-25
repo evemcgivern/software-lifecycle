@@ -585,18 +585,26 @@ def _name_year(name: str):
     return None
 
 
+def _year_cycle(cycle) -> bool:
+    """Whether a cycle is named by a year (2016, 2024-ltsc), so a year in
+    a part's name can be compared with it. Version cycles (15.0) cannot."""
+    parts = split_version(cycle or "")
+    return bool(parts) and bool(_YEAR.fullmatch(parts[0]))
+
+
 def _product_parent(it: dict, inv: _Inventory, unfit: bool) -> None:
     """D4: a product parent passes on dates only when exactly one item has
     that product (and cycle, when the link has one). With no cycle in the
-    link, a year in the part's name must agree with the parent's cycle, so
-    a part never takes another version's dates."""
+    link, a year in the part's name must agree with a parent cycle that is
+    a year, so a part never takes another version's dates."""
     product, _sep, cycle = it["parent_ref"]["value"].partition("/")
     pool = [] if unfit else (inv.by_cycle.get((product, cycle), [])
                              if cycle else inv.by_product.get(product, []))
     found = [o for o in pool if o is not it]
     year = None if cycle else _name_year(it.get("name"))
     if year is not None:
-        found = [o for o in found if _agrees([year], o.get("cycle"))]
+        found = [o for o in found if not _year_cycle(o.get("cycle"))
+                 or _agrees([year], o.get("cycle"))]
     if len(found) == 1:
         it["inherited_from"] = found[0]["id"]
     else:

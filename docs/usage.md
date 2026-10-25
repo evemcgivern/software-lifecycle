@@ -395,7 +395,9 @@ as no parent. Cells are compared without regard to case or spacing, so
 - A Parent cell that names a product with no cycle keeps the cycle a curated
   suite link already found ("Microsoft Excel 2016" stays with Office 2016).
   Without one, a year in the part's name must agree with the parent row's
-  cycle; a part never takes another version's dates.
+  cycle when that cycle is a year (Office 2016); a part never takes another
+  version's dates. Cycles named by version numbers (SQL Server 15.0) are not
+  compared with a year.
 
 A linked part shows its parent's end-of-life date under the heading
 "Parent's date (inherited, not this item's own)". The date is the parent's.

@@ -857,6 +857,28 @@ class WrongParentTests(unittest.TestCase):
         self.assertEqual(items[(viewer[0], viewer[2])]["inherited_from"],
                          ident(*office16))
 
+    def test_year_check_only_for_year_cycles(self):
+        # mssqlserver cycles are versions (15.0), so a year in the part's
+        # name cannot be compared with them and must not block the link.
+        sql = ("Microsoft SQL Server 2019 (64-bit)", MS, "15.0.2000.5", "")
+        for name, cell in (
+                ("SQL Server 2019 Database Engine Services", "SQL Server"),
+                ("SQL Server 2019 Common Files", "SQL Server"),
+                ("Microsoft SQL Server 2019 Setup (English)",
+                 "Microsoft SQL Server"),
+                ("Microsoft SQL Server 2019 T-SQL Language Service",
+                 "SQL Server"),
+                ("Contoso Tool 2019", "SQL Server")):
+            with self.subTest(name=name):
+                report, items = check([(name, MS, "15.0.2000.5", cell), sql],
+                                      data=bundled())
+                got = items[(name, "15.0.2000.5")]
+                self.assertEqual(got["classification"], "bundle_member")
+                self.assertEqual(got["inherited_from"], ident(*sql[:3]))
+                self.assertNotIn(C.PARENT_ABSENT, got["classification_basis"])
+                self.assertFalse([w for w in report["warnings"]
+                                  if "parent is not in" in w])
+
     def test_parent_cells_differing_only_in_case_are_one_parent(self):
         rt = ("Microsoft .NET Runtime - 8.0.10 (x64)", MS, "8.0.10")
         sql = ("Microsoft SQL Server 2019", MS, "15.0.2000.5", "")
