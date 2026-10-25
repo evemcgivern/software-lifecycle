@@ -560,6 +560,11 @@ class DataFolderDocsTests(unittest.TestCase):
         self.assertEqual(manifest["data_format"], 2)
         self.assertIn("`data_format` in the manifest is 2", sec)
 
+    def test_report_schema_quotes_the_match_caveat(self):
+        from swlc.report import MATCH_CAVEAT
+        flat = " ".join(text(DOCS / "report-schema.md").split())
+        self.assertEqual(flat.count(MATCH_CAVEAT), 1)
+
     def test_fixed_warning_text_is_quoted_from_the_code(self):
         from swlc.data import NO_CATALOG_WARNING
         flat = " ".join(self.section().split())

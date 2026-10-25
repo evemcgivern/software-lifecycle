@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 
 from helpers import run_main
 from swlc.assess import LISTS
-from swlc.report import CLAIMS_LINE, DECISION_TEXT, KEV_LINE
+from swlc.report import CLAIMS_LINE, DECISION_TEXT, KEV_LINE, MATCH_CAVEAT
 
 EXAMPLES = ROOT / "examples"
 DATA = ROOT / "tests" / "fixtures" / "data"
@@ -112,6 +112,9 @@ class MarkdownTests(DemoBase):
     def test_fixed_lines(self):
         self.assertIn(KEV_LINE, self.md)
         self.assertIn(CLAIMS_LINE, self.md)
+        self.assertEqual(self.md.split("\n").count(MATCH_CAVEAT), 1)
+        self.assertNotIn(MATCH_CAVEAT, self.report_text)
+        self.assertNotIn(MATCH_CAVEAT, self.csv_text)
 
     def test_never_says_vulnerable(self):
         self.assertNotIn("vulnerable", self.md.lower())

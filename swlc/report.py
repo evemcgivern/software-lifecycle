@@ -20,6 +20,10 @@ KEV_LINE = ("The vendor and product appear in CISA KEV. This does not mean "
             "your version is affected.")
 CLAIMS_LINE = ("Runs locally with no network by default; built to "
                "enterprise security practices; not independently assessed.")
+# Fixed text, printed once in report.md under the summary counts.
+MATCH_CAVEAT = ("Matches rest on name and publisher only. Rows we could not "
+                "tell apart are listed as unmatched. Check the source and "
+                "cycle before relying on any row.")
 
 STATE_TEXT = {
     "supported": "supported",
@@ -295,6 +299,7 @@ def render_markdown(result: dict, meta: dict) -> str:
         result["counts"]["items"], result["counts"]["rows"],
         "; ".join("%s %d" % (h.lower(), counts[name])
                   for name, h, _ in SECTIONS))]
+    out += ["", MATCH_CAVEAT]
 
     for number, (name, heading, _) in enumerate(SECTIONS, 1):
         ids = result["lists"][name]

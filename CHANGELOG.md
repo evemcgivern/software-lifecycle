@@ -17,6 +17,7 @@
   allowlist, exclusions and a list of products left out. Each item in the
   report gains `match_source`: `curated`, `generated`, or `null` when
   no product is known.
+- `report.md` gains a fixed notice line under the summary counts.
 - The first run after the upgrade shows a large `diff.changed_state`: rows
   that were unmatched now match.
 - Golden-source and exception rows keyed by product id now reach newly

@@ -4,6 +4,11 @@
 it. This page lists every key and code in schema version 1. A test in this
 repo fails if a key in a real run is missing from this page.
 
+`report.md` also prints one fixed line, once, under the summary counts:
+"Matches rest on name and publisher only. Rows we could not tell apart are
+listed as unmatched. Check the source and cycle before relying on any
+row." It is not a key and is not in `report.json` or `report.csv`.
+
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.
 

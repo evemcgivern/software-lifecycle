@@ -20,6 +20,9 @@ KEV_LINE = ("The vendor and product appear in CISA KEV. This does not mean "
             "your version is affected.")
 CLAIMS = ("Runs locally with no network by default; built to enterprise "
           "security practices; not independently assessed.")
+CAVEAT = ("Matches rest on name and publisher only. Rows we could not tell "
+          "apart are listed as unmatched. Check the source and cycle before "
+          "relying on any row.")
 
 
 class Base(unittest.TestCase):
@@ -49,6 +52,22 @@ class MarkdownTests(Base):
                  "## Golden source overrides", "```findings"]
         pos = [self.md.index(h) for h in heads]
         self.assertEqual(pos, sorted(pos))
+
+    def test_match_caveat_once_under_the_counts(self):
+        lines = self.md.split("\n")
+        self.assertEqual(lines.count(CAVEAT), 1)
+        self.assertEqual(self.md.count(CAVEAT), 1)
+        at = lines.index(CAVEAT)
+        counts = [i for i, l in enumerate(lines) if l.startswith("Items: ")]
+        first_section = min(i for i, l in enumerate(lines)
+                            if l.startswith("## "))
+        self.assertEqual(len(counts), 1)
+        self.assertTrue(counts[0] < at < first_section)
+        self.assertEqual(report.MATCH_CAVEAT, CAVEAT)
+
+    def test_match_caveat_not_in_json_or_csv(self):
+        self.assertNotIn(CAVEAT, report.render_json(self.result, self.meta))
+        self.assertNotIn(CAVEAT, report.render_csv(self.result))
 
     def test_fixed_wording(self):
         self.assertIn(KEV_LINE, self.md)
