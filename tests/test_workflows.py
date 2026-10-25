@@ -548,18 +548,55 @@ class EolWeeklyTests(unittest.TestCase):
 
     def test_push_credential_only_in_the_push_job(self):
         found = jobs(self.text)
-        self.assertEqual(sorted(found), ["build", "propose"])
+        self.assertEqual(sorted(found), ["build", "propose", "report"])
         build = "\n".join(found["build"])
         self.assertNotIn("contents: write", build)
         self.assertNotIn("git push", build)
         self.assertEqual(self.text.count("extraheader"), 1)
         self.assertIn("::add-mask::", self.text)
-        for name in found:
-            self.assertEqual(job_key(found[name], "timeout-minutes"), "15")
+        for name, minutes in (("build", "15"), ("propose", "15"),
+                              ("report", "10")):
+            self.assertEqual(job_key(found[name], "timeout-minutes"), minutes)
 
     def test_stops_when_a_data_pr_is_open(self):
         self.assertIn("gh pr list --state open", self.text)
         self.assertIn("grep -q '^data/eol-'", self.text)
+
+    def test_summary_exit_codes_are_read_strictly(self):
+        script = step_script(self.text,
+                             "Build the snapshot and summarise the changes")
+        flat = " ".join(script.split())
+        self.assertIn('if [ "$status" -gt 1 ] || ! grep -q', flat)
+        self.assertIn("--old-products data/products.json", flat)
+        self.assertIn('if [ "$status" -eq 1 ]; then flagged=true;', flat)
+
+    def test_failure_report_job_mirrors_the_daily_one(self):
+        found = jobs(self.text)
+        report = "\n".join(found["report"])
+        self.assertEqual(
+            [l.strip() for l in found["report"]
+             if l.strip().startswith(("issues:", "contents:", "pull-requests:",
+                                      "id-token:"))], ["issues: write"])
+        for name in ("build", "propose"):
+            self.assertNotIn("issues:", "\n".join(found[name]))
+        self.assertEqual(job_key(found["report"], "needs"),
+                         "[build, propose]")
+        condition = " ".join(job_key(found["report"], "if").split())
+        self.assertEqual(
+            condition, "always() && (needs.build.result == 'failure' || "
+            "needs.propose.result == 'failure')")
+        self.assertIn("eol-weekly-failed", report)
+        self.assertIn("gh issue create", report)
+        self.assertIn("gh issue comment", report)
+        self.assertIn("--body-file body.md", report)
+        script = step_script(self.text,
+                             "Open or update the eol-weekly-failed issue")
+        self.assertNotIn("${{", script)
+        # The body is fixed text plus the run URL built from runner variables.
+        self.assertIn("$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/"
+                      "$GITHUB_RUN_ID", script)
+        for word in ("UPSTREAM", "summary.md", "RUNNER_TEMP", "cat \"$"):
+            self.assertNotIn(word, script)
 
     def test_weekly_schedule(self):
         self.assertRegex(self.text, r'- cron: "\d+ \d+ \* \* [0-6]"')
@@ -677,8 +714,9 @@ class WeeklyManifestTests(unittest.TestCase):
             test_env = dict(os.environ,
                             SWLC_DATA_DIR=str(repo / "data"))
             proc = subprocess.run(
-                [sys.executable, "-B", "-m", "unittest",
-                 "tests.test_bundled_data"], cwd=str(ROOT), env=test_env,
+                [sys.executable, "-B", "-m", "unittest", "discover", "-s",
+                 "tests", "-p", "test_bundled_data.py"], cwd=str(ROOT),
+                env=test_env,
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 universal_newlines=True, timeout=300)
             self.assertEqual(proc.returncode, 0, proc.stdout)

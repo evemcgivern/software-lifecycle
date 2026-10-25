@@ -76,8 +76,9 @@ jobs:
           python3 -B refresh_data.py eol-summary --new "$RUNNER_TEMP/eol" --old data/eol \
             --new-products "$RUNNER_TEMP/products.json" --old-products data/products.json \
             > "$RUNNER_TEMP/summary.md" || status=$?
-          # 0 means not flagged, 1 means flagged; anything else, or no
-          # summary at all, means the summary itself failed.
+          # 0 means not flagged, 1 means flagged (a summary exists in both
+          # cases); anything else, or no summary at all, means the summary
+          # itself failed.
           if [ "$status" -gt 1 ] || ! grep -q '^## endoflife.date change summary' "$RUNNER_TEMP/summary.md"; then
             echo "The change summary could not be built."
             exit 1
@@ -232,3 +233,43 @@ jobs:
           if [ "$FLAGGED" = "true" ]; then title="$title (flagged)"; fi
           gh pr create --base main --head "$branch" --title "$title" \
             --body-file "$update/pr-body.md"
+
+  report:
+    needs: [build, propose]
+    # A failed build (a fetch, a schema check or a failing test, curation
+    # and benchmark checks included) or a failed push opens or updates one
+    # issue, so a stalled weekly update does not go unnoticed.
+    if: always() && (needs.build.result == 'failure' || needs.propose.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update the eol-weekly-failed issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          cat > body.md <<EOF
+          The weekly endoflife.date update stopped. This run opened no pull request.
+
+          Run: $run_url
+
+          The run summary names the step that failed. If a curation or
+          benchmark test failed after a data change, edit data/curation.json
+          on main, then run "endoflife.date weekly pull request" by hand or
+          wait for the next weekly run. Close this issue once a pull request
+          opens.
+          EOF
+          if ! gh label list --limit 200 --json name --jq '.[].name' | grep -qx eol-weekly-failed; then
+            gh label create eol-weekly-failed --color B60205 \
+              --description "The weekly endoflife.date update stopped"
+          fi
+          number="$(gh issue list --label eol-weekly-failed --state open --limit 1 --json number --jq '.[0].number // empty')"
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file body.md
+          else
+            gh issue create --title "Weekly endoflife.date update stopped" \
+              --label eol-weekly-failed --body-file body.md
+          fi
