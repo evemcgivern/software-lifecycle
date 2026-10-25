@@ -35,10 +35,10 @@ PROFILES = {
 
 EOL = {
     "examplesql.json": [
-        {"cycle": "14", "eol": True, "support": True},
+        {"cycle": "14", "eol": True, "support": False},
         {"cycle": "15", "eol": "2026-12-31", "support": "2024-12-31",
          "extendedSupport": "2028-12-31"},
-        {"cycle": "16", "eol": False, "support": False},
+        {"cycle": "16", "eol": False, "support": True},
     ],
     "demoos.json": [
         {"cycle": "1.0", "eol": "2025-06-30", "support": "2024-06-30"},

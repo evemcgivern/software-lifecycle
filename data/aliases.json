@@ -11,6 +11,10 @@
         "2022": "16.0",
         "2025": "17.0"
       },
+      "kev": {
+        "product": "SQL Server",
+        "vendor": "Microsoft"
+      },
       "key": "microsoft sql server",
       "match": "exact",
       "product": "mssqlserver",
@@ -27,6 +31,10 @@
         "2019": "15.0",
         "2022": "16.0",
         "2025": "17.0"
+      },
+      "kev": {
+        "product": "SQL Server",
+        "vendor": "Microsoft"
       },
       "key": "sql server",
       "match": "exact",
@@ -49,6 +57,10 @@
         "standard",
         "web"
       ],
+      "kev": {
+        "product": "SQL Server",
+        "vendor": "Microsoft"
+      },
       "key": "microsoft sql server",
       "match": "prefix",
       "product": "mssqlserver",
@@ -68,6 +80,10 @@
         "datacenter",
         "standard"
       ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
       "key": "microsoft windows server",
       "match": "prefix",
       "product": "windows-server",
@@ -87,6 +103,10 @@
         "datacenter",
         "standard"
       ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
       "key": "windows server",
       "match": "prefix",
       "product": "windows-server",
@@ -103,6 +123,10 @@
         "home",
         "pro"
       ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
       "key": "microsoft windows 10",
       "match": "prefix",
       "product": "windows",
@@ -119,6 +143,10 @@
         "home",
         "pro"
       ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
       "key": "windows 10",
       "match": "prefix",
       "product": "windows",
@@ -135,6 +163,10 @@
           "2021"
         ]
       },
+      "kev": {
+        "product": "Office",
+        "vendor": "Microsoft"
+      },
       "key": "microsoft office",
       "match": "exact",
       "product": "office",
@@ -148,6 +180,10 @@
         "2019": "2019",
         "2021": "2021"
       },
+      "kev": {
+        "product": "Office",
+        "vendor": "Microsoft"
+      },
       "key": "microsoft office professional plus",
       "match": "prefix",
       "product": "office",
@@ -160,6 +196,10 @@
         "2016": "2016",
         "2019": "2019",
         "2021": "2021"
+      },
+      "kev": {
+        "product": "Office",
+        "vendor": "Microsoft"
       },
       "key": "microsoft office standard",
       "match": "prefix",

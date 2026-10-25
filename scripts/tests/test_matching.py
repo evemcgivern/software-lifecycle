@@ -297,6 +297,27 @@ class RuleTests(unittest.TestCase):
             with self.assertRaises(DataError, msg=repr(bad)):
                 match_product("x", "1", [bad], products)
 
+    def test_bad_kev_shape_is_data_error(self):
+        products = {"x": cycles("1")}
+        for kev in ("Microsoft", ["Microsoft", "Windows"], {},
+                    {"vendor": "Microsoft"},
+                    {"vendor": "Microsoft", "product": ""},
+                    {"vendor": " ", "product": "Windows"},
+                    {"vendor": "Microsoft", "product": 1},
+                    {"vendor": "M", "product": "W", "extra": "x"}):
+            with self.assertRaises(DataError, msg=repr(kev)):
+                match_product("x", "1", [alias("x", "x", kev=kev)], products)
+
+    def test_match_carries_alias_kev(self):
+        products = {"x": cycles("1")}
+        kev = {"vendor": "Microsoft", "product": "Windows"}
+        r = match_product("x", "1", [alias("x", "x", kev=kev)], products)
+        self.assertEqual(r.kev, kev)
+        self.assertIsNone(match_product("x", "1", [alias("x", "x")],
+                                        products).kev)
+        self.assertIsNone(match_product("x", "9", [alias("x", "x", kev=kev)],
+                                        products).kev)
+
 
 def _hits(name, key, mode):
     n, k = normalize_name(name), normalize_name(key)
@@ -457,7 +478,7 @@ class AliasFileTests(unittest.TestCase):
         entries = self.doc["aliases"]
         self.assertGreaterEqual(len(entries), 12)
         allowed = {"key", "match", "product", "version_from", "cycle",
-                   "build_map", "source", "edition_words"}
+                   "build_map", "source", "edition_words", "kev"}
         for e in entries:
             self.assertLessEqual(set(e), allowed, e)
             self.assertIn(e["match"], ("exact", "prefix"))

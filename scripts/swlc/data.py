@@ -112,6 +112,9 @@ def validate_eol(obj) -> list:
     """Check a parsed eol/<product>.json; return cycle dicts with dates parsed."""
     if not isinstance(obj, list):
         raise DataError("top level must be a list of cycles")
+    # Boolean polarity follows endoflife.date: "eol": true means past end
+    # of life, false means none announced; "support" and "extendedSupport"
+    # true mean that support is still ongoing, false that it has ended.
     out = []
     for pos, item in enumerate(obj, 1):
         where = "cycles[%d]" % pos

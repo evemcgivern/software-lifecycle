@@ -251,13 +251,24 @@ class GroupRowsTests(unittest.TestCase):
         self.assertEqual(g[gid]["id"], gid)
         self.assertEqual(g[gid]["rows"], 2)
         self.assertEqual(g[gid]["owners"], ["amy", "zed"])
-        self.assertEqual(g[gid]["export_eol"], "2027-01-01")
+        self.assertEqual(g[gid]["export_eols"], ["2027-01-01"])
+
+    def test_export_dates_sorted_distinct_any_order(self):
+        rows = [
+            {"N": "W", "V": "1", "P": "A", "O": "", "E": "2027-05-01"},
+            {"N": "W", "V": "1", "P": "A", "O": "", "E": "2026-01-01"},
+            {"N": "W", "V": "1", "P": "A", "O": "", "E": ""},
+            {"N": "W", "V": "1", "P": "A", "O": "", "E": "2027-05-01"},
+        ]
+        for order in (rows, list(reversed(rows))):
+            (grp,) = group_rows(order, self.cm).values()
+            self.assertEqual(grp["export_eols"], ["2026-01-01", "2027-05-01"])
 
     def test_optional_columns_absent(self):
         g = group_rows([{"N": "W", "V": "1"}], {"name": "N", "version": "V"})
         (grp,) = g.values()
         self.assertEqual(grp["owners"], [])
-        self.assertEqual(grp["export_eol"], "")
+        self.assertEqual(grp["export_eols"], [])
 
     def test_id_collision_raises_data_error(self):
         rows = [{"N": "ZQXONE", "V": "1"}, {"N": "ZQXTWO", "V": "1"}]

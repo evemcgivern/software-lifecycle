@@ -11,6 +11,7 @@ import re
 from datetime import date, datetime
 
 from .data import Data, kev_match
+from .errors import InputError
 from .matching import match_product
 from .normalize import normalize_name
 from .overrides import Exceptions, Golden
@@ -19,12 +20,14 @@ SCHEMA_VERSION = 1
 STATES = ("supported", "mainstream_ended", "ends_soon", "past_eol",
           "unmatched")
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
-         "accepted_risk", "ownerless", "review_urgently")
+         "accepted_risk", "ownerless", "review_urgently", "golden_overrides")
+MAX_LOOKAHEAD_MONTHS = 600
 
 # dates_disagree codes (also used in decision_needed)
 DIFFERENT_DATE = "DIFFERENT_DATE"
 NO_ENDOFLIFE_DATE = "NO_ENDOFLIFE_DATE"
 EXPORT_DATE_UNREADABLE = "EXPORT_DATE_UNREADABLE"
+EXPORT_DATES_CONFLICT = "EXPORT_DATES_CONFLICT"
 GOLDEN_EXPIRED = "GOLDEN_EXPIRED"
 GOLDEN_EXPORT_UNUSABLE = "GOLDEN_EXPORT_UNUSABLE"
 EXCEPTION_EXPIRED = "EXCEPTION_EXPIRED"
@@ -67,13 +70,35 @@ def _parse_export(text: str):
 
 
 def _state(eol, support, as_of: date, window_end: date) -> str:
+    """endoflife.date polarity: eol true = ended; support false = ended."""
     if eol is True or (isinstance(eol, date) and eol <= as_of):
         return "past_eol"
     if isinstance(eol, date) and eol <= window_end:
         return "ends_soon"
-    if support is True or (isinstance(support, date) and support <= as_of):
+    if support is False or (isinstance(support, date) and support <= as_of):
         return "mainstream_ended"
     return "supported"
+
+
+def _read_exports(texts: list):
+    """(date or None, readable, conflict, raw) for a group's export dates.
+
+    Texts that parse to the same date count once; each unreadable text is
+    its own value. More than one value is a conflict and nothing is used.
+    """
+    values = set()
+    for text in texts:
+        parsed, readable = _parse_export(text)
+        values.add(parsed if readable else ("unreadable", text))
+    raw = "; ".join(texts) or None
+    if len(values) > 1:
+        return None, True, True, raw
+    if not values:
+        return None, True, False, None
+    (value,) = values
+    if isinstance(value, date):
+        return value, True, False, raw
+    return None, False, False, raw
 
 
 def _exception(exceptions: Exceptions, products: list, scopes: list,
@@ -94,14 +119,15 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
     norm_name = normalize_name(name)
     match = match_product(name, version, data.aliases, data.products)
     cycle = match.cycle
-    export_raw = group.get("export_eol") or ""
-    export_date, export_readable = _parse_export(export_raw)
+    export_date, export_readable, export_conflict, export_raw = \
+        _read_exports(list(group.get("export_eols") or []))
 
     eol_endoflife = cycle.get("eol") if cycle else None
     eol_used, eol_source = None, None
     golden_applied, golden_expired = None, False
     disagree = None
     decision = []
+    state_endoflife = None
 
     if cycle is None:
         state = "unmatched"
@@ -112,7 +138,9 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
             golden_expired = True
             disagree = GOLDEN_EXPIRED
         elif row is not None and row["source"] == "export":
-            if export_date is None:
+            if export_conflict:
+                disagree = EXPORT_DATES_CONFLICT
+            elif export_date is None:
                 disagree = GOLDEN_EXPORT_UNUSABLE
             else:
                 eol_used, eol_source = export_date, "export"
@@ -131,9 +159,19 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
                 elif export_date != eol_endoflife:
                     disagree = disagree or DIFFERENT_DATE
         state = _state(eol_used, cycle.get("support"), as_of, window_end)
+        state_endoflife = _state(eol_endoflife, cycle.get("support"), as_of,
+                                 window_end)
+        if export_conflict:
+            # Rows disagree among themselves: always a person's call, even
+            # under an active golden source (which then cannot be "export").
+            disagree = disagree or EXPORT_DATES_CONFLICT
+            decision.append(EXPORT_DATES_CONFLICT)
+        if eol_endoflife is None and export_date is not None:
+            # No endoflife.date date against the user's own dated evidence.
+            decision.append(NO_ENDOFLIFE_DATE)
 
     if disagree in (GOLDEN_EXPIRED, GOLDEN_EXPORT_UNUSABLE,
-                    EXPORT_DATE_UNREADABLE):
+                    EXPORT_DATE_UNREADABLE, EXPORT_DATES_CONFLICT):
         decision.append(disagree)
 
     products = [p for p in (match.product, norm_name) if p]
@@ -144,7 +182,11 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
 
     kev = None
     if state in ("past_eol", "ends_soon"):
-        kev = kev_match(data.kev, group["publisher"], name)
+        if match.kev:
+            kev = kev_match(data.kev, match.kev["vendor"],
+                            match.kev["product"])
+        else:
+            kev = kev_match(data.kev, group["publisher"], name)
 
     refs = tracking.get(group["id"]) or {}
     return {
@@ -157,10 +199,11 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "product": match.product,
         "cycle": cycle.get("cycle") if cycle else None,
         "state": state,
+        "state_endoflife": state_endoflife,
         "reason": match.reason,
         "eol_endoflife": _iso(eol_endoflife),
         "eol_export": _iso(export_date),
-        "eol_export_raw": export_raw or None,
+        "eol_export_raw": export_raw,
         "eol_used": _iso(eol_used),
         "eol_source": eol_source,
         "support": _iso(cycle.get("support")) if cycle else None,
@@ -170,7 +213,7 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "dates_disagree": disagree,
         "accepted_risk": accepted,
         "exception_expired": exc_expired,
-        "decision_needed": sorted(decision),
+        "decision_needed": sorted(set(decision)),
         "kev": kev,
         "kev_stale": bool(kev is not None and not data.kev_current),
         "change_ref": refs.get("change_ref") or None,
@@ -191,12 +234,17 @@ def _lists(items: list) -> dict:
             out["ownerless"].append(it["id"])
         if it["kev"]:
             out["review_urgently"].append(it["id"])
+        if it["state_endoflife"] is not None \
+                and it["state_endoflife"] != it["state"]:
+            out["golden_overrides"].append(it["id"])
     return {k: sorted(v) for k, v in out.items()}
 
 
 def _previous_states(previous) -> dict | None:
-    if not isinstance(previous, dict) or previous.get("schema_version") \
-            != SCHEMA_VERSION or not isinstance(previous.get("items"), list):
+    if not isinstance(previous, dict) \
+            or type(previous.get("schema_version")) is not int \
+            or previous["schema_version"] != SCHEMA_VERSION \
+            or not isinstance(previous.get("items"), list):
         return None
     states = {}
     for it in previous["items"]:
@@ -229,8 +277,10 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     if isinstance(as_of, datetime) or not isinstance(as_of, date):
         raise ValueError("as_of must be a date")
     if isinstance(lookahead_months, bool) or not isinstance(
-            lookahead_months, int) or lookahead_months < 0:
-        raise ValueError("lookahead_months must be a whole number, 0 or more")
+            lookahead_months, int) or not \
+            0 <= lookahead_months <= MAX_LOOKAHEAD_MONTHS:
+        raise InputError("lookahead must be a whole number of months from "
+                         "0 to %d" % MAX_LOOKAHEAD_MONTHS)
     window_end = add_months(as_of, lookahead_months)
 
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,

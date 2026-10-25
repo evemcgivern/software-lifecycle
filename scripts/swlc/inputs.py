@@ -196,6 +196,7 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
     groups: dict[str, dict] = {}
     keys: dict[str, tuple] = {}
     owners: dict[str, set] = {}
+    eols: dict[str, set] = {}
     for row in rows:
         pub, name, ver = (cell(row, f) for f in ("publisher", "name", "version"))
         key = tuple(normalize_name(x) for x in (pub, name, ver))
@@ -207,16 +208,18 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         grp = groups.get(gid)
         if grp is None:
             grp = groups[gid] = {"id": gid, "rows": 0, "owners": [],
-                                 "export_eol": "", "publisher": pub,
+                                 "export_eols": [], "publisher": pub,
                                  "name": name, "version": ver}
             owners[gid] = set()
+            eols[gid] = set()
         grp["rows"] += 1
         owner = cell(row, "owner")
         if owner:
             owners[gid].add(owner)
         eol = cell(row, "export_eol")
-        if eol and not grp["export_eol"]:
-            grp["export_eol"] = eol
+        if eol:
+            eols[gid].add(eol)
     for gid, grp in groups.items():
         grp["owners"] = sorted(owners[gid])
+        grp["export_eols"] = sorted(eols[gid])
     return groups

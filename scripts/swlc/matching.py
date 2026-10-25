@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from .errors import DataError
 from .normalize import best_cycle, normalize_name, split_version
@@ -19,6 +19,7 @@ class MatchResult:
     product: str | None
     cycle: dict | None
     reason: str | None
+    kev: dict | None = None
 
 
 def _check(entry: dict, pos: int) -> None:
@@ -47,6 +48,13 @@ def _check(entry: dict, pos: int) -> None:
             if not values or not all(isinstance(v, str) and v.strip()
                                      for v in values):
                 raise bad("'build_map' values must be cycle strings")
+    if "kev" in entry:
+        kev = entry["kev"]
+        if not isinstance(kev, dict) or set(kev) != {"vendor", "product"} \
+                or not all(isinstance(v, str) and v.strip()
+                           for v in kev.values()):
+            raise bad("'kev' must be an object with non-empty 'vendor' and "
+                      "'product' strings")
     if "edition_words" in entry:
         words = entry["edition_words"]
         if not isinstance(words, list) or not all(
@@ -124,6 +132,9 @@ def match_product(name: str, version: str, aliases: list[dict],
             skip = _words_for_parts(rest, used_parts) if from_name else 0
             if not _tail_ok(rest[skip:], entry.get("edition_words") or []):
                 return MatchResult(None, None, NO_ALIAS)
+        if result.cycle is not None and "kev" in entry:
+            # The alias's sourced CISA KEV pair rides along with a match.
+            return replace(result, kev=dict(entry["kev"]))
         return result
 
     if "cycle" in entry:

@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from helpers import make_data_dir
 from swlc.assess import add_months, assess
 from swlc.data import Data, load_data
+from swlc.errors import InputError
 from swlc.inputs import group_rows
 from swlc.overrides import Exceptions, Golden
 
@@ -28,8 +29,8 @@ ALPHA = [
      "extended": None},                                   # 11 months
     {"cycle": "3", "eol": date(2027, 11, 24), "support": None,
      "extended": None},                                   # 13 months
-    {"cycle": "4", "eol": True, "support": True, "extended": None},
-    {"cycle": "5", "eol": False, "support": False, "extended": None},
+    {"cycle": "4", "eol": True, "support": False, "extended": None},
+    {"cycle": "5", "eol": False, "support": True, "extended": None},
     {"cycle": "6", "eol": False, "support": date(2026, 1, 1),
      "extended": date(2029, 1, 1)},
     {"cycle": "7", "eol": date(2026, 10, 24), "support": None,
@@ -39,6 +40,10 @@ ALPHA = [
     {"cycle": "9", "eol": date(2027, 10, 25), "support": None,
      "extended": None},                                   # 12 months + 1 day
     {"cycle": "10", "eol": None, "support": None, "extended": None},
+    # endoflife.date's live shape: support true = ongoing, false = ended.
+    {"cycle": "11", "eol": False, "support": True, "extended": None},
+    {"cycle": "12", "eol": date(2030, 1, 1), "support": False,
+     "extended": None},
 ]
 ALIASES = [{"key": "alpha app", "match": "exact", "product": "alpha",
             "version_from": "version"}]
@@ -146,9 +151,13 @@ class States(unittest.TestCase):
                          "supported")
 
     def test_bad_lookahead_raises(self):
-        for bad in (-1, True, 1.5, "12"):
-            with self.assertRaises(ValueError):
+        for bad in (-1, True, 1.5, "12", 601, 10 ** 9):
+            with self.assertRaises(InputError):
                 run([row("1")], lookahead_months=bad)
+
+    def test_largest_lookahead_allowed(self):
+        self.assertEqual(only(run([row("3")], lookahead_months=600))["state"],
+                         "ends_soon")
 
     def test_eol_true_is_past_with_no_date(self):
         it = only(run([row("4")]))
@@ -169,6 +178,16 @@ class States(unittest.TestCase):
 
     def test_past_eol_wins_over_support(self):
         self.assertEqual(only(run([row("1")]))["state"], "past_eol")
+
+    def test_live_shape_support_true_is_supported(self):
+        it = only(run([row("11")]))
+        self.assertEqual(it["state"], "supported")
+        self.assertIs(it["support"], True)
+
+    def test_live_shape_support_false_is_mainstream_ended(self):
+        it = only(run([row("12")]))
+        self.assertEqual(it["state"], "mainstream_ended")
+        self.assertIs(it["support"], False)
 
     def test_no_eol_field_is_supported(self):
         it = only(run([row("10")]))
@@ -233,6 +252,13 @@ class DatesDisagree(unittest.TestCase):
             self.assertEqual(it["dates_disagree"], "NO_ENDOFLIFE_DATE",
                              version)
 
+    def test_missing_endoflife_date_with_export_is_decision_needed(self):
+        it = only(run([row("10", export_eol="2027-01-01")]))
+        self.assertEqual(it["state"], "supported")
+        self.assertIn("NO_ENDOFLIFE_DATE", it["decision_needed"])
+        it = only(run([row("5", export_eol="2027-01-01")]))
+        self.assertEqual(it["decision_needed"], [])
+
     def test_no_export_date_no_disagreement(self):
         it = only(run([row("1")]))
         self.assertIsNone(it["dates_disagree"])
@@ -249,7 +275,8 @@ class GoldenSource(unittest.TestCase):
         self.assertEqual(it["golden_applied"], "export")
         self.assertEqual(it["eol_endoflife"], "2026-01-15")
         self.assertEqual(it["state"], "ends_soon")
-        self.assertEqual(on(out, it), ["ends_soon"])
+        self.assertEqual(it["state_endoflife"], "past_eol")
+        self.assertEqual(on(out, it), ["ends_soon", "golden_overrides"])
         self.assertFalse(it["accepted_risk"])
 
     def test_active_manual_golden(self):
@@ -307,6 +334,70 @@ class GoldenSource(unittest.TestCase):
         g = Golden({"alpha": golden_row("export", review_by=AS_OF)})
         it = only(run([row("1", export_eol="2027-09-01")], golden=g))
         self.assertEqual(it["golden_applied"], "export")
+
+
+class GoldenOverrides(unittest.TestCase):
+    def test_golden_changing_state_is_listed(self):
+        g = Golden({"alpha": golden_row("export")})
+        out = run([row("1", export_eol="2030-01-01")], golden=g)
+        it = only(out)
+        self.assertEqual(it["state"], "mainstream_ended")  # support passed
+        self.assertEqual(it["state_endoflife"], "past_eol")
+        self.assertEqual(it["eol_endoflife"], "2026-01-15")
+        self.assertEqual(it["eol_export"], "2030-01-01")
+        self.assertEqual(out["lists"]["golden_overrides"], [it["id"]])
+        self.assertEqual(out["counts"]["lists"]["golden_overrides"], 1)
+
+    def test_without_golden_not_listed(self):
+        out = run([row("1", export_eol="2030-01-01")])
+        self.assertEqual(out["lists"]["golden_overrides"], [])
+        self.assertEqual(only(out)["state_endoflife"], "past_eol")
+
+    def test_unmatched_has_no_endoflife_state(self):
+        out = run([row("1", name="Nope")])
+        self.assertIsNone(only(out)["state_endoflife"])
+        self.assertEqual(out["lists"]["golden_overrides"], [])
+
+
+class ExportConflict(unittest.TestCase):
+    ROWS = [row("1", export_eol="2030-01-01"),
+            row("1", export_eol="2026-01-15"), row("1")]
+
+    def test_conflict_is_decision_needed(self):
+        out = run(self.ROWS)
+        it = only(out)
+        self.assertEqual(it["dates_disagree"], "EXPORT_DATES_CONFLICT")
+        self.assertIn("EXPORT_DATES_CONFLICT", it["decision_needed"])
+        self.assertIsNone(it["eol_export"])
+        self.assertEqual(it["eol_used"], "2026-01-15")
+        self.assertIn(it["id"], out["lists"]["dates_disagree"])
+
+    def test_row_order_does_not_matter(self):
+        g = Golden({"alpha": golden_row("export")})
+        for golden in (None, g):
+            self.assertEqual(run(self.ROWS, golden=golden),
+                             run(list(reversed(self.ROWS)), golden=golden))
+
+    def test_export_golden_refused(self):
+        g = Golden({"alpha": golden_row("export")})
+        it = only(run(self.ROWS, golden=g))
+        self.assertIsNone(it["golden_applied"])
+        self.assertEqual(it["eol_source"], "endoflife.date")
+        self.assertEqual(it["eol_used"], "2026-01-15")
+        self.assertEqual(it["dates_disagree"], "EXPORT_DATES_CONFLICT")
+
+    def test_conflict_flagged_under_other_golden(self):
+        g = Golden({"alpha": golden_row("manual", manual=date(2026, 3, 1))})
+        it = only(run(self.ROWS, golden=g))
+        self.assertEqual(it["golden_applied"], "manual")
+        self.assertEqual(it["dates_disagree"], "EXPORT_DATES_CONFLICT")
+        self.assertIn("EXPORT_DATES_CONFLICT", it["decision_needed"])
+
+    def test_same_date_written_twice_is_not_a_conflict(self):
+        it = only(run([row("1", export_eol="2026-01-15"),
+                       row("1", export_eol="2026-01-15 00:00:00")]))
+        self.assertIsNone(it["dates_disagree"])
+        self.assertEqual(it["eol_export"], "2026-01-15")
 
 
 class ExceptionsTests(unittest.TestCase):
@@ -388,6 +479,31 @@ class Kev(unittest.TestCase):
         self.assertFalse(only(out)["kev"])
         self.assertEqual(out["lists"]["review_urgently"], [])
 
+    def kev_alias_data(self, kev):
+        data = make_data()
+        data.aliases = [dict(ALIASES[0], kev=kev)]
+        return data
+
+    def test_alias_kev_pair_used(self):
+        # Publisher and name would never match KEV exactly; the alias's
+        # sourced pair does (normalized on both sides).
+        data = self.kev_alias_data({"vendor": "ALPHA  Corp",
+                                    "product": "Alpha App"})
+        out = run([row("1", publisher="Somebody Else")], data=data)
+        it = only(out)
+        self.assertTrue(it["kev"])
+        self.assertEqual(out["lists"]["review_urgently"], [it["id"]])
+
+    def test_alias_kev_pair_wins_over_fallback(self):
+        data = self.kev_alias_data({"vendor": "Nobody", "product": "Nothing"})
+        it = only(run([row("1", publisher=KEV_PUB)], data=data))
+        self.assertFalse(it["kev"])
+
+    def test_unmatched_never_gets_overlay(self):
+        out = run([row("99", publisher=KEV_PUB)])
+        self.assertIsNone(only(out)["kev"])
+        self.assertEqual(out["lists"]["review_urgently"], [])
+
     def test_kev_not_current_still_computed_and_flagged(self):
         out = run([row("1", publisher=KEV_PUB)],
                   data=make_data(kev_current=False))
@@ -437,7 +553,8 @@ class Shape(unittest.TestCase):
                          "2026.10.22")
         self.assertEqual(sorted(out["lists"]), sorted([
             "past_eol", "ends_soon", "dates_disagree", "unmatched",
-            "accepted_risk", "ownerless", "review_urgently"]))
+            "accepted_risk", "ownerless", "review_urgently",
+            "golden_overrides"]))
 
     def test_sorted(self):
         out = run(self.ROWS)
@@ -457,6 +574,7 @@ class Shape(unittest.TestCase):
         self.assertEqual(c["lists"]["past_eol"], 1)
         self.assertEqual(c["lists"]["ownerless"], 1)
         self.assertEqual(c["lists"]["dates_disagree"], 1)
+        self.assertEqual(c["lists"]["golden_overrides"], 0)
 
     def test_item_fields(self):
         it = run(self.ROWS)["items"][0]
@@ -533,6 +651,8 @@ class Diff(unittest.TestCase):
 
     def test_unusable_previous(self):
         for bad in ({"schema_version": 2, "items": []}, {"items": "x"},
+                    {"schema_version": True, "items": []},
+                    {"schema_version": 1.0, "items": []},
                     {"schema_version": 1, "items": [{"no": "id"}]}, []):
             out = run([row("1")], previous=bad)
             self.assertFalse(out["diff"]["available"])
