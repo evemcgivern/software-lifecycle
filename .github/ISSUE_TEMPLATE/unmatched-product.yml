@@ -1,0 +1,47 @@
+name: Product the tool could not match
+description: Ask for an alias so a product name maps to endoflife.date.
+title: "alias: "
+labels: ["alias-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public. Do not paste inventory rows, report files,
+        owner names, internal application names, host names, or any
+        confidential data.** Give only the public product name as the
+        publisher sells it. Aliases are added in batches.
+  - type: input
+    id: product
+    attributes:
+      label: Product name
+      description: The public name, as it appears in your export (for example "Microsoft SQL Server 2019 Standard").
+    validations:
+      required: true
+  - type: input
+    id: publisher
+    attributes:
+      label: Publisher
+      description: The company or project that makes the product.
+    validations:
+      required: true
+  - type: input
+    id: version_format
+    attributes:
+      label: Version string format
+      description: The shape of the version your export shows, with digits replaced if you prefer (for example "15.0.NNNN.N" or "2019").
+    validations:
+      required: false
+  - type: input
+    id: endoflife_product
+    attributes:
+      label: endoflife.date product, if you know it
+      description: The product id from an endoflife.date page address (for example "mssqlserver").
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confidential data
+      options:
+        - label: This issue holds no inventory rows, owner names, internal application names or other confidential data.
+          required: true
