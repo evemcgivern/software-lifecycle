@@ -105,15 +105,25 @@ def part_kind(name: str) -> str | None:
     return _part(name)[0]
 
 
+# The catalog's ids and normalized titles, built once per catalog object:
+# (catalog, frozenset). One entry only, so a run never holds two catalogs.
+_LEADS: list = [None, frozenset()]
+
+
+def _catalog_names(catalog: dict) -> frozenset:
+    if _LEADS[0] is not catalog:
+        names = set(catalog)
+        names.update(normalize_name(rec.get("title") or "")
+                     for rec in catalog.values())
+        _LEADS[0], _LEADS[1] = catalog, frozenset(names)
+    return _LEADS[1]
+
+
 def _catalog_lead(base: str, catalog: dict) -> bool:
     """True when a one-word name is a catalog product's id or title, or
     starts with one followed by "-" (libreoffice, libreoffice-writer)."""
-    head = base.split("-", 1)[0]
-    for pid, rec in catalog.items():
-        title = normalize_name(rec.get("title") or "")
-        if head in (pid, title) or base in (pid, title):
-            return True
-    return False
+    names = _catalog_names(catalog)
+    return base in names or base.split("-", 1)[0] in names
 
 
 def _publisher_has(word: str, publisher: str) -> bool:
@@ -139,22 +149,55 @@ def _leading(base: str, prefix: str):
 
 
 def _parent_hit(parents, base: str, publisher: str):
+    """The entry with the longest matching prefix, and the words after it."""
+    best, best_tail = None, None
     for entry in parents:
         tail = _leading(base, entry["name_prefix"])
         if tail is not None and _publisher_has(entry["publisher"],
-                                               publisher):
-            return entry, tail
-    return None, None
+                                               publisher) \
+                and (best is None or len(entry["name_prefix"].split())
+                     > len(best["name_prefix"].split())):
+            best, best_tail = entry, tail
+    return best, best_tail
+
+
+# Words a suite tail may hold besides year and version words: separators,
+# the word "version", a KB number in brackets, a three-letter language code
+# in brackets ("(deu)"), and the language word on Office proofing tools.
+_TAIL_WORDS = frozenset(("-", "version", "english"))
+_TAIL_GROUP = re.compile(r"\((?:kb\d{6,8}|[a-z]{3})\)")
+# "for x64-based systems" on Windows update names.
+_FOR_SYSTEMS = re.compile(r"(?:x64|x86|arm64)-based")
+
+
+def _tail_words(tail: list):
+    """The year and version words of a suite tail, or None when the tail
+    holds any other word."""
+    words = list(tail)
+    if len(words) >= 3 and words[-1] == "systems" \
+            and _FOR_SYSTEMS.fullmatch(words[-2]) and words[-3] == "for":
+        words = words[:-3]
+    out = []
+    for word in words:
+        if _YEAR_OR_VERSION.fullmatch(word):
+            out.append(word)
+        elif word not in _TAIL_WORDS and not _TAIL_GROUP.fullmatch(word):
+            return None
+    return out
 
 
 def _suite_cycles(tail: list, version: str, cycles: list) -> set:
-    """Cycles of the parent that fit: the year or version words after the
-    prefix, read in order as one version ("10 version 22h2" gives 10, 22h2),
-    else the version column."""
+    """Cycles of the parent that fit. The tail after the prefix may hold
+    only year and version words (and the few words above); they are read in
+    order as one version ("10 version 22h2" gives 10, 22h2). With no such
+    word the version column is used. Any other word: no fit."""
+    found = _tail_words(tail[:-1] if tail and _TAIL_GROUP.fullmatch(tail[-1])
+                        else tail)
+    if found is None:
+        return set()
     parts = []
-    for word in tail:
-        if _YEAR_OR_VERSION.fullmatch(word):
-            parts.extend(split_version(word))
+    for word in found:
+        parts.extend(split_version(word))
     if not parts:
         parts = split_version(version)
     return set(best_cycle(parts, cycles)[1]) if parts else set()

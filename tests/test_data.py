@@ -840,6 +840,12 @@ class CurationSchemaTests(DataCase):
                 with self.assertRaises(DataError):
                     validate_curation(obj)
 
+    def test_class_product_error_names_the_product(self):
+        with self.assertRaises(DataError) as ctx:
+            validate_curation(curation_obj(classification_products={
+                "alpha": dict(GOOD_CLASS_PROD, **{"class": "bad"})}))
+        self.assertIn("alpha", str(ctx.exception))
+
     def test_curation_rejects_bundle_parent_without_gold(self):
         bad = [
             {k: v for k, v in GOOD_PARENT.items() if k != "gold"},

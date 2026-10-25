@@ -329,8 +329,8 @@ def _classification_curation(obj: dict) -> list:
     if not isinstance(prods, dict):
         raise DataError("classification_products: expected an object")
     for pid, entry in prods.items():
-        where = "classification_products entry"
-        _ident(pid, where)
+        _ident(pid, "classification_products entry")
+        where = "classification_products[%s]" % pid
         _keys(entry, ("class", "reason", "source"), where)
         if entry["class"] not in CURATED_CLASSES:
             raise DataError("%s.class: not an allowed class" % where)

@@ -41,6 +41,14 @@
       "source": "https://learn.microsoft.com/en-us/dotnet/core/additional-tools/dnim-net-installs"
     },
     {
+      "gold": "Microsoft .NET Host FX Resolver - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33815",
+      "name_prefix": "microsoft .net host fx resolver",
+      "parent": "dotnet",
+      "publisher": "microsoft",
+      "reason": "The host FX resolver (hostfxr) is the .NET host's framework resolver, installed by a .NET runtime or SDK bundle; the version in the name is the .NET release.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/distribution-packaging"
+    },
+    {
       "gold": "Microsoft .NET Targeting Pack - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33815",
       "name_prefix": "microsoft .net targeting pack",
       "parent": "dotnet",
@@ -160,6 +168,14 @@
   "classification_rows": [
     {
       "class": "governable",
+      "gold": "Microsoft .NET Runtime - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33814",
+      "name": "microsoft .net runtime",
+      "publisher": "microsoft",
+      "reason": "The .NET Runtime is a separate download that runs apps; a standalone .NET runtime is governable (decision 1). A copy inside an app is a bundle member only through a parent signal.",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
       "gold": "Microsoft .NET SDK 8.0.303 (x64)|Microsoft Corporation|8.0.303.0",
       "name": "microsoft .net sdk",
       "publisher": "microsoft",
@@ -189,6 +205,14 @@
       "publisher": "microsoft",
       "reason": "The .NET Desktop Runtime is a separate download that runs desktop apps; a standalone .NET runtime is governable (decision 1).",
       "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": "Node.js runtime|OpenJS Foundation|20.15.1",
+      "name": "node.js runtime",
+      "publisher": "",
+      "reason": "Node.js runtime is the main feature of the Node.js installer; a standalone Node.js is governable (decision 1).",
+      "source": "https://github.com/nodejs/node/blob/main/tools/msvs/msi/nodemsi/i18n/en-us.wxl"
     }
   ],
   "exclusions": [

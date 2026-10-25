@@ -357,6 +357,15 @@ evidence is:
 Component outranks governable when both fire. Publisher alone never decides.
 Version shape only ever breaks a tie toward `unknown`.
 
+A curated parent links a row only when every word after the curated name is
+a year or version word, so "Microsoft Excel 2016" links to Office 2016 but
+"Microsoft Excel 2016 Viewer" does not. A row that matches a curated parent,
+including a curated OS-patch name, but fits no single cycle is `unknown`
+(`suite_no_fit`), not `component`. A name whose last word is Runtime or SDK
+after another word is a component unless a curated entry says otherwise;
+this is an accepted limit, so an app named like "Contoso Runtime" or
+"Fabrikam SDK" is treated as a component.
+
 ## Counts-only mode
 
     python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out

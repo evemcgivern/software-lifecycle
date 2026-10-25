@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import dataclasses
 import sys
+import time
 import unittest
 from datetime import date
 from pathlib import Path
@@ -241,6 +242,90 @@ class ClassifyTests(unittest.TestCase):
         got = run(data, "Example SQL", "16", "examplesql")
         self.assertEqual((got.cls, got.basis[0]),
                          ("unknown", "product_override"))
+
+
+SUITE = [dict(OUTLOOK, name_prefix="microsoft " + app)
+         for app in ("access", "excel", "word")]
+DOTNET = [{"name_prefix": prefix, "publisher": "microsoft",
+           "parent": "dotnet", "reason": "part of a .NET bundle",
+           "source": SOURCE, "gold": "a|b|c"}
+          for prefix in ("microsoft .net host",
+                         "microsoft .net host fx resolver")]
+PATCH = [{"name_prefix": prefix, "publisher": "microsoft",
+          "parent": parent, "reason": "patches that release",
+          "source": SOURCE, "gold": "a|b|c"}
+         for prefix, parent in (("cumulative update for windows", "demoos"),
+                                ("microsoft office proofing tools",
+                                 "office"))]
+MS = "Microsoft Corporation"
+
+
+class SuiteTailTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.data = make_data(bundle_parents=sorted(
+            SUITE + DOTNET + PATCH, key=lambda e: e["name_prefix"]))
+
+    def test_link_needs_a_tail_of_version_words(self):
+        for name in ("Microsoft Excel 2016", "Microsoft Excel 2016 (x64)",
+                     "Microsoft Excel - 2016"):
+            with self.subTest(name=name):
+                got = run(self.data, name, "16.0.4266.1001", publisher=MS)
+                self.assertEqual(got.cls, "bundle_member")
+                self.assertEqual(got.parent_ref["value"], "office/2016")
+
+    def test_other_words_in_the_tail_give_no_link(self):
+        for name in ("Microsoft Excel 2016 Viewer",
+                     "Microsoft Word Mobile 2019",
+                     "Microsoft Access 2016 Runtime",
+                     "Microsoft Access Runtime 2016"):
+            with self.subTest(name=name):
+                got = run(self.data, name, "16.0.4266.1001", publisher=MS)
+                self.assertEqual(got.cls, "unknown")
+                self.assertIn("suite_no_fit", got.basis)
+                self.assertIsNone(got.parent_ref)
+
+    def test_the_longest_prefix_wins(self):
+        got = run(self.data, "Microsoft .NET Host FX Resolver - 8.0.7 (x64)",
+                  "8.0.7.33815", publisher=MS)
+        self.assertEqual((got.cls, got.parent_ref["value"]),
+                         ("bundle_member", "dotnet/8"))
+
+    def test_allowed_patch_and_language_tails(self):
+        data = make_data(bundle_parents=[dict(
+            PATCH[0], parent="windows")])
+        catalog = dict(data.catalog, windows={
+            "id": "windows", "title": "Microsoft Windows", "category": "os",
+            "vendors": [], "namespaces": []})
+        products = dict(data.products, windows=[
+            {"cycle": c, "eol": False, "support": True, "extended": None}
+            for c in ("10-22h2", "11-24h2-w")])
+        data = dataclasses.replace(data, catalog=catalog, products=products)
+        got = run(data, "Cumulative Update for Windows 10 Version 22H2 for "
+                  "x64-based Systems (KB5039211)", "1", publisher=MS)
+        self.assertEqual(got.parent_ref["value"], "windows/10-22h2")
+        got = run(self.data, "Microsoft Office Proofing Tools 2019 - English",
+                  "16.0.10396.20017", publisher=MS)
+        self.assertEqual(got.parent_ref["value"], "office/2019")
+        got = run(data, "Cumulative Update for Windows 10 Version 22H2 for "
+                  "x64-based Systems Preview (KB5039211)", "1", publisher=MS)
+        self.assertEqual(got.cls, "unknown")
+
+
+class SpeedTests(unittest.TestCase):
+    def test_lib_rows_do_not_rescan_the_catalog(self):
+        data = make_data()
+        catalog = dict(data.catalog)
+        for n in range(500):
+            pid = "product%03d" % n
+            catalog[pid] = {"id": pid, "title": "Product %03d Server" % n,
+                            "category": "app", "vendors": [],
+                            "namespaces": []}
+        data = dataclasses.replace(data, catalog=catalog)
+        start = time.perf_counter()
+        for n in range(20000):
+            C.classify(item("libthing%d" % n, "1.0"), "", data)
+        self.assertLess(time.perf_counter() - start, 2.0)
 
 
 class ApplyTests(unittest.TestCase):

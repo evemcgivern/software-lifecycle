@@ -167,6 +167,23 @@ class BundledClassificationCuration(unittest.TestCase):
                 self.assertEqual(row["classification"], entry["class"])
                 self.assertEqual(row["heldout"], "0")
 
+    def test_standalone_runtime_rows_are_governable(self):
+        from swlc.classify import classify
+        data = load_data(str(DATA), as_of=AS_OF)
+        for name, pub, version in (
+                ("Microsoft .NET Runtime - 8.0.7 (x64)",
+                 "Microsoft Corporation", "8.0.7.33814"),
+                ("Node.js runtime", "OpenJS Foundation", "20.15.1")):
+            with self.subTest(name=name):
+                m = match_product(name, version, data.aliases, data.products,
+                                  catalog_index=data.matching_index(),
+                                  publisher=pub)
+                got = classify({"name": name, "version": version,
+                                "product": m.product, "publisher": pub},
+                               pub, data)
+                self.assertEqual(got.cls, "governable")
+                self.assertIn("%s|%s|%s" % (name, pub, version), self.gold)
+
     def test_dotnet_and_nodejs_are_standalone_runtimes(self):
         products = self.curation.get("classification_products", {})
         for pid in ("dotnet", "nodejs"):

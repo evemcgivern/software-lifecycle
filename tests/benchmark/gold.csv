@@ -2666,3 +2666,5 @@ Margie's Travel Hotfix Utility,Margie's Travel,1.0,NONE,,classification; made-up
 Trey Research Toolkit,Trey Research,3.0,NONE,,classification; made-up name ending in a part word; two blind labellers agreed,hand,0,unknown,
 VanArsdel Support Pack,VanArsdel Ltd,2.1,NONE,,classification; made-up name that could be a part; two blind labellers agreed,hand,0,unknown,
 Driver Booster,IObit,11.5.0.84,NONE,,classification; spec-defined; winget IObit.DriverBooster,hand,0,unknown,
+Microsoft .NET Runtime - 8.0.7 (x64),Microsoft Corporation,8.0.7.33814,dotnet,8,spec-defined; standalone .NET runtime is governable (decision 1); runtime ARP name; .NET runtime counts as .NET,hand,0,governable,
+Node.js runtime,OpenJS Foundation,20.15.1,nodejs,20,spec-defined; standalone Node.js runtime is governable (decision 1); title of the Node.js MSI runtime feature,hand,0,governable,
