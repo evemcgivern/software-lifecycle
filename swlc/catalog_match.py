@@ -34,15 +34,19 @@ phrases are its CPE vendors (split on "_", "-" and "."), its purl
 namespaces (kept whole, so a dotted maven group id or a hyphenated owner
 never equals a publisher token) and its curated publisher_aliases. A phrase
 confirms only as a contiguous run of whole tokens: no fragments, prefixes or
-joined-up strings.
+joined-up strings. A phrase that equals the product's own one-word title
+(vendor "prometheus" for Prometheus) is stricter: the publisher, without
+corporate words (inc, ltd, gmbh, foundation, the, ...), must be exactly that
+phrase, so "Prometheus Group Inc." does not confirm Prometheus. Known limit:
+a same-name vendor ("Moodle Pty Ltd" for Moodle) still confirms.
 
 A one-word title matches only when the publisher confirms the product (or a
 step c drop did, which needs the same confirmation) or the product is on
 single_word_allowlist. Products on generated_off and products whose catalog
 category is "device" never match here. An exclusion blocks one product when
-its cleaned name equals the row's whole or cleaned name and, when given,
-its publisher token is in the publisher; exclusions never touch curated
-aliases. A name of more than
+its cleaned name equals ANY candidate form of the row (whole, cleaned,
+vendor-dropped, version-split) and, when given, its publisher token is in
+the publisher; exclusions never touch curated aliases. A name of more than
 MAX_WORDS words is never matched by title.
 """
 from __future__ import annotations
@@ -92,6 +96,14 @@ def _is_locale(word: str) -> bool:
     return bool(sep) and lang in _LANGS and region in _REGIONS
 _GROUP_RE = re.compile(r"[(\[]([^()\[\]]*)[)\]]")
 _VENDOR_SPLIT_RE = re.compile(r"[_.-]+")
+# Publisher words that say what kind of body the publisher is, not who it
+# is. Removed before the strict check on a vendor word that is also the
+# product's own one-word title.
+CORPORATE_WORDS = frozenset((
+    "inc", "incorporated", "ltd", "limited", "llc", "gmbh", "corp",
+    "corporation", "co", "company", "pty", "plc", "sa", "ag", "bv",
+    "foundation", "project", "team", "org", "organization", "software",
+    "the"))
 # Names with more words than this are never matched by title: no product
 # title is that long, and it bounds the work on a hostile row.
 MAX_WORDS = 64
@@ -140,6 +152,7 @@ class CatalogIndex:
     """Read-only lookups built once from products.json and curation.json."""
     titles: MappingProxyType      # normalized title -> product ids (sorted)
     one_word: frozenset           # ids whose normalized title is one word
+    self_titles: MappingProxyType  # one-word id -> its title as tokens
     phrases: MappingProxyType     # id -> confirming token phrases (sorted)
     leads: MappingProxyType       # leading phrase -> ids it confirms
     max_lead: int                 # longest leading phrase, in tokens
@@ -149,8 +162,13 @@ class CatalogIndex:
     exclusions: MappingProxyType  # cleaned name -> ((id, publisher), ...)
 
     def phrase_ok(self, pid: str, phrase: tuple, pub: tuple) -> bool:
-        """Whether this confirming phrase of pid is in the publisher, as a
-        contiguous run of whole tokens."""
+        """Whether this confirming phrase of pid is in the publisher. A
+        phrase equal to the product's own one-word title (vendor
+        "prometheus" for Prometheus) confirms only when the publisher,
+        without corporate words, is exactly that phrase."""
+        if self.self_titles.get(pid) == phrase:
+            return tuple(t for t in pub if t not in CORPORATE_WORDS) \
+                == phrase
         return _has_run(pub, phrase)
 
     def confirms(self, pid: str, pub: tuple) -> bool:
@@ -188,9 +206,15 @@ class CatalogIndex:
             if _has_run(pub, lead):
                 leading.append((lead, " ".join(words[k:])))
 
-        # The forms an exclusion is compared with: the whole and the
-        # cleaned name.
-        blocked = self._excluded({norm, clean}, pub)
+        # Every candidate form, for the exclusions: the whole and cleaned
+        # name, the vendor-dropped forms and each with its version split off.
+        forms = {norm, clean}
+        forms.update(rest for _lead, rest in leading)
+        for form in list(forms):
+            split = split_tail(form)
+            if split:
+                forms.add(split[0])
+        blocked = self._excluded(forms, pub)
 
         def allowed(pid, confirmed):
             if pid in self.off or pid in self.devices or pid in blocked:
@@ -244,7 +268,7 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
     """Build the read-only index. catalog: {id: products.json record};
     curation: the validated curation.json, or None for an empty one."""
     cur = curation or {}
-    titles, one_word, phrases, leads = {}, set(), {}, {}
+    titles, one_word, self_titles, phrases, leads = {}, set(), {}, {}, {}
     devices = set()
     aliases = cur.get("publisher_aliases") or {}
     for pid in sorted(catalog):
@@ -253,6 +277,7 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
         titles.setdefault(title, []).append(pid)
         if " " not in title:
             one_word.add(pid)
+            self_titles[pid] = tokens(title)
         if rec.get("category") == "device":
             devices.add(pid)
         found = set()
@@ -260,7 +285,7 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
             found.add(_vendor_phrase(vendor))
         for space in rec.get("namespaces") or ():
             found.add((space,))
-        for phrase in aliases.get(pid) or ():
+        for phrase in (aliases.get(pid) or {}).get("phrases") or ():
             found.add(tokens(phrase))
         found.discard(())
         phrases[pid] = tuple(sorted(found))
@@ -274,6 +299,7 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
     return CatalogIndex(
         titles=MappingProxyType({k: tuple(v) for k, v in titles.items()}),
         one_word=frozenset(one_word),
+        self_titles=MappingProxyType(self_titles),
         phrases=MappingProxyType(phrases),
         leads=MappingProxyType({k: frozenset(v) for k, v in leads.items()}),
         max_lead=max((len(k) for k in leads), default=0),

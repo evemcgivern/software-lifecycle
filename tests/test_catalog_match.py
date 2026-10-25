@@ -63,10 +63,13 @@ CATALOG = {r["id"]: r for r in (
 )}
 CURATION = {
     "format": 1,
-    "publisher_aliases": {"jsrun": ["openjs foundation"]},
+    "publisher_aliases": {"jsrun": {
+        "phrases": ["openjs foundation"], "reason": "the project's steward",
+        "source": "https://example.com/jsrun"}},
     "single_word_allowlist": [
         {"product": "listed", "reason": "unambiguous in exports",
-         "source": "https://example.com/listed"}],
+         "source": "https://example.com/listed",
+         "gold": "Listed|x|1"}],
     "exclusions": [
         {"product": "chatter", "name": "chatter", "publisher": "chatter",
          "reason": "desktop client with the server's name",
@@ -303,8 +306,16 @@ class OneWordAndCurationTests(unittest.TestCase):
     def test_exclusion_needs_name_and_publisher_token(self):
         self.assertIsNone(gen("Chatter", "9.3.0", "Chatter, Inc.").product)
         self.assertIsNone(gen("Chatter (x64)", "9.3.0", "Chatter").product)
-        self.assertEqual(gen("Chatter 9.3", "", "Chatter").product,
-                         "chatter")
+
+    def test_exclusion_is_compared_with_every_candidate_form(self):
+        # A version in the name, a repeated vendor word, arch groups: each
+        # candidate form is compared, not only the whole name.
+        for name, ver in (("Chatter 9.3", ""), ("Chatter 9.3.0", "9.3.0"),
+                          ("Chatter 9", "9.3.0"), ("Chatter Chatter", "9.3"),
+                          ("Chatter 9.3.0 (x64)", "9.3.0"),
+                          ("Chatter Chatter 9.3", "")):
+            with self.subTest(name=name):
+                self.assertIsNone(gen(name, ver, "Chatter, Inc.").product)
 
     def test_exclusion_with_empty_publisher_blocks_any_publisher(self):
         index = build_index(CATALOG, dict(CURATION, exclusions=[
@@ -316,7 +327,10 @@ class OneWordAndCurationTests(unittest.TestCase):
             self.assertIsNone(r.product, pub)
         r = match_product("Foo Tool 2.1", "", [], PRODUCTS,
                           catalog_index=index)
-        self.assertEqual(r.product, "foo-tool")
+        self.assertIsNone(r.product)
+        r = match_product("Foo Tool Pro", "2.1", [], PRODUCTS,
+                          catalog_index=index)
+        self.assertIsNone(r.product)
 
     def test_exclusion_names_are_cleaned(self):
         self.assertIsNone(gen("Foo Tool Helper", "2.1").product)
@@ -522,6 +536,33 @@ class FixRoundTests(unittest.TestCase):
         a = [alias("tabby tablet", "tabby")]
         self.assertEqual(gen("Tabby Tablet", "8", aliases=a).product,
                          "tabby")
+
+    def test_self_title_vendor_needs_the_bare_publisher(self):
+        for pub in ("Promo", "Promo Inc.", "The Promo Foundation",
+                    "PROMO GmbH", "Promo Software Ltd", "promo project"):
+            with self.subTest(pub=pub):
+                self.assertEqual(gen("Promo", "3.5.1", pub).product, "promo")
+        for pub in ("Promo Group Inc.", "Bot Framework Promo", "Promo Labs",
+                    "The Promo Authors", "Promo Promo"):
+            with self.subTest(pub=pub):
+                self.assertIsNone(gen("Promo", "3.5.1", pub).product)
+
+    def test_publisher_alias_adds_a_publisher_the_self_title_rule_refuses(self):
+        index = build_index(CATALOG, dict(CURATION, publisher_aliases={
+            "promo": {"phrases": ["promo labs"], "reason": "r",
+                      "source": "https://example.com/p"}}))
+        for pub, want in (("Promo Labs", "promo"), ("Promo Labs, Inc.", "promo"),
+                          ("The Promo Labs Team", "promo"),
+                          ("Promo Group Inc.", None), ("Labs Promo", None)):
+            with self.subTest(pub=pub):
+                r = match_product("Promo", "3.5.1", [], PRODUCTS,
+                                  catalog_index=index, publisher=pub)
+                self.assertEqual(r.product, want)
+
+    def test_self_title_rule_also_governs_the_leading_word_drop(self):
+        self.assertEqual(gen("Promo Promo", "3.5", "Promo Inc").product,
+                         "promo")
+        self.assertIsNone(gen("Promo Promo", "3.5", "Promo Group").product)
 
     def test_other_vendor_words_keep_the_run_rule(self):
         # Mozilla is not Firefox's own title: any run of it confirms.

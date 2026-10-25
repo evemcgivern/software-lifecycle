@@ -103,11 +103,19 @@ which one found the product.
      confirms the vendor `apache`; `ApacheFriends` does not. A vendor
      written as one word, such as `redhat`, is not confirmed by
      `Red Hat, Inc.`.
+   - When the vendor word is the product's own title (vendor `prometheus`
+     for Prometheus), the publisher must be that word alone, apart from
+     words such as Inc, Ltd, GmbH, Foundation, Project, Team or The. So
+     `Prometheus Group Inc.` does not confirm Prometheus, and `Grafana Labs`
+     confirms Grafana only through its curated publisher alias. Known limit: a different
+     product from a same-name vendor (the Moodle app from Moodle Pty Ltd)
+     still confirms.
    - Products whose catalog category is `device`, and products on
      `generated_off`, are never matched by title.
    - An exclusion stops one product for a name: it applies when its name
-     equals the row's whole name or the name without architecture groups
-     and, when it gives one, its publisher word is in the publisher.
+     equals any form of the row's name (whole, without architecture groups,
+     without the vendor word, or with the version split off) and, when it
+     gives one, its publisher word is in the publisher.
    - No slugs, fragments or fuzzy scores are used.
 
 When a version has more parts than the chosen cycle and that cycle has finer
@@ -170,8 +178,10 @@ refresh. The file holds no descriptions, slugs, alternate URLs, page text
 or dates.
 
 `curation.json` has the keys `format`, `publisher_aliases` (a product id to
-a sorted list of lowercase vendor phrases), `single_word_allowlist` (a list
-of `product`, `reason` and `source`, where `source` is an https URL),
+an object of `phrases`, a sorted list of lowercase vendor phrases, `reason`
+and `source`), `single_word_allowlist` (a list of `product`, `reason`,
+`source` and `gold`, the gold benchmark row it was checked on, as
+`name|publisher|version`), where each `source` is an https URL,
 `exclusions` (a list of `product`, `name`, `publisher`, `reason` and `gold`)
 and `generated_off` (a sorted list of product ids). The tool refuses a file
 with an unknown key, a wrong type, a duplicate or an unsorted list where

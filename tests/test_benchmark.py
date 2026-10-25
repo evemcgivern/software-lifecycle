@@ -378,6 +378,17 @@ class CurationCitesGoldTests(unittest.TestCase):
                 self.assertEqual(row["heldout"], "0")
                 self.assertEqual(row["expected_product"], "NONE")
 
+    def test_each_allowlist_entry_cites_a_gold_row_of_its_product(self):
+        curation = json.loads((ROOT / "data" / "curation.json").read_text(
+            encoding="utf-8"))
+        rows = {"%s|%s|%s" % row_key(r): r for r in read_gold()}
+        for item in curation["single_word_allowlist"]:
+            with self.subTest(gold=item["gold"]):
+                row = rows.get(item["gold"])
+                self.assertIsNotNone(row, "allowlist entry cites no gold row")
+                self.assertEqual(row["heldout"], "0")
+                self.assertEqual(row["expected_product"], item["product"])
+
 
 def benchmark_files() -> list:
     return sorted(p for p in BENCH.iterdir() if p.is_file()

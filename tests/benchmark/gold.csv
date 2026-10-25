@@ -2170,6 +2170,7 @@ Microsoft .NET Framework,Microsoft Corporation,4.6.01055,dotnetfx,none,"hand-add
 Redis,Redistributable Packages Inc,7.2.4,NONE,,trap=vendor-lookalike; the publisher word starts with the vendor token redis but is another word,hand,0
 Puppet,Puppetry Studio,8.4.0,NONE,,trap=vendor-lookalike; the publisher word starts with the vendor token puppet but is another word,hand,0
 Amazon OpenSearch 2.11,Amazon Web Services,2.11.1,NONE,,trap=ambiguous; fits Amazon OpenSearch (title plus version) and OpenSearch (vendor word amazon dropped); two products,hand,0
+Nextcloud 3.11.0,Nextcloud GmbH,3.11.0,NONE,,"trap=lookalike; desktop sync client with its version in the name, not Nextcloud Server",hand,0
 Amazon Kindle,Amazon,2.9.1.71006,NONE,,"trap=device; the Kindle for PC reading app, not the Kindle e-reader device",hand,0
 Kibana,Elasticity Labs,8.17.3,NONE,,"trap=vendor-lookalike; the publisher word starts with the vendor token elastic but is another word (made-up publisher)",hand,0
 Apple iPhone,Apple,17.5.1,NONE,,"trap=device; a device with its OS or kernel version, never matched by product title",hand,0
@@ -2177,3 +2178,5 @@ Google Pixel,Google,9,NONE,,"trap=device; a device with its OS or kernel version
 Raspberry Pi,Raspberry Pi Ltd,5.15.84,NONE,,"trap=device; a device with its OS or kernel version, never matched by product title",hand,0
 Apple iPad,Apple,17.5,NONE,,"trap=device; a device with its OS or kernel version, never matched by product title",hand,0
 Samsung Galaxy S24,Samsung,14,NONE,,"trap=device; a device with its OS or kernel version, never matched by product title",hand,0
+Prometheus,Prometheus Group Inc.,3.5.0,NONE,,"trap=vendor-lookalike; Prometheus Group is another company, not the Prometheus monitoring project",hand,0
+Composer,Bot Framework Composer,2.1.2,NONE,,"trap=vendor-lookalike; Bot Framework Composer is another tool, not PHP Composer",hand,0

@@ -288,12 +288,16 @@ def validate_curation(obj, product_ids=None) -> dict:
     aliases = obj["publisher_aliases"]
     if not isinstance(aliases, dict):
         raise DataError("publisher_aliases: expected an object")
-    for pid, phrases in aliases.items():
+    for pid, entry in aliases.items():
         where = "publisher_aliases entry"
         _ident(pid, where)
+        _keys(entry, ("phrases", "reason", "source"), where)
+        phrases = entry["phrases"]
         if not isinstance(phrases, list) or not phrases:
             raise DataError("%s: expected a non-empty list" % where)
         _str_list(phrases, where, lower=True)
+        _text(entry["reason"], where + ".reason")
+        _https(entry["source"], where + ".source")
         named.append(pid)
 
     allow = obj["single_word_allowlist"]
@@ -302,13 +306,16 @@ def validate_curation(obj, product_ids=None) -> dict:
     seen = set()
     for pos, item in enumerate(allow, 1):
         where = "single_word_allowlist[%d]" % pos
-        _keys(item, ("product", "reason", "source"), where)
+        _keys(item, ("product", "reason", "source", "gold"), where)
         pid = _ident(item["product"], where + ".product")
         if pid in seen:
             raise DataError("%s: product listed twice" % where)
         seen.add(pid)
         _text(item["reason"], where + ".reason")
         _https(item["source"], where + ".source")
+        if _text(item["gold"], where + ".gold").count("|") != 2:
+            raise DataError("%s.gold: expected name|publisher|version"
+                            % where)
         named.append(pid)
 
     excl = obj["exclusions"]

@@ -543,7 +543,15 @@ def curation_obj(**over):
 GOOD_EXCLUSION = {"product": "alpha", "name": "alpha desktop",
                   "publisher": "", "reason": "client", "gold": "a|b|c"}
 GOOD_ALLOW = {"product": "alpha", "reason": "vendor says so",
-              "source": "https://example.com/a"}
+              "source": "https://example.com/a", "gold": "a|b|c"}
+
+
+def pa(*phrases, **over):
+    """A publisher_aliases entry."""
+    entry = {"phrases": list(phrases), "reason": "the vendor's own name",
+             "source": "https://example.com/p"}
+    entry.update(over)
+    return entry
 
 
 class ProductsSchemaTests(DataCase):
@@ -671,7 +679,7 @@ class ProductsSchemaTests(DataCase):
 class CurationSchemaTests(DataCase):
     def test_valid_curation_is_returned(self):
         obj = curation_obj(
-            publisher_aliases={"alpha": ["acme", "acme software"]},
+            publisher_aliases={"alpha": pa("acme", "acme software")},
             single_word_allowlist=[GOOD_ALLOW],
             exclusions=[GOOD_EXCLUSION, dict(GOOD_EXCLUSION, publisher="p")],
             generated_off=["alpha", "beta"])
@@ -685,14 +693,24 @@ class CurationSchemaTests(DataCase):
             {k: v for k, v in curation_obj().items() if k != "format"},
             curation_obj(format=2), curation_obj(format=True),
             curation_obj(publisher_aliases=[]),
-            curation_obj(publisher_aliases={"Alpha": ["a"]}),
-            curation_obj(publisher_aliases={"alpha": []}),
-            curation_obj(publisher_aliases={"alpha": "a"}),
-            curation_obj(publisher_aliases={"alpha": ["b", "a"]}),
-            curation_obj(publisher_aliases={"alpha": ["a", "a"]}),
-            curation_obj(publisher_aliases={"alpha": ["Acme"]}),
-            curation_obj(publisher_aliases={"alpha": [" a"]}),
-            curation_obj(publisher_aliases={"alpha": [""]}),
+            curation_obj(publisher_aliases={"Alpha": pa("a")}),
+            curation_obj(publisher_aliases={"alpha": ["a"]}),
+            curation_obj(publisher_aliases={"alpha": pa()}),
+            curation_obj(publisher_aliases={"alpha": pa(phrases="a")}),
+            curation_obj(publisher_aliases={"alpha": pa("b", "a")}),
+            curation_obj(publisher_aliases={"alpha": pa("a", "a")}),
+            curation_obj(publisher_aliases={"alpha": pa("Acme")}),
+            curation_obj(publisher_aliases={"alpha": pa(" a")}),
+            curation_obj(publisher_aliases={"alpha": pa("")}),
+            curation_obj(publisher_aliases={"alpha": pa("a", reason="")}),
+            curation_obj(publisher_aliases={"alpha": pa("a", reason=5)}),
+            curation_obj(publisher_aliases={"alpha": pa(
+                "a", source="http://example.com/p")}),
+            curation_obj(publisher_aliases={"alpha": pa("a", extra=1)}),
+            curation_obj(publisher_aliases={"alpha": {
+                "phrases": ["a"], "reason": "r"}}),
+            curation_obj(publisher_aliases={"alpha": {
+                "phrases": ["a"], "source": "https://example.com/p"}}),
             curation_obj(single_word_allowlist={}),
             curation_obj(single_word_allowlist=[GOOD_ALLOW, GOOD_ALLOW]),
             curation_obj(single_word_allowlist=[dict(GOOD_ALLOW, extra=1)]),
@@ -708,6 +726,10 @@ class CurationSchemaTests(DataCase):
             curation_obj(single_word_allowlist=[
                 dict(GOOD_ALLOW, source="ftp://example.com")]),
             curation_obj(single_word_allowlist=[dict(GOOD_ALLOW, source=5)]),
+            curation_obj(single_word_allowlist=[
+                {k: v for k, v in GOOD_ALLOW.items() if k != "gold"}]),
+            curation_obj(single_word_allowlist=[dict(GOOD_ALLOW, gold="a|b")]),
+            curation_obj(single_word_allowlist=[dict(GOOD_ALLOW, gold="")]),
             curation_obj(exclusions={}),
             curation_obj(exclusions=["x"]),
             curation_obj(exclusions=[dict(GOOD_EXCLUSION, extra=1)]),
@@ -736,7 +758,7 @@ class CurationSchemaTests(DataCase):
     def test_every_named_product_must_exist_when_ids_are_given(self):
         known = ["alpha"]
         for obj in (
-                curation_obj(publisher_aliases={"gone": ["a"]}),
+                curation_obj(publisher_aliases={"gone": pa("a")}),
                 curation_obj(single_word_allowlist=[
                     dict(GOOD_ALLOW, product="gone")]),
                 curation_obj(exclusions=[

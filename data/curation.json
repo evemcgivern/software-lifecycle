@@ -20,6 +20,224 @@
     "claude",
     "openai-api-models"
   ],
-  "publisher_aliases": {},
+  "publisher_aliases": {
+    "ansible": {
+      "phrases": [
+        "red hat"
+      ],
+      "reason": "Red Hat makes Ansible (Red Hat Ansible Automation Platform). Its CPE vendor is written as one word, redhat, which never equals the two words Red Hat.",
+      "source": "https://www.redhat.com/en/technologies/management/ansible"
+    },
+    "ceph": {
+      "phrases": [
+        "ceph packaging team"
+      ],
+      "reason": "Debian's ceph source package names the maintainer \"Ceph Packaging Team\".",
+      "source": "https://sources.debian.org/data/main/c/ceph/16.2.15+ds-0+deb12u2/debian/control"
+    },
+    "coder": {
+      "phrases": [
+        "coder technologies"
+      ],
+      "reason": "The winget manifest for Coder gives the publisher \"Coder Technologies, Inc.\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/c/Coder/Coder/2.9.4/Coder.Coder.locale.en-US.yaml"
+    },
+    "commvault": {
+      "phrases": [
+        "commvault systems"
+      ],
+      "reason": "Commvault's legal page names the company Commvault Systems, Inc.",
+      "source": "https://www.commvault.com/legal"
+    },
+    "deno": {
+      "phrases": [
+        "deno land"
+      ],
+      "reason": "The winget manifest for Deno gives the publisher \"Deno Land Inc.\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/d/DenoLand/Deno/2.9.8/DenoLand.Deno.locale.en-US.yaml"
+    },
+    "discourse": {
+      "phrases": [
+        "civilized discourse construction kit"
+      ],
+      "reason": "The Discourse site names the copyright holder Civilized Discourse Construction Kit, Inc.",
+      "source": "https://www.discourse.org/"
+    },
+    "drupal": {
+      "phrases": [
+        "drupal association"
+      ],
+      "reason": "The Drupal Association administers Drupal.org for the Drupal project, and is named as the publisher in catalog rows.",
+      "source": "https://www.drupal.org/association"
+    },
+    "erlang": {
+      "phrases": [
+        "debian erlang packagers",
+        "ericsson"
+      ],
+      "reason": "The winget manifest for Erlang OTP gives the publisher \"Ericsson AB\". Debian's erlang source package names the maintainer \"Debian Erlang Packagers\" (https://sources.debian.org/data/main/e/erlang/1:25.2.3+dfsg-1+deb12u4/debian/control).",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/e/Erlang/ErlangOTP/29.1.2/Erlang.ErlangOTP.locale.en-US.yaml"
+    },
+    "grafana": {
+      "phrases": [
+        "grafana labs"
+      ],
+      "reason": "The winget manifest for Grafana OSS gives the publisher \"Grafana Labs\", the company that makes Grafana.",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/g/GrafanaLabs/Grafana/OSS/9.5.0.0/GrafanaLabs.Grafana.OSS.locale.en-US.yaml"
+    },
+    "haproxy": {
+      "phrases": [
+        "debian haproxy maintainers",
+        "haproxy technologies"
+      ],
+      "reason": "HAProxy Technologies is the company behind HAProxy and is named on its site. Debian's haproxy source package names the maintainer \"Debian HAProxy Maintainers\" (https://sources.debian.org/data/main/h/haproxy/2.6.12-1+deb12u3/debian/control).",
+      "source": "https://www.haproxy.com/"
+    },
+    "istio": {
+      "phrases": [
+        "istio authors"
+      ],
+      "reason": "The Istio site footer reads \"the Istio Authors\", the copyright holder used in the project's files.",
+      "source": "https://istio.io/"
+    },
+    "kubernetes": {
+      "phrases": [
+        "kubernetes authors"
+      ],
+      "reason": "The Kubernetes site footer reads \"The Kubernetes Authors\", the copyright holder used in the project's files.",
+      "source": "https://kubernetes.io/"
+    },
+    "libreoffice": {
+      "phrases": [
+        "debian libreoffice maintainers",
+        "document foundation"
+      ],
+      "reason": "The winget manifest for LibreOffice gives the publisher \"The Document Foundation\". Debian's libreoffice source package names the maintainer \"Debian LibreOffice Maintainers\" (https://sources.debian.org/data/main/libr/libreoffice/4:7.4.7-1+deb12u14/debian/control).",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/t/TheDocumentFoundation/LibreOffice/26.8.1.1/TheDocumentFoundation.LibreOffice.locale.en-US.yaml"
+    },
+    "mariadb": {
+      "phrases": [
+        "mariadb corporation"
+      ],
+      "reason": "The winget manifest for MariaDB Server gives the publisher \"MariaDB Corporation Ab\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/m/MariaDB/Server/13.0.2.0/MariaDB.Server.locale.en-US.yaml"
+    },
+    "mediawiki": {
+      "phrases": [
+        "mediawiki packaging team"
+      ],
+      "reason": "Debian's mediawiki source package names the maintainer \"MediaWiki packaging team\".",
+      "source": "https://sources.debian.org/data/main/m/mediawiki/1:1.39.17-1+deb12u2/debian/control"
+    },
+    "nginx": {
+      "phrases": [
+        "debian nginx maintainers",
+        "nginx packaging"
+      ],
+      "reason": "Debian's nginx source package names the maintainer \"Debian Nginx Maintainers\". The nginx.org Ubuntu package index (https://nginx.org/packages/ubuntu/dists/jammy/nginx/binary-amd64/Packages) names \"NGINX Packaging\".",
+      "source": "https://sources.debian.org/data/main/n/nginx/1.26.3-3+deb13u10/debian/control"
+    },
+    "openssl": {
+      "phrases": [
+        "debian openssl team"
+      ],
+      "reason": "Debian's openssl source package names the maintainer \"Debian OpenSSL Team\".",
+      "source": "https://sources.debian.org/data/main/o/openssl/3.0.17-1~deb12u2/debian/control"
+    },
+    "openvpn": {
+      "phrases": [
+        "openvpn maintainers"
+      ],
+      "reason": "Debian's openvpn source package (unstable) names the maintainer \"OpenVPN Maintainers\".",
+      "source": "https://sources.debian.org/data/main/o/openvpn/2.7.8-1/debian/control"
+    },
+    "pgadmin": {
+      "phrases": [
+        "pgadmin development team"
+      ],
+      "reason": "The winget manifest for pgAdmin gives the publisher \"The pgAdmin Development Team\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/p/PostgreSQL/pgAdmin/9.9/PostgreSQL.pgAdmin.locale.en-US.yaml"
+    },
+    "php": {
+      "phrases": [
+        "debian php maintainers",
+        "php group"
+      ],
+      "reason": "The PHP license page names The PHP Group as the copyright holder of PHP. Debian's php-defaults source package names the maintainer \"Debian PHP Maintainers\" (https://sources.debian.org/data/main/p/php-defaults/93/debian/control).",
+      "source": "https://www.php.net/license/"
+    },
+    "phpmyadmin": {
+      "phrases": [
+        "phpmyadmin packaging team"
+      ],
+      "reason": "Debian's phpmyadmin source package names the maintainer \"phpMyAdmin Packaging Team\".",
+      "source": "https://sources.debian.org/data/main/p/phpmyadmin/4:5.2.1+dfsg-1+deb12u1/debian/control"
+    },
+    "postgresql": {
+      "phrases": [
+        "debian postgresql maintainers",
+        "postgresql global development group"
+      ],
+      "reason": "The winget manifest for PostgreSQL 16 gives the publisher \"PostgreSQL Global Development Group\"; the licence page at https://www.postgresql.org/about/licence/ uses the same name. Debian's postgresql-common source package names the maintainer \"Debian PostgreSQL Maintainers\" (https://sources.debian.org/data/main/p/postgresql-common/248+deb12u1/debian/control).",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/p/PostgreSQL/PostgreSQL/16/16.9-3/PostgreSQL.PostgreSQL.16.locale.en-US.yaml"
+    },
+    "prometheus": {
+      "phrases": [
+        "prometheus authors"
+      ],
+      "reason": "The Prometheus site footer reads \"Prometheus Authors\", the copyright holder used in the project's files.",
+      "source": "https://prometheus.io/"
+    },
+    "puppet": {
+      "phrases": [
+        "puppet labs",
+        "puppet package maintainers"
+      ],
+      "reason": "Debian's puppet-agent copyright file names the copyright holder \"Puppet Labs Inc\", the company's earlier name. Its control file (https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/control) names the maintainer \"Puppet Package Maintainers\".",
+      "source": "https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/copyright"
+    },
+    "scala": {
+      "phrases": [
+        "epfl"
+      ],
+      "reason": "The Scala site names the copyright holder Ecole Polytechnique Federale Lausanne (EPFL).",
+      "source": "https://www.scala-lang.org/"
+    },
+    "sqlite": {
+      "phrases": [
+        "sqlite consortium"
+      ],
+      "reason": "The SQLite Consortium page on sqlite.org describes the consortium that funds SQLite development; catalog rows name it as the publisher.",
+      "source": "https://www.sqlite.org/consortium.html"
+    },
+    "telegraf": {
+      "phrases": [
+        "influxdata"
+      ],
+      "reason": "The winget manifest for Telegraf gives the publisher \"InfluxData Inc.\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/i/InfluxData/Telegraf/1.36.3/InfluxData.Telegraf.locale.en-US.yaml"
+    },
+    "traefik": {
+      "phrases": [
+        "traefik labs"
+      ],
+      "reason": "Traefik Labs is the company behind Traefik and is named on its site.",
+      "source": "https://traefik.io/"
+    },
+    "wireshark": {
+      "phrases": [
+        "wireshark developer community"
+      ],
+      "reason": "The winget manifest for Wireshark gives the publisher \"The Wireshark developer community, https://www.wireshark.org\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/w/WiresharkFoundation/Wireshark/4.6.9/WiresharkFoundation.Wireshark.locale.en-US.yaml"
+    },
+    "zabbix": {
+      "phrases": [
+        "zabbix sia"
+      ],
+      "reason": "The Zabbix contact page names the company Zabbix SIA.",
+      "source": "https://www.zabbix.com/contact"
+    }
+  },
   "single_word_allowlist": []
 }
