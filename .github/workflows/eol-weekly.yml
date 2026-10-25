@@ -1,0 +1,139 @@
+name: endoflife.date weekly pull request
+
+# Builds the endoflife.date snapshot at the upstream default branch's
+# current commit and opens a pull request with the changed data/eol files.
+# A person reviews and merges it. Nothing here pushes to main or publishes
+# a release: after a merge, the next "KEV daily data release" run (or a
+# manual run of it with dry_run set to false) publishes the new dates.
+#
+# Feed text never reaches a run script, a step name or an expression: it
+# moves through files, and the commit id and date are checked against a
+# fixed pattern first.
+on:
+  schedule:
+    - cron: "23 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eol-weekly
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Credentials stay in the checkout because this job pushes one branch.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Find the upstream commit and its date
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="$(gh api repos/endoflife-date/endoflife.date/commits/HEAD --jq .sha)"
+          if ! printf '%s' "$sha" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "The upstream commit id has an unexpected form."
+            exit 1
+          fi
+          day="$(gh api "repos/endoflife-date/endoflife.date/commits/$sha" --jq .commit.committer.date | cut -c1-10)"
+          if ! printf '%s' "$day" | grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'; then
+            echo "The upstream commit date has an unexpected form."
+            exit 1
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "day=$day" >> "$GITHUB_OUTPUT"
+
+      - name: Build the snapshot and summarise the changes
+        id: build
+        env:
+          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
+        run: |
+          python3 -B refresh_data.py eol --upstream-commit "$UPSTREAM_SHA" --out "$RUNNER_TEMP/eol"
+          status=0
+          python3 -B refresh_data.py eol-summary --new "$RUNNER_TEMP/eol" --old data/eol \
+            > "$RUNNER_TEMP/summary.md" || status=$?
+          # 0 means not flagged, 1 means flagged; anything else, or no
+          # summary at all, means the summary itself failed.
+          if [ "$status" -gt 1 ] || ! grep -q '^## endoflife.date change summary' "$RUNNER_TEMP/summary.md"; then
+            echo "The change summary could not be built."
+            exit 1
+          fi
+          if [ "$status" -eq 1 ]; then flagged=true; else flagged=false; fi
+          echo "flagged=$flagged" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          if diff -r -q "$RUNNER_TEMP/eol" data/eol > /dev/null; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No end-of-life dates changed; no pull request needed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update data/eol and the manifest, then run the checks
+        if: steps.build.outputs.changed == 'true'
+        env:
+          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
+          UPSTREAM_DAY: ${{ steps.upstream.outputs.day }}
+        run: |
+          rm -f data/eol/*.json
+          cp "$RUNNER_TEMP/eol/"*.json data/eol/
+          field() {
+            python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))[sys.argv[2]])' "$1" "$2"
+          }
+          python3 -B refresh_data.py manifest --dir data \
+            --kev-date "$(field data/manifest.json kev_date)" \
+            --kev-catalog-version "$(field data/manifest.json kev_catalog_version)" \
+            --eol-date "$UPSTREAM_DAY" \
+            --upstream-commit "$UPSTREAM_SHA" \
+            --release-id "main-eol-$UPSTREAM_DAY"
+          python3 -B software_lifecycle.py verify-data --data data
+          # A pull request opened with the job token does not start the CI
+          # workflow, so the full test suite runs here before the push.
+          python3 -B -m unittest discover -s tests
+
+      - name: Push a branch and open the pull request
+        if: steps.build.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
+          FLAGGED: ${{ steps.build.outputs.flagged }}
+        run: |
+          branch="data/eol-$(date -u +%Y-%m-%d)"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "Branch $branch already exists. Close or merge its pull request first."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add data/eol data/manifest.json
+          git commit -q -m "chore(data): update endoflife.date snapshot" \
+            -m "Upstream commit: $UPSTREAM_SHA"
+          git push origin "HEAD:refs/heads/$branch"
+
+          title="chore(data): update endoflife.date snapshot"
+          if [ "$FLAGGED" = "true" ]; then title="$title (flagged)"; fi
+          {
+            echo "Upstream: endoflife-date/endoflife.date at commit $UPSTREAM_SHA."
+            echo
+            cat "$RUNNER_TEMP/summary.md"
+            echo
+            echo "Review the changed dates in data/eol before merging. A wrong"
+            echo "end-of-life date is the failure this review exists to catch."
+            echo "After the merge, the next KEV daily data release publishes"
+            echo "these dates."
+          } > "$RUNNER_TEMP/pr-body.md"
+          gh pr create --base main --head "$branch" --title "$title" \
+            --body-file "$RUNNER_TEMP/pr-body.md"

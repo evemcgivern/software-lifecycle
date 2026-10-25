@@ -1,0 +1,270 @@
+name: KEV daily data release
+
+# Pulls the CISA KEV catalog every day and, when every check passes,
+# publishes a data release data-YYYY.MM.DD.N with a checksum manifest and a
+# GitHub artifact attestation. The release also carries the endoflife.date
+# files from main, so a merged weekly pull request goes out on the next run.
+# If any check fails, nothing is published and one issue labelled
+# data-gate-failed is opened or updated.
+#
+# Feed text never reaches a run script, a step name or an expression: it
+# moves through files, and the few values passed on (ids and digests) are
+# checked against a fixed pattern first.
+on:
+  schedule:
+    - cron: "41 7 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and check only; publish nothing"
+        type: boolean
+        default: true
+      allow_removed:
+        description: "Accept KEV entries that CISA removed (check the CISA notice first)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: data-release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      attestations: read
+    outputs:
+      dry_run: ${{ steps.mode.outputs.dry_run }}
+      changed: ${{ steps.assemble.outputs.changed }}
+      release_id: ${{ steps.assemble.outputs.release_id }}
+      zip_sha256: ${{ steps.assemble.outputs.zip_sha256 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Decide the run mode
+        id: mode
+        env:
+          IS_MANUAL: ${{ github.event_name == 'workflow_dispatch' }}
+          DRY_RUN_INPUT: ${{ inputs.dry_run }}
+          ALLOW_REMOVED_INPUT: ${{ inputs.allow_removed }}
+        run: |
+          dry_run=false
+          allow_removed=false
+          if [ "$IS_MANUAL" = "true" ]; then
+            # A manual run publishes only when dry_run is set to false.
+            if [ "$DRY_RUN_INPUT" != "false" ]; then dry_run=true; fi
+            if [ "$ALLOW_REMOVED_INPUT" = "true" ]; then allow_removed=true; fi
+          fi
+          echo "dry_run=$dry_run" >> "$GITHUB_OUTPUT"
+          echo "allow_removed=$allow_removed" >> "$GITHUB_OUTPUT"
+          echo "Dry run: $dry_run. Allow removed entries: $allow_removed." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fetch the KEV catalog
+        run: python3 -B refresh_data.py kev --out "$RUNNER_TEMP/new"
+
+      - name: Get the previous KEV snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/prev"
+          tag="$(gh release list --limit 200 --exclude-drafts --json tagName --jq '.[].tagName' \
+            | grep -E '^data-[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$' | sort -V | tail -n 1 || true)"
+          if [ -n "$tag" ]; then
+            gh release download "$tag" --pattern data.zip --dir "$RUNNER_TEMP/prev"
+            # Trust the previous release only if this workflow attested it.
+            gh attestation verify "$RUNNER_TEMP/prev/data.zip" --repo "$GITHUB_REPOSITORY" \
+              --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/kev-daily.yml"
+            unzip -q "$RUNNER_TEMP/prev/data.zip" -d "$RUNNER_TEMP/prev/data"
+            python3 -B software_lifecycle.py verify-data --data "$RUNNER_TEMP/prev/data"
+            cp "$RUNNER_TEMP/prev/data/kev.json" "$RUNNER_TEMP/old-kev.json"
+            cp "$RUNNER_TEMP/prev/data/manifest.json" "$RUNNER_TEMP/old-manifest.json"
+            echo "Previous data release: $tag" >> "$GITHUB_STEP_SUMMARY"
+          else
+            if [ ! -f data/kev.json ]; then
+              echo "There is no previous data release and no data/kev.json on main to compare against."
+              exit 1
+            fi
+            python3 -B software_lifecycle.py verify-data --data data
+            cp data/kev.json "$RUNNER_TEMP/old-kev.json"
+            echo '{"files": {}}' > "$RUNNER_TEMP/old-manifest.json"
+            echo "No previous data release; compared against data/kev.json on main." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Check the new KEV snapshot
+        env:
+          ALLOW_REMOVED: ${{ steps.mode.outputs.allow_removed }}
+        run: |
+          args=(--new "$RUNNER_TEMP/new/kev.json" --old "$RUNNER_TEMP/old-kev.json" --digest "$RUNNER_TEMP/digest.md")
+          if [ "$ALLOW_REMOVED" = "true" ]; then args+=(--allow-removed); fi
+          if python3 -B refresh_data.py check-kev "${args[@]}" 2> "$RUNNER_TEMP/gate.txt"; then
+            cat "$RUNNER_TEMP/digest.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "## KEV gate failed"
+              echo
+              echo "Nothing was published."
+              echo
+              sed 's/^/- /' "$RUNNER_TEMP/gate.txt"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Assemble, verify and zip the data folder
+        id: assemble
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          out="$RUNNER_TEMP/release/data"
+          mkdir -p "$out/eol"
+          cp data/aliases.json data/profiles.json "$out/"
+          cp data/eol/*.json "$out/eol/"
+          cp "$RUNNER_TEMP/new/kev.json" "$out/kev.json"
+
+          field() {
+            python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))[sys.argv[2]])' "$1" "$2"
+          }
+          day="$(date -u +%Y.%m.%d)"
+          last="$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/data-$day." --jq '.[].ref' \
+            | sed -E 's#^refs/tags/data-[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.##' | grep -E '^[0-9]+$' | sort -n | tail -n 1 || true)"
+          release_id="data-$day.$(( ${last:-0} + 1 ))"
+
+          # Dates come from the KEV feed and from main's manifest, never
+          # from the clock; the release id is the only dated name.
+          python3 -B refresh_data.py manifest --dir "$out" \
+            --kev-date "$(field "$out/kev.json" dateReleased)" \
+            --kev-catalog-version "$(field "$out/kev.json" catalogVersion)" \
+            --eol-date "$(field data/manifest.json eol_date)" \
+            --upstream-commit "$(field data/manifest.json upstream_commit)" \
+            --release-id "$release_id"
+          python3 -B software_lifecycle.py verify-data --data "$out"
+
+          same="$(python3 -I -c 'import json, sys; a, b = (json.load(open(p, encoding="utf-8"))["files"] for p in sys.argv[1:]); print("true" if a == b else "false")' \
+            "$out/manifest.json" "$RUNNER_TEMP/old-manifest.json")"
+          if [ "$same" = "true" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No data changed since the previous release; nothing to publish." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          (cd "$out" && zip -X -q -r "$RUNNER_TEMP/release/data.zip" .)
+          cp "$out/manifest.json" "$RUNNER_TEMP/release/manifest.json"
+          echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
+          echo "zip_sha256=$(sha256sum "$RUNNER_TEMP/release/data.zip" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          echo "Built $release_id." >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: data-release
+          path: |
+            ${{ runner.temp }}/release/data.zip
+            ${{ runner.temp }}/release/manifest.json
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: build
+    if: needs.build.outputs.dry_run == 'false' && needs.build.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: data-release
+          path: release
+
+      - name: Check the files are the ones the build job made
+        env:
+          ZIP_SHA256: ${{ needs.build.outputs.zip_sha256 }}
+          RELEASE_ID: ${{ needs.build.outputs.release_id }}
+        run: |
+          if ! printf '%s' "$ZIP_SHA256" | grep -Eq '^[0-9a-f]{64}$'; then
+            echo "The zip digest has an unexpected form."
+            exit 1
+          fi
+          if ! printf '%s' "$RELEASE_ID" | grep -Eq '^data-[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$'; then
+            echo "The release id has an unexpected form."
+            exit 1
+          fi
+          printf '%s  release/data.zip\n' "$ZIP_SHA256" | sha256sum -c -
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            release/data.zip
+            release/manifest.json
+
+      - name: Create the data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_ID: ${{ needs.build.outputs.release_id }}
+        run: |
+          # Data releases are never retagged or edited: stop if the tag exists.
+          if gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_ID" > /dev/null 2>&1; then
+            echo "Tag $RELEASE_ID already exists. Nothing was published."
+            exit 1
+          fi
+          cat > notes.md <<EOF
+          KEV and endoflife.date data for software-lifecycle.
+
+          Check this release before use:
+
+              gh attestation verify data.zip --repo $GH_REPO
+
+          The tool checks the SHA-256 manifest on every load. It does not check
+          signatures offline.
+          EOF
+          gh release create "$RELEASE_ID" release/data.zip release/manifest.json \
+            --target "$GITHUB_SHA" --title "Data release $RELEASE_ID" \
+            --notes-file notes.md --latest=false
+
+  report:
+    needs: [build, publish]
+    if: always() && needs.build.outputs.dry_run != 'true' && (needs.build.result == 'failure' || needs.publish.result == 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update the data-gate-failed issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          cat > body.md <<EOF
+          The daily KEV data release stopped. This run published nothing.
+
+          Run: $run_url
+
+          The run summary names the check that failed. Fix the cause, then
+          run "KEV daily data release" by hand with dry_run set to false, or
+          wait for the next daily run. Close this issue once a release passes.
+          EOF
+          if ! gh label list --limit 200 --json name --jq '.[].name' | grep -qx data-gate-failed; then
+            gh label create data-gate-failed --color B60205 \
+              --description "The daily KEV data release stopped at a check"
+          fi
+          number="$(gh issue list --label data-gate-failed --state open --limit 1 --json number --jq '.[0].number // empty')"
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file body.md
+          else
+            gh issue create --title "KEV daily data release stopped" \
+              --label data-gate-failed --body-file body.md
+          fi
