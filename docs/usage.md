@@ -222,7 +222,15 @@ and `source`), `single_word_allowlist` (a list of `product`, `reason`,
 publisher)
 `generated_off` (a sorted list of product ids) and, optionally,
 `no_cycle_versions` (a product id to an object of `prefixes`, a sorted list
-of version prefixes such as `21.3`, `reason` and `source`). The tool refuses a file
+of version prefixes such as `21.3`, `reason` and `source`). Three more keys
+are optional and set what kind of item a row is: `classification_rows` (a
+sorted list of `name`, a normalized name, `publisher`, one lowercase word or
+empty, `class`, `reason`, `source` and `gold`), `classification_products` (a
+product id to an object of `class`, `reason` and `source`) and
+`bundle_parents` (a sorted list of `name_prefix`, lowercase leading words,
+`publisher`, one lowercase word that must appear in the publisher, `parent`,
+a product id, `reason`, `source` and `gold`). A `class` here is
+`governable`, `component` or `unknown`. The tool refuses a file
 with an unknown key, a wrong type, a duplicate or an unsorted list where
 sorting is promised.
 

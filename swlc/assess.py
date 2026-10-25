@@ -10,6 +10,7 @@ import calendar
 import re
 from datetime import date, datetime
 
+from .classify import apply_classification
 from .data import Data, kev_match
 from .errors import InputError
 from .matching import match_product
@@ -296,6 +297,7 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     clashes: list = []
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
                    window_end, clashes) for gid in sorted(groups)]
+    apply_classification(items, groups, data)
     lists = _lists(items)
 
     warnings = list(data.warnings)

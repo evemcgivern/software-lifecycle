@@ -11,6 +11,7 @@ from datetime import date
 from pathlib import Path
 
 from .catalog_match import build_index, tokens
+from .classify import CURATED_CLASSES
 from .errors import DataError
 from .matching import _check as _check_alias
 from .normalize import normalize_name
@@ -278,11 +279,95 @@ def _https(value, where: str) -> str:
     return value
 
 
+_OPTIONAL_CURATION = frozenset(("no_cycle_versions", "classification_rows",
+                                "classification_products",
+                                "bundle_parents"))
+_PUB_TOKEN_RE = re.compile(r"[a-z0-9]+")
+_PHRASE_RE = re.compile(r"\S+(?: \S+)*")
+
+
+def _gold_key(value, where: str) -> str:
+    if _text(value, where).count("|") != 2:
+        raise DataError("%s: expected name|publisher|version" % where)
+    return value
+
+
+def _sorted_entries(items: list, key, where: str) -> None:
+    keys = [key(item) for item in items]
+    if any(a >= b for a, b in zip(keys, keys[1:])):
+        raise DataError("%s: must be sorted with no duplicates" % where)
+
+
+def _classification_curation(obj: dict) -> list:
+    """Check the optional classification keys; return the product ids they
+    name."""
+    named = []
+    rows = obj.get("classification_rows", [])
+    if not isinstance(rows, list):
+        raise DataError("classification_rows: expected a list")
+    for pos, item in enumerate(rows, 1):
+        where = "classification_rows[%d]" % pos
+        _keys(item, ("name", "publisher", "class", "reason", "source",
+                     "gold"), where)
+        name = _text(item["name"], where + ".name")
+        if name != normalize_name(name):
+            raise DataError("%s.name: expected a normalized name" % where)
+        pub = item["publisher"]
+        if not isinstance(pub, str) or (
+                pub and not _PUB_TOKEN_RE.fullmatch(pub)):
+            raise DataError("%s.publisher: expected a lowercase token or "
+                            "an empty string" % where)
+        if item["class"] not in CURATED_CLASSES:
+            raise DataError("%s.class: not an allowed class" % where)
+        _text(item["reason"], where + ".reason")
+        _https(item["source"], where + ".source")
+        _gold_key(item["gold"], where + ".gold")
+    _sorted_entries(rows, lambda r: (r["name"], r["publisher"]),
+                    "classification_rows")
+
+    prods = obj.get("classification_products", {})
+    if not isinstance(prods, dict):
+        raise DataError("classification_products: expected an object")
+    for pid, entry in prods.items():
+        where = "classification_products entry"
+        _ident(pid, where)
+        _keys(entry, ("class", "reason", "source"), where)
+        if entry["class"] not in CURATED_CLASSES:
+            raise DataError("%s.class: not an allowed class" % where)
+        _text(entry["reason"], where + ".reason")
+        _https(entry["source"], where + ".source")
+        named.append(pid)
+
+    parents = obj.get("bundle_parents", [])
+    if not isinstance(parents, list):
+        raise DataError("bundle_parents: expected a list")
+    for pos, item in enumerate(parents, 1):
+        where = "bundle_parents[%d]" % pos
+        _keys(item, ("name_prefix", "publisher", "parent", "reason",
+                     "source", "gold"), where)
+        prefix = item["name_prefix"]
+        if not isinstance(prefix, str) or not _PHRASE_RE.fullmatch(prefix) \
+                or prefix != normalize_name(prefix):
+            raise DataError("%s.name_prefix: expected lowercase words"
+                            % where)
+        pub = item["publisher"]
+        if not isinstance(pub, str) or not _PUB_TOKEN_RE.fullmatch(pub):
+            raise DataError("%s.publisher: expected a lowercase token"
+                            % where)
+        named.append(_ident(item["parent"], where + ".parent"))
+        _text(item["reason"], where + ".reason")
+        _https(item["source"], where + ".source")
+        _gold_key(item["gold"], where + ".gold")
+    _sorted_entries(parents, lambda r: (r["name_prefix"], r["publisher"]),
+                    "bundle_parents")
+    return named
+
+
 def validate_curation(obj, product_ids=None) -> dict:
     """Check a parsed curation.json; return it. With product_ids, every
     product it names must be in that collection."""
-    # no_cycle_versions is optional, so files written before it still load.
-    _keys({k: v for k, v in obj.items() if k != "no_cycle_versions"}
+    # The optional keys may be absent, so files written before them load.
+    _keys({k: v for k, v in obj.items() if k not in _OPTIONAL_CURATION}
           if isinstance(obj, dict) else obj,
           ("format", "publisher_aliases", "single_word_allowlist",
            "exclusions", "generated_off"), "top level")
@@ -370,6 +455,8 @@ def validate_curation(obj, product_ids=None) -> dict:
         _text(entry["reason"], where + ".reason")
         _https(entry["source"], where + ".source")
         named.append(pid)
+
+    named.extend(_classification_curation(obj))
 
     if product_ids is not None:
         known = set(product_ids)

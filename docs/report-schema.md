@@ -115,6 +115,11 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `kev_stale` | `true` when KEV was checked (`kev` is not `null`) and the KEV data was not current. |
 | `change_ref` | From the tracking file, or `null`. |
 | `problem_ref` | From the tracking file, or `null`. |
+| `classification` | What kind of item this is: `governable`, `component`, `bundle_member` or `unknown`. See "What kind of item this is" in `docs/usage.md`. |
+| `classification_basis` | List of the signal codes that fired, in rule order. See the `classification_basis` codes below. |
+| `parent_ref` | The named parent of a `bundle_member`, or `null`: an object with `kind` (`product`), `value` (`<product>/<cycle>`) and `basis` (the signal code that named it). |
+| `inherited_from` | The parent item's ID when the parent is in the same inventory; otherwise `null`. Always `null` in this release. |
+| `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's; otherwise `null`. Always `null` in this release. The item's own date fields never change. |
 
 Date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
 `extended_support`) hold `YYYY-MM-DD` text, `null` for none, or `true` or
@@ -176,6 +181,26 @@ again, and the risk owner and an independent approver sign off.
 
 `DIFFERENT_DATE` appears in `dates_disagree` but not in `decision_needed`.
 The Markdown report still prints a "Decision needed" line for it.
+
+### classification_basis codes
+
+The first confident signal decides `classification`; every signal that fired
+is listed. Publisher only confirms a curated entry and never decides a class.
+
+| Code | When |
+|---|---|
+| `row_override` | A curated `classification_rows` entry names this row (a maintainer decision). |
+| `curated_parent` | A curated `bundle_parents` entry names the parent, and the name's year or version (else the version column) fits exactly one cycle of it. |
+| `suite_no_fit` | A curated `bundle_parents` entry matched, but the version fits no cycle or more than one; the item is `unknown`. |
+| `name_part` | The name ends like a part: Redistributable, Visual C++ 20xx, a last word Runtime or SDK after another word, font, codec, extension, plugin or add-in, or a one-word lowercase `lib*`, `*-dev` or font package. |
+| `name_os_part` | The name looks like an OS part: a KB number, a leading "Update for" or "Security Update for", Hotfix, Language Pack, or Driver after another word. |
+| `product_override` | A curated `classification_products` entry sets the class for the matched product. |
+| `category_governable` | The matched product's category is `server-app`, `app`, `os`, `database`, `lang` or `service`. |
+| `standalone_by_default` | The product is a standalone runtime (category `lang`, or curated as governable), so a last word Runtime or SDK does not make it a part. |
+| `device_category` | The matched product is a device; the item is `unknown`. |
+| `category_unknown` | The matched product's category is `framework` or `standard`; the item is `unknown`. |
+| `no_signal` | No product matched and no other signal fired; the item is `unknown`. |
+| `version_shape` | The item would be governable, but it has no version in the column or the name; the item is `unknown`. |
 
 ## Lists
 

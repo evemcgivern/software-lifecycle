@@ -57,6 +57,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2.0",
       "dates_disagree": null,
       "decision_needed": [],
@@ -70,6 +74,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "081cf409cda1",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -77,6 +83,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "demoos",
       "publisher": "Fictional Software Ltd",
@@ -90,6 +97,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "14",
       "dates_disagree": null,
       "decision_needed": [],
@@ -103,6 +114,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "0a668be21645",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -110,6 +123,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "examplesql",
       "publisher": "Sample Systems Inc",
@@ -123,6 +137,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "unknown",
+      "classification_basis": [
+        "no_signal"
+      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -136,6 +154,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "1261552c85af",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": null,
@@ -143,6 +163,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": null,
       "publisher": "Nobody Inc",
@@ -156,6 +177,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "1",
       "dates_disagree": null,
       "decision_needed": [],
@@ -169,6 +194,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "153057dabd68",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -176,6 +203,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -189,6 +217,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2",
       "dates_disagree": "GOLDEN_EXPIRED",
       "decision_needed": [
@@ -204,6 +236,8 @@
       "golden_applied": null,
       "golden_expired": true,
       "id": "17559088ded2",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -211,6 +245,7 @@
       "owners": [
         "Records Office"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "pineconearchive",
       "publisher": "Placeholder Labs",
@@ -224,6 +259,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "3",
       "dates_disagree": null,
       "decision_needed": [],
@@ -237,6 +276,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "2ff8135b8c03",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -244,6 +285,7 @@
       "owners": [
         "Support Desk"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "redwoodbackup",
       "publisher": "Sample Systems Inc",
@@ -257,6 +299,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "3",
       "dates_disagree": "NO_ENDOFLIFE_DATE",
       "decision_needed": [
@@ -272,6 +318,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "321fceafbdce",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -279,6 +327,7 @@
       "owners": [
         "Records Office"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -292,6 +341,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2014",
       "dates_disagree": null,
       "decision_needed": [],
@@ -305,6 +358,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "34f37eea99c2",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -312,6 +367,7 @@
       "owners": [
         "Infrastructure"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -325,6 +381,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2",
       "dates_disagree": null,
       "decision_needed": [],
@@ -338,6 +398,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "3dbe716847ae",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -345,6 +407,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -358,6 +421,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "11",
       "dates_disagree": null,
       "decision_needed": [],
@@ -371,6 +438,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "4317c9e433a2",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -378,6 +447,7 @@
       "owners": [
         "Marketing Ops"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "lanternviewer",
       "publisher": "Example Corp",
@@ -391,6 +461,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "3",
       "dates_disagree": null,
       "decision_needed": [],
@@ -404,6 +478,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "47f4fe355498",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -411,6 +487,7 @@
       "owners": [
         "Infrastructure"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "redwoodbackup",
       "publisher": "Sample Systems Inc",
@@ -424,6 +501,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "5",
       "dates_disagree": null,
       "decision_needed": [],
@@ -437,6 +518,8 @@
       "golden_applied": "export",
       "golden_expired": false,
       "id": "5095e8b556dd",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -444,6 +527,7 @@
       "owners": [
         "Marketing Ops"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "harborviewcrm",
       "publisher": "Fictional Software Ltd",
@@ -457,6 +541,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "1",
       "dates_disagree": null,
       "decision_needed": [
@@ -472,6 +560,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "55be4cfcc848",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -479,6 +569,7 @@
       "owners": [
         "Infrastructure"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "redwoodbackup",
       "publisher": "Sample Systems Inc",
@@ -492,6 +583,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "5",
       "dates_disagree": null,
       "decision_needed": [],
@@ -505,6 +600,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "588512447e35",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -512,6 +609,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "northwindgateway",
       "publisher": "Northwind Software",
@@ -525,6 +623,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "3",
       "dates_disagree": null,
       "decision_needed": [],
@@ -538,6 +640,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "5a4b4694214c",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -545,6 +649,7 @@
       "owners": [
         "Records Office"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -558,6 +663,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "unknown",
+      "classification_basis": [
+        "no_signal"
+      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -571,6 +680,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "61053426d57d",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": null,
@@ -578,6 +689,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": null,
       "publisher": "Hostile Corp",
@@ -591,6 +703,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "5",
       "dates_disagree": "DIFFERENT_DATE",
       "decision_needed": [],
@@ -604,6 +720,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "769398c5545d",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -611,6 +729,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -624,6 +743,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2019",
       "dates_disagree": null,
       "decision_needed": [],
@@ -637,6 +760,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "771670a4edee",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -645,6 +770,7 @@
         "Records Office",
         "Support Desk"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -658,6 +784,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2019",
       "dates_disagree": null,
       "decision_needed": [],
@@ -671,6 +801,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "79b1d425e6e6",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -678,6 +810,7 @@
       "owners": [
         "Infrastructure"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -691,6 +824,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "unknown",
+      "classification_basis": [
+        "no_signal"
+      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -704,6 +841,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "7ba2dda739a2",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": null,
@@ -711,6 +850,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": null,
       "publisher": "Hostile Corp",
@@ -724,6 +864,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2",
       "dates_disagree": "EXPORT_DATES_CONFLICT",
       "decision_needed": [
@@ -739,6 +883,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "800d6329e8a3",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -746,6 +892,7 @@
       "owners": [
         "Facilities"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "ironwoodscheduler",
       "publisher": "Placeholder Labs",
@@ -759,6 +906,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "6",
       "dates_disagree": null,
       "decision_needed": [],
@@ -772,6 +923,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "81515deea940",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -779,6 +932,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -792,6 +946,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "3",
       "dates_disagree": null,
       "decision_needed": [],
@@ -805,6 +963,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "82408e267f6e",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -812,6 +972,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -825,6 +986,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "6",
       "dates_disagree": null,
       "decision_needed": [],
@@ -838,11 +1003,14 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "865a640f2016",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
       "name": "Tidewater Suite",
       "owners": [],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -856,6 +1024,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "6",
       "dates_disagree": null,
       "decision_needed": [],
@@ -869,6 +1041,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "8910e2fe441b",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -876,6 +1050,7 @@
       "owners": [
         "Support Desk"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -889,6 +1064,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "8",
       "dates_disagree": null,
       "decision_needed": [],
@@ -902,6 +1081,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "8961717c4400",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -909,6 +1090,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -922,6 +1104,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2",
       "dates_disagree": null,
       "decision_needed": [],
@@ -935,6 +1121,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "8ced6e5a4dbf",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -942,6 +1130,7 @@
       "owners": [
         "Facilities"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "copperfieldnotes",
       "publisher": "Placeholder Labs",
@@ -955,6 +1144,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "8",
       "dates_disagree": null,
       "decision_needed": [],
@@ -968,6 +1161,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "8cefa429fe84",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -976,6 +1171,7 @@
         "Facilities",
         "Records Office"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -989,6 +1185,10 @@
     {
       "accepted_risk": false,
       "change_ref": "CHG-1002",
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "4",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1002,6 +1202,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "8e099c3b6863",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -1009,6 +1211,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -1022,6 +1225,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "3",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1035,6 +1242,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "9a41c3b333a9",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1043,6 +1252,7 @@
         "Infrastructure",
         "Records Office"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -1056,6 +1266,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "15",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1069,6 +1283,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "a3f0e99e87b4",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": true,
       "kev_stale": false,
       "match_source": "curated",
@@ -1076,6 +1292,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "examplesql",
       "publisher": "Example Vendor",
@@ -1089,6 +1306,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "8",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1102,6 +1323,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "a4621ba9a8cd",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1110,6 +1333,7 @@
         "Finance Systems",
         "Infrastructure"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1123,6 +1347,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1136,6 +1364,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "a8efb9e4c0a3",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1143,6 +1373,7 @@
       "owners": [
         "Records Office"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "copperfieldnotes",
       "publisher": "Placeholder Labs",
@@ -1156,6 +1387,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "16",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1169,6 +1404,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "ad4e62eba26b",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1176,6 +1413,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "examplesql",
       "publisher": "Example Vendor",
@@ -1189,6 +1427,11 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "unknown",
+      "classification_basis": [
+        "category_governable",
+        "version_shape"
+      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -1202,6 +1445,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "b3e080c410cc",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1209,6 +1454,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1222,6 +1468,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "8",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1235,6 +1485,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "b7a5866a4a5f",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1242,6 +1494,7 @@
       "owners": [
         "HR Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1255,6 +1508,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -1268,6 +1525,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "bbccc7b93adf",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1275,6 +1534,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1288,6 +1548,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1301,6 +1565,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "c2f5cd46fcd8",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1308,6 +1574,7 @@
       "owners": [
         "HR Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "copperfieldnotes",
       "publisher": "Placeholder Labs",
@@ -1321,6 +1588,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "4",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1334,6 +1605,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "c3756f7f9c32",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": true,
       "kev_stale": false,
       "match_source": "curated",
@@ -1341,6 +1614,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "northwindgateway",
       "publisher": "Northwind Software",
@@ -1354,6 +1628,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "7",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1367,6 +1645,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "c858e48b1462",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1374,6 +1654,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1387,6 +1668,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "11",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1400,6 +1685,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "d5d9934b1e45",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1407,6 +1694,7 @@
       "owners": [
         "Records Office"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "lanternviewer",
       "publisher": "Example Corp",
@@ -1420,6 +1708,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2019",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1433,6 +1725,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "d801f2379965",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1440,6 +1734,7 @@
       "owners": [
         "Infrastructure"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -1453,6 +1748,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "6",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1466,6 +1765,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "dbd5de377b05",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1473,6 +1774,7 @@
       "owners": [
         "Facilities"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -1486,6 +1788,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "unknown",
+      "classification_basis": [
+        "no_signal"
+      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -1499,6 +1805,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "f08603b790e5",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": null,
@@ -1506,6 +1814,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": null,
       "publisher": "Hostile Corp",
@@ -1519,6 +1828,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "unknown",
+      "classification_basis": [
+        "no_signal"
+      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -1532,6 +1845,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "f3d465853a7a",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": null,
@@ -1539,6 +1854,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": null,
       "publisher": "Fictional Software Ltd",
@@ -1552,6 +1868,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "3",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1565,6 +1885,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "f8a1fd46aab6",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1573,6 +1895,7 @@
         "Finance Systems",
         "Support Desk"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -1586,6 +1909,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "2",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1599,6 +1926,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "f994e6b77876",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1606,6 +1935,7 @@
       "owners": [
         "Facilities"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "copperfieldnotes",
       "publisher": "Placeholder Labs",
@@ -1619,6 +1949,10 @@
     {
       "accepted_risk": true,
       "change_ref": "CHG-1001",
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "1.0",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1632,6 +1966,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "faa0f833f626",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -1640,6 +1976,7 @@
         "Infrastructure",
         "Support Desk"
       ],
+      "parent_ref": null,
       "problem_ref": "PRB-2001",
       "product": "demoos",
       "publisher": "Fictional Software Ltd",
@@ -1653,6 +1990,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "6",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1666,6 +2007,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "fba801565b46",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": null,
       "kev_stale": false,
       "match_source": "curated",
@@ -1674,6 +2017,7 @@
         "HR Systems",
         "Infrastructure"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -1687,6 +2031,10 @@
     {
       "accepted_risk": false,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
       "cycle": "5",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1700,6 +2048,8 @@
       "golden_applied": null,
       "golden_expired": false,
       "id": "ffc50ca894b4",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
       "kev": false,
       "kev_stale": false,
       "match_source": "curated",
@@ -1707,6 +2057,7 @@
       "owners": [
         "Finance Systems"
       ],
+      "parent_ref": null,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",

@@ -177,6 +177,69 @@ def report_table(results: list) -> str:
     for r in soft:
         lines.append("  %s | %s | %s" % (r["name"], r["publisher"],
                                          r["version"]))
+    lines.append(classification_table(results))
+    return "\n".join(lines)
+
+
+# --- classification scoring -------------------------------------------------
+# Only gold rows with a non-empty classification are scored. Held-out rows
+# are scored too, and reported apart.
+
+def parent_text(item: dict):
+    """The predicted parent as gold writes it ("product:office/2019")."""
+    ref = item.get("parent_ref")
+    return None if ref is None else "%s:%s" % (ref["kind"], ref["value"])
+
+
+def classified(results: list) -> list:
+    return [(r, it) for r, _res, it in results if r["classification"]]
+
+
+def class_correct(row: dict, item: dict) -> bool:
+    if item["classification"] != row["classification"]:
+        return False
+    want = row["expected_parent"]
+    if want and want != "none":
+        return parent_text(item) == want
+    return True
+
+
+def wrong_parent(row: dict, item: dict) -> bool:
+    got, want = parent_text(item), row["expected_parent"]
+    if want == "none":
+        return got is not None
+    return bool(want) and got is not None and got != want
+
+
+def precision(pairs: list, cls: str):
+    """(right, predicted) for one predicted class."""
+    predicted = [(r, it) for r, it in pairs if it["classification"] == cls]
+    right = sum(1 for r, it in predicted if r["classification"] == cls)
+    return right, len(predicted)
+
+
+def classification_table(results: list) -> str:
+    lines = ["classification (gold rows with a class):",
+             "%-13s %6s %8s %s" % ("group", "rows", "correct",
+                                   "precision by predicted class")]
+    pairs = classified(results)
+    for group, keep in (("tuning", "0"), ("heldout", "1"), ("all", None)):
+        sub = [(r, it) for r, it in pairs
+               if keep is None or r["heldout"] == keep]
+        prec = []
+        for cls in CLASSES:
+            right, n = precision(sub, cls)
+            prec.append("%s %d/%d" % (cls, right, n))
+        lines.append("%-13s %6d %8d %s" % (
+            group, len(sub), sum(class_correct(r, it) for r, it in sub),
+            ", ".join(prec)))
+    wrong = [(r, it) for r, it in pairs if not class_correct(r, it)]
+    lines.append("classification disagreements (%d):" % len(wrong))
+    for r, it in wrong:
+        lines.append("  %s | %s | %s: gold %s %s, got %s %s %s" % (
+            r["name"], r["publisher"], r["version"], r["classification"],
+            r["expected_parent"] or "-", it["classification"],
+            parent_text(it) or "-", ",".join(it["classification_basis"])))
     return "\n".join(lines)
 
 
@@ -248,6 +311,59 @@ class BenchmarkRunTests(unittest.TestCase):
             got, floor["generated_correct_min"],
             "generated correct fell below the floor; fix the rule, "
             "never lower floor.json")
+
+
+class ClassificationBenchmarkTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.pairs = classified(results())
+        cls.floor = json.loads(FLOOR.read_text(encoding="utf-8"))
+
+    def test_rows_are_scored(self):
+        self.assertGreaterEqual(len(self.pairs), 160)
+
+    def test_no_governable_scored_as_part(self):
+        bad = ["%s | %s | %s -> %s" % (r["name"], r["publisher"],
+                                       r["version"], it["classification"])
+               for r, it in self.pairs if r["classification"] == "governable"
+               and it["classification"] in ("component", "bundle_member")]
+        self.assertLessEqual(len(bad), self.floor["governable_as_part_max"],
+                             "\n".join(bad))
+
+    def test_no_wrong_parent(self):
+        bad = ["%s | %s | %s -> %s (want %s)" % (
+            r["name"], r["publisher"], r["version"], parent_text(it),
+            r["expected_parent"]) for r, it in self.pairs
+            if wrong_parent(r, it)]
+        self.assertLessEqual(len(bad), self.floor["wrong_parent_max"],
+                             "\n".join(bad))
+
+    def test_part_precision_on_gold(self):
+        for cls in ("component", "bundle_member"):
+            with self.subTest(cls=cls):
+                right, n = precision(self.pairs, cls)
+                self.assertGreater(n, 0)
+                self.assertGreaterEqual(right / n, 0.98,
+                                        "%s precision %d/%d" % (cls, right, n))
+
+    def test_classification_correct_not_below_floor(self):
+        got = sum(class_correct(r, it) for r, it in self.pairs)
+        self.assertGreaterEqual(
+            got, self.floor["classification_correct_min"],
+            "classification correct fell below the floor; fix the rule, "
+            "never lower floor.json")
+
+    def test_wrong_parent_scoring(self):
+        item = {"parent_ref": {"kind": "product", "value": "office/2019",
+                               "basis": "curated_parent"}}
+        row = {"expected_parent": "product:office/2019"}
+        self.assertFalse(wrong_parent(row, item))
+        self.assertTrue(wrong_parent(dict(row, expected_parent=
+                                          "product:office/2016"), item))
+        self.assertTrue(wrong_parent(dict(row, expected_parent="none"),
+                                     item))
+        self.assertFalse(wrong_parent(dict(row, expected_parent=""), item))
+        self.assertFalse(wrong_parent(row, {"parent_ref": None}))
 
 
 def _known_wrong_test(key, cause, stored):
@@ -363,7 +479,8 @@ class GoldFileTests(unittest.TestCase):
 
     def test_floor_file_shape(self):
         floor = json.loads(FLOOR.read_text(encoding="utf-8"))
-        self.assertEqual(sorted(floor), ["generated_correct_min",
+        self.assertEqual(sorted(floor), ["classification_correct_min",
+                                         "generated_correct_min",
                                          "governable_as_part_max",
                                          "hand_catalog_correct_min", "note",
                                          "soft_wrong_max",
@@ -376,6 +493,8 @@ class GoldFileTests(unittest.TestCase):
         self.assertIn("none", {r["expected_cycle"] for r in self.rows})
         self.assertIsInstance(floor["hand_catalog_correct_min"], int)
         self.assertGreater(floor["hand_catalog_correct_min"], 0)
+        self.assertIsInstance(floor["classification_correct_min"], int)
+        self.assertGreater(floor["classification_correct_min"], 0)
 
     def test_strata_and_heldout_values(self):
         for r in self.rows:

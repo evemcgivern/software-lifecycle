@@ -128,6 +128,52 @@ class BundledCatalogTests(unittest.TestCase):
         validate_curation(read("curation.json"), set(self.data.products))
 
 
+def gold_rows():
+    import csv
+    path = ROOT / "tests" / "benchmark" / "gold.csv"
+    with open(path, encoding="utf-8", newline="") as fh:
+        return {"%s|%s|%s" % (r["name"], r["publisher"], r["version"]): r
+                for r in csv.DictReader(fh)}
+
+
+class BundledClassificationCuration(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.curation = read("curation.json")
+        cls.gold = gold_rows()
+
+    def test_bundle_parents_exist_in_eol(self):
+        parents = self.curation.get("bundle_parents", [])
+        self.assertTrue(parents)
+        for entry in parents:
+            with self.subTest(prefix=entry["name_prefix"]):
+                path = DATA / "eol" / ("%s.json" % entry["parent"])
+                self.assertTrue(path.is_file(), "parent not in data/eol")
+                row = self.gold.get(entry["gold"])
+                self.assertIsNotNone(row, "entry cites no gold row")
+                self.assertEqual(row["classification"], "bundle_member")
+                self.assertEqual(row["heldout"], "0")
+                m = re.fullmatch(r"product:([^/\s]+)/(\S+)",
+                                 row["expected_parent"])
+                self.assertIsNotNone(m, row["expected_parent"])
+                self.assertEqual(m.group(1), entry["parent"])
+                self.assertIn(m.group(2), cycle_labels(entry["parent"]))
+
+    def test_classification_rows_cite_gold(self):
+        for entry in self.curation.get("classification_rows", []):
+            with self.subTest(name=entry["name"]):
+                row = self.gold.get(entry["gold"])
+                self.assertIsNotNone(row, "entry cites no gold row")
+                self.assertEqual(row["classification"], entry["class"])
+                self.assertEqual(row["heldout"], "0")
+
+    def test_dotnet_and_nodejs_are_standalone_runtimes(self):
+        products = self.curation.get("classification_products", {})
+        for pid in ("dotnet", "nodejs"):
+            self.assertEqual(products.get(pid, {}).get("class"),
+                             "governable", pid)
+
+
 class BundledCurationRows(unittest.TestCase):
     """Rows the maintainer's curation decisions settle on the bundled data."""
     @classmethod
