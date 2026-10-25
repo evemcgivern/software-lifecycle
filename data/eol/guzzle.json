@@ -1,0 +1,32 @@
+[
+  {
+    "cycle": "8",
+    "eol": false,
+    "releaseDate": "2026-07-20"
+  },
+  {
+    "cycle": "7",
+    "eol": false,
+    "releaseDate": "2020-06-27"
+  },
+  {
+    "cycle": "6",
+    "eol": "2023-10-31",
+    "releaseDate": "2015-05-26"
+  },
+  {
+    "cycle": "5",
+    "eol": "2019-10-31",
+    "releaseDate": "2014-10-12"
+  },
+  {
+    "cycle": "4",
+    "eol": "2016-10-31",
+    "releaseDate": "2014-03-29"
+  },
+  {
+    "cycle": "3",
+    "eol": "2016-10-31",
+    "releaseDate": "2012-10-15"
+  }
+]

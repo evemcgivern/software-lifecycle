@@ -1,0 +1,218 @@
+[
+  {
+    "cycle": "mobile-professional-ada-lovelace",
+    "eol": false,
+    "releaseDate": "2025-01-30",
+    "support": true
+  },
+  {
+    "cycle": "professional-blackwell",
+    "eol": false,
+    "releaseDate": "2025-01-30",
+    "support": true
+  },
+  {
+    "cycle": "mobile-consumer-blackwell",
+    "eol": false,
+    "releaseDate": "2025-01-30",
+    "support": true
+  },
+  {
+    "cycle": "consumer-blackwell",
+    "eol": false,
+    "releaseDate": "2025-01-30",
+    "support": true
+  },
+  {
+    "cycle": "mobile-consumer-ada-lovelace",
+    "eol": false,
+    "releaseDate": "2023-02-08",
+    "support": true
+  },
+  {
+    "cycle": "professional-ada-lovelace",
+    "eol": false,
+    "releaseDate": "2022-10-13",
+    "support": true
+  },
+  {
+    "cycle": "consumer-ada-lovelace",
+    "eol": false,
+    "releaseDate": "2022-09-20",
+    "support": true
+  },
+  {
+    "cycle": "mobile-professional-ampere",
+    "eol": false,
+    "releaseDate": "2021-04-12",
+    "support": true
+  },
+  {
+    "cycle": "mobile-consumer-ampere",
+    "eol": false,
+    "releaseDate": "2021-01-12",
+    "support": true
+  },
+  {
+    "cycle": "professional-ampere",
+    "eol": false,
+    "releaseDate": "2020-10-05",
+    "support": true
+  },
+  {
+    "cycle": "consumer-ampere",
+    "eol": false,
+    "releaseDate": "2020-09-01",
+    "support": true
+  },
+  {
+    "cycle": "mobile-professional-turing",
+    "eol": false,
+    "releaseDate": "2019-05-27",
+    "support": true
+  },
+  {
+    "cycle": "mobile-consumer-turing",
+    "eol": false,
+    "releaseDate": "2019-01-29",
+    "support": true
+  },
+  {
+    "cycle": "consumer-turing",
+    "eol": false,
+    "releaseDate": "2018-09-20",
+    "support": true
+  },
+  {
+    "cycle": "professional-turing",
+    "eol": false,
+    "releaseDate": "2018-08-13",
+    "support": true
+  },
+  {
+    "cycle": "professional-volta",
+    "eol": "2028-10-31",
+    "releaseDate": "2017-12-07",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "mobile-professional-pascal",
+    "eol": "2028-10-31",
+    "releaseDate": "2017-02-06",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "mobile-consumer-pascal",
+    "eol": "2028-10-31",
+    "releaseDate": "2016-08-15",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "consumer-pascal",
+    "eol": "2028-10-31",
+    "releaseDate": "2016-05-27",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "professional-pascal",
+    "eol": "2028-10-31",
+    "releaseDate": "2016-04-05",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "mobile-professional-maxwell",
+    "eol": "2028-10-31",
+    "releaseDate": "2015-08-18",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "professional-maxwell",
+    "eol": "2028-10-31",
+    "releaseDate": "2015-06-29",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "mobile-consumer-maxwell",
+    "eol": "2028-10-31",
+    "releaseDate": "2014-10-07",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "consumer-maxwell",
+    "eol": "2028-10-31",
+    "releaseDate": "2014-09-19",
+    "support": "2025-10-31"
+  },
+  {
+    "cycle": "professional-kepler",
+    "eol": "2024-09-01",
+    "releaseDate": "2013-03-01",
+    "support": "2021-09-20"
+  },
+  {
+    "cycle": "consumer-kepler",
+    "eol": "2024-09-01",
+    "releaseDate": "2012-03-22",
+    "support": "2021-09-20"
+  },
+  {
+    "cycle": "mobile-professional-kepler",
+    "eol": "2022-03-01",
+    "releaseDate": "2012-03-22",
+    "support": "2019-04-23"
+  },
+  {
+    "cycle": "mobile-consumer-kepler",
+    "eol": "2019-04-11",
+    "releaseDate": "2012-03-22",
+    "support": "2019-03-11"
+  },
+  {
+    "cycle": "professional-fermi",
+    "eol": "2022-12-31",
+    "releaseDate": "2010-07-23",
+    "support": "2018-07-31"
+  },
+  {
+    "cycle": "consumer-fermi",
+    "eol": "2018-03-10",
+    "releaseDate": "2010-03-26",
+    "support": "2018-03-10"
+  },
+  {
+    "cycle": "consumer-tesla",
+    "eol": "2016-12-14",
+    "releaseDate": "2006-11-08",
+    "support": "2016-04-01"
+  },
+  {
+    "cycle": "consumer-curie",
+    "eol": "2015-02-24",
+    "releaseDate": "2004-04-14",
+    "support": "2013-02-25"
+  },
+  {
+    "cycle": "consumer-rankine",
+    "eol": "2008-06-23",
+    "releaseDate": "2003-01-27",
+    "support": "2008-06-23"
+  },
+  {
+    "cycle": "consumer-kelvin",
+    "eol": "2006-11-02",
+    "releaseDate": "2001-02-27",
+    "support": "2006-11-02"
+  },
+  {
+    "cycle": "consumer-celsius",
+    "eol": "2005-04-14",
+    "releaseDate": "1999-10-11",
+    "support": "2005-04-14"
+  },
+  {
+    "cycle": "consumer-fahrenheit",
+    "eol": "2005-03-11",
+    "releaseDate": "1998-06-15",
+    "support": "2005-03-11"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "cycle": "7",
+    "eol": false,
+    "releaseDate": "2026-02-25"
+  },
+  {
+    "cycle": "6",
+    "eol": false,
+    "releaseDate": "2023-02-20"
+  },
+  {
+    "cycle": "5",
+    "eol": "2023-02-20",
+    "releaseDate": "2020-10-11"
+  }
+]

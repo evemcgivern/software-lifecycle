@@ -1,0 +1,272 @@
+[
+  {
+    "cycle": "18-pro",
+    "eol": false,
+    "releaseDate": "2026-09-18"
+  },
+  {
+    "cycle": "18-pro-max",
+    "eol": false,
+    "releaseDate": "2026-09-18"
+  },
+  {
+    "cycle": "17e",
+    "eol": false,
+    "releaseDate": "2026-03-11"
+  },
+  {
+    "cycle": "17",
+    "eol": false,
+    "releaseDate": "2025-09-19"
+  },
+  {
+    "cycle": "air",
+    "eol": false,
+    "releaseDate": "2025-09-19"
+  },
+  {
+    "cycle": "17-pro",
+    "eol": false,
+    "releaseDate": "2025-09-19"
+  },
+  {
+    "cycle": "17-pro-max",
+    "eol": false,
+    "releaseDate": "2025-09-19"
+  },
+  {
+    "cycle": "16e",
+    "eol": false,
+    "releaseDate": "2025-02-28"
+  },
+  {
+    "cycle": "16",
+    "eol": false,
+    "releaseDate": "2024-09-20"
+  },
+  {
+    "cycle": "16-plus",
+    "eol": false,
+    "releaseDate": "2024-09-20"
+  },
+  {
+    "cycle": "16-pro",
+    "eol": false,
+    "releaseDate": "2024-09-20"
+  },
+  {
+    "cycle": "16-pro-max",
+    "eol": false,
+    "releaseDate": "2024-09-20"
+  },
+  {
+    "cycle": "15",
+    "eol": false,
+    "releaseDate": "2023-09-22"
+  },
+  {
+    "cycle": "15-plus",
+    "eol": false,
+    "releaseDate": "2023-09-22"
+  },
+  {
+    "cycle": "15-pro",
+    "eol": false,
+    "releaseDate": "2023-09-22"
+  },
+  {
+    "cycle": "15-pro-max",
+    "eol": false,
+    "releaseDate": "2023-09-22"
+  },
+  {
+    "cycle": "14-plus",
+    "eol": false,
+    "releaseDate": "2022-10-07"
+  },
+  {
+    "cycle": "14",
+    "eol": false,
+    "releaseDate": "2022-09-16"
+  },
+  {
+    "cycle": "14-pro",
+    "eol": false,
+    "releaseDate": "2022-09-16"
+  },
+  {
+    "cycle": "14-pro-max",
+    "eol": false,
+    "releaseDate": "2022-09-16"
+  },
+  {
+    "cycle": "se-3",
+    "eol": false,
+    "releaseDate": "2022-03-18"
+  },
+  {
+    "cycle": "13",
+    "eol": false,
+    "releaseDate": "2021-09-24"
+  },
+  {
+    "cycle": "13-mini",
+    "eol": false,
+    "releaseDate": "2021-09-24"
+  },
+  {
+    "cycle": "13-pro",
+    "eol": false,
+    "releaseDate": "2021-09-24"
+  },
+  {
+    "cycle": "13-pro-max",
+    "eol": false,
+    "releaseDate": "2021-09-24"
+  },
+  {
+    "cycle": "12-mini",
+    "eol": false,
+    "releaseDate": "2020-11-13"
+  },
+  {
+    "cycle": "12-pro-max",
+    "eol": false,
+    "releaseDate": "2020-11-13"
+  },
+  {
+    "cycle": "12",
+    "eol": false,
+    "releaseDate": "2020-10-23"
+  },
+  {
+    "cycle": "12-pro",
+    "eol": false,
+    "releaseDate": "2020-10-23"
+  },
+  {
+    "cycle": "se-2",
+    "eol": false,
+    "releaseDate": "2020-04-24"
+  },
+  {
+    "cycle": "11",
+    "eol": false,
+    "releaseDate": "2019-09-20"
+  },
+  {
+    "cycle": "11-pro",
+    "eol": false,
+    "releaseDate": "2019-09-20"
+  },
+  {
+    "cycle": "11-pro-max",
+    "eol": false,
+    "releaseDate": "2019-09-20"
+  },
+  {
+    "cycle": "xr",
+    "eol": "2026-04-22",
+    "releaseDate": "2018-10-26"
+  },
+  {
+    "cycle": "xs",
+    "eol": "2026-04-22",
+    "releaseDate": "2018-09-21"
+  },
+  {
+    "cycle": "xs-max",
+    "eol": "2026-04-22",
+    "releaseDate": "2018-09-21"
+  },
+  {
+    "cycle": "8",
+    "eol": "2025-03-31",
+    "releaseDate": "2017-09-22"
+  },
+  {
+    "cycle": "8-plus",
+    "eol": "2025-03-31",
+    "releaseDate": "2017-09-22"
+  },
+  {
+    "cycle": "x",
+    "eol": "2025-03-31",
+    "releaseDate": "2017-09-12"
+  },
+  {
+    "cycle": "7",
+    "eol": "2025-03-31",
+    "releaseDate": "2016-09-16"
+  },
+  {
+    "cycle": "7-plus",
+    "eol": "2025-03-31",
+    "releaseDate": "2016-09-16"
+  },
+  {
+    "cycle": "se-1",
+    "eol": "2025-03-31",
+    "releaseDate": "2016-03-31"
+  },
+  {
+    "cycle": "6s",
+    "eol": "2025-03-31",
+    "releaseDate": "2015-09-25"
+  },
+  {
+    "cycle": "6s-plus",
+    "eol": "2025-03-31",
+    "releaseDate": "2015-09-25"
+  },
+  {
+    "cycle": "6",
+    "eol": "2023-01-23",
+    "releaseDate": "2014-09-25"
+  },
+  {
+    "cycle": "6-plus",
+    "eol": "2023-01-23",
+    "releaseDate": "2014-09-25"
+  },
+  {
+    "cycle": "5c",
+    "eol": "2017-09-19",
+    "releaseDate": "2013-09-20"
+  },
+  {
+    "cycle": "5s",
+    "eol": "2023-01-23",
+    "releaseDate": "2013-09-20"
+  },
+  {
+    "cycle": "5",
+    "eol": "2019-07-22",
+    "releaseDate": "2012-09-21"
+  },
+  {
+    "cycle": "4s",
+    "eol": "2019-07-22",
+    "releaseDate": "2011-10-14"
+  },
+  {
+    "cycle": "4",
+    "eol": "2014-09-17",
+    "releaseDate": "2010-06-24"
+  },
+  {
+    "cycle": "3gs",
+    "eol": "2014-02-21",
+    "releaseDate": "2009-06-19"
+  },
+  {
+    "cycle": "3g",
+    "eol": "2011-03-03",
+    "releaseDate": "2008-07-11"
+  },
+  {
+    "cycle": "1",
+    "eol": "2010-06-20",
+    "releaseDate": "2007-06-29"
+  }
+]

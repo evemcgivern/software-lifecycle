@@ -1,0 +1,32 @@
+[
+  {
+    "cycle": "0.21",
+    "eol": false,
+    "releaseDate": "2025-12-11"
+  },
+  {
+    "cycle": "0.20",
+    "eol": false,
+    "releaseDate": "2025-09-25"
+  },
+  {
+    "cycle": "0.19",
+    "eol": false,
+    "releaseDate": "2025-02-10"
+  },
+  {
+    "cycle": "0.18",
+    "eol": "2025-12-11",
+    "releaseDate": "2024-10-14"
+  },
+  {
+    "cycle": "0.17",
+    "eol": "2025-09-25",
+    "releaseDate": "2024-07-31"
+  },
+  {
+    "cycle": "0.16",
+    "eol": "2025-02-10",
+    "releaseDate": "2024-04-30"
+  }
+]

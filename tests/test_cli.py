@@ -154,9 +154,9 @@ class FailureTests(CliBase):
         self.assertEqual(code, 4)
         self.assertNotIn("Traceback", err)
 
-    def test_default_bundled_data_has_no_manifest_yet(self):
-        code, _, _ = run_main(["check", self.inv, "--as-of", AS_OF])
-        self.assertEqual(code, 4)
+    def test_default_data_is_the_bundled_release(self):
+        code, _, err = run_main(["check", self.inv, "--as-of", AS_OF])
+        self.assertEqual(code, 0, err)
 
     def test_unexpected_error_prints_only_class_name(self):
         with mock.patch.object(cli, "assess",
@@ -281,8 +281,8 @@ class VerifyDataTests(CliBase):
         path.write_bytes(bytes(raw))
         self.assertEqual(run_main(["verify-data", "--data", self.data])[0], 4)
 
-    def test_bundled_default_has_no_manifest_yet(self):
-        self.assertEqual(run_main(["verify-data"])[0], 4)
+    def test_bundled_default_verifies(self):
+        self.assertEqual(run_main(["verify-data"])[0], 0)
 
 
 SECRETS = ("SecretVendor Inc", "alice.secret@corp.example", "TopSecretCell")

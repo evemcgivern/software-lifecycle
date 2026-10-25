@@ -1,0 +1,122 @@
+[
+  {
+    "cycle": "6.12",
+    "eol": "2027-04-01",
+    "extendedSupport": "2031-10-01",
+    "releaseDate": "2026-09-30"
+  },
+  {
+    "cycle": "6.11",
+    "eol": "2026-09-30",
+    "extendedSupport": "2027-03-23",
+    "releaseDate": "2026-03-23"
+  },
+  {
+    "cycle": "6.10",
+    "eol": "2026-04-07",
+    "extendedSupport": "2026-10-07",
+    "releaseDate": "2025-10-07"
+  },
+  {
+    "cycle": "6.9",
+    "eol": "2025-10-07",
+    "extendedSupport": "2026-04-02",
+    "releaseDate": "2025-04-02"
+  },
+  {
+    "cycle": "6.8",
+    "eol": "2025-04-02",
+    "extendedSupport": "2029-10-08",
+    "releaseDate": "2024-10-07"
+  },
+  {
+    "cycle": "6.7",
+    "eol": "2024-10-07",
+    "extendedSupport": "2025-04-02",
+    "releaseDate": "2024-03-28"
+  },
+  {
+    "cycle": "6.6",
+    "eol": "2024-04-02",
+    "extendedSupport": "2024-10-09",
+    "releaseDate": "2023-10-09"
+  },
+  {
+    "cycle": "6.5",
+    "eol": "2023-12-13",
+    "extendedSupport": "2026-03-31",
+    "releaseDate": "2023-03-31"
+  },
+  {
+    "cycle": "6.4",
+    "eol": "2023-03-31",
+    "extendedSupport": "2023-09-28",
+    "releaseDate": "2022-09-28"
+  },
+  {
+    "cycle": "6.3",
+    "eol": "2022-09-28",
+    "extendedSupport": "2023-04-11",
+    "releaseDate": "2022-04-11"
+  },
+  {
+    "cycle": "6.2",
+    "eol": "2022-04-11",
+    "extendedSupport": "2024-09-30",
+    "releaseDate": "2021-09-30"
+  },
+  {
+    "cycle": "6.1",
+    "eol": "2021-09-30",
+    "extendedSupport": "2022-05-05",
+    "releaseDate": "2021-05-05"
+  },
+  {
+    "cycle": "6.0",
+    "eol": "2021-05-05",
+    "extendedSupport": "2021-12-08",
+    "releaseDate": "2020-12-08"
+  },
+  {
+    "cycle": "5.15",
+    "eol": "2020-12-08",
+    "extendedSupport": "2025-05-25",
+    "releaseDate": "2020-05-25"
+  },
+  {
+    "cycle": "5.14",
+    "eol": "2020-12-12",
+    "extendedSupport": false,
+    "releaseDate": "2019-12-11"
+  },
+  {
+    "cycle": "5.13",
+    "eol": "2020-06-19",
+    "extendedSupport": false,
+    "releaseDate": "2019-06-18"
+  },
+  {
+    "cycle": "5.12",
+    "eol": "2021-12-05",
+    "extendedSupport": false,
+    "releaseDate": "2018-12-04"
+  },
+  {
+    "cycle": "5.9",
+    "eol": "2020-05-31",
+    "extendedSupport": false,
+    "releaseDate": "2017-05-29"
+  },
+  {
+    "cycle": "5.6",
+    "eol": "2019-03-16",
+    "extendedSupport": false,
+    "releaseDate": "2016-03-15"
+  },
+  {
+    "cycle": "4.8",
+    "eol": "2015-12-31",
+    "extendedSupport": false,
+    "releaseDate": "2011-12-15"
+  }
+]

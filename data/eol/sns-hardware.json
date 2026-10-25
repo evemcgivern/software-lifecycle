@@ -1,0 +1,218 @@
+[
+  {
+    "cycle": "sni50",
+    "eol": false,
+    "releaseDate": "2026-06-25",
+    "support": true
+  },
+  {
+    "cycle": "sni10",
+    "eol": false,
+    "releaseDate": "2024-09-30",
+    "support": true
+  },
+  {
+    "cycle": "sn170",
+    "eol": false,
+    "releaseDate": "2024-09-30",
+    "support": true
+  },
+  {
+    "cycle": "sn3200",
+    "eol": false,
+    "releaseDate": "2024-06-10",
+    "support": true
+  },
+  {
+    "cycle": "sn2200",
+    "eol": false,
+    "releaseDate": "2024-06-10",
+    "support": true
+  },
+  {
+    "cycle": "sn6200",
+    "eol": false,
+    "releaseDate": "2024-05-01",
+    "support": true
+  },
+  {
+    "cycle": "sn5200",
+    "eol": false,
+    "releaseDate": "2024-05-01",
+    "support": true
+  },
+  {
+    "cycle": "sn320",
+    "eol": false,
+    "releaseDate": "2023-06-01",
+    "support": true
+  },
+  {
+    "cycle": "sn220",
+    "eol": false,
+    "releaseDate": "2023-06-01",
+    "support": true
+  },
+  {
+    "cycle": "sn520",
+    "eol": false,
+    "releaseDate": "2023-05-04",
+    "support": true
+  },
+  {
+    "cycle": "sn920",
+    "eol": false,
+    "releaseDate": "2022-09-29",
+    "support": true
+  },
+  {
+    "cycle": "sn720",
+    "eol": false,
+    "releaseDate": "2022-09-29",
+    "support": true
+  },
+  {
+    "cycle": "snxr1200",
+    "eol": false,
+    "releaseDate": "2021-09-16",
+    "support": true
+  },
+  {
+    "cycle": "sn1100",
+    "eol": false,
+    "releaseDate": "2021-09-16",
+    "support": true
+  },
+  {
+    "cycle": "sni20",
+    "eol": false,
+    "releaseDate": "2020-09-24",
+    "support": true
+  },
+  {
+    "cycle": "sn6100",
+    "eol": "2029-12-31",
+    "releaseDate": "2018-03-10",
+    "support": "2024-12-31"
+  },
+  {
+    "cycle": "sn3100",
+    "eol": "2029-12-31",
+    "releaseDate": "2018-03-10",
+    "support": "2024-12-31"
+  },
+  {
+    "cycle": "sn2100",
+    "eol": "2029-12-31",
+    "releaseDate": "2018-03-10",
+    "support": "2024-12-31"
+  },
+  {
+    "cycle": "sn310",
+    "eol": "2028-12-31",
+    "releaseDate": "2017-04-01",
+    "support": "2023-12-31"
+  },
+  {
+    "cycle": "sn210w",
+    "eol": "2027-03-31",
+    "releaseDate": "2017-03-01",
+    "support": "2022-03-31"
+  },
+  {
+    "cycle": "sn210",
+    "eol": "2028-12-31",
+    "releaseDate": "2017-04-01",
+    "support": "2023-12-31"
+  },
+  {
+    "cycle": "sn160w",
+    "eol": "2027-03-31",
+    "releaseDate": "2017-03-01",
+    "support": "2022-03-31"
+  },
+  {
+    "cycle": "sn160",
+    "eol": "2028-12-31",
+    "releaseDate": "2017-04-01",
+    "support": "2024-06-30"
+  },
+  {
+    "cycle": "sn910",
+    "eol": "2027-12-31",
+    "releaseDate": "2016-05-01",
+    "support": "2022-12-31"
+  },
+  {
+    "cycle": "sn710",
+    "eol": "2028-12-31",
+    "releaseDate": "2016-10-01",
+    "support": "2023-12-31"
+  },
+  {
+    "cycle": "sn510",
+    "eol": "2028-12-31",
+    "releaseDate": "2016-10-01",
+    "support": "2023-12-31"
+  },
+  {
+    "cycle": "sni40",
+    "eol": false,
+    "releaseDate": "2016-06-01",
+    "support": "2026-07-15"
+  },
+  {
+    "cycle": "sn6000",
+    "eol": "2024-12-31",
+    "releaseDate": "2015-08-01",
+    "support": "2019-12-31"
+  },
+  {
+    "cycle": "sn3000",
+    "eol": "2024-12-31",
+    "releaseDate": "2014-08-01",
+    "support": "2019-12-31"
+  },
+  {
+    "cycle": "sn2000",
+    "eol": "2024-12-31",
+    "releaseDate": "2014-08-01",
+    "support": "2019-12-31"
+  },
+  {
+    "cycle": "sn300",
+    "eol": "2022-12-31",
+    "releaseDate": "2014-08-01",
+    "support": "2017-12-31"
+  },
+  {
+    "cycle": "sn200",
+    "eol": "2022-12-31",
+    "releaseDate": "2014-08-01",
+    "support": "2017-12-31"
+  },
+  {
+    "cycle": "sn150",
+    "eol": "2022-12-31",
+    "releaseDate": "2014-08-01",
+    "support": "2017-12-31"
+  },
+  {
+    "cycle": "sn900",
+    "eol": "2021-09-30",
+    "releaseDate": "2014-07-03",
+    "support": "2016-09-30"
+  },
+  {
+    "cycle": "sn700",
+    "eol": "2021-09-30",
+    "releaseDate": "2014-07-03",
+    "support": "2016-09-30"
+  },
+  {
+    "cycle": "sn500",
+    "eol": "2021-09-30",
+    "releaseDate": "2014-07-03",
+    "support": "2016-09-30"
+  }
+]

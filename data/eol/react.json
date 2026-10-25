@@ -1,0 +1,32 @@
+[
+  {
+    "cycle": "19",
+    "eol": false,
+    "releaseDate": "2024-12-05",
+    "support": true
+  },
+  {
+    "cycle": "18",
+    "eol": false,
+    "releaseDate": "2022-03-29",
+    "support": "2024-12-05"
+  },
+  {
+    "cycle": "17",
+    "eol": false,
+    "releaseDate": "2020-10-20",
+    "support": "2022-03-29"
+  },
+  {
+    "cycle": "16",
+    "eol": false,
+    "releaseDate": "2017-09-26",
+    "support": "2020-10-20"
+  },
+  {
+    "cycle": "15",
+    "eol": false,
+    "releaseDate": "2016-04-07",
+    "support": "2020-10-14"
+  }
+]

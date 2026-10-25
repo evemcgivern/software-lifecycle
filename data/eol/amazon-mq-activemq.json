@@ -1,0 +1,27 @@
+[
+  {
+    "cycle": "5.19",
+    "eol": false,
+    "releaseDate": "2025-03-07"
+  },
+  {
+    "cycle": "5.18",
+    "eol": false,
+    "releaseDate": "2023-03-18"
+  },
+  {
+    "cycle": "5.17",
+    "eol": "2025-06-16",
+    "releaseDate": "2022-03-09"
+  },
+  {
+    "cycle": "5.16",
+    "eol": "2024-11-15",
+    "releaseDate": "2020-06-25"
+  },
+  {
+    "cycle": "5.15",
+    "eol": "2024-09-16",
+    "releaseDate": "2017-06-27"
+  }
+]

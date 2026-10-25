@@ -1,0 +1,42 @@
+[
+  {
+    "cycle": "chromecast-google-tv-streamer",
+    "eol": false,
+    "releaseDate": "2024-09-24"
+  },
+  {
+    "cycle": "chromecast-google-tv-hd",
+    "eol": false,
+    "releaseDate": "2022-09-22"
+  },
+  {
+    "cycle": "chromecast-google-tv-4k",
+    "eol": false,
+    "releaseDate": "2020-09-30"
+  },
+  {
+    "cycle": "chromecast-3",
+    "eol": false,
+    "releaseDate": "2018-10-10"
+  },
+  {
+    "cycle": "chromecast-ultra",
+    "eol": false,
+    "releaseDate": "2016-11-06"
+  },
+  {
+    "cycle": "chromecast-audio",
+    "eol": false,
+    "releaseDate": "2015-09-29"
+  },
+  {
+    "cycle": "chromecast-2",
+    "eol": false,
+    "releaseDate": "2015-09-29"
+  },
+  {
+    "cycle": "chromecast-1",
+    "eol": "2023-05-31",
+    "releaseDate": "2013-07-24"
+  }
+]

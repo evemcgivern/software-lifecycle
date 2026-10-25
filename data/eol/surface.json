@@ -1,0 +1,302 @@
+[
+  {
+    "cycle": "pro-12th-edition-snapdragon",
+    "eol": "2032-06-16",
+    "releaseDate": "2026-06-16"
+  },
+  {
+    "cycle": "laptop-8th-edition-snapdragon",
+    "eol": "2032-06-16",
+    "releaseDate": "2026-06-16"
+  },
+  {
+    "cycle": "laptop-for-business-13-inch-1st-edition-intel",
+    "eol": "2032-05-19",
+    "releaseDate": "2026-05-19"
+  },
+  {
+    "cycle": "laptop-for-business-8th-edition-intel",
+    "eol": "2032-05-19",
+    "releaseDate": "2026-05-19"
+  },
+  {
+    "cycle": "pro-for-business-12th-edition-intel",
+    "eol": "2032-05-19",
+    "releaseDate": "2026-05-19"
+  },
+  {
+    "cycle": "laptop-5g-for-business-7th-edition-intel",
+    "eol": "2031-08-26",
+    "releaseDate": "2025-08-26"
+  },
+  {
+    "cycle": "pro-12-inch-1st-edition-snapdragon",
+    "eol": "2031-05-20",
+    "releaseDate": "2025-05-20"
+  },
+  {
+    "cycle": "laptop-13-inch-1st-edition-snapdragon",
+    "eol": "2031-05-20",
+    "releaseDate": "2025-05-20"
+  },
+  {
+    "cycle": "pro-for-business-11th-edition-intel",
+    "eol": "2031-02-18",
+    "releaseDate": "2025-02-18"
+  },
+  {
+    "cycle": "laptop-for-business-7th-edition-intel",
+    "eol": "2031-02-18",
+    "releaseDate": "2025-02-18"
+  },
+  {
+    "cycle": "pro-10-with-5g-for-business",
+    "eol": "2030-10-11",
+    "releaseDate": "2024-10-11"
+  },
+  {
+    "cycle": "pro-with-5g-11th-edition-snapdragon",
+    "eol": "2030-09-26",
+    "releaseDate": "2024-09-03"
+  },
+  {
+    "cycle": "pro-11th-edition-snapdragon",
+    "eol": "2030-09-10",
+    "releaseDate": "2024-06-18"
+  },
+  {
+    "cycle": "laptop-7th-edition-snapdragon",
+    "eol": "2030-09-10",
+    "releaseDate": "2024-06-18"
+  },
+  {
+    "cycle": "laptop-6-for-business",
+    "eol": "2030-04-09",
+    "releaseDate": "2024-04-09"
+  },
+  {
+    "cycle": "pro-10-for-business",
+    "eol": "2030-04-09",
+    "releaseDate": "2024-04-09"
+  },
+  {
+    "cycle": "laptop-studio-2",
+    "eol": "2029-10-03",
+    "releaseDate": "2023-10-03"
+  },
+  {
+    "cycle": "laptop-go-3",
+    "eol": "2029-10-03",
+    "releaseDate": "2023-10-03"
+  },
+  {
+    "cycle": "go-4",
+    "eol": "2029-09-21",
+    "releaseDate": "2023-09-21"
+  },
+  {
+    "cycle": "studio-2+",
+    "eol": "2028-10-02",
+    "releaseDate": "2022-10-25"
+  },
+  {
+    "cycle": "laptop-5",
+    "eol": "2028-10-25",
+    "releaseDate": "2022-10-25"
+  },
+  {
+    "cycle": "pro-9",
+    "eol": "2028-10-25",
+    "releaseDate": "2022-10-25"
+  },
+  {
+    "cycle": "laptop-go-2",
+    "eol": "2028-06-07",
+    "releaseDate": "2022-06-07"
+  },
+  {
+    "cycle": "laptop-se",
+    "eol": "2028-01-11",
+    "releaseDate": "2022-01-11"
+  },
+  {
+    "cycle": "pro-x-wi-fi",
+    "eol": "2027-10-05",
+    "releaseDate": "2021-10-05"
+  },
+  {
+    "cycle": "pro-8",
+    "eol": "2027-10-05",
+    "releaseDate": "2021-10-05"
+  },
+  {
+    "cycle": "laptop-studio",
+    "eol": "2027-10-05",
+    "releaseDate": "2021-10-05"
+  },
+  {
+    "cycle": "go-3",
+    "eol": "2027-10-05",
+    "releaseDate": "2021-10-05"
+  },
+  {
+    "cycle": "laptop-4",
+    "eol": "2027-04-15",
+    "releaseDate": "2021-04-15"
+  },
+  {
+    "cycle": "pro-7+",
+    "eol": "2027-01-15",
+    "releaseDate": "2021-01-15"
+  },
+  {
+    "cycle": "hub-2s-85",
+    "eol": "2025-01-11",
+    "releaseDate": "2021-01-11"
+  },
+  {
+    "cycle": "pro-x-sq2",
+    "eol": "2025-08-10",
+    "releaseDate": "2020-10-13"
+  },
+  {
+    "cycle": "laptop-go",
+    "eol": "2024-10-13",
+    "releaseDate": "2020-10-13"
+  },
+  {
+    "cycle": "book-3",
+    "eol": "2025-04-01",
+    "releaseDate": "2020-05-26"
+  },
+  {
+    "cycle": "go-2",
+    "eol": "2024-12-30",
+    "releaseDate": "2020-05-06"
+  },
+  {
+    "cycle": "pro-x-sq1",
+    "eol": "2025-08-10",
+    "releaseDate": "2019-11-05"
+  },
+  {
+    "cycle": "laptop-3",
+    "eol": "2024-07-30",
+    "releaseDate": "2019-10-22"
+  },
+  {
+    "cycle": "pro-7",
+    "eol": "2025-10-30",
+    "releaseDate": "2019-10-22"
+  },
+  {
+    "cycle": "hub-2s",
+    "eol": "2023-04-17",
+    "releaseDate": "2019-04-17"
+  },
+  {
+    "cycle": "go-with-lte-advanced",
+    "eol": "2022-11-20",
+    "releaseDate": "2018-11-20"
+  },
+  {
+    "cycle": "pro-6",
+    "eol": "2023-06-30",
+    "releaseDate": "2018-10-16"
+  },
+  {
+    "cycle": "laptop-2",
+    "eol": "2022-12-27",
+    "releaseDate": "2018-10-16"
+  },
+  {
+    "cycle": "studio-2",
+    "eol": "2024-10-02",
+    "releaseDate": "2018-10-02"
+  },
+  {
+    "cycle": "go",
+    "eol": "2022-08-02",
+    "releaseDate": "2018-08-02"
+  },
+  {
+    "cycle": "pro-with-lte-advanced-5th-gen",
+    "eol": "2024-01-15",
+    "releaseDate": "2017-12-01"
+  },
+  {
+    "cycle": "book-2",
+    "eol": "2023-06-30",
+    "releaseDate": "2017-11-17"
+  },
+  {
+    "cycle": "pro-5th-gen",
+    "eol": "2024-01-15",
+    "releaseDate": "2017-06-15"
+  },
+  {
+    "cycle": "laptop-1st-gen",
+    "eol": "2021-11-13",
+    "releaseDate": "2017-06-14"
+  },
+  {
+    "cycle": "studio-1st-gen",
+    "eol": "2021-11-13",
+    "releaseDate": "2016-12-15"
+  },
+  {
+    "cycle": "book-with-performance-base",
+    "eol": "2021-11-13",
+    "releaseDate": "2016-11-10"
+  },
+  {
+    "cycle": "book",
+    "eol": "2021-11-13",
+    "releaseDate": "2015-10-26"
+  },
+  {
+    "cycle": "pro-4",
+    "eol": "2021-11-13",
+    "releaseDate": "2015-10-26"
+  },
+  {
+    "cycle": "hub-55",
+    "eol": "2022-11-30",
+    "releaseDate": "2015-06-01"
+  },
+  {
+    "cycle": "hub-84",
+    "eol": "2022-11-30",
+    "releaseDate": "2015-06-01"
+  },
+  {
+    "cycle": "3",
+    "eol": "2021-11-13",
+    "releaseDate": "2015-05-05"
+  },
+  {
+    "cycle": "pro-3",
+    "eol": "2021-11-13",
+    "releaseDate": "2014-06-20"
+  },
+  {
+    "cycle": "2",
+    "eol": "2018-04-10",
+    "releaseDate": "2013-10-22"
+  },
+  {
+    "cycle": "pro-2",
+    "eol": "2018-04-10",
+    "releaseDate": "2013-10-22"
+  },
+  {
+    "cycle": "pro",
+    "eol": "2017-04-11",
+    "releaseDate": "2013-02-09"
+  },
+  {
+    "cycle": "rt",
+    "eol": "2017-04-11",
+    "releaseDate": "2012-10-26"
+  }
+]

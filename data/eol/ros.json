@@ -1,0 +1,22 @@
+[
+  {
+    "cycle": "noetic",
+    "eol": "2025-05-01",
+    "releaseDate": "2020-05-23"
+  },
+  {
+    "cycle": "melodic",
+    "eol": "2023-04-01",
+    "releaseDate": "2018-05-23"
+  },
+  {
+    "cycle": "lunar",
+    "eol": "2019-05-01",
+    "releaseDate": "2017-05-23"
+  },
+  {
+    "cycle": "kinetic",
+    "eol": "2021-05-01",
+    "releaseDate": "2016-05-23"
+  }
+]

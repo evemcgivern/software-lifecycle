@@ -1,0 +1,14 @@
+[
+  {
+    "cycle": "2",
+    "eol": false,
+    "releaseDate": "2021-06-21",
+    "support": true
+  },
+  {
+    "cycle": "1",
+    "eol": "2023-06-30",
+    "releaseDate": "2019-03-07",
+    "support": "2021-04-01"
+  }
+]

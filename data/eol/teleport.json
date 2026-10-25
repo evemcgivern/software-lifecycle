@@ -1,0 +1,20 @@
+[
+  {
+    "cycle": "18",
+    "eol": false,
+    "releaseDate": "2025-07-04",
+    "support": true
+  },
+  {
+    "cycle": "17",
+    "eol": false,
+    "releaseDate": "2024-11-15",
+    "support": "2025-07-04"
+  },
+  {
+    "cycle": "16",
+    "eol": "2025-10-31",
+    "releaseDate": "2024-06-13",
+    "support": "2024-11-15"
+  }
+]

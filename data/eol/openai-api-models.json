@@ -1,0 +1,548 @@
+[
+  {
+    "cycle": "gpt-6.1-sol",
+    "eol": false,
+    "releaseDate": "2026-09-29",
+    "support": true
+  },
+  {
+    "cycle": "gpt-6-sol",
+    "eol": false,
+    "releaseDate": "2026-09-22",
+    "support": true
+  },
+  {
+    "cycle": "gpt-6-luna",
+    "eol": false,
+    "releaseDate": "2026-09-22",
+    "support": true
+  },
+  {
+    "cycle": "gpt-image-2.5-sunburst",
+    "eol": false,
+    "releaseDate": "2026-09-08",
+    "support": true
+  },
+  {
+    "cycle": "gpt-image-2.5-flare",
+    "eol": false,
+    "releaseDate": "2026-09-03",
+    "support": true
+  },
+  {
+    "cycle": "gpt-6-astra",
+    "eol": false,
+    "releaseDate": "2026-09-03",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.6-cyber",
+    "eol": false,
+    "releaseDate": "2026-08-10",
+    "support": true
+  },
+  {
+    "cycle": "gpt-live-transcribe",
+    "eol": false,
+    "releaseDate": "2026-07-29",
+    "support": true
+  },
+  {
+    "cycle": "gpt-transcribe",
+    "eol": false,
+    "releaseDate": "2026-07-29",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.6-luna",
+    "eol": false,
+    "releaseDate": "2026-07-09",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.6-terra",
+    "eol": false,
+    "releaseDate": "2026-07-09",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.6-sol",
+    "eol": false,
+    "releaseDate": "2026-07-09",
+    "support": true
+  },
+  {
+    "cycle": "gpt-live-1",
+    "eol": false,
+    "releaseDate": "2026-07-08",
+    "support": true
+  },
+  {
+    "cycle": "gpt-realtime-2.1",
+    "eol": false,
+    "releaseDate": "2026-07-06",
+    "support": true
+  },
+  {
+    "cycle": "gpt-realtime-2.1-mini",
+    "eol": false,
+    "releaseDate": "2026-07-06",
+    "support": true
+  },
+  {
+    "cycle": "gpt-realtime-2",
+    "eol": false,
+    "releaseDate": "2026-05-07",
+    "support": true
+  },
+  {
+    "cycle": "gpt-realtime-translate",
+    "eol": false,
+    "releaseDate": "2026-05-07",
+    "support": true
+  },
+  {
+    "cycle": "gpt-realtime-whisper",
+    "eol": false,
+    "releaseDate": "2026-05-07",
+    "support": true
+  },
+  {
+    "cycle": "chat-latest",
+    "eol": false,
+    "releaseDate": "2026-05-05",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.5",
+    "eol": false,
+    "releaseDate": "2026-04-23",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.5-pro",
+    "eol": false,
+    "releaseDate": "2026-04-23",
+    "support": true
+  },
+  {
+    "cycle": "gpt-image-2",
+    "eol": false,
+    "releaseDate": "2026-04-21",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.4-mini",
+    "eol": false,
+    "releaseDate": "2026-03-17",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.4-nano",
+    "eol": "2027-04-01",
+    "releaseDate": "2026-03-17",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "gpt-5.4",
+    "eol": false,
+    "releaseDate": "2026-03-05",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.4-pro",
+    "eol": false,
+    "releaseDate": "2026-03-05",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.3-chat-latest",
+    "eol": "2026-08-10",
+    "releaseDate": "2026-03-03",
+    "support": "2026-05-08"
+  },
+  {
+    "cycle": "gpt-audio-1.5",
+    "eol": false,
+    "releaseDate": "2026-02-23",
+    "support": true
+  },
+  {
+    "cycle": "gpt-realtime-1.5",
+    "eol": false,
+    "releaseDate": "2026-02-23",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.3-codex",
+    "eol": "2027-04-01",
+    "releaseDate": "2026-02-05",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "gpt-audio",
+    "eol": "2027-01-20",
+    "releaseDate": "2026-01-19",
+    "support": "2026-07-20"
+  },
+  {
+    "cycle": "gpt-audio-mini",
+    "eol": "2027-01-20",
+    "releaseDate": "2026-01-19",
+    "support": "2026-07-20"
+  },
+  {
+    "cycle": "gpt-5.2-codex",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-12-18",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-image-1.5",
+    "eol": "2026-12-01",
+    "releaseDate": "2025-12-16",
+    "support": "2026-06-02"
+  },
+  {
+    "cycle": "gpt-5.2",
+    "eol": false,
+    "releaseDate": "2025-12-11",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.2-chat-latest",
+    "eol": "2026-08-10",
+    "releaseDate": "2025-12-11",
+    "support": "2026-05-08"
+  },
+  {
+    "cycle": "gpt-5.2-pro",
+    "eol": false,
+    "releaseDate": "2025-12-11",
+    "support": true
+  },
+  {
+    "cycle": "gpt-5.1-codex-max",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-11-19",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-5.1-codex",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-11-13",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-5.1-codex-mini",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-11-13",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-5.1",
+    "eol": "2027-04-01",
+    "releaseDate": "2025-11-12",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "gpt-5.1-chat-latest",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-11-12",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-4o-transcribe-diarize",
+    "eol": "2027-02-26",
+    "releaseDate": "2025-10-18",
+    "support": "2026-08-26"
+  },
+  {
+    "cycle": "gpt-image-1-mini",
+    "eol": "2026-12-01",
+    "releaseDate": "2025-10-06",
+    "support": "2026-06-02"
+  },
+  {
+    "cycle": "gpt-realtime-mini",
+    "eol": "2027-01-20",
+    "releaseDate": "2025-10-06",
+    "support": "2026-07-20"
+  },
+  {
+    "cycle": "sora-2",
+    "eol": "2026-09-24",
+    "releaseDate": "2025-09-30",
+    "support": "2026-03-24"
+  },
+  {
+    "cycle": "sora-2-pro",
+    "eol": "2026-09-24",
+    "releaseDate": "2025-09-30",
+    "support": "2026-03-24"
+  },
+  {
+    "cycle": "gpt-5-codex",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-09-15",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-realtime",
+    "eol": "2027-01-20",
+    "releaseDate": "2025-08-28",
+    "support": "2026-07-20"
+  },
+  {
+    "cycle": "gpt-5",
+    "eol": "2026-12-11",
+    "releaseDate": "2025-08-07",
+    "support": "2026-06-11"
+  },
+  {
+    "cycle": "gpt-5-chat-latest",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-08-07",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-5-mini",
+    "eol": "2026-12-11",
+    "releaseDate": "2025-08-07",
+    "support": "2026-06-11"
+  },
+  {
+    "cycle": "gpt-5-nano",
+    "eol": "2026-12-11",
+    "releaseDate": "2025-08-07",
+    "support": "2026-06-11"
+  },
+  {
+    "cycle": "gpt-5-pro",
+    "eol": "2026-12-11",
+    "releaseDate": "2025-08-07",
+    "support": "2026-06-11"
+  },
+  {
+    "cycle": "gpt-oss-120b",
+    "eol": false,
+    "releaseDate": "2025-08-05",
+    "support": true
+  },
+  {
+    "cycle": "gpt-oss-20b",
+    "eol": false,
+    "releaseDate": "2025-08-05",
+    "support": true
+  },
+  {
+    "cycle": "codex-mini-latest",
+    "eol": "2026-02-12",
+    "releaseDate": "2025-05-16",
+    "support": "2025-11-17"
+  },
+  {
+    "cycle": "o3",
+    "eol": "2026-12-11",
+    "releaseDate": "2025-04-16",
+    "support": "2026-06-11"
+  },
+  {
+    "cycle": "o3-pro",
+    "eol": "2026-12-11",
+    "releaseDate": "2025-04-16",
+    "support": "2026-06-11"
+  },
+  {
+    "cycle": "o4-mini",
+    "eol": "2026-10-23",
+    "releaseDate": "2025-04-16",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-4.1",
+    "eol": "2027-01-14",
+    "releaseDate": "2025-04-14",
+    "support": "2026-10-14"
+  },
+  {
+    "cycle": "gpt-4.1-mini",
+    "eol": "2027-01-14",
+    "releaseDate": "2025-04-14",
+    "support": "2026-10-14"
+  },
+  {
+    "cycle": "gpt-4.1-nano",
+    "eol": "2026-10-23",
+    "releaseDate": "2025-04-14",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "chatgpt-image-latest",
+    "eol": "2026-12-01",
+    "releaseDate": "2025-03-25",
+    "support": "2026-06-02"
+  },
+  {
+    "cycle": "gpt-image-1",
+    "eol": "2026-10-23",
+    "releaseDate": "2025-03-25",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-4o-mini-transcribe",
+    "eol": "2027-02-26",
+    "releaseDate": "2025-03-20",
+    "support": "2026-08-26"
+  },
+  {
+    "cycle": "gpt-4o-mini-tts",
+    "eol": "2027-01-06",
+    "releaseDate": "2025-03-20",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "gpt-4o-transcribe",
+    "eol": "2027-02-26",
+    "releaseDate": "2025-03-20",
+    "support": "2026-08-26"
+  },
+  {
+    "cycle": "o1-pro",
+    "eol": "2026-10-23",
+    "releaseDate": "2025-03-19",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "o3-deep-research",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-02-02",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "o4-mini-deep-research",
+    "eol": "2026-07-23",
+    "releaseDate": "2025-02-02",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "o3-mini",
+    "eol": "2026-10-23",
+    "releaseDate": "2025-01-31",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "o1",
+    "eol": "2026-10-23",
+    "releaseDate": "2024-12-05",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "omni-moderation-latest",
+    "eol": false,
+    "releaseDate": "2024-09-26",
+    "support": true
+  },
+  {
+    "cycle": "o1-mini",
+    "eol": "2025-10-27",
+    "releaseDate": "2024-09-12",
+    "support": "2025-04-28"
+  },
+  {
+    "cycle": "chatgpt-4o-latest",
+    "eol": "2026-02-17",
+    "releaseDate": "2024-08-14",
+    "support": "2025-11-18"
+  },
+  {
+    "cycle": "gpt-4o-mini",
+    "eol": "2027-01-14",
+    "releaseDate": "2024-07-18",
+    "support": "2026-10-14"
+  },
+  {
+    "cycle": "gpt-4o",
+    "eol": "2027-01-14",
+    "releaseDate": "2024-05-13",
+    "support": "2026-10-14"
+  },
+  {
+    "cycle": "text-embedding-3-large",
+    "eol": false,
+    "releaseDate": "2024-01-25",
+    "support": true
+  },
+  {
+    "cycle": "text-embedding-3-small",
+    "eol": false,
+    "releaseDate": "2024-01-25",
+    "support": true
+  },
+  {
+    "cycle": "gpt-4-turbo",
+    "eol": "2026-10-23",
+    "releaseDate": "2023-11-06",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "tts-1",
+    "eol": "2027-01-06",
+    "releaseDate": "2023-11-06",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "tts-1-hd",
+    "eol": "2027-01-06",
+    "releaseDate": "2023-11-06",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "babbage-002",
+    "eol": "2026-09-28",
+    "releaseDate": "2023-08-22",
+    "support": "2025-09-26"
+  },
+  {
+    "cycle": "davinci-002",
+    "eol": "2026-09-28",
+    "releaseDate": "2023-08-22",
+    "support": "2025-09-26"
+  },
+  {
+    "cycle": "gpt-4",
+    "eol": "2026-10-23",
+    "releaseDate": "2023-03-14",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "gpt-3.5-turbo",
+    "eol": "2026-10-23",
+    "releaseDate": "2023-03-01",
+    "support": "2026-04-22"
+  },
+  {
+    "cycle": "whisper-1",
+    "eol": "2027-02-26",
+    "releaseDate": "2022-09-21",
+    "support": "2026-08-26"
+  },
+  {
+    "cycle": "text-moderation-latest",
+    "eol": "2025-10-27",
+    "releaseDate": "2022-08-10",
+    "support": "2025-04-28"
+  },
+  {
+    "cycle": "text-moderation-stable",
+    "eol": "2025-10-27",
+    "releaseDate": "2022-08-10",
+    "support": "2025-04-28"
+  },
+  {
+    "cycle": "text-embedding-ada-002",
+    "eol": false,
+    "releaseDate": "2022-01-25",
+    "support": true
+  }
+]

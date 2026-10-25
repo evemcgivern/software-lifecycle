@@ -1,0 +1,282 @@
+[
+  {
+    "cycle": "0.64",
+    "eol": "2027-12-01",
+    "releaseDate": "2026-09-16"
+  },
+  {
+    "cycle": "0.63",
+    "eol": "2026-11-01",
+    "releaseDate": "2026-07-07"
+  },
+  {
+    "cycle": "0.62",
+    "eol": "2026-09-01",
+    "releaseDate": "2026-06-01"
+  },
+  {
+    "cycle": "0.61",
+    "eol": "2026-09-01",
+    "releaseDate": "2026-04-30"
+  },
+  {
+    "cycle": "0.60",
+    "eol": "2026-09-01",
+    "releaseDate": "2026-03-26"
+  },
+  {
+    "cycle": "0.59",
+    "eol": "2026-09-01",
+    "releaseDate": "2026-02-12"
+  },
+  {
+    "cycle": "0.58",
+    "eol": "2027-02-17",
+    "releaseDate": "2025-12-17"
+  },
+  {
+    "cycle": "0.57",
+    "eol": "2026-05-31",
+    "releaseDate": "2025-11-01"
+  },
+  {
+    "cycle": "0.56",
+    "eol": "2026-05-31",
+    "releaseDate": "2025-08-01"
+  },
+  {
+    "cycle": "0.55",
+    "eol": "2026-05-31",
+    "releaseDate": "2025-06-02"
+  },
+  {
+    "cycle": "0.54",
+    "eol": "2026-05-31",
+    "releaseDate": "2025-03-25"
+  },
+  {
+    "cycle": "0.53",
+    "eol": true,
+    "releaseDate": "2025-02-07"
+  },
+  {
+    "cycle": "0.52",
+    "eol": true,
+    "releaseDate": "2024-12-05"
+  },
+  {
+    "cycle": "0.51",
+    "eol": true,
+    "releaseDate": "2024-10-23"
+  },
+  {
+    "cycle": "0.50",
+    "eol": true,
+    "releaseDate": "2024-06-12"
+  },
+  {
+    "cycle": "0.49",
+    "eol": true,
+    "releaseDate": "2024-03-15"
+  },
+  {
+    "cycle": "0.48",
+    "eol": true,
+    "releaseDate": "2023-12-14"
+  },
+  {
+    "cycle": "0.47",
+    "eol": true,
+    "releaseDate": "2023-08-16"
+  },
+  {
+    "cycle": "0.46",
+    "eol": true,
+    "releaseDate": "2023-03-28"
+  },
+  {
+    "cycle": "0.45",
+    "eol": true,
+    "releaseDate": "2022-12-05"
+  },
+  {
+    "cycle": "0.44",
+    "eol": true,
+    "releaseDate": "2022-08-04"
+  },
+  {
+    "cycle": "0.43",
+    "eol": true,
+    "releaseDate": "2022-05-02"
+  },
+  {
+    "cycle": "0.42",
+    "eol": true,
+    "releaseDate": "2022-02-08"
+  },
+  {
+    "cycle": "0.41",
+    "eol": true,
+    "releaseDate": "2021-10-06"
+  },
+  {
+    "cycle": "0.40",
+    "eol": true,
+    "releaseDate": "2021-07-09"
+  },
+  {
+    "cycle": "0.39",
+    "eol": true,
+    "releaseDate": "2021-04-20"
+  },
+  {
+    "cycle": "0.38",
+    "eol": true,
+    "releaseDate": "2021-02-17"
+  },
+  {
+    "cycle": "0.37",
+    "eol": true,
+    "releaseDate": "2020-10-23"
+  },
+  {
+    "cycle": "0.36",
+    "eol": true,
+    "releaseDate": "2020-07-21"
+  },
+  {
+    "cycle": "0.35",
+    "eol": true,
+    "releaseDate": "2020-03-31"
+  },
+  {
+    "cycle": "0.34",
+    "eol": true,
+    "releaseDate": "2019-12-20"
+  },
+  {
+    "cycle": "0.33",
+    "eol": true,
+    "releaseDate": "2019-08-20"
+  },
+  {
+    "cycle": "0.32",
+    "eol": true,
+    "releaseDate": "2019-03-29"
+  },
+  {
+    "cycle": "0.31",
+    "eol": true,
+    "releaseDate": "2018-11-21"
+  },
+  {
+    "cycle": "0.30",
+    "eol": true,
+    "releaseDate": "2018-08-08"
+  },
+  {
+    "cycle": "0.29",
+    "eol": true,
+    "releaseDate": "2018-05-01"
+  },
+  {
+    "cycle": "0.28",
+    "eol": true,
+    "releaseDate": "2018-02-08"
+  },
+  {
+    "cycle": "0.27",
+    "eol": true,
+    "releaseDate": "2017-11-28"
+  },
+  {
+    "cycle": "0.26",
+    "eol": true,
+    "releaseDate": "2017-09-26"
+  },
+  {
+    "cycle": "0.25",
+    "eol": true,
+    "releaseDate": "2017-07-25"
+  },
+  {
+    "cycle": "0.24",
+    "eol": true,
+    "releaseDate": "2017-05-10"
+  },
+  {
+    "cycle": "0.23",
+    "eol": true,
+    "releaseDate": "2017-03-21"
+  },
+  {
+    "cycle": "0.22",
+    "eol": true,
+    "releaseDate": "2017-01-10"
+  },
+  {
+    "cycle": "0.21",
+    "eol": true,
+    "releaseDate": "2016-12-08"
+  },
+  {
+    "cycle": "0.20",
+    "eol": true,
+    "releaseDate": "2016-10-12"
+  },
+  {
+    "cycle": "0.19",
+    "eol": true,
+    "releaseDate": "2016-08-01"
+  },
+  {
+    "cycle": "0.18",
+    "eol": true,
+    "releaseDate": "2016-06-21"
+  },
+  {
+    "cycle": "0.17",
+    "eol": true,
+    "releaseDate": "2016-05-03"
+  },
+  {
+    "cycle": "0.16",
+    "eol": true,
+    "releaseDate": "2016-03-29"
+  },
+  {
+    "cycle": "0.15",
+    "eol": true,
+    "releaseDate": "2016-02-29"
+  },
+  {
+    "cycle": "0.14",
+    "eol": true,
+    "releaseDate": "2016-01-28"
+  },
+  {
+    "cycle": "0.13",
+    "eol": true,
+    "releaseDate": "2015-12-04"
+  },
+  {
+    "cycle": "0.12",
+    "eol": true,
+    "releaseDate": "2015-10-20"
+  },
+  {
+    "cycle": "0.11",
+    "eol": true,
+    "releaseDate": "2015-08-31"
+  },
+  {
+    "cycle": "0.10",
+    "eol": true,
+    "releaseDate": "2015-07-31"
+  },
+  {
+    "cycle": "0.9",
+    "eol": true,
+    "releaseDate": "2015-06-30"
+  }
+]

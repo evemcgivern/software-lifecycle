@@ -1,0 +1,22 @@
+[
+  {
+    "cycle": "4.3",
+    "eol": false,
+    "releaseDate": "2026-09-09"
+  },
+  {
+    "cycle": "4.2",
+    "eol": false,
+    "releaseDate": "2025-11-20"
+  },
+  {
+    "cycle": "3.13",
+    "eol": false,
+    "releaseDate": "2024-07-02"
+  },
+  {
+    "cycle": "3.12",
+    "eol": "2025-03-17",
+    "releaseDate": "2023-05-09"
+  }
+]

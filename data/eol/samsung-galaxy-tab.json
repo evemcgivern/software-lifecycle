@@ -1,0 +1,494 @@
+[
+  {
+    "cycle": "galaxy-tab-a11+",
+    "eol": "2031-12-30",
+    "releaseDate": "2025-12-30",
+    "support": "2031-12-30"
+  },
+  {
+    "cycle": "galaxy-tab-a11",
+    "eol": "2032-09-29",
+    "releaseDate": "2025-09-29",
+    "support": "2032-09-29"
+  },
+  {
+    "cycle": "galaxy-tab-s11-ultra",
+    "eol": "2032-09-04",
+    "releaseDate": "2025-09-04",
+    "support": "2032-09-04"
+  },
+  {
+    "cycle": "galaxy-tab-s11",
+    "eol": "2032-09-04",
+    "releaseDate": "2025-09-04",
+    "support": "2032-09-04"
+  },
+  {
+    "cycle": "galaxy-tab-s10-lite",
+    "eol": "2032-09-04",
+    "releaseDate": "2025-09-04",
+    "support": "2032-09-04"
+  },
+  {
+    "cycle": "galaxy-tab-a9+2025",
+    "eol": false,
+    "releaseDate": "2025-08-01",
+    "support": "2031-08-01"
+  },
+  {
+    "cycle": "galaxy-tab-active5-pro",
+    "eol": "2030-05-07",
+    "releaseDate": "2025-05-07",
+    "support": "2029-05-07"
+  },
+  {
+    "cycle": "galaxy-tab-s10-fe+",
+    "eol": false,
+    "releaseDate": "2025-04-03",
+    "support": "2032-04-03"
+  },
+  {
+    "cycle": "galaxy-tab-s10-fe",
+    "eol": false,
+    "releaseDate": "2025-04-03",
+    "support": "2032-04-03"
+  },
+  {
+    "cycle": "galaxy-tab-s10-ultra",
+    "eol": false,
+    "releaseDate": "2024-10-03",
+    "support": "2031-10-03"
+  },
+  {
+    "cycle": "galaxy-tab-s10+",
+    "eol": "2031-10-03",
+    "releaseDate": "2024-10-03",
+    "support": "2031-10-03"
+  },
+  {
+    "cycle": "galaxy-tab-s6-lite-2024",
+    "eol": false,
+    "releaseDate": "2024-03-28",
+    "support": "2027-03-28"
+  },
+  {
+    "cycle": "galaxy-tab-active5",
+    "eol": "2029-01-23",
+    "releaseDate": "2024-01-23",
+    "support": "2028-01-23"
+  },
+  {
+    "cycle": "galaxy-tab-a9+",
+    "eol": "2027-10-23",
+    "releaseDate": "2023-10-23",
+    "support": "2026-10-23"
+  },
+  {
+    "cycle": "galaxy-tab-a9",
+    "eol": "2027-10-23",
+    "releaseDate": "2023-10-23",
+    "support": "2026-10-23"
+  },
+  {
+    "cycle": "galaxy-tab-s9-fe+",
+    "eol": "2028-10-04",
+    "releaseDate": "2023-10-04",
+    "support": "2027-10-04"
+  },
+  {
+    "cycle": "galaxy-tab-s9-fe",
+    "eol": false,
+    "releaseDate": "2023-10-04",
+    "support": "2027-10-04"
+  },
+  {
+    "cycle": "galaxy-tab-s9-ultra",
+    "eol": false,
+    "releaseDate": "2023-08-11",
+    "support": "2027-08-11"
+  },
+  {
+    "cycle": "galaxy-tab-s9+",
+    "eol": false,
+    "releaseDate": "2023-08-11",
+    "support": "2027-08-11"
+  },
+  {
+    "cycle": "galaxy-tab-s9",
+    "eol": "2028-08-11",
+    "releaseDate": "2023-08-11",
+    "support": "2027-08-11"
+  },
+  {
+    "cycle": "galaxy-tab-a7-10.4-2022",
+    "eol": false,
+    "releaseDate": "2022-11-21",
+    "support": "2024-11-21"
+  },
+  {
+    "cycle": "galaxy-tab-active4-pro",
+    "eol": "2027-08-31",
+    "releaseDate": "2022-08-31",
+    "support": "2025-08-31"
+  },
+  {
+    "cycle": "galaxy-tab-s6-lite",
+    "eol": "2025-06-04",
+    "releaseDate": "2022-05-23",
+    "support": "2025-05-25"
+  },
+  {
+    "cycle": "galaxy-tab-s8-ultra",
+    "eol": "2027-04-30",
+    "releaseDate": "2022-04-30",
+    "support": "2026-04-30"
+  },
+  {
+    "cycle": "galaxy-tab-s8+",
+    "eol": false,
+    "releaseDate": "2022-04-14",
+    "support": "2026-04-14"
+  },
+  {
+    "cycle": "galaxy-tab-s8",
+    "eol": "2027-03-22",
+    "releaseDate": "2022-03-22",
+    "support": "2026-03-22"
+  },
+  {
+    "cycle": "galaxy-tab-a8",
+    "eol": "2026-02-21",
+    "releaseDate": "2022-01-17",
+    "support": "2025-01-17"
+  },
+  {
+    "cycle": "galaxy-tab-a7-lite",
+    "eol": "2025-06-04",
+    "releaseDate": "2021-05-27",
+    "support": "2024-05-27"
+  },
+  {
+    "cycle": "galaxy-tab-s7-fe",
+    "eol": "2025-07-08",
+    "releaseDate": "2021-05-27",
+    "support": "2024-05-27"
+  },
+  {
+    "cycle": "galaxy-tab-active3",
+    "eol": "2025-11-04",
+    "releaseDate": "2020-09-28",
+    "support": "2022-09-28"
+  },
+  {
+    "cycle": "galaxy-tab-a7-10.4-2020",
+    "eol": "2024-08-10",
+    "releaseDate": "2020-08-10",
+    "support": "2022-08-10"
+  },
+  {
+    "cycle": "galaxy-tab-s7+",
+    "eol": "2024-08-05",
+    "releaseDate": "2020-08-05",
+    "support": "2023-08-05"
+  },
+  {
+    "cycle": "galaxy-tab-s7",
+    "eol": "2024-08-05",
+    "releaseDate": "2020-08-05",
+    "support": "2023-08-05"
+  },
+  {
+    "cycle": "galaxy-tab-s6-lite-2020",
+    "eol": "2024-03-26",
+    "releaseDate": "2020-03-26",
+    "support": "2023-03-26"
+  },
+  {
+    "cycle": "galaxy-tab-a-8.4-2020",
+    "eol": "2024-03-25",
+    "releaseDate": "2020-03-25",
+    "support": "2022-03-25"
+  },
+  {
+    "cycle": "galaxy-tab-s6-5g",
+    "eol": "2024-01-30",
+    "releaseDate": "2020-01-30",
+    "support": "2023-01-30"
+  },
+  {
+    "cycle": "galaxy-tab-active-pro",
+    "eol": "2023-10-01",
+    "releaseDate": "2019-10-01",
+    "support": "2022-10-01"
+  },
+  {
+    "cycle": "galaxy-tab-s6",
+    "eol": "2023-07-31",
+    "releaseDate": "2019-07-31",
+    "support": "2022-07-31"
+  },
+  {
+    "cycle": "galaxy-tab-a-8.0-2019",
+    "eol": "2023-07-01",
+    "releaseDate": "2019-07-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s5e",
+    "eol": "2023-04-01",
+    "releaseDate": "2019-04-01",
+    "support": "2021-04-01"
+  },
+  {
+    "cycle": "galaxy-tab-a-8.0-with-s-pen-2019",
+    "eol": "2023-04-01",
+    "releaseDate": "2019-04-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-10.1-2019",
+    "eol": true,
+    "releaseDate": "2019-04-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-advanced2",
+    "eol": true,
+    "releaseDate": "2018-12-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-8.0-2018",
+    "eol": true,
+    "releaseDate": "2018-09-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s4-10.5",
+    "eol": true,
+    "releaseDate": "2018-08-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-10.5-2018",
+    "eol": true,
+    "releaseDate": "2018-08-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-active2",
+    "eol": true,
+    "releaseDate": "2017-10-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-8.0-2017",
+    "eol": true,
+    "releaseDate": "2017-09-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s3-9.7",
+    "eol": true,
+    "releaseDate": "2017-04-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-j",
+    "eol": true,
+    "releaseDate": "2016-08-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-10.1-2016",
+    "eol": true,
+    "releaseDate": "2016-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-7.0-2016",
+    "eol": true,
+    "releaseDate": "2016-03-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-e-8.0",
+    "eol": true,
+    "releaseDate": "2016-01-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s2-9.7",
+    "eol": true,
+    "releaseDate": "2015-09-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s2-8.0",
+    "eol": true,
+    "releaseDate": "2015-09-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-e-9.6",
+    "eol": true,
+    "releaseDate": "2015-07-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-9.7-and-s-pen",
+    "eol": true,
+    "releaseDate": "2015-07-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-9.7",
+    "eol": true,
+    "releaseDate": "2015-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-8.0-and-s-pen-2015",
+    "eol": true,
+    "releaseDate": "2015-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-a-8.0-2015",
+    "eol": true,
+    "releaseDate": "2015-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-3-v",
+    "eol": true,
+    "releaseDate": "2015-04-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-3-lite-7.0-ve",
+    "eol": true,
+    "releaseDate": "2015-03-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-active-lte",
+    "eol": true,
+    "releaseDate": "2014-12-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-active",
+    "eol": true,
+    "releaseDate": "2014-12-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s-8.4-lte",
+    "eol": true,
+    "releaseDate": "2014-07-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s-8.4",
+    "eol": true,
+    "releaseDate": "2014-07-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s-10.5-lte",
+    "eol": true,
+    "releaseDate": "2014-07-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-s-10.5",
+    "eol": true,
+    "releaseDate": "2014-07-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-8.0",
+    "eol": true,
+    "releaseDate": "2014-06-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-8.0-3g",
+    "eol": true,
+    "releaseDate": "2014-06-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-8.0-lte",
+    "eol": true,
+    "releaseDate": "2014-06-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-10.1",
+    "eol": true,
+    "releaseDate": "2014-06-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-10.1-3g",
+    "eol": true,
+    "releaseDate": "2014-06-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-10.1-lte",
+    "eol": true,
+    "releaseDate": "2014-06-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-7.0",
+    "eol": true,
+    "releaseDate": "2014-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-7.0-3g",
+    "eol": true,
+    "releaseDate": "2014-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-4-7.0-lte",
+    "eol": true,
+    "releaseDate": "2014-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-pro-12.2-lte",
+    "eol": true,
+    "releaseDate": "2014-05-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-pro-12.2-3g",
+    "eol": true,
+    "releaseDate": "2014-04-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-pro-12.2",
+    "eol": true,
+    "releaseDate": "2014-03-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-3-lite-7.0-3g",
+    "eol": true,
+    "releaseDate": "2014-02-01",
+    "support": false
+  },
+  {
+    "cycle": "galaxy-tab-3-lite-7.0",
+    "eol": true,
+    "releaseDate": "2014-02-01",
+    "support": false
+  }
+]

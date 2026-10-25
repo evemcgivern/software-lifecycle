@@ -1,0 +1,107 @@
+[
+  {
+    "cycle": "3.5",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2024-09-03",
+    "support": true
+  },
+  {
+    "cycle": "3.4",
+    "eol": "2024-09-03",
+    "extendedSupport": false,
+    "releaseDate": "2023-12-29",
+    "support": "2024-09-03"
+  },
+  {
+    "cycle": "3.3",
+    "eol": "2023-12-29",
+    "extendedSupport": false,
+    "releaseDate": "2023-05-11",
+    "support": "2023-12-29"
+  },
+  {
+    "cycle": "2.7",
+    "eol": "2023-12-31",
+    "extendedSupport": true,
+    "releaseDate": "2022-07-01",
+    "support": "2023-12-31"
+  },
+  {
+    "cycle": "3.2",
+    "eol": "2023-05-11",
+    "extendedSupport": false,
+    "releaseDate": "2021-08-09",
+    "support": "2023-05-11"
+  },
+  {
+    "cycle": "3.1",
+    "eol": "2021-08-09",
+    "extendedSupport": false,
+    "releaseDate": "2021-06-07",
+    "support": "2021-08-09"
+  },
+  {
+    "cycle": "3.0",
+    "eol": "2021-06-07",
+    "extendedSupport": false,
+    "releaseDate": "2020-09-18",
+    "support": "2021-06-07"
+  },
+  {
+    "cycle": "2.6",
+    "eol": "2022-07-01",
+    "extendedSupport": true,
+    "releaseDate": "2019-02-04",
+    "support": "2022-07-01"
+  },
+  {
+    "cycle": "2.5",
+    "eol": "2019-02-04",
+    "extendedSupport": false,
+    "releaseDate": "2017-10-13",
+    "support": "2019-02-04"
+  },
+  {
+    "cycle": "2.4",
+    "eol": "2017-10-13",
+    "extendedSupport": false,
+    "releaseDate": "2017-07-13",
+    "support": "2017-10-13"
+  },
+  {
+    "cycle": "2.3",
+    "eol": "2017-07-13",
+    "extendedSupport": false,
+    "releaseDate": "2017-04-27",
+    "support": "2017-07-13"
+  },
+  {
+    "cycle": "2.2",
+    "eol": "2017-04-27",
+    "extendedSupport": false,
+    "releaseDate": "2017-02-26",
+    "support": "2017-04-27"
+  },
+  {
+    "cycle": "2.1",
+    "eol": "2017-02-26",
+    "extendedSupport": false,
+    "releaseDate": "2016-11-22",
+    "support": "2017-02-26"
+  },
+  {
+    "cycle": "2.0",
+    "eol": "2016-11-22",
+    "extendedSupport": false,
+    "releaseDate": "2016-09-30",
+    "support": "2016-11-22"
+  },
+  {
+    "cycle": "1",
+    "eol": true,
+    "extendedSupport": false,
+    "releaseDate": "2015-10-27",
+    "support": false
+  }
+]

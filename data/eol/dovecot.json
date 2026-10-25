@@ -1,0 +1,32 @@
+[
+  {
+    "cycle": "2.4",
+    "eol": false,
+    "releaseDate": "2025-01-24",
+    "support": true
+  },
+  {
+    "cycle": "2.3",
+    "eol": false,
+    "releaseDate": "2017-12-22",
+    "support": "2025-01-24"
+  },
+  {
+    "cycle": "2.2",
+    "eol": "2025-01-24",
+    "releaseDate": "2013-04-11",
+    "support": "2017-12-22"
+  },
+  {
+    "cycle": "2.1",
+    "eol": "2017-12-22",
+    "releaseDate": "2012-02-16",
+    "support": "2013-04-11"
+  },
+  {
+    "cycle": "2.0",
+    "eol": "2013-04-11",
+    "releaseDate": "2010-08-16",
+    "support": "2012-02-16"
+  }
+]

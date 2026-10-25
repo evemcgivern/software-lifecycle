@@ -1,0 +1,32 @@
+[
+  {
+    "cycle": "5",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2024-09-09"
+  },
+  {
+    "cycle": "4",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2014-04-09"
+  },
+  {
+    "cycle": "3",
+    "eol": "2015-07-05",
+    "extendedSupport": true,
+    "releaseDate": "2012-10-23"
+  },
+  {
+    "cycle": "2",
+    "eol": "2012-07-01",
+    "extendedSupport": false,
+    "releaseDate": "2011-03-17"
+  },
+  {
+    "cycle": "1",
+    "eol": "2011-03-01",
+    "extendedSupport": false,
+    "releaseDate": "2010-11-16"
+  }
+]

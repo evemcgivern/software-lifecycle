@@ -1,0 +1,236 @@
+[
+  {
+    "cycle": "11profold",
+    "eol": "2033-08-01",
+    "releaseDate": "2026-08-20",
+    "support": "2033-08-01"
+  },
+  {
+    "cycle": "11pro",
+    "eol": "2033-08-01",
+    "releaseDate": "2026-08-20",
+    "support": "2033-08-01"
+  },
+  {
+    "cycle": "11proxl",
+    "eol": "2033-08-01",
+    "releaseDate": "2026-08-20",
+    "support": "2033-08-01"
+  },
+  {
+    "cycle": "11",
+    "eol": "2033-08-01",
+    "releaseDate": "2026-08-20",
+    "support": "2033-08-01"
+  },
+  {
+    "cycle": "10a",
+    "eol": "2033-03-01",
+    "releaseDate": "2026-03-05",
+    "support": "2033-03-01"
+  },
+  {
+    "cycle": "10profold",
+    "eol": "2032-10-01",
+    "releaseDate": "2025-10-04",
+    "support": "2032-10-01"
+  },
+  {
+    "cycle": "10pro",
+    "eol": "2032-08-01",
+    "releaseDate": "2025-08-28",
+    "support": "2032-08-01"
+  },
+  {
+    "cycle": "10proxl",
+    "eol": "2032-08-01",
+    "releaseDate": "2025-08-28",
+    "support": "2032-08-01"
+  },
+  {
+    "cycle": "10",
+    "eol": "2032-08-01",
+    "releaseDate": "2025-08-28",
+    "support": "2032-08-01"
+  },
+  {
+    "cycle": "9a",
+    "eol": "2032-04-01",
+    "releaseDate": "2025-04-10",
+    "support": "2032-04-01"
+  },
+  {
+    "cycle": "9profold",
+    "eol": "2031-09-01",
+    "releaseDate": "2024-09-04",
+    "support": "2031-09-01"
+  },
+  {
+    "cycle": "9pro",
+    "eol": "2031-09-01",
+    "releaseDate": "2024-09-04",
+    "support": "2031-09-01"
+  },
+  {
+    "cycle": "9proxl",
+    "eol": "2031-08-01",
+    "releaseDate": "2024-08-22",
+    "support": "2031-08-01"
+  },
+  {
+    "cycle": "9",
+    "eol": "2031-08-01",
+    "releaseDate": "2024-08-22",
+    "support": "2031-08-01"
+  },
+  {
+    "cycle": "8a",
+    "eol": "2031-05-01",
+    "releaseDate": "2024-05-14",
+    "support": "2031-05-01"
+  },
+  {
+    "cycle": "8pro",
+    "eol": "2030-10-01",
+    "releaseDate": "2023-10-04",
+    "support": "2030-10-01"
+  },
+  {
+    "cycle": "8",
+    "eol": "2030-10-01",
+    "releaseDate": "2023-10-04",
+    "support": "2030-10-01"
+  },
+  {
+    "cycle": "fold",
+    "eol": "2028-06-01",
+    "releaseDate": "2023-06-28",
+    "support": "2028-06-01"
+  },
+  {
+    "cycle": "tablet",
+    "eol": "2028-06-01",
+    "releaseDate": "2023-06-20",
+    "support": "2028-06-01"
+  },
+  {
+    "cycle": "7a",
+    "eol": "2028-05-01",
+    "releaseDate": "2023-05-10",
+    "support": "2028-05-01"
+  },
+  {
+    "cycle": "7pro",
+    "eol": "2027-10-01",
+    "releaseDate": "2022-10-13",
+    "support": "2027-10-01"
+  },
+  {
+    "cycle": "7",
+    "eol": "2027-10-01",
+    "releaseDate": "2022-10-13",
+    "support": "2027-10-01"
+  },
+  {
+    "cycle": "6a",
+    "eol": "2027-07-01",
+    "releaseDate": "2022-07-28",
+    "support": "2027-07-01"
+  },
+  {
+    "cycle": "6pro",
+    "eol": "2026-10-01",
+    "releaseDate": "2021-10-28",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "6",
+    "eol": "2026-10-01",
+    "releaseDate": "2021-10-28",
+    "support": "2026-10-01"
+  },
+  {
+    "cycle": "5a",
+    "eol": "2024-08-01",
+    "releaseDate": "2021-08-26",
+    "support": "2024-08-01"
+  },
+  {
+    "cycle": "4a-5g",
+    "eol": "2023-11-05",
+    "releaseDate": "2020-11-05",
+    "support": "2023-11-05"
+  },
+  {
+    "cycle": "5",
+    "eol": "2023-11-05",
+    "releaseDate": "2020-10-15",
+    "support": "2023-11-05"
+  },
+  {
+    "cycle": "4a",
+    "eol": "2023-08-05",
+    "releaseDate": "2020-08-20",
+    "support": "2023-08-05"
+  },
+  {
+    "cycle": "4xl",
+    "eol": "2022-10-05",
+    "releaseDate": "2019-10-24",
+    "support": "2022-10-05"
+  },
+  {
+    "cycle": "4",
+    "eol": "2022-10-05",
+    "releaseDate": "2019-10-24",
+    "support": "2022-10-05"
+  },
+  {
+    "cycle": "3axl",
+    "eol": "2022-05-05",
+    "releaseDate": "2019-05-15",
+    "support": "2022-05-05"
+  },
+  {
+    "cycle": "3a",
+    "eol": "2022-05-05",
+    "releaseDate": "2019-05-15",
+    "support": "2022-05-05"
+  },
+  {
+    "cycle": "3xl",
+    "eol": "2021-10-05",
+    "releaseDate": "2018-10-18",
+    "support": "2021-10-05"
+  },
+  {
+    "cycle": "3",
+    "eol": "2021-10-05",
+    "releaseDate": "2018-10-18",
+    "support": "2021-10-05"
+  },
+  {
+    "cycle": "2xl",
+    "eol": "2020-10-05",
+    "releaseDate": "2017-10-17",
+    "support": "2020-10-05"
+  },
+  {
+    "cycle": "2",
+    "eol": "2020-10-05",
+    "releaseDate": "2017-10-17",
+    "support": "2020-10-05"
+  },
+  {
+    "cycle": "1xl",
+    "eol": "2019-10-06",
+    "releaseDate": "2016-10-20",
+    "support": "2019-10-06"
+  },
+  {
+    "cycle": "1",
+    "eol": "2019-10-06",
+    "releaseDate": "2016-10-20",
+    "support": "2019-10-06"
+  }
+]

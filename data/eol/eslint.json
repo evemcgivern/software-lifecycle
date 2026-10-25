@@ -1,0 +1,72 @@
+[
+  {
+    "cycle": "10",
+    "eol": false,
+    "extendedSupport": true,
+    "releaseDate": "2026-02-06",
+    "support": true
+  },
+  {
+    "cycle": "9",
+    "eol": "2026-08-06",
+    "extendedSupport": true,
+    "releaseDate": "2024-04-05",
+    "support": "2025-11-14"
+  },
+  {
+    "cycle": "8",
+    "eol": "2024-10-05",
+    "extendedSupport": true,
+    "releaseDate": "2021-10-09",
+    "support": "2024-04-05"
+  },
+  {
+    "cycle": "7",
+    "eol": "2022-04-09",
+    "extendedSupport": false,
+    "releaseDate": "2020-05-08",
+    "support": "2021-10-09"
+  },
+  {
+    "cycle": "6",
+    "eol": "2020-11-08",
+    "extendedSupport": false,
+    "releaseDate": "2019-06-21",
+    "support": "2020-05-08"
+  },
+  {
+    "cycle": "5",
+    "eol": "2019-12-21",
+    "extendedSupport": false,
+    "releaseDate": "2018-06-22",
+    "support": "2019-06-21"
+  },
+  {
+    "cycle": "4",
+    "eol": "2018-12-22",
+    "extendedSupport": false,
+    "releaseDate": "2017-06-11",
+    "support": "2018-06-22"
+  },
+  {
+    "cycle": "3",
+    "eol": "2017-12-11",
+    "extendedSupport": false,
+    "releaseDate": "2016-07-01",
+    "support": "2017-06-11"
+  },
+  {
+    "cycle": "2",
+    "eol": "2017-01-01",
+    "extendedSupport": false,
+    "releaseDate": "2016-02-12",
+    "support": "2016-07-01"
+  },
+  {
+    "cycle": "1",
+    "eol": "2016-08-12",
+    "extendedSupport": false,
+    "releaseDate": "2015-07-31",
+    "support": "2016-02-12"
+  }
+]

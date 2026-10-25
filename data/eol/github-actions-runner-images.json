@@ -1,0 +1,128 @@
+[
+  {
+    "cycle": "ubuntu-26.04-arm64",
+    "eol": false,
+    "releaseDate": "2026-09-17",
+    "support": true
+  },
+  {
+    "cycle": "ubuntu-26.04",
+    "eol": false,
+    "releaseDate": "2026-09-17",
+    "support": true
+  },
+  {
+    "cycle": "windows-11-vs2026-arm64",
+    "eol": false,
+    "releaseDate": "2026-08-20",
+    "support": true
+  },
+  {
+    "cycle": "windows-11-arm64",
+    "eol": false,
+    "releaseDate": "2026-08-20",
+    "support": true
+  },
+  {
+    "cycle": "windows-2025-vs2026",
+    "eol": false,
+    "releaseDate": "2026-05-07",
+    "support": true
+  },
+  {
+    "cycle": "macos-26",
+    "eol": false,
+    "releaseDate": "2026-02-26",
+    "support": true
+  },
+  {
+    "cycle": "macos-26-arm64",
+    "eol": false,
+    "releaseDate": "2026-02-26",
+    "support": true
+  },
+  {
+    "cycle": "ubuntu-slim",
+    "eol": false,
+    "releaseDate": "2026-01-22",
+    "support": true
+  },
+  {
+    "cycle": "windows-2025",
+    "eol": false,
+    "releaseDate": "2025-04-10",
+    "support": true
+  },
+  {
+    "cycle": "macos-15-arm64",
+    "eol": false,
+    "releaseDate": "2025-04-10",
+    "support": true
+  },
+  {
+    "cycle": "macos-15",
+    "eol": false,
+    "releaseDate": "2025-04-10",
+    "support": true
+  },
+  {
+    "cycle": "ubuntu-22.04-arm64",
+    "eol": "2027-04-17",
+    "releaseDate": "2024-09-03",
+    "support": "2026-09-17"
+  },
+  {
+    "cycle": "ubuntu-24.04-arm64",
+    "eol": false,
+    "releaseDate": "2024-06-24",
+    "support": true
+  },
+  {
+    "cycle": "ubuntu-24.04",
+    "eol": false,
+    "releaseDate": "2024-05-14",
+    "support": true
+  },
+  {
+    "cycle": "macos-14-arm64",
+    "eol": "2026-11-02",
+    "releaseDate": "2024-04-01",
+    "support": "2026-07-06"
+  },
+  {
+    "cycle": "macos-14",
+    "eol": "2026-11-02",
+    "releaseDate": "2024-04-01",
+    "support": "2026-07-06"
+  },
+  {
+    "cycle": "macos-13",
+    "eol": "2025-12-04",
+    "releaseDate": "2023-04-24",
+    "support": "2025-09-19"
+  },
+  {
+    "cycle": "ubuntu-22.04",
+    "eol": "2027-04-17",
+    "releaseDate": "2022-08-09",
+    "support": "2026-09-17"
+  },
+  {
+    "cycle": "macos-12",
+    "eol": "2024-12-03",
+    "releaseDate": "2022-06-13",
+    "support": "2024-10-07"
+  },
+  {
+    "cycle": "windows-2022",
+    "eol": false,
+    "releaseDate": "2021-11-16",
+    "support": true
+  },
+  {
+    "cycle": "ubuntu-20.04",
+    "eol": "2025-04-15",
+    "releaseDate": "2020-06-02",
+    "support": "2025-01-15"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "cycle": "5",
+    "eol": false,
+    "releaseDate": "2023-12-18",
+    "support": true
+  },
+  {
+    "cycle": "4",
+    "eol": "2024-12-19",
+    "releaseDate": "2020-11-24",
+    "support": "2023-12-18"
+  },
+  {
+    "cycle": "3",
+    "eol": "2021-12-01",
+    "releaseDate": "2016-12-19",
+    "support": "2020-11-24"
+  },
+  {
+    "cycle": "2",
+    "eol": "2017-12-18",
+    "releaseDate": "2013-12-17",
+    "support": "2016-12-19"
+  },
+  {
+    "cycle": "1",
+    "eol": "2013-12-17",
+    "releaseDate": "2010-08-28",
+    "support": "2013-12-17"
+  }
+]

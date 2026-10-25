@@ -1,0 +1,12 @@
+[
+  {
+    "cycle": "2",
+    "eol": false,
+    "releaseDate": "2024-11-04"
+  },
+  {
+    "cycle": "1",
+    "eol": "2025-12-31",
+    "releaseDate": "2017-12-06"
+  }
+]

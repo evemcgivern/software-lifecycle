@@ -1,0 +1,30 @@
+[
+  {
+    "cycle": "4",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2026-01-17",
+    "support": true
+  },
+  {
+    "cycle": "3",
+    "eol": false,
+    "extendedSupport": true,
+    "releaseDate": "2016-06-09",
+    "support": "2026-01-17"
+  },
+  {
+    "cycle": "2",
+    "eol": true,
+    "extendedSupport": true,
+    "releaseDate": "2013-04-18",
+    "support": false
+  },
+  {
+    "cycle": "1",
+    "eol": true,
+    "extendedSupport": true,
+    "releaseDate": "2006-08-31",
+    "support": false
+  }
+]

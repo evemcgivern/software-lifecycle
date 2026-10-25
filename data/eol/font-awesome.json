@@ -1,0 +1,37 @@
+[
+  {
+    "cycle": "7",
+    "eol": false,
+    "releaseDate": "2025-07-22"
+  },
+  {
+    "cycle": "6",
+    "eol": false,
+    "releaseDate": "2022-02-07"
+  },
+  {
+    "cycle": "5",
+    "eol": false,
+    "releaseDate": "2018-02-05"
+  },
+  {
+    "cycle": "4",
+    "eol": true,
+    "releaseDate": "2013-10-23"
+  },
+  {
+    "cycle": "3",
+    "eol": true,
+    "releaseDate": "2013-01-02"
+  },
+  {
+    "cycle": "2",
+    "eol": true,
+    "releaseDate": "2012-06-04"
+  },
+  {
+    "cycle": "1",
+    "eol": true,
+    "releaseDate": "2012-03-03"
+  }
+]

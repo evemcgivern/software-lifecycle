@@ -1,0 +1,17 @@
+[
+  {
+    "cycle": "3",
+    "eol": false,
+    "releaseDate": "2004-09-18"
+  },
+  {
+    "cycle": "2",
+    "eol": "2004-09-18",
+    "releaseDate": "2001-09-28"
+  },
+  {
+    "cycle": "1",
+    "eol": "2001-09-28",
+    "releaseDate": "2000-08-17"
+  }
+]

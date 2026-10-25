@@ -1,0 +1,182 @@
+[
+  {
+    "cycle": "13.0",
+    "eol": "2026-12-31",
+    "extendedSupport": false,
+    "releaseDate": "2026-09-15"
+  },
+  {
+    "cycle": "12.3",
+    "eol": "2029-06-12",
+    "extendedSupport": false,
+    "releaseDate": "2026-05-28"
+  },
+  {
+    "cycle": "12.2",
+    "eol": "2026-05-28",
+    "extendedSupport": false,
+    "releaseDate": "2026-02-13"
+  },
+  {
+    "cycle": "12.1",
+    "eol": "2026-02-13",
+    "extendedSupport": false,
+    "releaseDate": "2025-11-18"
+  },
+  {
+    "cycle": "12.0",
+    "eol": "2025-11-18",
+    "extendedSupport": false,
+    "releaseDate": "2025-08-07"
+  },
+  {
+    "cycle": "11.8",
+    "eol": "2028-06-04",
+    "extendedSupport": "2033-10-22",
+    "releaseDate": "2025-06-04"
+  },
+  {
+    "cycle": "11.7",
+    "eol": "2025-05-12",
+    "extendedSupport": false,
+    "releaseDate": "2025-02-12"
+  },
+  {
+    "cycle": "11.6",
+    "eol": "2025-02-13",
+    "extendedSupport": false,
+    "releaseDate": "2024-11-13"
+  },
+  {
+    "cycle": "11.5",
+    "eol": "2024-11-21",
+    "extendedSupport": false,
+    "releaseDate": "2024-08-14"
+  },
+  {
+    "cycle": "11.4",
+    "eol": "2029-05-29",
+    "extendedSupport": "2033-01-16",
+    "releaseDate": "2024-05-29"
+  },
+  {
+    "cycle": "11.3",
+    "eol": "2024-05-29",
+    "extendedSupport": false,
+    "releaseDate": "2024-02-16"
+  },
+  {
+    "cycle": "11.2",
+    "eol": "2024-11-21",
+    "extendedSupport": false,
+    "releaseDate": "2023-11-21"
+  },
+  {
+    "cycle": "11.1",
+    "eol": "2024-08-21",
+    "extendedSupport": false,
+    "releaseDate": "2023-08-21"
+  },
+  {
+    "cycle": "11.0",
+    "eol": "2024-06-06",
+    "extendedSupport": false,
+    "releaseDate": "2023-06-06"
+  },
+  {
+    "cycle": "10.11",
+    "eol": "2028-02-16",
+    "extendedSupport": "2028-02-16",
+    "releaseDate": "2023-02-16"
+  },
+  {
+    "cycle": "10.10",
+    "eol": "2023-11-17",
+    "extendedSupport": false,
+    "releaseDate": "2022-11-07"
+  },
+  {
+    "cycle": "10.9",
+    "eol": "2023-08-22",
+    "extendedSupport": false,
+    "releaseDate": "2022-08-15"
+  },
+  {
+    "cycle": "10.8",
+    "eol": "2023-05-20",
+    "extendedSupport": false,
+    "releaseDate": "2022-05-20"
+  },
+  {
+    "cycle": "10.7",
+    "eol": "2023-02-09",
+    "extendedSupport": false,
+    "releaseDate": "2022-02-08"
+  },
+  {
+    "cycle": "10.6",
+    "eol": "2026-07-06",
+    "extendedSupport": "2029-08-23",
+    "releaseDate": "2021-07-06"
+  },
+  {
+    "cycle": "10.5",
+    "eol": "2025-06-24",
+    "extendedSupport": "2025-07-16",
+    "releaseDate": "2020-06-24"
+  },
+  {
+    "cycle": "10.4",
+    "eol": "2024-06-18",
+    "extendedSupport": "2024-06-18",
+    "releaseDate": "2019-06-18"
+  },
+  {
+    "cycle": "10.3",
+    "eol": "2023-05-25",
+    "extendedSupport": "2023-05-25",
+    "releaseDate": "2018-05-25"
+  },
+  {
+    "cycle": "10.2",
+    "eol": "2022-05-23",
+    "extendedSupport": "2022-05-23",
+    "releaseDate": "2017-05-23"
+  },
+  {
+    "cycle": "10.1",
+    "eol": "2020-10-17",
+    "extendedSupport": "2020-10-17",
+    "releaseDate": "2015-10-17"
+  },
+  {
+    "cycle": "10.0",
+    "eol": "2019-03-31",
+    "extendedSupport": "2019-03-31",
+    "releaseDate": "2014-03-31"
+  },
+  {
+    "cycle": "5.5",
+    "eol": "2020-04-11",
+    "extendedSupport": "2020-04-11",
+    "releaseDate": "2012-04-11"
+  },
+  {
+    "cycle": "5.3",
+    "eol": "2017-03-01",
+    "extendedSupport": "2017-03-01",
+    "releaseDate": "2012-02-29"
+  },
+  {
+    "cycle": "5.2",
+    "eol": "2015-11-10",
+    "extendedSupport": "2015-11-10",
+    "releaseDate": "2010-11-10"
+  },
+  {
+    "cycle": "5.1",
+    "eol": "2015-02-01",
+    "extendedSupport": "2015-02-01",
+    "releaseDate": "2010-02-01"
+  }
+]

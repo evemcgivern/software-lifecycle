@@ -1,0 +1,56 @@
+[
+  {
+    "cycle": "9",
+    "eol": false,
+    "releaseDate": "2025-07-31",
+    "support": true
+  },
+  {
+    "cycle": "8",
+    "eol": false,
+    "releaseDate": "2023-02-10",
+    "support": "2025-07-31"
+  },
+  {
+    "cycle": "7",
+    "eol": "2025-07-31",
+    "releaseDate": "2021-04-09",
+    "support": "2023-02-10"
+  },
+  {
+    "cycle": "6",
+    "eol": "2023-02-10",
+    "releaseDate": "2019-11-08",
+    "support": "2021-04-09"
+  },
+  {
+    "cycle": "5",
+    "eol": "2019-11-08",
+    "releaseDate": "2018-11-23",
+    "support": "2019-11-08"
+  },
+  {
+    "cycle": "4",
+    "eol": "2018-11-26",
+    "releaseDate": "2017-06-14",
+    "support": "2018-11-26"
+  },
+  {
+    "cycle": "3",
+    "eol": "2017-06-14",
+    "releaseDate": "2016-08-15",
+    "support": "2017-06-14"
+  },
+  {
+    "cycle": "2",
+    "eol": "2016-08-15",
+    "releaseDate": "2014-07-01",
+    "support": "2016-08-15"
+  },
+  {
+    "cycle": "1",
+    "eol": "2014-07-01",
+    "releaseDate": "2012-06-12",
+    "support": "2014-07-01"
+  }
+]

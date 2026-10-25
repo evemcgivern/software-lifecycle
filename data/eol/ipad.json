@@ -1,0 +1,227 @@
+[
+  {
+    "cycle": "air-8-11",
+    "eol": false,
+    "releaseDate": "2026-03-11"
+  },
+  {
+    "cycle": "air-8-13",
+    "eol": false,
+    "releaseDate": "2026-03-11"
+  },
+  {
+    "cycle": "pro-8-11",
+    "eol": false,
+    "releaseDate": "2025-10-22"
+  },
+  {
+    "cycle": "pro-8-13",
+    "eol": false,
+    "releaseDate": "2025-10-22"
+  },
+  {
+    "cycle": "11",
+    "eol": false,
+    "releaseDate": "2025-03-12"
+  },
+  {
+    "cycle": "air-7-11",
+    "eol": false,
+    "releaseDate": "2025-03-12"
+  },
+  {
+    "cycle": "air-7-13",
+    "eol": false,
+    "releaseDate": "2025-03-12"
+  },
+  {
+    "cycle": "mini-7",
+    "eol": false,
+    "releaseDate": "2024-10-23"
+  },
+  {
+    "cycle": "pro-7-11",
+    "eol": false,
+    "releaseDate": "2024-05-15"
+  },
+  {
+    "cycle": "pro-7-13",
+    "eol": false,
+    "releaseDate": "2024-05-15"
+  },
+  {
+    "cycle": "air-6-11",
+    "eol": false,
+    "releaseDate": "2024-05-15"
+  },
+  {
+    "cycle": "air-6-13",
+    "eol": false,
+    "releaseDate": "2024-05-15"
+  },
+  {
+    "cycle": "10",
+    "eol": false,
+    "releaseDate": "2022-10-26"
+  },
+  {
+    "cycle": "pro-6",
+    "eol": false,
+    "releaseDate": "2022-10-26"
+  },
+  {
+    "cycle": "air-5",
+    "eol": false,
+    "releaseDate": "2022-03-18"
+  },
+  {
+    "cycle": "9",
+    "eol": false,
+    "releaseDate": "2021-09-24"
+  },
+  {
+    "cycle": "mini-6",
+    "eol": false,
+    "releaseDate": "2021-09-24"
+  },
+  {
+    "cycle": "pro-5-12",
+    "eol": false,
+    "releaseDate": "2021-05-21"
+  },
+  {
+    "cycle": "air-4",
+    "eol": "2027-09-15",
+    "releaseDate": "2020-10-23"
+  },
+  {
+    "cycle": "8",
+    "eol": false,
+    "releaseDate": "2020-09-18"
+  },
+  {
+    "cycle": "pro-4-12",
+    "eol": false,
+    "releaseDate": "2020-03-25"
+  },
+  {
+    "cycle": "pro-4-11",
+    "eol": false,
+    "releaseDate": "2020-03-25"
+  },
+  {
+    "cycle": "pro-2-11",
+    "eol": false,
+    "releaseDate": "2020-03-01"
+  },
+  {
+    "cycle": "7",
+    "eol": "2026-05-11",
+    "releaseDate": "2019-09-25"
+  },
+  {
+    "cycle": "mini-5",
+    "eol": false,
+    "releaseDate": "2019-03-18"
+  },
+  {
+    "cycle": "air-3",
+    "eol": false,
+    "releaseDate": "2019-03-18"
+  },
+  {
+    "cycle": "pro-3-11",
+    "eol": false,
+    "releaseDate": "2018-11-07"
+  },
+  {
+    "cycle": "pro-3-12",
+    "eol": false,
+    "releaseDate": "2018-11-07"
+  },
+  {
+    "cycle": "pro-1-11",
+    "eol": false,
+    "releaseDate": "2018-11-01"
+  },
+  {
+    "cycle": "6",
+    "eol": "2026-05-11",
+    "releaseDate": "2018-03-27"
+  },
+  {
+    "cycle": "pro-1-10",
+    "eol": "2026-09-17",
+    "releaseDate": "2017-06-13"
+  },
+  {
+    "cycle": "pro-2-12",
+    "eol": "2026-09-17",
+    "releaseDate": "2017-06-05"
+  },
+  {
+    "cycle": "5",
+    "eol": "2026-05-11",
+    "releaseDate": "2017-03-24"
+  },
+  {
+    "cycle": "pro-1-9",
+    "eol": "2025-03-31",
+    "releaseDate": "2016-03-21"
+  },
+  {
+    "cycle": "pro-1-12",
+    "eol": "2025-03-31",
+    "releaseDate": "2015-11-11"
+  },
+  {
+    "cycle": "mini-4",
+    "eol": "2025-03-31",
+    "releaseDate": "2015-09-09"
+  },
+  {
+    "cycle": "mini-3",
+    "eol": "2023-01-23",
+    "releaseDate": "2014-10-22"
+  },
+  {
+    "cycle": "air-2",
+    "eol": "2024-09-16",
+    "releaseDate": "2014-10-22"
+  },
+  {
+    "cycle": "mini-2",
+    "eol": "2023-01-23",
+    "releaseDate": "2013-11-12"
+  },
+  {
+    "cycle": "air-1",
+    "eol": "2023-01-23",
+    "releaseDate": "2013-11-01"
+  },
+  {
+    "cycle": "mini-1",
+    "eol": "2019-07-22",
+    "releaseDate": "2012-11-02"
+  },
+  {
+    "cycle": "4",
+    "eol": "2019-07-22",
+    "releaseDate": "2012-11-02"
+  },
+  {
+    "cycle": "3",
+    "eol": "2019-07-22",
+    "releaseDate": "2012-03-16"
+  },
+  {
+    "cycle": "2",
+    "eol": "2019-07-22",
+    "releaseDate": "2011-03-11"
+  },
+  {
+    "cycle": "1",
+    "eol": "2012-09-19",
+    "releaseDate": "2010-04-03"
+  }
+]

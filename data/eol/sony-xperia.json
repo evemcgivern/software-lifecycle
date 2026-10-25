@@ -1,0 +1,122 @@
+[
+  {
+    "cycle": "10-vii",
+    "eol": "2031-08-01",
+    "releaseDate": "2025-09-19"
+  },
+  {
+    "cycle": "1-vii",
+    "eol": "2031-04-01",
+    "releaseDate": "2025-06-04"
+  },
+  {
+    "cycle": "10-vi",
+    "eol": "2028-05-01",
+    "releaseDate": "2024-06-13"
+  },
+  {
+    "cycle": "1-vi",
+    "eol": "2028-04-01",
+    "releaseDate": "2024-06-03"
+  },
+  {
+    "cycle": "5-v",
+    "eol": "2026-08-01",
+    "releaseDate": "2023-09-25"
+  },
+  {
+    "cycle": "1-v",
+    "eol": "2026-05-01",
+    "releaseDate": "2023-07-28"
+  },
+  {
+    "cycle": "10-v",
+    "eol": "2026-06-01",
+    "releaseDate": "2023-06-21"
+  },
+  {
+    "cycle": "5-iv",
+    "eol": "2025-09-01",
+    "releaseDate": "2022-09-22"
+  },
+  {
+    "cycle": "10-iv",
+    "eol": "2025-05-01",
+    "releaseDate": "2022-06-30"
+  },
+  {
+    "cycle": "1-iv",
+    "eol": "2025-05-01",
+    "releaseDate": "2022-06-11"
+  },
+  {
+    "cycle": "pro-i",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-12-02"
+  },
+  {
+    "cycle": "5-iii",
+    "eol": "2023-07-01",
+    "releaseDate": "2021-10-08"
+  },
+  {
+    "cycle": "1-iii",
+    "eol": "2023-07-01",
+    "releaseDate": "2021-08-25"
+  },
+  {
+    "cycle": "10-iii",
+    "eol": "2023-07-01",
+    "releaseDate": "2021-06-11"
+  },
+  {
+    "cycle": "pro",
+    "eol": "2023-02-01",
+    "releaseDate": "2021-01-27"
+  },
+  {
+    "cycle": "5-ii",
+    "eol": "2022-10-01",
+    "releaseDate": "2020-10-12"
+  },
+  {
+    "cycle": "1-ii",
+    "eol": "2022-06-01",
+    "releaseDate": "2020-05-22"
+  },
+  {
+    "cycle": "10-ii",
+    "eol": "2022-03-01",
+    "releaseDate": "2020-05-05"
+  },
+  {
+    "cycle": "l4",
+    "eol": "2022-01-01",
+    "releaseDate": "2020-04-28"
+  },
+  {
+    "cycle": "5",
+    "eol": "2021-10-01",
+    "releaseDate": "2019-10-05"
+  },
+  {
+    "cycle": "1",
+    "eol": "2021-10-01",
+    "releaseDate": "2019-05-30"
+  },
+  {
+    "cycle": "10-plus",
+    "eol": "2021-10-01",
+    "releaseDate": "2019-02-27"
+  },
+  {
+    "cycle": "10",
+    "eol": "2021-10-01",
+    "releaseDate": "2019-02-27"
+  },
+  {
+    "cycle": "l3",
+    "eol": "2020-12-01",
+    "releaseDate": "2019-02-01"
+  }
+]

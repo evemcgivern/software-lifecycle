@@ -1,0 +1,172 @@
+[
+  {
+    "cycle": "panther-lake",
+    "eol": false,
+    "releaseDate": "2026-01-06"
+  },
+  {
+    "cycle": "arrow-lake",
+    "eol": false,
+    "releaseDate": "2024-10-24"
+  },
+  {
+    "cycle": "lunar-lake",
+    "eol": false,
+    "releaseDate": "2024-09-24"
+  },
+  {
+    "cycle": "meteor-lake",
+    "eol": false,
+    "releaseDate": "2023-12-14"
+  },
+  {
+    "cycle": "raptor-lake",
+    "eol": false,
+    "releaseDate": "2022-10-20"
+  },
+  {
+    "cycle": "alder-lake",
+    "eol": false,
+    "releaseDate": "2021-11-04"
+  },
+  {
+    "cycle": "rocket-lake",
+    "eol": false,
+    "releaseDate": "2021-03-30"
+  },
+  {
+    "cycle": "jasper-lake",
+    "eol": false,
+    "releaseDate": "2021-01-11"
+  },
+  {
+    "cycle": "elkhart-lake",
+    "eol": false,
+    "releaseDate": "2020-09-23"
+  },
+  {
+    "cycle": "tiger-lake",
+    "eol": false,
+    "releaseDate": "2020-09-02"
+  },
+  {
+    "cycle": "lakefield",
+    "eol": "2023-06-30",
+    "releaseDate": "2020-06-19"
+  },
+  {
+    "cycle": "ice-lake",
+    "eol": "2026-12-31",
+    "releaseDate": "2019-09-01"
+  },
+  {
+    "cycle": "comet-lake",
+    "eol": false,
+    "releaseDate": "2019-08-21"
+  },
+  {
+    "cycle": "cannon-lake",
+    "eol": "2021-09-30",
+    "releaseDate": "2018-05-01"
+  },
+  {
+    "cycle": "gemini-lake",
+    "eol": "2024-12-31",
+    "releaseDate": "2017-12-11"
+  },
+  {
+    "cycle": "coffee-lake",
+    "eol": "2025-06-30",
+    "releaseDate": "2017-10-05"
+  },
+  {
+    "cycle": "apollo-lake",
+    "eol": "2023-06-30",
+    "releaseDate": "2016-08-30"
+  },
+  {
+    "cycle": "kaby-lake",
+    "eol": "2024-03-31",
+    "releaseDate": "2015-08-30"
+  },
+  {
+    "cycle": "skylake",
+    "eol": "2022-09-30",
+    "releaseDate": "2015-08-05"
+  },
+  {
+    "cycle": "braswell",
+    "eol": "2022-06-30",
+    "releaseDate": "2015-03-01"
+  },
+  {
+    "cycle": "broadwell",
+    "eol": "2021-06-30",
+    "releaseDate": "2014-10-27"
+  },
+  {
+    "cycle": "broadwell-xeon",
+    "eol": "2022-06-30",
+    "releaseDate": "2014-10-27"
+  },
+  {
+    "cycle": "broadwell-de",
+    "eol": "2022-12-31",
+    "releaseDate": "2014-10-27"
+  },
+  {
+    "cycle": "devils-canyon",
+    "eol": "2021-06-30",
+    "releaseDate": "2014-06-02"
+  },
+  {
+    "cycle": "bay-trail",
+    "eol": "2021-06-30",
+    "releaseDate": "2013-09-11"
+  },
+  {
+    "cycle": "avoton",
+    "eol": "2021-06-30",
+    "releaseDate": "2013-07-01"
+  },
+  {
+    "cycle": "haswell",
+    "eol": "2021-06-30",
+    "releaseDate": "2013-06-04"
+  },
+  {
+    "cycle": "haswell-xeon",
+    "eol": "2021-12-31",
+    "releaseDate": "2013-06-04"
+  },
+  {
+    "cycle": "crystal-well",
+    "eol": "2021-06-30",
+    "releaseDate": "2013-06-02"
+  },
+  {
+    "cycle": "briarwood",
+    "eol": "2021-06-30",
+    "releaseDate": "2013-04-01"
+  },
+  {
+    "cycle": "cherry-trail",
+    "eol": "2022-06-30",
+    "releaseDate": "2013-03-02"
+  },
+  {
+    "cycle": "centerton",
+    "eol": "2021-06-30",
+    "releaseDate": "2012-12-11"
+  },
+  {
+    "cycle": "ivy-bridge",
+    "eol": "2019-12-31",
+    "releaseDate": "2012-04-29"
+  },
+  {
+    "cycle": "ivy-bridge-xeon",
+    "eol": "2020-06-30",
+    "releaseDate": "2012-04-29"
+  }
+]

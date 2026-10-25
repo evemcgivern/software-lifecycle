@@ -1,0 +1,32 @@
+[
+  {
+    "cycle": "4",
+    "eol": false,
+    "releaseDate": "2019-08-20",
+    "support": true
+  },
+  {
+    "cycle": "3",
+    "eol": false,
+    "releaseDate": "2015-10-26",
+    "support": false
+  },
+  {
+    "cycle": "2",
+    "eol": "2015-10-27",
+    "releaseDate": "2014-05-06",
+    "support": false
+  },
+  {
+    "cycle": "1",
+    "eol": "2014-05-07",
+    "releaseDate": "2013-05-06",
+    "support": false
+  },
+  {
+    "cycle": "0",
+    "eol": "2014-05-07",
+    "releaseDate": "2008-10-19",
+    "support": false
+  }
+]

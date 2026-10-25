@@ -1,0 +1,52 @@
+[
+  {
+    "cycle": "1.33",
+    "eol": false,
+    "releaseDate": "2025-09-08"
+  },
+  {
+    "cycle": "1.32",
+    "eol": false,
+    "releaseDate": "2025-05-15"
+  },
+  {
+    "cycle": "1.31",
+    "eol": false,
+    "releaseDate": "2025-05-06"
+  },
+  {
+    "cycle": "1.30",
+    "eol": "2025-09-08",
+    "releaseDate": "2024-07-31"
+  },
+  {
+    "cycle": "1.29",
+    "eol": "2025-05-15",
+    "releaseDate": "2024-05-07"
+  },
+  {
+    "cycle": "1.28",
+    "eol": "2025-05-06",
+    "releaseDate": "2024-02-12"
+  },
+  {
+    "cycle": "1.27",
+    "eol": "2024-07-31",
+    "releaseDate": "2023-10-30"
+  },
+  {
+    "cycle": "1.26",
+    "eol": "2024-05-07",
+    "releaseDate": "2023-08-29"
+  },
+  {
+    "cycle": "1.25",
+    "eol": "2024-02-12",
+    "releaseDate": "2023-05-09"
+  },
+  {
+    "cycle": "1.24",
+    "eol": "2023-10-30",
+    "releaseDate": "2023-01-31"
+  }
+]

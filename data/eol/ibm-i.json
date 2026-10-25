@@ -1,0 +1,146 @@
+[
+  {
+    "cycle": "7.6",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2025-04-18"
+  },
+  {
+    "cycle": "7.5",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2022-05-10"
+  },
+  {
+    "cycle": "7.4",
+    "eol": "2026-09-30",
+    "extendedSupport": "2029-09-30",
+    "releaseDate": "2019-06-21"
+  },
+  {
+    "cycle": "7.3",
+    "eol": "2023-09-30",
+    "extendedSupport": "2028-09-30",
+    "releaseDate": "2016-04-15"
+  },
+  {
+    "cycle": "7.2",
+    "eol": "2021-04-30",
+    "extendedSupport": "2026-04-30",
+    "releaseDate": "2014-05-02"
+  },
+  {
+    "cycle": "7.1",
+    "eol": "2018-04-30",
+    "extendedSupport": "2024-04-30",
+    "releaseDate": "2010-04-23"
+  },
+  {
+    "cycle": "6.1",
+    "eol": "2015-09-30",
+    "extendedSupport": "2019-09-30",
+    "releaseDate": "2008-03-21"
+  },
+  {
+    "cycle": "5.4",
+    "eol": "2013-09-30",
+    "extendedSupport": "2017-09-30",
+    "releaseDate": "2006-02-14"
+  },
+  {
+    "cycle": "5.3",
+    "eol": "2009-04-30",
+    "extendedSupport": "2013-04-30",
+    "releaseDate": "2004-06-11"
+  },
+  {
+    "cycle": "5.2",
+    "eol": "2007-04-30",
+    "extendedSupport": false,
+    "releaseDate": "2002-08-30"
+  },
+  {
+    "cycle": "5.1",
+    "eol": "2005-09-30",
+    "extendedSupport": false,
+    "releaseDate": "2001-05-25"
+  },
+  {
+    "cycle": "4.5",
+    "eol": "2002-07-31",
+    "extendedSupport": "2002-12-31",
+    "releaseDate": "2000-07-28"
+  },
+  {
+    "cycle": "4.4",
+    "eol": "2001-05-31",
+    "extendedSupport": "2001-11-30",
+    "releaseDate": "1999-05-21"
+  },
+  {
+    "cycle": "4.3",
+    "eol": "2001-01-31",
+    "extendedSupport": false,
+    "releaseDate": "1998-09-11"
+  },
+  {
+    "cycle": "4.2",
+    "eol": "2000-05-31",
+    "extendedSupport": "2001-01-31",
+    "releaseDate": "1998-02-27"
+  },
+  {
+    "cycle": "4.1",
+    "eol": "2000-05-31",
+    "extendedSupport": false,
+    "releaseDate": "1997-08-29"
+  },
+  {
+    "cycle": "3.7",
+    "eol": "1999-06-30",
+    "extendedSupport": false,
+    "releaseDate": "1996-11-08"
+  },
+  {
+    "cycle": "3.6",
+    "eol": "1998-10-31",
+    "extendedSupport": false,
+    "releaseDate": "1995-12-22"
+  },
+  {
+    "cycle": "3.2",
+    "eol": "2000-05-31",
+    "extendedSupport": false,
+    "releaseDate": "1996-06-21"
+  },
+  {
+    "cycle": "3.1",
+    "eol": "1998-10-31",
+    "extendedSupport": false,
+    "releaseDate": "1994-11-25"
+  },
+  {
+    "cycle": "3.0",
+    "eol": "1997-05-31",
+    "extendedSupport": false,
+    "releaseDate": "1994-06-03"
+  },
+  {
+    "cycle": "2.3",
+    "eol": "1996-05-31",
+    "extendedSupport": false,
+    "releaseDate": "1993-12-17"
+  },
+  {
+    "cycle": "2.2",
+    "eol": "1995-03-31",
+    "extendedSupport": false,
+    "releaseDate": "1992-09-18"
+  },
+  {
+    "cycle": "2.1",
+    "eol": "1994-06-30",
+    "extendedSupport": false,
+    "releaseDate": "1991-05-24"
+  }
+]

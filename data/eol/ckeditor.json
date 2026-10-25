@@ -1,0 +1,14 @@
+[
+  {
+    "cycle": "5",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2018-04-25"
+  },
+  {
+    "cycle": "4",
+    "eol": "2023-06-30",
+    "extendedSupport": "2028-12-01",
+    "releaseDate": "2012-11-23"
+  }
+]

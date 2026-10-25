@@ -1,0 +1,290 @@
+[
+  {
+    "cycle": "r615-windows",
+    "eol": "2027-09-09",
+    "releaseDate": "2026-09-09",
+    "support": false
+  },
+  {
+    "cycle": "r615-linux",
+    "eol": "2027-09-09",
+    "releaseDate": "2026-09-09",
+    "support": false
+  },
+  {
+    "cycle": "r610-windows",
+    "eol": "2027-08-03",
+    "releaseDate": "2026-08-03",
+    "support": false
+  },
+  {
+    "cycle": "r610-linux",
+    "eol": "2027-08-03",
+    "releaseDate": "2026-08-03",
+    "support": false
+  },
+  {
+    "cycle": "r595-windows",
+    "eol": "2027-03-24",
+    "releaseDate": "2026-03-24",
+    "support": "2027-03-24"
+  },
+  {
+    "cycle": "r595-linux",
+    "eol": "2027-03-24",
+    "releaseDate": "2026-03-24",
+    "support": "2027-03-24"
+  },
+  {
+    "cycle": "r590-windows",
+    "eol": "2026-12-22",
+    "releaseDate": "2025-12-22",
+    "support": true
+  },
+  {
+    "cycle": "r590-linux",
+    "eol": "2026-12-22",
+    "releaseDate": "2025-12-22",
+    "support": true
+  },
+  {
+    "cycle": "r580-linux",
+    "eol": "2028-08-04",
+    "releaseDate": "2025-08-04",
+    "support": "2026-08-04"
+  },
+  {
+    "cycle": "r580-windows",
+    "eol": "2028-08-04",
+    "releaseDate": "2025-06-03",
+    "support": "2026-08-04"
+  },
+  {
+    "cycle": "r575-linux",
+    "eol": "2026-06-03",
+    "releaseDate": "2025-06-03",
+    "support": false
+  },
+  {
+    "cycle": "r575-windows",
+    "eol": "2026-06-03",
+    "releaseDate": "2025-06-03",
+    "support": false
+  },
+  {
+    "cycle": "r570-linux",
+    "eol": "2026-01-27",
+    "releaseDate": "2025-01-27",
+    "support": "2026-01-27"
+  },
+  {
+    "cycle": "r570-windows",
+    "eol": "2026-01-27",
+    "releaseDate": "2025-01-27",
+    "support": "2026-01-27"
+  },
+  {
+    "cycle": "r565-linux",
+    "eol": "2025-10-01",
+    "releaseDate": "2024-10-29",
+    "support": "2025-10-01"
+  },
+  {
+    "cycle": "r565-windows",
+    "eol": "2025-10-01",
+    "releaseDate": "2024-10-22",
+    "support": "2025-10-01"
+  },
+  {
+    "cycle": "r560-linux",
+    "eol": "2025-08-22",
+    "releaseDate": "2024-08-22",
+    "support": "2025-08-22"
+  },
+  {
+    "cycle": "r560-windows",
+    "eol": "2025-07-30",
+    "releaseDate": "2024-07-30",
+    "support": "2025-07-30"
+  },
+  {
+    "cycle": "r555-linux",
+    "eol": "2025-06-01",
+    "releaseDate": "2024-06-04",
+    "support": false
+  },
+  {
+    "cycle": "r555-windows",
+    "eol": "2025-06-01",
+    "releaseDate": "2024-06-04",
+    "support": false
+  },
+  {
+    "cycle": "r550-linux",
+    "eol": "2025-04-17",
+    "releaseDate": "2024-02-23",
+    "support": "2025-02-01"
+  },
+  {
+    "cycle": "r550-windows",
+    "eol": "2025-04-17",
+    "releaseDate": "2024-02-22",
+    "support": "2025-02-01"
+  },
+  {
+    "cycle": "r545-linux",
+    "eol": "2024-10-01",
+    "releaseDate": "2023-10-31",
+    "support": false
+  },
+  {
+    "cycle": "r545-windows",
+    "eol": "2024-10-01",
+    "releaseDate": "2023-10-17",
+    "support": false
+  },
+  {
+    "cycle": "r535-linux",
+    "eol": "2026-06-01",
+    "releaseDate": "2023-06-14",
+    "support": "2024-06-01"
+  },
+  {
+    "cycle": "r535-windows",
+    "eol": "2026-06-01",
+    "releaseDate": "2023-05-30",
+    "support": "2024-06-01"
+  },
+  {
+    "cycle": "r530-linux",
+    "eol": "2023-06-24",
+    "releaseDate": "2023-03-23",
+    "support": false
+  },
+  {
+    "cycle": "r530-windows",
+    "eol": "2023-06-24",
+    "releaseDate": "2023-02-28",
+    "support": false
+  },
+  {
+    "cycle": "r525-windows",
+    "eol": "2023-12-01",
+    "releaseDate": "2022-11-10",
+    "support": "2023-12-01"
+  },
+  {
+    "cycle": "r525-linux",
+    "eol": "2023-12-01",
+    "releaseDate": "2022-11-10",
+    "support": "2023-12-01"
+  },
+  {
+    "cycle": "r520-linux",
+    "eol": "2023-10-01",
+    "releaseDate": "2022-10-12",
+    "support": false
+  },
+  {
+    "cycle": "r515-windows",
+    "eol": "2023-05-01",
+    "releaseDate": "2022-05-11",
+    "support": "2023-05-01"
+  },
+  {
+    "cycle": "r515-linux",
+    "eol": "2023-05-01",
+    "releaseDate": "2022-05-11",
+    "support": "2023-05-01"
+  },
+  {
+    "cycle": "r510-windows",
+    "eol": "2023-01-01",
+    "releaseDate": "2022-01-14",
+    "support": "2023-01-01"
+  },
+  {
+    "cycle": "r510-linux",
+    "eol": "2023-01-01",
+    "releaseDate": "2022-01-14",
+    "support": "2023-01-01"
+  },
+  {
+    "cycle": "r495-linux",
+    "eol": "2022-10-12",
+    "releaseDate": "2021-10-26",
+    "support": false
+  },
+  {
+    "cycle": "r495-windows",
+    "eol": "2022-01-14",
+    "releaseDate": "2021-10-12",
+    "support": false
+  },
+  {
+    "cycle": "r470-linux",
+    "eol": "2024-07-20",
+    "releaseDate": "2021-07-19",
+    "support": "2021-10-26"
+  },
+  {
+    "cycle": "r470-windows",
+    "eol": "2024-07-09",
+    "releaseDate": "2021-06-22",
+    "support": "2021-09-20"
+  },
+  {
+    "cycle": "r465-linux",
+    "eol": "2022-04-19",
+    "releaseDate": "2021-04-19",
+    "support": false
+  },
+  {
+    "cycle": "r460-linux",
+    "eol": "2022-01-01",
+    "releaseDate": "2021-01-07",
+    "support": "2021-07-19"
+  },
+  {
+    "cycle": "r460-windows",
+    "eol": "2022-01-01",
+    "releaseDate": "2020-12-15",
+    "support": "2021-06-23"
+  },
+  {
+    "cycle": "r450-windows",
+    "eol": "2023-07-01",
+    "releaseDate": "2020-06-24",
+    "support": "2020-12-15"
+  },
+  {
+    "cycle": "r450-linux",
+    "eol": "2023-07-01",
+    "releaseDate": "2020-06-24",
+    "support": "2020-10-07"
+  },
+  {
+    "cycle": "r418-windows",
+    "eol": "2022-03-01",
+    "releaseDate": "2019-02-04",
+    "support": "2019-04-23"
+  },
+  {
+    "cycle": "r418-linux",
+    "eol": "2022-03-01",
+    "releaseDate": "2019-01-30",
+    "support": "2019-03-20"
+  },
+  {
+    "cycle": "r390-windows",
+    "eol": "2021-10-26",
+    "releaseDate": "2018-01-08",
+    "support": "2018-07-31"
+  },
+  {
+    "cycle": "r390-linux",
+    "eol": "2022-11-22",
+    "releaseDate": "2018-01-04",
+    "support": "2018-03-10"
+  }
+]

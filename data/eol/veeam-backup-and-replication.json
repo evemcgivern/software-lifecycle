@@ -1,0 +1,98 @@
+[
+  {
+    "cycle": "13",
+    "eol": "2028-11-30",
+    "releaseDate": "2025-09-03",
+    "support": "2028-11-30"
+  },
+  {
+    "cycle": "12",
+    "eol": "2027-02-28",
+    "releaseDate": "2023-01-30",
+    "support": "2025-09-03"
+  },
+  {
+    "cycle": "11",
+    "eol": "2024-02-01",
+    "releaseDate": "2021-02-11",
+    "support": "2023-02-01"
+  },
+  {
+    "cycle": "10",
+    "eol": "2023-02-01",
+    "releaseDate": "2020-02-04",
+    "support": "2021-02-01"
+  },
+  {
+    "cycle": "9.5",
+    "eol": "2022-01-01",
+    "releaseDate": "2016-11-16",
+    "support": "2020-02-01"
+  },
+  {
+    "cycle": "9.0",
+    "eol": true,
+    "releaseDate": "2016-01-12",
+    "support": false
+  },
+  {
+    "cycle": "8.0",
+    "eol": true,
+    "releaseDate": "2014-11-06",
+    "support": false
+  },
+  {
+    "cycle": "7.0",
+    "eol": true,
+    "releaseDate": "2013-08-20",
+    "support": false
+  },
+  {
+    "cycle": "6.5",
+    "eol": true,
+    "releaseDate": "2012-10-09",
+    "support": false
+  },
+  {
+    "cycle": "6.1",
+    "eol": true,
+    "releaseDate": "2012-06-04",
+    "support": false
+  },
+  {
+    "cycle": "6.0",
+    "eol": true,
+    "releaseDate": "2011-08-22",
+    "support": false
+  },
+  {
+    "cycle": "5.0",
+    "eol": true,
+    "releaseDate": "2010-08-30",
+    "support": false
+  },
+  {
+    "cycle": "4.0",
+    "eol": true,
+    "releaseDate": "2009-10-29",
+    "support": false
+  },
+  {
+    "cycle": "3.0",
+    "eol": true,
+    "releaseDate": "2009-10-21",
+    "support": false
+  },
+  {
+    "cycle": "2.0",
+    "eol": true,
+    "releaseDate": "2008-07-30",
+    "support": false
+  },
+  {
+    "cycle": "1.0",
+    "eol": true,
+    "releaseDate": "2008-02-26",
+    "support": false
+  }
+]

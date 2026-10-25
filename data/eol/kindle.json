@@ -1,0 +1,137 @@
+[
+  {
+    "cycle": "kindle-scribe-3",
+    "eol": "2030-12-31",
+    "releaseDate": "2025-09-30"
+  },
+  {
+    "cycle": "kindle-scribe-colorsoft-1",
+    "eol": "2030-12-31",
+    "releaseDate": "2025-09-30"
+  },
+  {
+    "cycle": "kindle-scribe-2024",
+    "eol": "2029-12-31",
+    "releaseDate": "2024-12-04"
+  },
+  {
+    "cycle": "kindle-colorsoft-1",
+    "eol": "2030-12-31",
+    "releaseDate": "2024-10-30"
+  },
+  {
+    "cycle": "paperwhite-12",
+    "eol": "2030-12-31",
+    "releaseDate": "2024-10-16"
+  },
+  {
+    "cycle": "kindle-11-2024",
+    "eol": "2030-12-31",
+    "releaseDate": "2024-10-16"
+  },
+  {
+    "cycle": "kindle-scribe-2022",
+    "eol": "2029-12-31",
+    "releaseDate": "2022-11-30"
+  },
+  {
+    "cycle": "kindle-11-2022",
+    "eol": "2028-12-31",
+    "releaseDate": "2022-09-13"
+  },
+  {
+    "cycle": "paperwhite-11",
+    "eol": "2028-12-31",
+    "releaseDate": "2021-10-27"
+  },
+  {
+    "cycle": "oasis-10",
+    "eol": "2028-12-31",
+    "releaseDate": "2019-07-24"
+  },
+  {
+    "cycle": "kindle-10",
+    "eol": "2026-12-31",
+    "releaseDate": "2019-04-10"
+  },
+  {
+    "cycle": "paperwhite-10",
+    "eol": "2026-12-31",
+    "releaseDate": "2018-11-07"
+  },
+  {
+    "cycle": "oasis-9",
+    "eol": "2024-06-01",
+    "releaseDate": "2017-10-31"
+  },
+  {
+    "cycle": "kindle-8",
+    "eol": "2024-06-01",
+    "releaseDate": "2016-06-22"
+  },
+  {
+    "cycle": "oasis-8",
+    "eol": "2024-06-01",
+    "releaseDate": "2016-04-27"
+  },
+  {
+    "cycle": "paperwhite-7",
+    "eol": "2024-06-01",
+    "releaseDate": "2015-06-30"
+  },
+  {
+    "cycle": "voyage-7",
+    "eol": "2021-04-01",
+    "releaseDate": "2014-11-04"
+  },
+  {
+    "cycle": "kindle-7",
+    "eol": "2019-10-01",
+    "releaseDate": "2014-10-02"
+  },
+  {
+    "cycle": "paperwhite-6",
+    "eol": "2019-10-01",
+    "releaseDate": "2013-09-30"
+  },
+  {
+    "cycle": "paperwhite-5",
+    "eol": "2015-06-26",
+    "releaseDate": "2012-10-01"
+  },
+  {
+    "cycle": "kindle-5",
+    "eol": true,
+    "releaseDate": "2012-09-06"
+  },
+  {
+    "cycle": "kindle-4",
+    "eol": true,
+    "releaseDate": "2011-09-28"
+  },
+  {
+    "cycle": "touch-4",
+    "eol": true,
+    "releaseDate": "2011-09-28"
+  },
+  {
+    "cycle": "keyboard-3",
+    "eol": true,
+    "releaseDate": "2010-08-27"
+  },
+  {
+    "cycle": "dx-2",
+    "eol": true,
+    "releaseDate": "2009-06-10"
+  },
+  {
+    "cycle": "kindle-2",
+    "eol": true,
+    "releaseDate": "2009-02-23"
+  },
+  {
+    "cycle": "kindle-1",
+    "eol": true,
+    "releaseDate": "2007-11-19"
+  }
+]

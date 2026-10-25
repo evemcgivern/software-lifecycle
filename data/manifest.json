@@ -1,0 +1,1963 @@
+{
+  "data_format": 1,
+  "eol_date": "2026-10-24",
+  "files": {
+    "aliases.json": {
+      "sha256": "08eb870177fabe5bdfc629655a1402011be62fa559e2e0dabc516778096b56e1",
+      "size": 7188
+    },
+    "eol/adonisjs.json": {
+      "sha256": "becaf3f1f663a31df0a8db2cc922988cfd2e6bd012ced57c18ee2872d6b1704d",
+      "size": 241
+    },
+    "eol/akeneo-pim.json": {
+      "sha256": "d87bd2f50c471c0e3c168a3d73b07507480ba22686eeecc1eb61f24dd4b89e61",
+      "size": 1464
+    },
+    "eol/alibaba-ack.json": {
+      "sha256": "fee5f1b1b45cdba0f49b774cbae494823d3ec52f2fb26d427380b19307016bed",
+      "size": 1221
+    },
+    "eol/alibaba-dragonwell.json": {
+      "sha256": "dc4342d422474f350ad089df108e6b3e79fcb74c99897bb6a260d0a368b0abb0",
+      "size": 427
+    },
+    "eol/almalinux.json": {
+      "sha256": "782487e4fc3d705a81f22944f219b6e86d0c5776017434cff218e1c3cd49b703",
+      "size": 343
+    },
+    "eol/alpine-linux.json": {
+      "sha256": "9dc629fc4d9be684d69eddfa4dc06224b94996e644cccd232c7ff7c2964ebd08",
+      "size": 2770
+    },
+    "eol/amazon-aurora-mysql.json": {
+      "sha256": "98100eb7030e4d7e19991ebd2f1b1708103efbea6aae4ee3868b379246d039f3",
+      "size": 474
+    },
+    "eol/amazon-aurora-postgresql.json": {
+      "sha256": "a47a9ae69379a68f19ad56551d45f031a0c8c68f7ce1dde585580b25d9acd1b0",
+      "size": 979
+    },
+    "eol/amazon-cdk.json": {
+      "sha256": "712155f1b59851c8a7fb24e28135993bf2c3ba084130c2255082b1081fdb7ff2",
+      "size": 101
+    },
+    "eol/amazon-corretto.json": {
+      "sha256": "fee4a88f8fc29b1372784aec6ca708df8815adb09699f0baecf437d3dcdfa415",
+      "size": 1277
+    },
+    "eol/amazon-documentdb.json": {
+      "sha256": "a9a60c8ac0591dde8598175dd3011bbdfadbc0ba8b3c84aa5304dcb2d4ead94e",
+      "size": 450
+    },
+    "eol/amazon-eks.json": {
+      "sha256": "00e9e546bd34da78e520bc4d41442d1bd6810dd18fab0bc39ea7b26a206b59d7",
+      "size": 2462
+    },
+    "eol/amazon-elasticache-redis.json": {
+      "sha256": "36555e75b6016224bef17db188061357943cc6fdfdd41ec3d3fb4a3601edb4c1",
+      "size": 472
+    },
+    "eol/amazon-elasticsearch.json": {
+      "sha256": "269ed20b32478d4f60139d84864cd7aa9a5ee785b4d9b186b203f7c73c97c371",
+      "size": 2341
+    },
+    "eol/amazon-glue.json": {
+      "sha256": "ec3d08bc376f2a9d7954a77d5c2ed93aae8f76c8b7c38534e069aca06b94c15c",
+      "size": 751
+    },
+    "eol/amazon-linux.json": {
+      "sha256": "6df78cd7ccaeee7fe83e7e2a78b3721249a152412f1fcb3ec89fd85fe1d267f2",
+      "size": 2017
+    },
+    "eol/amazon-mq-activemq.json": {
+      "sha256": "18d41a3a3651de8dccfaa9cdb1d080c15380009498fe6361f2fd0e6464785e55",
+      "size": 424
+    },
+    "eol/amazon-mq-rabbitmq.json": {
+      "sha256": "c365557ac9a22da7962e53091d152f79a4ed1ada50ca8f2a157e6b91294ed026",
+      "size": 328
+    },
+    "eol/amazon-msk.json": {
+      "sha256": "c5044eaf7334139176438384b8494d967536028094fda5baff417e5d51c24e24",
+      "size": 1602
+    },
+    "eol/amazon-neptune.json": {
+      "sha256": "076e30a2c5a3a4e26da939ff4808d413a9f3f64c39a7d045619c0e4a5fa246fa",
+      "size": 3506
+    },
+    "eol/amazon-opensearch.json": {
+      "sha256": "ad53a01f868efe3a0bc831b0d7fe38b35d8c0e013ddac3f2e8851eb133b5e7e4",
+      "size": 1931
+    },
+    "eol/amazon-rds-mariadb.json": {
+      "sha256": "0fa87451928e69f3fb2ea52aabe6cdd6fbc8a8d58b7ec513d2e7d1ebcc67aaa7",
+      "size": 700
+    },
+    "eol/amazon-rds-mysql.json": {
+      "sha256": "187722cb779a38e7cf9cef3c84e5937f46e4a45ba5d15466b95b8177be9aaac1",
+      "size": 2767
+    },
+    "eol/amazon-rds-postgresql.json": {
+      "sha256": "34f6b987abb3e186dfe1398be782d7b52ce353abbae01ccdee8fcde727c452e3",
+      "size": 1210
+    },
+    "eol/android.json": {
+      "sha256": "ecb199852dd917deaba8e7a4e22a7959564e61022d1d1222a5f4a34dd883588f",
+      "size": 2771
+    },
+    "eol/angular.json": {
+      "sha256": "65166d85d5f4502887e6394fc7c3e40ee121dd7061528b84b2a9740e43f0bfd1",
+      "size": 2004
+    },
+    "eol/angularjs.json": {
+      "sha256": "2b76043c7b298f619df64393205e799c50bb7f327647768c761bcf9e6dafe559",
+      "size": 1044
+    },
+    "eol/ansible-core.json": {
+      "sha256": "e2cd3e0ba510155d963a777f10782651bf0abf627b5a99ff8f246a9ebbc955ec",
+      "size": 1133
+    },
+    "eol/ansible.json": {
+      "sha256": "2bbbd8525cbde4b3133208b80f28afff946d8ea1555266fbc7c6aff7f59a7d25",
+      "size": 1182
+    },
+    "eol/ant.json": {
+      "sha256": "a4bc5ebfeb23dd8daf68908af555f8a3ea09a907681b227a5eed223343665aaf",
+      "size": 255
+    },
+    "eol/antix.json": {
+      "sha256": "8e8c07aa3abc8a091db9bc09025702f74010d6a8fbeae25541edaadc60acf361",
+      "size": 801
+    },
+    "eol/apache-activemq.json": {
+      "sha256": "695d061f2a063b54d7c67e859279fd09ccf54b0632052b8be9cfb0268591fdf8",
+      "size": 2056
+    },
+    "eol/apache-airflow.json": {
+      "sha256": "b366709a81acfd1769632440e38477b71a684bd85082193ee08b15543a5fe19b",
+      "size": 1022
+    },
+    "eol/apache-apisix.json": {
+      "sha256": "d4c98a0dd38002b2acf6444a3b637b34a8e039ad48d7bb8646562e114c0a17a1",
+      "size": 2248
+    },
+    "eol/apache-artemis.json": {
+      "sha256": "b778c467182774e7dcf016b7cd992561c968af6b028792905bbcd15a565943c2",
+      "size": 5113
+    },
+    "eol/apache-camel.json": {
+      "sha256": "881634fabde784a0ec5709d8fea095f38b1980eebc0e1f22d228aa559220672c",
+      "size": 4072
+    },
+    "eol/apache-cassandra.json": {
+      "sha256": "c1d0dee3ba4170712a7108097c2b9f4a74114119d6fd67e4eaf2512c6f3ceccc",
+      "size": 413
+    },
+    "eol/apache-celeborn.json": {
+      "sha256": "3e950c1977b3a1123a75c3cbf0bf408e4e962e60c317dd44916461e7447bb715",
+      "size": 340
+    },
+    "eol/apache-couchdb.json": {
+      "sha256": "3cc8d1d7f912ecc1f412297fd52d8dd32d7e7d661a2d9d2a312cd908b925fdc3",
+      "size": 333
+    },
+    "eol/apache-flink.json": {
+      "sha256": "5b079ba302bcb652ad144a4a8896eb0b112dad787848f5ddfef33262994a3841",
+      "size": 667
+    },
+    "eol/apache-groovy.json": {
+      "sha256": "4a1418d573199d65460e823cf9ceff738c84b956e86db1ee68ddb642a538bfa2",
+      "size": 743
+    },
+    "eol/apache-hadoop.json": {
+      "sha256": "2cfcca4a89cfffb2e50b8117025bccbb636e3d04a5966621454321f6283d75a3",
+      "size": 1524
+    },
+    "eol/apache-hop.json": {
+      "sha256": "6a7391989e67719fb401022aca79fdcbaebbb99cfc7d4dda4194f1436deb6c76",
+      "size": 1984
+    },
+    "eol/apache-http-server.json": {
+      "sha256": "ae9616f5fe36c21e096341df7d3107c98ac7cf7d29af492a80cf77e52373e54b",
+      "size": 340
+    },
+    "eol/apache-kafka.json": {
+      "sha256": "507993e63c4041c4de31ecd1f16b933d8763c8aa8714af80272fed23d45ce7aa",
+      "size": 3646
+    },
+    "eol/apache-lucene.json": {
+      "sha256": "d6d50d8706b8ee1b6d3eb258722ac752b946314ce2bd2955e2d17331f8e13b0f",
+      "size": 318
+    },
+    "eol/apache-maven.json": {
+      "sha256": "54b412c3a2e3e13237393522f718310b280f667beb059ce86f5f00ce1cae206f",
+      "size": 932
+    },
+    "eol/apache-nifi.json": {
+      "sha256": "634975fa52df64c67b2d3b4cd95759a5d8bce2a60294bd5f40be49238b67cea7",
+      "size": 1987
+    },
+    "eol/apache-pulsar.json": {
+      "sha256": "943164ca51080c5cfe018ca8ad1c8743fcd420a3790011bb334c6c9ee8328a89",
+      "size": 1850
+    },
+    "eol/apache-spark.json": {
+      "sha256": "209235256ee187fe58824f418efb600c29261377f880472d15fa342f5ddfa4aa",
+      "size": 1809
+    },
+    "eol/apache-struts.json": {
+      "sha256": "1982aaed0a35ccd4531add7e2d52e78818253580be37126d72aebad9cd464bad",
+      "size": 990
+    },
+    "eol/apache-subversion.json": {
+      "sha256": "3af379fc19b25e88d0c2d00fd25d99ab3962b3c78f1f2e984700adbd3b731540",
+      "size": 1258
+    },
+    "eol/api-platform.json": {
+      "sha256": "cf3ed67d6eceb86bd531c0e03a5b2ab60443be5ff97d180baa2800f70ad9ea44",
+      "size": 2159
+    },
+    "eol/apple-watch.json": {
+      "sha256": "4ef034d9b4f75241b54a67670593b30d59104a51dd1243ffba201349b04fd702",
+      "size": 1747
+    },
+    "eol/arangodb.json": {
+      "sha256": "df99e9d5eec3fd17a9666c4df650f3953a1afa097730cab2925be926790188f0",
+      "size": 1187
+    },
+    "eol/argo-cd.json": {
+      "sha256": "4ed4e09ee84d40928ef9abb429115faf58f77730457efd8eb8eedd3c96c9ae6e",
+      "size": 2567
+    },
+    "eol/argo-workflows.json": {
+      "sha256": "89e28752607aeed1e6773a7a72305c5337683a4da18a90a2c57858dda7feb746",
+      "size": 591
+    },
+    "eol/artifactory.json": {
+      "sha256": "90f241c937d21dd405f918f8ffffb39cf2bcfac00928a3b184536558ecac3063",
+      "size": 2620
+    },
+    "eol/authentik.json": {
+      "sha256": "892680c72c0f4ba29c7552b57b2b55d7c9e28282249fc8881c55f242b650e847",
+      "size": 1063
+    },
+    "eol/aws-lambda.json": {
+      "sha256": "98a3b3f860ba0c5dea0fde2ce7af7e8d1c108c097bab507fbe2d37035c79df9e",
+      "size": 6283
+    },
+    "eol/azul-zulu.json": {
+      "sha256": "4b3877d58b0c8644a6f27e406d205c886800d17ba68a505ad354bdcb8673a78d",
+      "size": 2669
+    },
+    "eol/azure-database-for-mysql.json": {
+      "sha256": "1ff091d9c58e3a5c35e597615d4cf09457df0d4fe32b5560b005aecf1677685c",
+      "size": 358
+    },
+    "eol/azure-database-for-postgresql.json": {
+      "sha256": "24eff4ba617a301857d27fdfa05d667da117c26077efaa24433f3b0f82303975",
+      "size": 683
+    },
+    "eol/azure-devops-server.json": {
+      "sha256": "6e1532cbee51fa09ee06f4ef4676440f10ac38b88800c434548aa0da81a6f9ef",
+      "size": 1748
+    },
+    "eol/azure-kubernetes-service.json": {
+      "sha256": "d98d56bcd30a62ebb7724685759fa8ea066f35501b1f6e4dce7e785be00580a6",
+      "size": 1945
+    },
+    "eol/backdrop.json": {
+      "sha256": "1d31577825c1f7e413e2a8159243dfa80568f58d07c7ba33fdc0c5e8153e5e03",
+      "size": 772
+    },
+    "eol/bamboo.json": {
+      "sha256": "8f30041cb0e0c9c5a51e67ff5a938bec7e11131727c8861613c349a102e02c78",
+      "size": 5832
+    },
+    "eol/bazel.json": {
+      "sha256": "412e8b9e69f8c9d43aa5cbf85294c46f51be6673acefe04ef4a858f69267d4d8",
+      "size": 673
+    },
+    "eol/beats.json": {
+      "sha256": "747874362207064a6210dc57346b352119c2b264d5f06ac523ad23c1d9b492fb",
+      "size": 1021
+    },
+    "eol/behat.json": {
+      "sha256": "84f1ae5fb7821207f48ac9d417b88e188a6965c8a0814db6145babe44c3b2745",
+      "size": 327
+    },
+    "eol/bellsoft-liberica.json": {
+      "sha256": "2ad080dc9e8642a5a86133bbb9d9bb32c9c6f9f4d6c2569dbe92f9ef60f2fe5e",
+      "size": 2457
+    },
+    "eol/big-ip.json": {
+      "sha256": "e5511e239dd43428db13e0ade2cc0c13646550ea0f8b3ee33ca185bfca882b56",
+      "size": 3593
+    },
+    "eol/bigbluebutton.json": {
+      "sha256": "a6929be1ef9e14422a1748d69fde8a278867973b9a912c455deb85a9a5fb9855",
+      "size": 340
+    },
+    "eol/bind-9.json": {
+      "sha256": "967480991bd7cae55764b0aee84dfa56d1559e7465c26f96551cb3a4626235e9",
+      "size": 344
+    },
+    "eol/bitbucket.json": {
+      "sha256": "fb821ac7d76deb022ee177d0f61950a66425bab41bfa8b948704a0177a846002",
+      "size": 10964
+    },
+    "eol/bitcoin-core.json": {
+      "sha256": "3e8548262fe50cd92ef4f17d41cf61960447ed6e8adca827b3900dc88090c1ad",
+      "size": 2744
+    },
+    "eol/blender.json": {
+      "sha256": "e36a2b06236df52dbaef2aed42d81076fc21279bad4143220fc7cc5168c67a4b",
+      "size": 2075
+    },
+    "eol/bootstrap.json": {
+      "sha256": "7411d2234c6e4e9562acee44c2fcacd82d77a038fc74f96b484116738cd7ea63",
+      "size": 557
+    },
+    "eol/boundary.json": {
+      "sha256": "807db44d8d180a8bf8dbb8a93b2d38545de895a6f7b483e36013664370aed3f8",
+      "size": 504
+    },
+    "eol/bun.json": {
+      "sha256": "ec3f96062d8adf21e107028abf420355706a1927430dbfcf5cecf7f861714d75",
+      "size": 80
+    },
+    "eol/cachet.json": {
+      "sha256": "3105e40d449669c13b1238d8c163da3aab9720923340b6792a30ee14ba6910d3",
+      "size": 684
+    },
+    "eol/caddy.json": {
+      "sha256": "2ea2098dccbfefe80aa5afc210fc651d96e000f21b25ac27423e06391c3ce442",
+      "size": 164
+    },
+    "eol/cakephp.json": {
+      "sha256": "681bd4f119636212da1e916ba6066ffa11eaa75cc6966cca4da0170aab408ae4",
+      "size": 3756
+    },
+    "eol/calico.json": {
+      "sha256": "850e626e20baa282f8ca0b7f082b87172d59770fd7c6c61e3e8f22d47ac19e37",
+      "size": 772
+    },
+    "eol/centos-stream.json": {
+      "sha256": "7213b9b7db7e2f51907b2bc94ba7743d165e2b79ceaa0349d305d7ffce0dac9a",
+      "size": 343
+    },
+    "eol/centos.json": {
+      "sha256": "d6a8493462f67fe4796ff33cb3553debdfd51db49557fac6a5fb79f84879c303",
+      "size": 455
+    },
+    "eol/centreon.json": {
+      "sha256": "7736a0cb5215c31193383ac9226eab400aabc8b7f4e70a13599b7bc6b9aface0",
+      "size": 1753
+    },
+    "eol/ceph.json": {
+      "sha256": "4058e46a35c6ce08a5f251f997aef5eefa3c33de4c654ac7891093547f95ee7d",
+      "size": 1022
+    },
+    "eol/cert-manager.json": {
+      "sha256": "938519eafa0d0646d68944a8fc7cd9fef97b27c1debf4eae663916b5dbc2ad02",
+      "size": 1033
+    },
+    "eol/cfengine.json": {
+      "sha256": "f01a14f1308f348b709acbe9bb8bc97fe8975fe58b382921d1ef52aec8b5df5e",
+      "size": 1214
+    },
+    "eol/checkmk.json": {
+      "sha256": "c15485f65bdbe528129d0b0ad0de1c2800ab1114f3d7d76f14ccde4700ac8443",
+      "size": 519
+    },
+    "eol/chef-infra-client.json": {
+      "sha256": "ea91d9a9a85c36c1d8751a5f8ba16dbd897ad321466f6d7294f176c0ccd5b2f0",
+      "size": 1121
+    },
+    "eol/chef-infra-server.json": {
+      "sha256": "af226a2785f8e9cbdcdd88df7b417fbae04a5916251ed672bc53800083beb175",
+      "size": 558
+    },
+    "eol/chef-inspec.json": {
+      "sha256": "67d1c26eb002fa6e1eb2b314f4c9c297f8d0641de58bcc11c7f567bedc32192c",
+      "size": 772
+    },
+    "eol/chef-supermarket.json": {
+      "sha256": "bbfc8d754d62a2df161841ab8f59fa77ed54a6f0f864b370e7197356e241b46e",
+      "size": 332
+    },
+    "eol/chef-workstation.json": {
+      "sha256": "4ed34d4a825ccb754c59eb8408d4ce564e9458293bd6dff60a3ccc5ed6c8c7b4",
+      "size": 672
+    },
+    "eol/chrome.json": {
+      "sha256": "585ee9b4f80ff7cf6965433b1eba9f305814b2d083b3e8b33f3cc43af50d26f2",
+      "size": 12722
+    },
+    "eol/chromecast.json": {
+      "sha256": "79a708526e8a85e11122599e4ab5bbd7d1e7cace0bcf6675a20705d33357d21a",
+      "size": 761
+    },
+    "eol/cilium.json": {
+      "sha256": "d196112dcdf41981b848c3c71882d400c3e679d3e0de5734266690b9ab3354e7",
+      "size": 678
+    },
+    "eol/cisco-ios-xe.json": {
+      "sha256": "cb3590fad4446afd46bd21fac1d3a612335ba0c0171f258535f9665bdac9cdee",
+      "size": 2318
+    },
+    "eol/citrix-vad.json": {
+      "sha256": "62258142aff857cbcfc68d2911c3e5b5ad372acb4b0e192cf4ec72ed7c243082",
+      "size": 3834
+    },
+    "eol/ckeditor.json": {
+      "sha256": "d28ec5a63505c4743e03efb78413833f1e6ddcf738f5256186b1c4c98ec6938c",
+      "size": 231
+    },
+    "eol/clamav.json": {
+      "sha256": "d9ba5f0bea235983c65a919eea54c31fc84da9670fdc86adf75850ba3d1c6255",
+      "size": 1127
+    },
+    "eol/claude.json": {
+      "sha256": "93c4fb13f1d91699e798ecc195376c0bcb7decb2ce12a876fbf45a052617396c",
+      "size": 4434
+    },
+    "eol/clear-linux.json": {
+      "sha256": "a1ef1c3dd3015bd8cc9a83e00c08dca6d0f8f836d9b850cac430952a1e9e35d7",
+      "size": 93
+    },
+    "eol/clickhouse.json": {
+      "sha256": "bcc140bb0ca3cde1d832e304d3f0cab8e0068e2dfadd359420955f09b07e229c",
+      "size": 1819
+    },
+    "eol/cloud-sql-auth-proxy.json": {
+      "sha256": "8b001c7a555960fbc779a8a98f7b85b1968e265c4b6962c95325e04c1211dbdd",
+      "size": 215
+    },
+    "eol/cnspec.json": {
+      "sha256": "34782374a6dce00ea404022cea45076a187387b76673e50bb5be3b1f90500bf9",
+      "size": 1003
+    },
+    "eol/cockroachdb.json": {
+      "sha256": "7ea3f7dfaf3b17d6dc4896dd9a1c7cbbb9263d0974927ce93398eef97eed3494",
+      "size": 2783
+    },
+    "eol/coder.json": {
+      "sha256": "151e3167015ce29bb2c5b0bf48b656aa1c756636ff580b671cb125b65c8159bd",
+      "size": 4656
+    },
+    "eol/coldfusion.json": {
+      "sha256": "c3926e642fdae1cedd0078979c1a2ee437f68fe3569bda150cc1dead28937509",
+      "size": 867
+    },
+    "eol/commvault.json": {
+      "sha256": "94c01307d0095b8a9cbf7022863d3034791f1af4c36cb15bff9e0248d55b28f3",
+      "size": 612
+    },
+    "eol/composer.json": {
+      "sha256": "4cac63fbdc796f6d99ace17e15888f123770a8d2e85483d7645b4c40803acea7",
+      "size": 1027
+    },
+    "eol/concrete-cms.json": {
+      "sha256": "1d5e7437dbd6b4c3d24fa70af5abf65dc0932a3ac4ef310f40f887c138a42cb1",
+      "size": 336
+    },
+    "eol/confluence.json": {
+      "sha256": "35e74642e102cd515365e0296d4cedfc3e4667a074a9626262026885d2102a8e",
+      "size": 7780
+    },
+    "eol/consul.json": {
+      "sha256": "bd10a4042df26ee5003c8a774a660cb0aec63faccad2e92973bc66fee4660132",
+      "size": 1564
+    },
+    "eol/containerd.json": {
+      "sha256": "6ab757339bf46d35eae940aafa74bef5b83ab4a6d146fd59e01d1d963b30b459",
+      "size": 1498
+    },
+    "eol/contao.json": {
+      "sha256": "34ff3a43798a367abdb938d7e09910c5806484e5a341007325ce2924c71e7828",
+      "size": 1847
+    },
+    "eol/contour.json": {
+      "sha256": "f853c2976fef3ac306c8e787b5798d36b68755a36fb75ea81c5dc921df553889",
+      "size": 852
+    },
+    "eol/controlm.json": {
+      "sha256": "e85bd688f0afd5b2ceb8027c70d0885bfb7fbb1794b5d2932fbf0192ed4bca46",
+      "size": 710
+    },
+    "eol/cortex-xdr.json": {
+      "sha256": "064f006dc1d1cdc0239727f3d9b767894003530f0e4cc230394115f8e46da456",
+      "size": 3287
+    },
+    "eol/cos.json": {
+      "sha256": "1ccfb0f921f282a618f86579ea902b86c0d199cc5e2204998865d92959723c48",
+      "size": 1525
+    },
+    "eol/couchbase-server.json": {
+      "sha256": "96cf965b59cfc5d0cbfb7fbf90996254367bea4af3e60a4fa9da8ec8448d67ac",
+      "size": 1895
+    },
+    "eol/craft-cms.json": {
+      "sha256": "eabbb5ce8766cbf928fd181ad6a91c9bd08429a53e08769c24682523023e1057",
+      "size": 455
+    },
+    "eol/dapr.json": {
+      "sha256": "99ad73787ffe88cb5600a8da448c2e6a4b1b9da15ea2024ffa5be8491d25be91",
+      "size": 937
+    },
+    "eol/dbt-core.json": {
+      "sha256": "8e3323d55b0c3890558f1f518af9374079c3eca746f9b547fe6cf8b5cfc50e00",
+      "size": 1608
+    },
+    "eol/dce.json": {
+      "sha256": "74aabba403b1efe699e5c5b54992739e0cd11a3116d201de267fba56c43bc844",
+      "size": 372
+    },
+    "eol/debian.json": {
+      "sha256": "be9161b2ca4dc3d51fe5d1dafd1be0de1a347b31839827ee280faf684d6a927b",
+      "size": 2646
+    },
+    "eol/deno.json": {
+      "sha256": "95d7b09d5515cd03938186a80fa03a6e1861ab99d340c51ad37d7d8ad351d31c",
+      "size": 940
+    },
+    "eol/dependency-track.json": {
+      "sha256": "5678a3d1e3013f0688176b980cde4ef50ce72bd4ed8fc5f42dd1bb76a9db1f4b",
+      "size": 861
+    },
+    "eol/devuan.json": {
+      "sha256": "b8108d06030c4564d347b9bc14f8184f76a31f627cf1b4e6c12abd4e0bafdea9",
+      "size": 507
+    },
+    "eol/discourse.json": {
+      "sha256": "7d2cdb0d84158a378d649f457265acf6e520375319d8018a33a5ca7c0094aee5",
+      "size": 1156
+    },
+    "eol/django.json": {
+      "sha256": "c5d06398cc774bb5fe558a252d2ace1fcbb459e9104eacabd27752060bfba5dc",
+      "size": 2650
+    },
+    "eol/docker-engine.json": {
+      "sha256": "9111c1407eadac9214bb012a0284fbc497036289c7771bbba96d9b340b235b06",
+      "size": 2270
+    },
+    "eol/dotnet.json": {
+      "sha256": "74dff76879a3c86eda128150f234c62aea2dcb1f4b30acea0b33cab1c89a20ae",
+      "size": 1110
+    },
+    "eol/dotnetfx.json": {
+      "sha256": "4a59c3794506a1cb5d62b83cf5430046787784541967ab6f867b979aaffce31e",
+      "size": 1104
+    },
+    "eol/dovecot.json": {
+      "sha256": "2370ed5842d926e42fb70df0ce2fe5978a8247be8368ee6cbfbabb589d72f2e0",
+      "size": 556
+    },
+    "eol/dropwizard.json": {
+      "sha256": "5bfd7b788752c0e3eda87ccaadfce2c970e4950850745a00a88a212d52839b37",
+      "size": 746
+    },
+    "eol/drupal.json": {
+      "sha256": "7130f12532a098bd61641124b4bea8d8ce2c3e82f7e1643c4b54ca53542afd6f",
+      "size": 3057
+    },
+    "eol/drush.json": {
+      "sha256": "a17b38837ca3759e3fd5aa20f6c3e31f1e494ad4784d1981d13c878f37a0940a",
+      "size": 749
+    },
+    "eol/duckdb.json": {
+      "sha256": "2bd04e48c6ab0db065486a56aa9ade37c14621dc6dc884d4c98d7ad6ae1104b0",
+      "size": 605
+    },
+    "eol/eclipse-jetty.json": {
+      "sha256": "139766c297711db683eb19d85b825584409e7242a24516c315cc464b96f8d868",
+      "size": 1559
+    },
+    "eol/eclipse-temurin.json": {
+      "sha256": "4675d2c50bbfba8276441e60ab51921bd5fa76ec481ec68a9ea8a6510357c0c8",
+      "size": 1192
+    },
+    "eol/elasticsearch.json": {
+      "sha256": "520cc2d44685e5b0f1d5e78efd354a4d8ad29682820352e03df3f7097a01176b",
+      "size": 1021
+    },
+    "eol/electron.json": {
+      "sha256": "57a661abb1082cbf38a111c1ea4552f0aef85086334c8618f030b3ca6520e34f",
+      "size": 3735
+    },
+    "eol/elixir.json": {
+      "sha256": "189631643b35e93078c05e40b1e291a03b8c2cc30685f70c618393347d234350",
+      "size": 1926
+    },
+    "eol/emberjs.json": {
+      "sha256": "11160c58b0d9fcdd9fb815ddd30c5900106e52ed05d257a4426f14e6c392742a",
+      "size": 5178
+    },
+    "eol/envoy.json": {
+      "sha256": "cba85940068d017910d9da24af7816331b9d267e4cb922b5d50f303be2c39852",
+      "size": 3560
+    },
+    "eol/erlang.json": {
+      "sha256": "dc47ce2fcb3cbb3c3a9700d96bbdaa2da15a802648c0fb2f0dbf3ba308c61c9c",
+      "size": 1477
+    },
+    "eol/eslint.json": {
+      "sha256": "f8b690d7fc18e703cb473b6d063807ead0992d5b10e5b74f7061ee539dcafe53",
+      "size": 1416
+    },
+    "eol/esxi.json": {
+      "sha256": "a755a43307df5051a5352dc04b32f42ab76031e1c08100f0828821140095c9fa",
+      "size": 863
+    },
+    "eol/etcd.json": {
+      "sha256": "3632d3f240389c8fbc6242eba6287f43b7dcf331948a7d37a4c6f5486b3ee8f7",
+      "size": 677
+    },
+    "eol/eurolinux.json": {
+      "sha256": "3df5caca45ed0e27975930f93d501469af8668a75daa357b0b8f3ae902ee52b2",
+      "size": 455
+    },
+    "eol/exim.json": {
+      "sha256": "45963442554ea922c29ddd28910edd60ccbb0ef051dfa70429907ec7cd891cf9",
+      "size": 3651
+    },
+    "eol/express.json": {
+      "sha256": "9cf504916130c45bd12a7f63d17596a235143ab602dc0b573f5622da45e9f24b",
+      "size": 558
+    },
+    "eol/external-dns.json": {
+      "sha256": "169922ae570bcc894cdc9abbbd95fad2d9cf73e6dc8bbca3ae0bf8b7508a6b4f",
+      "size": 80
+    },
+    "eol/fairphone.json": {
+      "sha256": "2e9f97c33be28e120da549d09fac73f3d322d97097e2fdd8147d3c20dbcacc94",
+      "size": 864
+    },
+    "eol/fedora.json": {
+      "sha256": "0e795733e10328c18d98a009f2f8f862f7b46e2cdec9e314ddc161dc4d29b995",
+      "size": 3734
+    },
+    "eol/ffmpeg.json": {
+      "sha256": "20e431bf27f97d16613de2ded343d5b08e5fa6a7c9087758b65be1517b7bb939",
+      "size": 3224
+    },
+    "eol/filemaker.json": {
+      "sha256": "29d60042deb95ea44dfb8cdcd32af2d0b878057beb928d26efb64a50570c231a",
+      "size": 1975
+    },
+    "eol/firefox.json": {
+      "sha256": "06341aae20a2de6e300a0f751332bdb733bf9036358675772ed8465c3ba1d2ec",
+      "size": 5068
+    },
+    "eol/fluent-bit.json": {
+      "sha256": "a49342038864f11b2d3544b7ed67a6920b09ae93dde6e21c7f6352433fdeacf5",
+      "size": 2133
+    },
+    "eol/flux.json": {
+      "sha256": "1836092d3b4453f8e170426613c0678b77f5b4911b97ceff38e4c288b4f60fd9",
+      "size": 929
+    },
+    "eol/font-awesome.json": {
+      "sha256": "5492e6b1430476eb4c43155cf7b39a2066141dcd6f312da098c103c2da965dc3",
+      "size": 538
+    },
+    "eol/foreman.json": {
+      "sha256": "ed76d3c3c781ca335601ea813108b6e7a954d49fdcb0ccbdad48760b3faf0b42",
+      "size": 4314
+    },
+    "eol/forgejo.json": {
+      "sha256": "11650a48d0efbf1215dfc6bc6063c0a4e38879cda267c5c5098a3990e55f2462",
+      "size": 957
+    },
+    "eol/fortios.json": {
+      "sha256": "23cafb6370878a5fe70ecf9df8c8adde60ce8b3e20fa515cd20af4f4d7499bbd",
+      "size": 923
+    },
+    "eol/foundationdb.json": {
+      "sha256": "8458f60f968c40d6cf8bb2b9f1bd6e6ce49b7f876ba8db86e52d80e427d3a4e6",
+      "size": 326
+    },
+    "eol/freebsd.json": {
+      "sha256": "1130e926e6624f734da078e3688d53c6025c5b1075063a61a452e031fa859c94",
+      "size": 7670
+    },
+    "eol/freedesktop-sdk.json": {
+      "sha256": "5324615e870ec28c8b42acaf5a29710d6a7bafc356ef89974e9de14bdb670b60",
+      "size": 531
+    },
+    "eol/gatekeeper.json": {
+      "sha256": "a0888061529cf46b2afc1690c63ffab18cebfef56ef132eeac229c1035fcd93b",
+      "size": 1120
+    },
+    "eol/gerrit.json": {
+      "sha256": "9a5c579e8d3f01a2c00150f1f29ed5f556fedc76e6357f03aecf7a2d7ac40891",
+      "size": 1617
+    },
+    "eol/ghc.json": {
+      "sha256": "0ff168bbdfc17d773e10052a6ea699105cce61cbe81dd026c3783ae1eec0ee55",
+      "size": 1409
+    },
+    "eol/github-actions-runner-images.json": {
+      "sha256": "15695d86728ddf93386113112153d9d8e694c7cc9dae9e25000b645d51c33ad4",
+      "size": 2422
+    },
+    "eol/gitlab-runner.json": {
+      "sha256": "44116bf6f3a9c487611b570efdd44ce88f8636f1e4a4a2752b8d027a7cbf4625",
+      "size": 2093
+    },
+    "eol/gitlab.json": {
+      "sha256": "7cc36bde51544e4ea658af42d4ca5ce6d00406f7e60986886059f6239f717c67",
+      "size": 7903
+    },
+    "eol/gleam.json": {
+      "sha256": "5e303f67db11ffc04497b13c73af93eeaa2f68c2785e83d15d08a63c4275bc7a",
+      "size": 80
+    },
+    "eol/go.json": {
+      "sha256": "d3ebec5a4285b67d37d5cedc3817132eb7546515ab17a2a51fc8632b6867aeef",
+      "size": 1555
+    },
+    "eol/goaccess.json": {
+      "sha256": "048d95fe891dc2b9a1e7baa1e6b152422d9bb2d1da82beb87bb1d8c57c8c97d9",
+      "size": 80
+    },
+    "eol/godot.json": {
+      "sha256": "068ed0cdcdf3c2eb1006ad01d90aba48cc2e31dbecefe972c9bfa5e3106850de",
+      "size": 1961
+    },
+    "eol/google-kubernetes-engine.json": {
+      "sha256": "ef57d315decd73d2e7dae9618789d875882cab7268d135b7c93670e848c2a397",
+      "size": 2323
+    },
+    "eol/google-nexus.json": {
+      "sha256": "c416d348b6c6b9bc0cbd5fa461fab645e2dfa879c99de7d66e52389a80d37320",
+      "size": 1243
+    },
+    "eol/gorilla.json": {
+      "sha256": "073394f5cc07c63f2e71639f6b3286f698dd2e9a77d49ec66ff7f56fcf0a250e",
+      "size": 79
+    },
+    "eol/graalvm-ce.json": {
+      "sha256": "818f7c1ffe5457763d1b165d3df0a401093d4475b7fbc4e3637239c13ef33a87",
+      "size": 591
+    },
+    "eol/gradle.json": {
+      "sha256": "de70ccee7ace38d8940d221a983ccd1a206947c00d5e97bfc657ae9481a70a8d",
+      "size": 998
+    },
+    "eol/grafana-loki.json": {
+      "sha256": "fa69b31b15baab0cae08db9ebc390d16847a8af2e5b70cca66b653518195221a",
+      "size": 2139
+    },
+    "eol/grafana.json": {
+      "sha256": "706045569ba2e39d691d3d147c6c89c8857dc9a76172aee27b179b66a50c5f0d",
+      "size": 3344
+    },
+    "eol/grails.json": {
+      "sha256": "ba266fcbe4c31298268571fafad38156272489f7163c754ba003f8d17c0e8f21",
+      "size": 851
+    },
+    "eol/graylog.json": {
+      "sha256": "747e71eb0e118c623cbfbed288790b9a6bde768f3453eeea845be2c91db9bee2",
+      "size": 2325
+    },
+    "eol/greenlight.json": {
+      "sha256": "da559d28086f3c3c1d451d346734efec395d16f58f359816624dc86bc6cffcb3",
+      "size": 164
+    },
+    "eol/grumphp.json": {
+      "sha256": "808866cd2b780338351ed75c919adea1be4a8d0ddf5618860602692f54f466e8",
+      "size": 232
+    },
+    "eol/grunt.json": {
+      "sha256": "14ffcbd9652061bc6a2d4e2f355e9a3ddc76b570399f675dc591d5fd1a3bc5bb",
+      "size": 802
+    },
+    "eol/gstreamer.json": {
+      "sha256": "42915899e39a18737c889634d6c649352e4aaf02d9a50cba37a9494aa118ba00",
+      "size": 1185
+    },
+    "eol/guzzle.json": {
+      "sha256": "4601b4dd01d0f8e14ab53ff51d6ca542b1c8d03b9a758762f0f7da8d910ef9d8",
+      "size": 493
+    },
+    "eol/haproxy-ingress.json": {
+      "sha256": "09c57809823ec5c5b3f92f9c3872a758870fec4ef4a399a545fecce1f4e206d6",
+      "size": 410
+    },
+    "eol/haproxy.json": {
+      "sha256": "aff108e7ae52432c8b51eea135cb8512983aa1e2b0d71b07cd088fa9d3cb1f39",
+      "size": 2153
+    },
+    "eol/harbor.json": {
+      "sha256": "6827adb9d8e3e05f1f47232bbb6c43d34d38d1a20404200c5854dc56b642f27a",
+      "size": 1537
+    },
+    "eol/hashicorp-packer.json": {
+      "sha256": "bc811ec94d25655b83f9d5e78ddea3ece2ae8730b60052ba7f66b4a345de5b29",
+      "size": 763
+    },
+    "eol/hashicorp-vault.json": {
+      "sha256": "b638fd67c482663628b647b5156c136b42350f2a4f29673c50f45be04444a875",
+      "size": 1746
+    },
+    "eol/hbase.json": {
+      "sha256": "15b349b1f13b2c4a885e27c9c885356e65ca1c647ffda0497c480baaf81c0f5a",
+      "size": 584
+    },
+    "eol/heroku-postgres.json": {
+      "sha256": "4bd31fa9e8ca8fd42397ba9eacbb42ccff4a43949a74a07efb0e79b8e3ad75ce",
+      "size": 870
+    },
+    "eol/hibernate-orm.json": {
+      "sha256": "2ad9ad877cf0682be9868a750a0e8253f83e4b78e36d973f47952176054df6d5",
+      "size": 1849
+    },
+    "eol/horizon.json": {
+      "sha256": "a750b062803f1359d52a732727bc5c5fbf0dd0ef508108e52496d77eb0a7854d",
+      "size": 2127
+    },
+    "eol/ibm-aix.json": {
+      "sha256": "66565080b536e17b54ee218aec0ea70626e13b0e7d620a5fa9d8110cb1bba599",
+      "size": 1140
+    },
+    "eol/ibm-db2.json": {
+      "sha256": "c8aefec0975193cf2e2f3b801b3ecd4488ab1f43d2025c08418c3f24de63b862",
+      "size": 977
+    },
+    "eol/ibm-i.json": {
+      "sha256": "1395f10a68871cc4aa7da6459dca2ae74b252f11d860de205bbc74cfc1e3235b",
+      "size": 2843
+    },
+    "eol/ibm-mq.json": {
+      "sha256": "23deabb968adf7577c2c21098b7ea1b36e078b77a70cde89772f6f11d8dd415e",
+      "size": 1531
+    },
+    "eol/ibm-semeru-runtime.json": {
+      "sha256": "bcacab74bcb408bbc3166fbc2b9d63e9eb62cf0d203369fc608bf796e4086076",
+      "size": 852
+    },
+    "eol/icinga-web.json": {
+      "sha256": "1a81264129bb3b109556572c870d34b1416118985f78d941af364de1eb0135d0",
+      "size": 1824
+    },
+    "eol/icinga.json": {
+      "sha256": "0970bf408ee4f530e52718e94a95717af250107087692fa7400ac0ea66edc93b",
+      "size": 2056
+    },
+    "eol/idl.json": {
+      "sha256": "5aefcdc5612b7782f1d614de4f05c3c02f3d9a3ec4cdae2beca21a55e9bf8e4a",
+      "size": 942
+    },
+    "eol/influxdb.json": {
+      "sha256": "a90404765bfc63c509837c3a1fed774780225efa73f89dbe1754802c5be6e20b",
+      "size": 1257
+    },
+    "eol/intel-processors.json": {
+      "sha256": "a757a6ec550ad7fed8d0c139fb5baed38c5f4e6181ebb139f8926df671d0aa8f",
+      "size": 3100
+    },
+    "eol/internet-explorer.json": {
+      "sha256": "70bbc7774999eb3bf365f081d9abfd3c0a4065b0129e1a31a4d79db89225ef88",
+      "size": 791
+    },
+    "eol/ionic.json": {
+      "sha256": "dd6ef13684894811304a51dc607ce9bbbe2931580f40d4f372632ff203c7c002",
+      "size": 1330
+    },
+    "eol/ios.json": {
+      "sha256": "023442bf7f23cdea6aee414a2a29886a8d4226dd1edca4d340d2a0945ae53a23",
+      "size": 1779
+    },
+    "eol/ipad.json": {
+      "sha256": "0e62840ba38eaac764831003690accad300d163330b465357999a4a197c56fe3",
+      "size": 3801
+    },
+    "eol/ipados.json": {
+      "sha256": "b08e56cab634d472f60f319347cdf64f72c29abff6013ddeb171d3fc10c28be5",
+      "size": 979
+    },
+    "eol/iphone.json": {
+      "sha256": "0680e93836ded4ced6e457159a5f1eab4e292cb519bc30bc63e5ffd773aade53",
+      "size": 4507
+    },
+    "eol/isc-dhcp.json": {
+      "sha256": "0e79a0346ee446755ef9179681526a37b1a99333191d2df101ce286b33253da3",
+      "size": 347
+    },
+    "eol/istio.json": {
+      "sha256": "4a27f477f7606ece59ab244bec996c56b2adf12e874ea61befd37e9ec493ad86",
+      "size": 2175
+    },
+    "eol/jaeger.json": {
+      "sha256": "f28e33a771b28b905113fef422eb831af9f36b5781ccb74015eafa1b6bed8f98",
+      "size": 164
+    },
+    "eol/jekyll.json": {
+      "sha256": "883d6a4b413f2654eea42b7c809c75afe22c05be821133afb9751824eabcea94",
+      "size": 518
+    },
+    "eol/jenkins.json": {
+      "sha256": "e5eeeb9a21a0d92f5604af86f9c9fba32208375981133723b5c29f39a6731d89",
+      "size": 1657
+    },
+    "eol/jfrog-xray.json": {
+      "sha256": "e48fe6d0166e599aec4182af3c48a7249099c9d1f792563dc156be62287de3e2",
+      "size": 3148
+    },
+    "eol/jhipster.json": {
+      "sha256": "f413acedce45077cf18289cfcccbacae6fa6390ff5d9f9de86917e2e6f08b5c1",
+      "size": 836
+    },
+    "eol/jira-service-management.json": {
+      "sha256": "e1ea82cce6910ceeaed439e9c5a707b2ad8a362dd0aed7c5ee207fa35a2981ae",
+      "size": 6063
+    },
+    "eol/jira-software.json": {
+      "sha256": "8290b68fbf1e6386ffdf0c66129af1cd4bb9eff8e21b0236e4354c50ffc07e03",
+      "size": 8906
+    },
+    "eol/joomla.json": {
+      "sha256": "0dd81556a97d0a55a95b091217a1ff462162d9423c8e16fb09ae131ea5b7c6e0",
+      "size": 455
+    },
+    "eol/jquery-ui.json": {
+      "sha256": "4408f793d41c5ec9e1256a7dfe9b81e817518a664a683e814098bfc788435bba",
+      "size": 689
+    },
+    "eol/jquery.json": {
+      "sha256": "76f52e74f89cc6ba864cc1d430e32b581eafa800173e73ad430b25a89019cfe7",
+      "size": 520
+    },
+    "eol/jreleaser.json": {
+      "sha256": "93f817d06448f96fce0e0d51f48677be7d1d5ec58576444bfaba6955482ccd78",
+      "size": 214
+    },
+    "eol/jruby.json": {
+      "sha256": "1243ead6c976c23dc5c3f6ac24b99c989ca08f536aeba0b49323286775cbb9b5",
+      "size": 593
+    },
+    "eol/julia.json": {
+      "sha256": "065b582acfa14c475b1589a42dab6cc429c480fbb5428526e94cbb44ba355c12",
+      "size": 509
+    },
+    "eol/karpenter.json": {
+      "sha256": "73b26dd086132c3d7eabfeaecc3c5f27212fbc8724a4216444af837319d34544",
+      "size": 1378
+    },
+    "eol/kde-plasma.json": {
+      "sha256": "583a11e30640b592a930cb54ae0e1dcb4c02ec7bd5dc76ee9f4fcbada0eefa3a",
+      "size": 1719
+    },
+    "eol/keda.json": {
+      "sha256": "260cb2c9096cdb9a46a797548270209b88bd41b0e33c1381e2d5bff483a29ced",
+      "size": 1971
+    },
+    "eol/keycloak.json": {
+      "sha256": "8ad791ae7762f768d0fade99248c16ccbaecaa7e49ea0631427ee351adda954f",
+      "size": 2432
+    },
+    "eol/kiali.json": {
+      "sha256": "a6039451676ba8d311bc516e488012d4b30d530a7f42ad5f9581d8969b53fd4f",
+      "size": 2935
+    },
+    "eol/kibana.json": {
+      "sha256": "417e55d756f446ea474d22dca683a28afd8b4fd22f62eb3f6e54810b4852f888",
+      "size": 1195
+    },
+    "eol/kindle.json": {
+      "sha256": "136504a3bd4b77a19917ca17b838f5b6f311e1a8bba9d6c95e7a25ca60dff8dc",
+      "size": 2493
+    },
+    "eol/kirby.json": {
+      "sha256": "32ce1eedcc4068356e31a4cd38f76fe884eda46b909a5994c5add276d490c8a1",
+      "size": 1799
+    },
+    "eol/knative.json": {
+      "sha256": "0a5580939161b36618024c86b560f13bf1f7560de0a4b4c312a562b9c010ee2d",
+      "size": 3299
+    },
+    "eol/kong-gateway.json": {
+      "sha256": "a7d4840fd225c319e08443f6dc21249fdeeb6106ba30215e5091033eae5a6274",
+      "size": 1342
+    },
+    "eol/kotlin.json": {
+      "sha256": "05a7f510128c536d01cc495c4274c44ef92895e5b40be8403fca86395e24b4c5",
+      "size": 1028
+    },
+    "eol/kubernetes-csi-node-driver-registrar.json": {
+      "sha256": "f1803bedd055189258d0fabd9ecd96d499698799a3bd1f479aa21f72af92545c",
+      "size": 1725
+    },
+    "eol/kubernetes-node-feature-discovery.json": {
+      "sha256": "6a240ebc322a356da0be9d8349e0a82492324f5fb45be4c571ac2eb19493bc71",
+      "size": 685
+    },
+    "eol/kubernetes.json": {
+      "sha256": "bed23459603f6ffae8ac4626bb400e0f68e023e8770ee67ca6f9550109ca4363",
+      "size": 2541
+    },
+    "eol/kuma.json": {
+      "sha256": "1830daa853938d25fe0a7e3b692dfccf2481f81d8a1b860a74db0534bb6800f0",
+      "size": 1986
+    },
+    "eol/kyverno.json": {
+      "sha256": "f52c41cf9a1478b79d2a2fedefbf4af8fa35914b88dc134d8607125d6e0f48e4",
+      "size": 1024
+    },
+    "eol/laravel.json": {
+      "sha256": "1bbf33c6a3f1d8d2a399428ac36c771e50558efcf825a72453530e0530d84181",
+      "size": 1141
+    },
+    "eol/ldap-account-manager.json": {
+      "sha256": "e03e7f5f72bf6c42331d788cd8a5e064ca3f910f9cb75cb67c11fa054697dc66",
+      "size": 1114
+    },
+    "eol/libreoffice.json": {
+      "sha256": "2fb4de7462ca5477d90ca4179c999d1af3bffe5678ac16167bb4379fc391cae3",
+      "size": 869
+    },
+    "eol/lineageos.json": {
+      "sha256": "3b599a2807a75be7baf6c37bf54d62b6db24e8a426339cdf61b3d25be7c2dfa2",
+      "size": 1194
+    },
+    "eol/linux.json": {
+      "sha256": "67facfcca14a729584e3dfdc49f281cfa706a16262a5d3997416f6a104289b75",
+      "size": 3279
+    },
+    "eol/linuxmint.json": {
+      "sha256": "2b5d53fa1a97786245b9c68db3ef96a30db1e05cdefee917023f7e1b614c0028",
+      "size": 1906
+    },
+    "eol/liquibase-secure.json": {
+      "sha256": "e87bc61c2b978dc5241004111298aefb5ce9bd70e8d534bf37bed8b47452e2f7",
+      "size": 1035
+    },
+    "eol/liquibase.json": {
+      "sha256": "5f8cb7599efa241bb36353fdfcab6e58341c48c112ea5c64180d8f8f0814870c",
+      "size": 164
+    },
+    "eol/log4j.json": {
+      "sha256": "74c2a59aa43c8e30f249c7b9f55c6eb8f878e9d3200071f3ed0d66a4234e43ae",
+      "size": 337
+    },
+    "eol/logstash.json": {
+      "sha256": "191fcdc85f4a921d5fd72c953d862d5cfcbe55465d60286897f336a1d84ed9a7",
+      "size": 934
+    },
+    "eol/longhorn.json": {
+      "sha256": "29b556129eca43b63cf94d57c120817285fd37807de32030ec359b2d8cb1aa55",
+      "size": 1125
+    },
+    "eol/looker.json": {
+      "sha256": "1a2c39b12fcc2a543f2cec2fbbb71e3a916781c19c34dcde1e761334328ddf3c",
+      "size": 5931
+    },
+    "eol/lua.json": {
+      "sha256": "38e2cba4a109263fe2df2a5b2337cd6f91e33c2d0dd413936dbd2aa130149207",
+      "size": 1286
+    },
+    "eol/macos.json": {
+      "sha256": "b268d4f401f45cf9207b83e48910eef4bd168f55cd7ce2421e9e130a76ce88f3",
+      "size": 1975
+    },
+    "eol/mageia.json": {
+      "sha256": "2590b650032922d80b0fbe42ecccaba305212256d6f584db4a6c97ae3dbe02fd",
+      "size": 844
+    },
+    "eol/magento.json": {
+      "sha256": "cd407438c047af9473fbe8e1602ab3d57475d4a5b2e3047337cea0c82766ebb6",
+      "size": 3485
+    },
+    "eol/mandrel.json": {
+      "sha256": "34ac99167c025c1691faa2986df508a72a1fc5d12f339c047b7af0f8bf511d6e",
+      "size": 1468
+    },
+    "eol/mariadb.json": {
+      "sha256": "c59246e0ffcf0116f90ab6183d0931c7522c7961af903c6e713498dfb8bfb2e4",
+      "size": 3609
+    },
+    "eol/mastodon.json": {
+      "sha256": "23c2eb8c6e480108bfc3bbdc8c8a766ea9705ddb2b62494bbe2cf79b496e99e4",
+      "size": 1321
+    },
+    "eol/matomo.json": {
+      "sha256": "f5009350a9e34eb803546236f536d118208b1a7325025c16d478a97cdcc2d00b",
+      "size": 553
+    },
+    "eol/mattermost.json": {
+      "sha256": "6ed598f0abee59e75d23f00fd3f07b58a8291dd01f7356898fe4f50dd77a0de0",
+      "size": 5025
+    },
+    "eol/mautic.json": {
+      "sha256": "7c42305d40b891f1047ca7ba7998c5911b59e26f45bab729656a271de8bbd1ab",
+      "size": 2621
+    },
+    "eol/mediawiki.json": {
+      "sha256": "1254b56c4ccc3e666d9ad9569c5404d725423ee68bcbaaa169fe2584113369b1",
+      "size": 1395
+    },
+    "eol/meilisearch.json": {
+      "sha256": "a65830a3f2100bbce280ea118c163e3619fe05e9c77bd2e70b9ef85a302ae62d",
+      "size": 4858
+    },
+    "eol/memcached.json": {
+      "sha256": "c7541e50b8a5bd66172bd77581f9c11c660aab60918f7b899b06f5df9bbedc50",
+      "size": 254
+    },
+    "eol/metabase.json": {
+      "sha256": "87096d678fb21b3724d79b4eb06abda295cb5c8dc43191fb6905976c9dde201c",
+      "size": 4514
+    },
+    "eol/metallb.json": {
+      "sha256": "6e9803178a8a46317fc7d88d926736fea38f7e4a41156a008a492f6b267e34a9",
+      "size": 344
+    },
+    "eol/micronaut.json": {
+      "sha256": "8a5d80a472f98e586a8f2ab25aa09ac4913edf66419bdd4c543144a58ba6e154",
+      "size": 539
+    },
+    "eol/microsoft-build-of-openjdk.json": {
+      "sha256": "35ea046eb51c8adae5f2abb8013de6f95362cbf3b14300a117aaa75eb8533c8e",
+      "size": 343
+    },
+    "eol/mongodb.json": {
+      "sha256": "b99a285b004fbdda580761ceea08b6d85705b1c7a9e4fdcdc5c1454b621289e1",
+      "size": 2841
+    },
+    "eol/moodle.json": {
+      "sha256": "273769c84d60afce03f92577d6d959b7b1fd5d8c91adc0f50cd3a7e9b3d5c776",
+      "size": 1615
+    },
+    "eol/motorola-mobility.json": {
+      "sha256": "c5984699c7ab2d502b25f952d476309860f2bdcb6dad4da212421943a2a7e982",
+      "size": 15204
+    },
+    "eol/msexchange.json": {
+      "sha256": "6bbe41a2b70267c5a684c29976a244e2e53b1c43ec8eb9a3512bd33fa632f2e5",
+      "size": 1598
+    },
+    "eol/mssqlserver.json": {
+      "sha256": "8d0be7691cad498d4023eac32cbf9cd65301be45bf139202e1f4d15ae7e08436",
+      "size": 5415
+    },
+    "eol/mulesoft-runtime.json": {
+      "sha256": "0d4d92093d1f6b16acec41ff2f47f270d3481bd9c5491caf066f6c9788c9817f",
+      "size": 1854
+    },
+    "eol/mxlinux.json": {
+      "sha256": "9ee4c7dce76dd980c5a928c23de2e307b30a6af07d00b2682d963dfca2ce07d9",
+      "size": 1029
+    },
+    "eol/mysql.json": {
+      "sha256": "c4504ac5dc74dd9c19b848137ea111f37849e9205cba46a31b253c7bb2acab0b",
+      "size": 1944
+    },
+    "eol/neo4j.json": {
+      "sha256": "69bc645e6700380c0203169253f0e5a560f645163d59495fc7dd29932d4de552",
+      "size": 6289
+    },
+    "eol/neos.json": {
+      "sha256": "d546aec934dbed8e1c9eb5d967cfd25abf50479746102241446cd36097a0506c",
+      "size": 1038
+    },
+    "eol/netapp-ontap.json": {
+      "sha256": "47494780d4105a709083755bc949479db17209391d93e0466917d70c1d0c7e6b",
+      "size": 1755
+    },
+    "eol/netbackup-appliance-os.json": {
+      "sha256": "3fdcd3bb8f086a8d774bd8b6ff0e8e94c3e7cc9a0109bd24cee50a008e523026",
+      "size": 1014
+    },
+    "eol/netbsd.json": {
+      "sha256": "0f02c6bdb191f3c68ea54e2d0dd6385ba19ab3346410bf89b9648f4582cb1862",
+      "size": 1218
+    },
+    "eol/nextcloud.json": {
+      "sha256": "e594929e203f7e44775cec1e0ebe7af794502ae568854f0680f654ba42dee467",
+      "size": 2297
+    },
+    "eol/nextjs.json": {
+      "sha256": "ecb127ea46bba80c4c6f7021db75362c94a37042655c2ae2ce541a53525dd006",
+      "size": 675
+    },
+    "eol/nexus.json": {
+      "sha256": "40a1b313836522b85c6edf78eb3b4e960d4db29327405cd345b8310c5d603993",
+      "size": 8050
+    },
+    "eol/nginx.json": {
+      "sha256": "84fa140b3738839cf86823998ac929b4851f7b426d54b83d0153bd6fa3aced71",
+      "size": 2763
+    },
+    "eol/nix.json": {
+      "sha256": "3027579a3789911785c62fb739d3f3ed49e945dcc789b50c11cce76290d91b9c",
+      "size": 3202
+    },
+    "eol/nixos.json": {
+      "sha256": "06d445a7594eb6d27669ba2f6d0f6a179d9a0db3590d31ee4eebb88012d67378",
+      "size": 2203
+    },
+    "eol/nodejs.json": {
+      "sha256": "d84c3c40575f59150c0429746eb11770ea2e2e63fc768d361b50192be377b409",
+      "size": 3687
+    },
+    "eol/nokia.json": {
+      "sha256": "3d52f303f2b85ad6783b9a8b75a21cc9517587ac05b80f70a54d4c3397f65ba1",
+      "size": 5760
+    },
+    "eol/nomad.json": {
+      "sha256": "73e814c621e2e46491d126b00afbff028b414ff2c236f67b9fa259661e209f22",
+      "size": 1210
+    },
+    "eol/notepad-plus-plus.json": {
+      "sha256": "48f0806f911a19b8def3db48f54032409fe9b828c36e8888cb6fb7e7f60416c6",
+      "size": 856
+    },
+    "eol/numpy.json": {
+      "sha256": "d3e5344c92a359040663fe9fdbc03122781d1dcef73f22791b6f672bf0b76c9c",
+      "size": 1650
+    },
+    "eol/nura.json": {
+      "sha256": "cd2d1e675a9e8e79e539a9b2f3a7f7e8e80b3326c86b8104f92ca0faa2f0fbb8",
+      "size": 91
+    },
+    "eol/nutanix-aos.json": {
+      "sha256": "8cc89356e42c8885cf5f5b391b4ca4eef87b2ac263c839589738c9bb8db8929d",
+      "size": 2657
+    },
+    "eol/nutanix-files.json": {
+      "sha256": "8ebe19ea9867328eace11aaef8ee045cee7e24243056bd67ea72928f27fe29e9",
+      "size": 1598
+    },
+    "eol/nutanix-prism.json": {
+      "sha256": "d302ed09e6eb248106ff01b54048dfbe4edde2679d9cf4f4cd31ee1a46c1f16d",
+      "size": 3242
+    },
+    "eol/nuxt.json": {
+      "sha256": "db0d7e58fe267b0119b174cab3b739e16cf21d2c41e9b9786f926259ddb19130",
+      "size": 559
+    },
+    "eol/nvidia-gpu.json": {
+      "sha256": "6a50d22aaca196ef2161ee13874784f42bfc66d04905d7536f1f8ff2280f3993",
+      "size": 4539
+    },
+    "eol/nvidia.json": {
+      "sha256": "f3274a2980ba6d291e0e3122a0036d376a134c55b161487998252bebe7fe1c9d",
+      "size": 5777
+    },
+    "eol/nvm.json": {
+      "sha256": "a1f737a75a1e176fd2ad309f1efa08f62e61534fd577f238772b759097cf8859",
+      "size": 3467
+    },
+    "eol/office.json": {
+      "sha256": "66f67d12dfca5e6c24725c5299cf7217e45f799da7b7130de64f0555048a8ca2",
+      "size": 1184
+    },
+    "eol/oneplus.json": {
+      "sha256": "9f8df28c017bcf1e56ed87f0d04d60fedc6ae4f1009f988cc83a14ebaae00832",
+      "size": 1382
+    },
+    "eol/oniguruma.json": {
+      "sha256": "543f5259e7572e1a020053ac2cdaa5584bafce990edfc03ca9da350c691e91e0",
+      "size": 171
+    },
+    "eol/openai-api-models.json": {
+      "sha256": "e2c8bc681b27f28884df3c39d175e5dc1dedd4e0c8d135759792d3f8df236133",
+      "size": 10857
+    },
+    "eol/openbao.json": {
+      "sha256": "186f2a5828d8e4e02104bfb3cf951830535899e6b3b34a4490e5338a4937e36f",
+      "size": 684
+    },
+    "eol/openbsd.json": {
+      "sha256": "d37a86f7d3eb2d08a1dd156d083eb82a2150af6ba10c6cada5a80fb288bb5e30",
+      "size": 5163
+    },
+    "eol/openjdk-builds-from-oracle.json": {
+      "sha256": "c9988022b3b8fc84ba7be01926c5faf33ba1c77ddb417add087f1cac8c6e2dcd",
+      "size": 1617
+    },
+    "eol/opensearch.json": {
+      "sha256": "35efae4f702592363ecdb920d559f913870a518287a9ffeee2dc25d60101afe9",
+      "size": 320
+    },
+    "eol/openssl.json": {
+      "sha256": "5c8e9355fd2d4e9ea2d1546ba8c150accd569c9a220bfddc2096c78bb573ad89",
+      "size": 1636
+    },
+    "eol/opensuse.json": {
+      "sha256": "424bc16ad8bc1d27ab7539ac1e3c9a71d8fb195d68e034bca7ea22e78752c747",
+      "size": 1830
+    },
+    "eol/opentofu.json": {
+      "sha256": "1a11d56b054ecde020e232f794a74a4bed62b9822611f3153584b172f4bfb9fb",
+      "size": 695
+    },
+    "eol/openvpn.json": {
+      "sha256": "b2fac0734f6405dd370e5479fa19d6dc8727541dd90fa1917132585f53e3cf21",
+      "size": 793
+    },
+    "eol/openwrt.json": {
+      "sha256": "49c64b6ca9e60565f1694956f5a0ca7e6bf3bb8086bb26d0418ed3c0fec4c035",
+      "size": 924
+    },
+    "eol/openzfs.json": {
+      "sha256": "cfbe16b79acd0fda1e580038b2e01b4d8a06b67c067e3209565a13055dae30d7",
+      "size": 664
+    },
+    "eol/opnsense.json": {
+      "sha256": "ea43e85f52b21c6c493e88b84d4b01d295bc01aff90dc85db171df7b568520a3",
+      "size": 2084
+    },
+    "eol/oracle-apex.json": {
+      "sha256": "d966fc7e2c57908e8a7bb2850113379e68206e0c96fd4ddce44f9c95d42818e8",
+      "size": 1394
+    },
+    "eol/oracle-database.json": {
+      "sha256": "40f96c0530084aa87ae4f97f4f4c3ce90568071e0c841932c648298777f52ff4",
+      "size": 1445
+    },
+    "eol/oracle-graalvm.json": {
+      "sha256": "f4805f35aaca1d60264a7009be0cf7e14bbbbb0430f42618fa04d18f6e5874cf",
+      "size": 829
+    },
+    "eol/oracle-jdk.json": {
+      "sha256": "3d03a97324e8e0a324bba8f61dad053001ddfd6ecda6bdb4a3f152ec9d2df758",
+      "size": 3265
+    },
+    "eol/oracle-linux.json": {
+      "sha256": "d814c2d9680dabb57a51ade97a02d1ef301d2bde3da7abcf792e3cfc85de95c1",
+      "size": 609
+    },
+    "eol/oracle-solaris.json": {
+      "sha256": "83d1d571eb8cee23218cad901f03d3fca2d93d070304de5054dea754a6aa20eb",
+      "size": 940
+    },
+    "eol/otobo.json": {
+      "sha256": "6ec5a3545e0933d649999d0d3fb4799be454bc1c44b78c548d0287960a1ca18b",
+      "size": 250
+    },
+    "eol/ovirt.json": {
+      "sha256": "fb342af70fb2fc53abf1492f41ffa7a169e38f023c1d02d351827acd559425c3",
+      "size": 598
+    },
+    "eol/pangp.json": {
+      "sha256": "d8b000baff7c5c667331e7e13bd7bf3c5cdd143461acd38fc064fd359844ef57",
+      "size": 1383
+    },
+    "eol/panos.json": {
+      "sha256": "6e2cf94e0f5cd9b540cc9539562e196d4379ca2fbcbec1955ff0f672f3cec73a",
+      "size": 2251
+    },
+    "eol/pci-dss.json": {
+      "sha256": "8450c587f5fb4952330dae323fd94544f7119e8f10ecb2b0014c4063dd2a11fb",
+      "size": 430
+    },
+    "eol/perl.json": {
+      "sha256": "f746236de5dc09acf6ecaa4ebc77ff4afd11179dd7d8ca1e506fc61ca4d3ad4d",
+      "size": 1147
+    },
+    "eol/pgadmin.json": {
+      "sha256": "06482564c967f65c341fe6cdf9d244809104bc0125bcc485c44ecabb5ab2b7e7",
+      "size": 752
+    },
+    "eol/phoenix-framework.json": {
+      "sha256": "494213593eda0a3d71fd07e5933a5be40e85dfcd82c08c94df77a46f8eb7f623",
+      "size": 1002
+    },
+    "eol/photon.json": {
+      "sha256": "b6e31237e5929481b5fd12a547936184fdbdf4543de3d602dd4cfdae8b4c85e1",
+      "size": 426
+    },
+    "eol/php.json": {
+      "sha256": "db7ed0c165f5bd1951616120135bdbbabe762fee4a14d1d2e130bcdd30d1bb4d",
+      "size": 2073
+    },
+    "eol/phpbb.json": {
+      "sha256": "82b5e41d1f752b6974dfed0962944bbbf935414df976c3924734476885b92b6c",
+      "size": 448
+    },
+    "eol/phpmyadmin.json": {
+      "sha256": "c4637bf55f20e356d49aa38a06b8007d85333d3b1111390d1eed13ba0cdee25d",
+      "size": 1476
+    },
+    "eol/pigeonhole.json": {
+      "sha256": "15891ea478a81a7aebb5692b253e2c1bc3d99d73d83fd046286653f6abae8513",
+      "size": 505
+    },
+    "eol/pixel-watch.json": {
+      "sha256": "ed78401b68d54e6189cb1baa95e9609e44d11de9fe3cc9ded2cd5bab898bc4c0",
+      "size": 568
+    },
+    "eol/pixel.json": {
+      "sha256": "fc90541bf8c66052ec418934659adc4c031891e2dadd0d27408590ddd4d9ba99",
+      "size": 4504
+    },
+    "eol/plesk.json": {
+      "sha256": "985f2dbd3d1986c7e14f88f7fce0cc5f85b2e05b9e38fb1bd26e1970243e03ad",
+      "size": 3058
+    },
+    "eol/plone.json": {
+      "sha256": "e6f897cbbc20fe44b389b99a691d5ab2695a22f1ff5d5452d332dd8ebcf2b3a4",
+      "size": 800
+    },
+    "eol/pnpm.json": {
+      "sha256": "449c2d2b31f5e98613ca4924bdf31f6b3f2d9b496047cda6f1e4df7323f9dd69",
+      "size": 755
+    },
+    "eol/podman.json": {
+      "sha256": "2d4574e7008ee9c18ceb87c4c5aebaacac3923c732f0b33ebe94b7f0bc8c1e90",
+      "size": 2232
+    },
+    "eol/pop-os.json": {
+      "sha256": "2251e62b9d537909a80236b77fdd23f37a73ca602eef3e8339f6cdc2a83206c6",
+      "size": 971
+    },
+    "eol/postfix.json": {
+      "sha256": "286529b68435f683713e4a4c7f9568e80768e600be2209211d63ec0e542bd745",
+      "size": 1527
+    },
+    "eol/postgresql.json": {
+      "sha256": "d0bd2d47a172709292a2787536940e474c5a6d5de5fd0e6812e2ce8fe7dbbd3b",
+      "size": 2488
+    },
+    "eol/postmarketos.json": {
+      "sha256": "3edf1e0aba8078b02e63c0984c3f13d4cbac5be2c28dd6c40570b7214cd243ea",
+      "size": 1147
+    },
+    "eol/powershell.json": {
+      "sha256": "abf72e82a3ac767b628bb458d1851d9b92182d35c294775d0fef75fd646c02ac",
+      "size": 863
+    },
+    "eol/privatebin.json": {
+      "sha256": "c442627b9eb4a57603a79e958ad489258785c4889226f6e046566d052954f8d1",
+      "size": 770
+    },
+    "eol/proftpd.json": {
+      "sha256": "dd1152c0622f0c3521837ba857fc081f67d7b6f0ab6f726abf2415e31c0d9cb0",
+      "size": 566
+    },
+    "eol/prometheus.json": {
+      "sha256": "6f6cdaa03d988d2120aa1068a30c434980a3d27e6ce95e93852cbe6794315ea2",
+      "size": 3125
+    },
+    "eol/protractor.json": {
+      "sha256": "9a1eeee3c0edf31acd58bd811917cf8c49b1fbbdc890dd83840418f7fc1acce5",
+      "size": 1017
+    },
+    "eol/proxmox-backup-server.json": {
+      "sha256": "123b0cc502d0dbbbb761df695fd19b03ef0903c0a14e4b28e4ed966f931786d3",
+      "size": 332
+    },
+    "eol/proxmox-datacenter-manager.json": {
+      "sha256": "b239db7bae3333ccfe2756e0495fc48ace91fef444460113e53cb970827e6428",
+      "size": 164
+    },
+    "eol/proxmox-mail-gateway.json": {
+      "sha256": "0271aba80d34e16b831f7b72ff1ae67976870093934533c927a08efc9c7feff9",
+      "size": 500
+    },
+    "eol/proxmox-ve.json": {
+      "sha256": "b24c009e1f498baea242c7118e68e17efdf8f783ae1de6bc5f6125527f27ebfe",
+      "size": 752
+    },
+    "eol/puppet.json": {
+      "sha256": "86a134cf700261d2690b44f24a16fea77f3f66b52d2a844b7847e8291bcadac4",
+      "size": 500
+    },
+    "eol/python.json": {
+      "sha256": "da7e0572f225d856852565e6101c326e2c4bda89924c0fdf10d621587e953899",
+      "size": 2023
+    },
+    "eol/qt.json": {
+      "sha256": "613a272068a35038a29fb24742e10cfdbe7de97729420030b67ef56877878637",
+      "size": 2428
+    },
+    "eol/quarkus-framework.json": {
+      "sha256": "1b5c9385f4b0c029be79a6e0ea5db3a7671e0bf6f666e1d6ac5a81a5503b0c56",
+      "size": 7051
+    },
+    "eol/quasar.json": {
+      "sha256": "b904f5571ff8d7224669cba1adc127b83c3b43b6d8a802c0485e29de7c71fecd",
+      "size": 214
+    },
+    "eol/rabbitmq.json": {
+      "sha256": "445a34ee782233f8a976ac1d9f26370c0b5b72268c69bb09d6b9f3f3fe08199a",
+      "size": 2206
+    },
+    "eol/rails.json": {
+      "sha256": "9e83586f455e320cea0c4f7720e60875185f1cdcaefafea8c6de5cd35c97d034",
+      "size": 1268
+    },
+    "eol/rancher.json": {
+      "sha256": "c0c0037157370128c2fc1ed4481327d6ad592123f7c618ebb8e2c1b63e5433b7",
+      "size": 1964
+    },
+    "eol/raspberry-pi.json": {
+      "sha256": "2ac5db0a61cf3caa62293c5c0557392ee5f4b49fef7ff8d50895c342c33494fc",
+      "size": 2083
+    },
+    "eol/react-native.json": {
+      "sha256": "471e64959d0b9383c69a6620f275416d96ba9160d68e295c9ea448503a83b070",
+      "size": 3214
+    },
+    "eol/react.json": {
+      "sha256": "59d7d0de011c5f2afe8d8f1aba6409212755baa7279ca824b7070d9c0e960921",
+      "size": 530
+    },
+    "eol/red-hat-ansible-automation-platform.json": {
+      "sha256": "955e5b34eff97578050737a03717d7f2861b3dc04f522c9f59166f9976ca3d6e",
+      "size": 611
+    },
+    "eol/red-hat-openshift.json": {
+      "sha256": "25460d75f0c49528239a2dee774d83fa5fee8d3c6757c271722040d9124dc382",
+      "size": 3241
+    },
+    "eol/redhat-build-of-openjdk.json": {
+      "sha256": "447db16d1de54a43d43feb62470827ba740c72162e7ceb4aedbb6ae5fb88e616",
+      "size": 595
+    },
+    "eol/redhat-jboss-eap.json": {
+      "sha256": "fee121feee845039536aa78e84cb7ac4af3d967432711af9c7a77478ee2c50e9",
+      "size": 907
+    },
+    "eol/redhat-satellite.json": {
+      "sha256": "c3b3abfe655a300d5b24757514e74aecc05f89cbee39b4f7d089e0751db2b95e",
+      "size": 2313
+    },
+    "eol/redis.json": {
+      "sha256": "2d4439693fc66704c90229c1519e7b185bfa69901380316b0d7f04f7a3916d90",
+      "size": 1348
+    },
+    "eol/redmine.json": {
+      "sha256": "c900e6d448c719c4b6e670f220b1e3cb971a3bdc8703c94b07999e9871f5a732",
+      "size": 842
+    },
+    "eol/renovate.json": {
+      "sha256": "327e66f7a861d3141706a5ae3bb1660c54cf32fa670e79f1109c1fe958d23f0c",
+      "size": 421
+    },
+    "eol/rhel.json": {
+      "sha256": "e767ac97397c3d030f66be78b722820cc41994ffc8e673e7382a128fdc870945",
+      "size": 1054
+    },
+    "eol/robo.json": {
+      "sha256": "df2936d24c390710654e16a3c0e69c98aa5ce598c340f7c66748c30cd498c974",
+      "size": 493
+    },
+    "eol/rocket-chat.json": {
+      "sha256": "2344875518dea90d57368e9871c6972edda2796c61a6c86206a6025a403b8eac",
+      "size": 9220
+    },
+    "eol/rocky-linux.json": {
+      "sha256": "24c039c83793f5809265f3644d2dd1ca680402bab733acc86d51b066a1d4ebb3",
+      "size": 343
+    },
+    "eol/ros-2.json": {
+      "sha256": "808ccceb9a29ca5152464b986add290ad17b3d529dd52534669f9f0766981904",
+      "size": 1073
+    },
+    "eol/ros.json": {
+      "sha256": "1ee78e318e4657634e792fce95c5a6c3652b4d77e953f3fbafcfd47f02f7a29a",
+      "size": 360
+    },
+    "eol/roundcube.json": {
+      "sha256": "3eec99a990fbba505963bc065d9b3a46ac5db20641398f5445c43ceed6a28dda",
+      "size": 850
+    },
+    "eol/routeros.json": {
+      "sha256": "7d90fb2e86859086388b45c4441f1de213ce7fe5a4f32981f69853fef67b63c6",
+      "size": 7429
+    },
+    "eol/rtpengine.json": {
+      "sha256": "62e9c830691e627e0e7832310be06688782bb421aadf3b6469430a3bc670abb6",
+      "size": 2263
+    },
+    "eol/ruby.json": {
+      "sha256": "2f3888fa06b01243e560b460e252a7d8c61c3417ffa0fa904ea31c5c9f327d69",
+      "size": 1297
+    },
+    "eol/rust.json": {
+      "sha256": "576c474fce5462fb0169911991bc476cade2816cd985ed78d59338f4a0268d8e",
+      "size": 6173
+    },
+    "eol/salt.json": {
+      "sha256": "a246ac7502f1c3c3d7c2eb70954e6bec0eef71e63996c4452c9c4f8da21ce7e2",
+      "size": 1873
+    },
+    "eol/samba.json": {
+      "sha256": "6adb07372a779112a2dd58cff0a50c60c302c72a6035c28d836ce1e8850b80f2",
+      "size": 3699
+    },
+    "eol/samsung-galaxy-tab.json": {
+      "sha256": "88c9ab7647a27656ef97384cd3523b3d8674e0579062834f1f738c2846fd796f",
+      "size": 10013
+    },
+    "eol/samsung-galaxy-watch.json": {
+      "sha256": "0edf2143f6f058fc5be844c01f787333eeeb875c9d1ba049f6c1349b6ca17181",
+      "size": 1982
+    },
+    "eol/samsung-mobile.json": {
+      "sha256": "50470603c379cb40070eac8241bf2a7ade68cad81ff32abee9e1ec08a683ff52",
+      "size": 51748
+    },
+    "eol/sapmachine.json": {
+      "sha256": "ec5755c2060915030923f8ffaed4003e6d491f40db85834a8bc3650f4bf061f4",
+      "size": 1533
+    },
+    "eol/scala.json": {
+      "sha256": "037471425c5b45b4017a64ee37d648998a9933e09f8bde7d2771c5e1ac47700a",
+      "size": 1652
+    },
+    "eol/sharepoint.json": {
+      "sha256": "41a72117d3683736ef3a5659e34167a7c24362fc33ee871d1f865237639cf70e",
+      "size": 692
+    },
+    "eol/shopware.json": {
+      "sha256": "5ca21670922c59ce6f75f89b882bc9ada18028b05309cdd6b80fc126dc22c1c3",
+      "size": 1633
+    },
+    "eol/silverstripe.json": {
+      "sha256": "dbdead458b11c2c8b26839566441d563f48d8867deaa0be0a94c0a6290606dd2",
+      "size": 1919
+    },
+    "eol/slackware.json": {
+      "sha256": "1b369fa1ba84351c4fc945b73953e36ee4d5748f30d21622b4bb395af84abcda",
+      "size": 1559
+    },
+    "eol/sles.json": {
+      "sha256": "8ea5ab50d6c184beea70b154589ebc61712d6909aceaa97479a821d7e70fe244",
+      "size": 3103
+    },
+    "eol/sns-firmware.json": {
+      "sha256": "9e6c16088bb81528eb4117d95d7ba61bc3b0a2ec1be7bb8202adf9ed7c68c9e1",
+      "size": 1708
+    },
+    "eol/sns-hardware.json": {
+      "sha256": "7f724d825123e40d2fe02f9837d0b2515a5602d650845c7d87deff353566751b",
+      "size": 3999
+    },
+    "eol/sns-smc.json": {
+      "sha256": "87eb87a4632b8d6ac499f95816bdbf8819d52e3dc60a51a9f5c539c41d969d6c",
+      "size": 1364
+    },
+    "eol/solr.json": {
+      "sha256": "5b7b4bbf1e4ea74f431dff96c6c1fcf90dd5129203a61318149d6b53a45f9ff3",
+      "size": 722
+    },
+    "eol/sonarqube-community.json": {
+      "sha256": "127fee4d197c95876b67bab761fbe00b75a7aacff040a0e7f9f7ff771fad66be",
+      "size": 1374
+    },
+    "eol/sonarqube-server.json": {
+      "sha256": "2e0c6eaec2133ee83145508cb690c452431ef20aa84756fe748e74bbc14cb526",
+      "size": 1754
+    },
+    "eol/sony-xperia.json": {
+      "sha256": "164ed14ef5e74eb01ba97d43717692a16d9908e0e2cc8f7701b15a2d2dda4c00",
+      "size": 2090
+    },
+    "eol/sourcegraph.json": {
+      "sha256": "dc3fbff73b0f5871818c0b25b018363d6673bcac64e349b78b36459dec2760f9",
+      "size": 416
+    },
+    "eol/splunk.json": {
+      "sha256": "abdf752088c6f0807eef9bd5e63719553d66b2bec7bb1259d72b9d6594a6a276",
+      "size": 1296
+    },
+    "eol/spring-boot.json": {
+      "sha256": "58fe8161267c6d7988ad33dac364b5134a29fcb96f1c078f9697910ba97aa23b",
+      "size": 2094
+    },
+    "eol/spring-cloud.json": {
+      "sha256": "59772b47560b341449a1a956bb71ee4f0afa87c6cc2d50250638c3ab4a4d1ac2",
+      "size": 885
+    },
+    "eol/spring-framework.json": {
+      "sha256": "c190f37c3f31903fe4b51c222c0d9ea530f0a58d2ee06cd65d6b160d988e679f",
+      "size": 1212
+    },
+    "eol/spring-security.json": {
+      "sha256": "b7e1717886ada412798a9323bec0dcf41671ac77e969c9ac82dec8ddc8d05643",
+      "size": 2217
+    },
+    "eol/sqlite.json": {
+      "sha256": "5438bdf9174aeef214cc66d22fa4904c20a750c304bc59b40d4a8f8c6573d9b5",
+      "size": 248
+    },
+    "eol/squid.json": {
+      "sha256": "2dda9502220e8027a6a43b71f289f5f1a60cb87256fb46d0206586c0c0b9120f",
+      "size": 1192
+    },
+    "eol/statamic.json": {
+      "sha256": "9faa0d86109de5e955a660ac6600bdd8214b307fa88cfd214afbe6e81b5e0133",
+      "size": 572
+    },
+    "eol/steamos.json": {
+      "sha256": "8344be35d6de1d421f20d153f2d811d8587e2345b323c369c86759394ab93b34",
+      "size": 248
+    },
+    "eol/strapi.json": {
+      "sha256": "9e5fe5480c26e88600b73df231d4ef940defa58e957cd923a9fa7dfdf96f7a4c",
+      "size": 327
+    },
+    "eol/surface.json": {
+      "sha256": "8a3f7cb1f85c80aa341f24b5ed6dbe44e94541364f36b3af27003fba98cbe22f",
+      "size": 5862
+    },
+    "eol/suse-linux-micro.json": {
+      "sha256": "6226777d64e511d898dc9ff828abda313596585263fc5086846da03bdf060dbc",
+      "size": 777
+    },
+    "eol/suse-manager.json": {
+      "sha256": "6ed8ae892514f6d257f323a911785fe8dfcf110ae594f2690e7a5748e8461a72",
+      "size": 1402
+    },
+    "eol/svelte.json": {
+      "sha256": "3c9c969eff803b5901a12b934f3bff73530255623e31008682e6d00caaf3fafd",
+      "size": 703
+    },
+    "eol/sylius.json": {
+      "sha256": "2a75524946ea6a2674ea0dd5dc4022d6c1598a3b3001d73a381fb7683fc9529f",
+      "size": 1258
+    },
+    "eol/symfony.json": {
+      "sha256": "47f62f045e8e89f588b09309e6dc8e7884d9015d6cc31af2f057201943736220",
+      "size": 3453
+    },
+    "eol/tails.json": {
+      "sha256": "64b0dcf48350284b60fc5d96b9e1864178ef1b6c743b453d5ee27dfb0870cde1",
+      "size": 584
+    },
+    "eol/tailwind-css.json": {
+      "sha256": "ba809aecc7d588a19de076b994b63867396db8944345a249911351b6822fc759",
+      "size": 1888
+    },
+    "eol/tarantool.json": {
+      "sha256": "9f125d1745f442ff95a260dba8cd6f1c7c8b66bee69784cd8c471bb237be5847",
+      "size": 1612
+    },
+    "eol/tarteaucitron.json": {
+      "sha256": "cbf936f5be9c4f4398539c00ff5019192fef0a64807f8554aebed22a73692803",
+      "size": 80
+    },
+    "eol/telegraf.json": {
+      "sha256": "baee182344d55e9fbbb873811aa2d38b62a55a469a9d9371a6f327338d657127",
+      "size": 3546
+    },
+    "eol/teleport.json": {
+      "sha256": "be5ee0d8c7a554df042b37508058e42a71f15cec5bd1aa32b53adf9135286396",
+      "size": 323
+    },
+    "eol/terraform.json": {
+      "sha256": "14f07077a4ef55007034deaa301a85bd852b1c4bf10dd6da800ae8ea0c09483b",
+      "size": 1458
+    },
+    "eol/thumbor.json": {
+      "sha256": "4ac13e50232f9adc3a30890b35a3cdaeaeb417243fa917a338d61785cf8ded03",
+      "size": 770
+    },
+    "eol/tls.json": {
+      "sha256": "1c08c090056ac7162c8b3cc010d6359bb34e66296a12d31c1a881ef47fb62f64",
+      "size": 333
+    },
+    "eol/tomcat.json": {
+      "sha256": "d806171a970b008b5d2de68ba8f1d5153faa3b37b37f459e1fa3a16b8b1b83de",
+      "size": 760
+    },
+    "eol/traefik.json": {
+      "sha256": "3b3d3ba046352afa49016008ea5b8ec4af94f293140846ccb9ca6f46a1080a62",
+      "size": 2405
+    },
+    "eol/truenas.json": {
+      "sha256": "3cf81294472ae057fd826590a29e86edfc68a4af952e0ee9189af890fb210daa",
+      "size": 413
+    },
+    "eol/tvos.json": {
+      "sha256": "6c148eaa9985d8dba0a9914e61ac8bd924da63e1f45c82506f57dea878b45b88",
+      "size": 1015
+    },
+    "eol/twig.json": {
+      "sha256": "a14dca27430b6711d55a98ef988ff3a2730b1f0b761b460ec53da68f6c4a1fe7",
+      "size": 248
+    },
+    "eol/typo3.json": {
+      "sha256": "f0eea55f9d2325f239c2a1d8e54a4e9be35da8d3896937e9b78f3c96b7e6fdd7",
+      "size": 1208
+    },
+    "eol/ubuntu.json": {
+      "sha256": "e8226c5f5cf37ff35884e14f5ff79bf7432cffaa44761e69cb3c5219ef9622a3",
+      "size": 6663
+    },
+    "eol/umbraco.json": {
+      "sha256": "aab307fb25e8c58aba69cfdaef0e69322746ca7e9272834536875817b878c19f",
+      "size": 1481
+    },
+    "eol/unity.json": {
+      "sha256": "a69d61938bdcf535806c9db7f8d4fd241f8160a56637eb052a9a45e0c079b86b",
+      "size": 2380
+    },
+    "eol/unrealircd.json": {
+      "sha256": "6752b7c1d27fa18aa943b025679bbbaa64557e58a6dc813c1a18905027a106e0",
+      "size": 442
+    },
+    "eol/valkey.json": {
+      "sha256": "20e92e4d33a8f898545b3b567c301a8542e4a9106f9e5597dac469cd13af059d",
+      "size": 578
+    },
+    "eol/vcenter.json": {
+      "sha256": "54be0bed69c622f19e1a18511f5a3020e7f972f3c260e754177fb8a7209ae172",
+      "size": 947
+    },
+    "eol/veeam-backup-and-replication.json": {
+      "sha256": "127d4063375a08b655cca390d79e54d8cbb47424c059e5948722dd3a9a6fa61a",
+      "size": 1674
+    },
+    "eol/veeam-backup-for-microsoft-365.json": {
+      "sha256": "861956f4b3f5b2d2bad539aee3c9bcdd4c2980ed44795f402b85a0e1f6108f64",
+      "size": 786
+    },
+    "eol/veeam-one.json": {
+      "sha256": "fc38e1360f16937f491724a2b28e9c079dccec6dfb5afa778459baaeebab0f21",
+      "size": 1059
+    },
+    "eol/vinyl-cache.json": {
+      "sha256": "80480e642162170e1399f89076d72060d304a22197f293c0c278fd9d96bf9294",
+      "size": 1028
+    },
+    "eol/virtualbox.json": {
+      "sha256": "4d16382e95d7516aed6fe43c2ca6d184e47626cbd941b7df7948ead66273ad5a",
+      "size": 1028
+    },
+    "eol/visionos.json": {
+      "sha256": "ceca14b4d5bbd0bdea569b63f403b84f682822f1b1f4bc1f2f2d52446a448751",
+      "size": 334
+    },
+    "eol/visual-cobol.json": {
+      "sha256": "c81673a8d126cad93848db8e18ad7ded91eb948fe6eb93437bf3310ce933c43e",
+      "size": 1036
+    },
+    "eol/visual-studio.json": {
+      "sha256": "750bfa989f51c92bf4407afa1eed0dbafd935c85213d833185c0bf029e6ba152",
+      "size": 4616
+    },
+    "eol/vitess.json": {
+      "sha256": "1b167655ccf2855fd7a9c3b287b545b1b084a025ef5b4ac4dc2f392ead3f615c",
+      "size": 1023
+    },
+    "eol/vmware-cloud-foundation.json": {
+      "sha256": "a5d252c994476520ba8a4bd84ed9048a43c3f1920b78201f949b2ed0d443dd47",
+      "size": 1381
+    },
+    "eol/vmware-harbor-registry.json": {
+      "sha256": "305e60b6d9df25b336d0a40d326d0eb262985a062e5d56b9f65717d2927762c1",
+      "size": 1123
+    },
+    "eol/vmware-srm.json": {
+      "sha256": "5db02e72b188b7b983d0f5096c0c64003c4c774f8da154489685c599a2382a60",
+      "size": 1293
+    },
+    "eol/vue.json": {
+      "sha256": "1be27ef1af062b3ccffafd42773d2afee7231ad5695a4658a0707be97da7220e",
+      "size": 2144
+    },
+    "eol/vuetify.json": {
+      "sha256": "d9c5d3b1fd1008688f0a3f0ab411c14dcaf183358a34952d438449d709871556",
+      "size": 559
+    },
+    "eol/wagtail.json": {
+      "sha256": "e1afe817ee4387fdf7e0f7e43e52d4ddd89bc2627027c9ed78fd49531a9604cc",
+      "size": 5569
+    },
+    "eol/watchos.json": {
+      "sha256": "a2f7f1bbc3e21920b924db1c352f7eda956e16f7557f52663ba9630305c7a691",
+      "size": 924
+    },
+    "eol/weakforced.json": {
+      "sha256": "e8f1e27b460bde9c062e25fec6c11164911d9ef71530bf71d5d2ff535417e74b",
+      "size": 772
+    },
+    "eol/weechat.json": {
+      "sha256": "50033d1a5967d25f4c53070ba5076d35e992581eacaaf0ec8d8f8a8df52610ec",
+      "size": 1803
+    },
+    "eol/windows-embedded.json": {
+      "sha256": "d41ab74f64cc65ee85cf052d2cdedc573885534e61a7dd9a77eb15cc5a7c4590",
+      "size": 739
+    },
+    "eol/windows-nano-server.json": {
+      "sha256": "f77d9ff8e23b961a511984cf71cd53f4a6a1735b1491160b72579232bf8d265a",
+      "size": 1279
+    },
+    "eol/windows-powershell.json": {
+      "sha256": "50455f7011ab90f67467ab35a754603c9a401b604f44216207fb1973e76a0eb8",
+      "size": 512
+    },
+    "eol/windows-server-core.json": {
+      "sha256": "287d1e63351bf48a9fbecd08521e5c3d4bc5e18d4ca9e7967460311bc3cbbbf2",
+      "size": 2021
+    },
+    "eol/windows-server.json": {
+      "sha256": "f02b2109961beb5164310a60c12c36a4fb54a3f620194509290c55689e304f7b",
+      "size": 3011
+    },
+    "eol/windows.json": {
+      "sha256": "6057dbda9a046b81a96f494ed1e19d3617518e5ab31c693b892a9c562bb3c1ba",
+      "size": 7419
+    },
+    "eol/wireshark.json": {
+      "sha256": "1e421709b7cde8842eb215b48d41539c0df32c0bd19810baf4c2e3f5d7ec87d3",
+      "size": 2168
+    },
+    "eol/wordpress.json": {
+      "sha256": "eace7dbd475ffe5ef15d36b16127ca6a6763d7768cd8b4f0e525bc043267253e",
+      "size": 6262
+    },
+    "eol/xcp-ng.json": {
+      "sha256": "644ed39f4d3ac6b4c7e296fa68349551778270e88ed8099c2bf65c53820c044b",
+      "size": 605
+    },
+    "eol/yarn.json": {
+      "sha256": "fa63caeedb3a9f47c2e774d33d9a58e9853f9a68727e96f2011e3b95be6c8baf",
+      "size": 325
+    },
+    "eol/yocto.json": {
+      "sha256": "16179c87b488febf0fd864001ece6a9cb1d2d3a1ba45df5c611c808435861090",
+      "size": 1293
+    },
+    "eol/youtrack.json": {
+      "sha256": "3743c1edf657db6566a105aa2620ed7b1fbd3e3e5ef737aae0ce94824362b556",
+      "size": 2118
+    },
+    "eol/zabbix.json": {
+      "sha256": "e257f79e408d6ddb8e426322e44d30ea8c0e0d53531a51d23d46b57c705f385f",
+      "size": 1030
+    },
+    "eol/zentyal.json": {
+      "sha256": "16606dacdca6b7a131cdcc06a27c4aa745ecc3d51e2dde7f938aaf01c4daf71a",
+      "size": 970
+    },
+    "eol/zerto.json": {
+      "sha256": "8c1c5006fcf29b73a950e5a3c6332a8a19fdd2138a6f6eaf42160241f14784c4",
+      "size": 2568
+    },
+    "eol/zookeeper.json": {
+      "sha256": "e4d3c8da465e02e32a6a5a4831c542bb9a6f108fcf1951ca9ece4def7db66e59",
+      "size": 663
+    },
+    "kev.json": {
+      "sha256": "1a070b807a983a2deada6c3122742787f0b01a9b3bb40ec8241e68a8579501c7",
+      "size": 260755
+    },
+    "profiles.json": {
+      "sha256": "de569a287932f84b3e060361d1e91bc9177b6c8b42ec0c0eff887c9a0171863d",
+      "size": 1761
+    }
+  },
+  "kev_catalog_version": "2026.10.23",
+  "kev_date": "2026-10-23",
+  "min_tool_version": "0.1.0",
+  "release_id": "bundled-2026.10.24",
+  "upstream_commit": "7cfb122846893f10ee819ab47b615eff261945d0"
+}

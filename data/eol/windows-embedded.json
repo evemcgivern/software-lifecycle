@@ -1,0 +1,38 @@
+[
+  {
+    "cycle": "8.1-industry",
+    "eol": "2023-07-11",
+    "releaseDate": "2013-11-25",
+    "support": "2018-07-10"
+  },
+  {
+    "cycle": "8.1-pro",
+    "eol": "2023-01-10",
+    "releaseDate": "2013-11-13",
+    "support": "2018-01-09"
+  },
+  {
+    "cycle": "compact-2013",
+    "eol": "2023-10-10",
+    "releaseDate": "2013-08-11",
+    "support": "2018-10-09"
+  },
+  {
+    "cycle": "posready-7",
+    "eol": "2021-10-12",
+    "releaseDate": "2011-09-10",
+    "support": "2016-10-11"
+  },
+  {
+    "cycle": "compact-7",
+    "eol": "2021-04-13",
+    "releaseDate": "2011-03-15",
+    "support": "2016-04-12"
+  },
+  {
+    "cycle": "standard-7-sp1",
+    "eol": "2020-10-13",
+    "releaseDate": "2011-02-28",
+    "support": "2015-10-13"
+  }
+]

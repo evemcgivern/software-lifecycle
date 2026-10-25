@@ -1,0 +1,86 @@
+[
+  {
+    "cycle": "9.14",
+    "eol": false,
+    "releaseDate": "2025-12-19",
+    "support": true
+  },
+  {
+    "cycle": "9.12",
+    "eol": false,
+    "releaseDate": "2024-11-15",
+    "support": true
+  },
+  {
+    "cycle": "9.10",
+    "eol": false,
+    "releaseDate": "2024-05-10",
+    "support": true
+  },
+  {
+    "cycle": "9.8",
+    "eol": false,
+    "releaseDate": "2023-10-09",
+    "support": false
+  },
+  {
+    "cycle": "9.6",
+    "eol": false,
+    "releaseDate": "2023-03-10",
+    "support": false
+  },
+  {
+    "cycle": "9.4",
+    "eol": true,
+    "releaseDate": "2022-08-07",
+    "support": false
+  },
+  {
+    "cycle": "9.2",
+    "eol": true,
+    "releaseDate": "2021-10-29",
+    "support": false
+  },
+  {
+    "cycle": "9.0",
+    "eol": true,
+    "releaseDate": "2021-02-03",
+    "support": false
+  },
+  {
+    "cycle": "8.10",
+    "eol": true,
+    "releaseDate": "2020-03-22",
+    "support": false
+  },
+  {
+    "cycle": "8.8",
+    "eol": true,
+    "releaseDate": "2019-08-25",
+    "support": false
+  },
+  {
+    "cycle": "8.6",
+    "eol": true,
+    "releaseDate": "2018-09-21",
+    "support": false
+  },
+  {
+    "cycle": "8.4",
+    "eol": true,
+    "releaseDate": "2018-03-08",
+    "support": false
+  },
+  {
+    "cycle": "8.2",
+    "eol": true,
+    "releaseDate": "2017-07-21",
+    "support": false
+  },
+  {
+    "cycle": "8.0",
+    "eol": true,
+    "releaseDate": "2016-05-17",
+    "support": false
+  }
+]

@@ -1,0 +1,87 @@
+[
+  {
+    "cycle": "cos-133",
+    "eol": "2028-11-01",
+    "releaseDate": "2026-09-28"
+  },
+  {
+    "cycle": "cos-129",
+    "eol": "2028-07-01",
+    "releaseDate": "2026-05-21"
+  },
+  {
+    "cycle": "cos-125",
+    "eol": "2028-02-01",
+    "releaseDate": "2025-10-09"
+  },
+  {
+    "cycle": "cos-121",
+    "eol": "2027-03-01",
+    "releaseDate": "2025-04-14"
+  },
+  {
+    "cycle": "cos-117",
+    "eol": "2026-09-01",
+    "releaseDate": "2024-10-02"
+  },
+  {
+    "cycle": "cos-113",
+    "eol": "2026-03-01",
+    "releaseDate": "2024-04-15"
+  },
+  {
+    "cycle": "cos-109",
+    "eol": "2025-09-01",
+    "releaseDate": "2023-09-27"
+  },
+  {
+    "cycle": "cos-105",
+    "eol": "2025-03-01",
+    "releaseDate": "2023-04-03"
+  },
+  {
+    "cycle": "cos-101",
+    "eol": "2024-10-01",
+    "releaseDate": "2022-09-15"
+  },
+  {
+    "cycle": "cos-97",
+    "eol": "2024-04-01",
+    "releaseDate": "2022-03-29"
+  },
+  {
+    "cycle": "cos-93",
+    "eol": "2023-10-01",
+    "releaseDate": "2021-10-18"
+  },
+  {
+    "cycle": "cos-89",
+    "eol": "2023-03-01",
+    "releaseDate": "2021-04-07"
+  },
+  {
+    "cycle": "cos-85",
+    "eol": "2022-09-01",
+    "releaseDate": "2020-09-24"
+  },
+  {
+    "cycle": "cos-81",
+    "eol": "2022-01-10",
+    "releaseDate": "2020-03-27"
+  },
+  {
+    "cycle": "cos-77",
+    "eol": "2021-04-01",
+    "releaseDate": "2019-09-27"
+  },
+  {
+    "cycle": "cos-73",
+    "eol": "2020-06-01",
+    "releaseDate": "2019-03-25"
+  },
+  {
+    "cycle": "cos-69",
+    "eol": "2019-12-01",
+    "releaseDate": "2018-09-18"
+  }
+]

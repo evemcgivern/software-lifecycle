@@ -1,0 +1,17 @@
+[
+  {
+    "cycle": "11.0",
+    "eol": false,
+    "releaseDate": "2024-05-13"
+  },
+  {
+    "cycle": "10.1",
+    "eol": false,
+    "releaseDate": "2022-03-02"
+  },
+  {
+    "cycle": "10.0",
+    "eol": "2026-01-01",
+    "releaseDate": "2020-07-13"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "cycle": "11",
+    "eol": "2022-06-14",
+    "releaseDate": "2013-11-13"
+  },
+  {
+    "cycle": "11-ltsb",
+    "eol": "2031-10-14",
+    "releaseDate": "2013-11-13"
+  },
+  {
+    "cycle": "11-ltsc",
+    "eol": "2031-10-14",
+    "releaseDate": "2013-11-13"
+  },
+  {
+    "cycle": "11-server",
+    "eol": "2031-10-14",
+    "releaseDate": "2013-11-13"
+  },
+  {
+    "cycle": "11-embedded",
+    "eol": "2031-10-14",
+    "releaseDate": "2013-11-13"
+  },
+  {
+    "cycle": "10",
+    "eol": "2020-01-31",
+    "releaseDate": "2012-10-30"
+  },
+  {
+    "cycle": "9",
+    "eol": "2016-01-12",
+    "releaseDate": "2011-03-15"
+  },
+  {
+    "cycle": "8",
+    "eol": "2016-01-12",
+    "releaseDate": "2009-06-17"
+  },
+  {
+    "cycle": "7",
+    "eol": "2023-10-10",
+    "releaseDate": "2006-10-18"
+  }
+]

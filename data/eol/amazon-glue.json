@@ -1,0 +1,47 @@
+[
+  {
+    "cycle": "6.0",
+    "eol": false,
+    "releaseDate": "2026-08-21"
+  },
+  {
+    "cycle": "5.1",
+    "eol": false,
+    "releaseDate": "2025-11-26"
+  },
+  {
+    "cycle": "5.0",
+    "eol": false,
+    "releaseDate": "2024-12-03"
+  },
+  {
+    "cycle": "4.0",
+    "eol": false,
+    "releaseDate": "2022-11-28"
+  },
+  {
+    "cycle": "3.0",
+    "eol": false,
+    "releaseDate": "2021-08-19"
+  },
+  {
+    "cycle": "2.0",
+    "eol": "2026-04-01",
+    "releaseDate": "2020-08-10"
+  },
+  {
+    "cycle": "1.0",
+    "eol": "2026-04-01",
+    "releaseDate": "2019-07-25"
+  },
+  {
+    "cycle": "1.0-python-2",
+    "eol": "2026-04-01",
+    "releaseDate": "2019-07-25"
+  },
+  {
+    "cycle": "0.9",
+    "eol": "2026-04-01",
+    "releaseDate": "2019-07-25"
+  }
+]

@@ -1,0 +1,777 @@
+[
+  {
+    "cycle": "motorola-edge-70-max",
+    "eol": "2029-06-30",
+    "releaseDate": "2026-06-01"
+  },
+  {
+    "cycle": "motorola-edge-2026",
+    "eol": "2029-06-30",
+    "releaseDate": "2026-06-01"
+  },
+  {
+    "cycle": "motorola-razr+-2026",
+    "eol": "2030-05-31",
+    "releaseDate": "2026-05-01"
+  },
+  {
+    "cycle": "motorola-razr-70-plus",
+    "eol": "2030-05-31",
+    "releaseDate": "2026-05-01"
+  },
+  {
+    "cycle": "motorola-edge-70-pro",
+    "eol": "2031-04-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "motorola-edge-70-pro+",
+    "eol": "2031-04-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "moto-g77-power",
+    "eol": "2029-04-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "moto-g87",
+    "eol": "2030-06-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "moto-g47",
+    "eol": "2029-04-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "moto-g37-power",
+    "eol": "2029-04-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "moto-g37",
+    "eol": "2029-04-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "moto-g-stylus-2026",
+    "eol": "2029-04-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "moto-g-max",
+    "eol": "2030-06-30",
+    "releaseDate": "2026-04-01"
+  },
+  {
+    "cycle": "motorola-razr-2026",
+    "eol": "2030-06-30",
+    "releaseDate": "2026-03-01"
+  },
+  {
+    "cycle": "motorola-razr-70",
+    "eol": "2030-06-30",
+    "releaseDate": "2026-03-01"
+  },
+  {
+    "cycle": "motorola-razr-70-ultra",
+    "eol": "2030-02-28",
+    "releaseDate": "2026-03-01"
+  },
+  {
+    "cycle": "motorola-razr-fold-2026",
+    "eol": "2033-03-31",
+    "releaseDate": "2026-03-01"
+  },
+  {
+    "cycle": "motorola-razr-ultra-2026",
+    "eol": "2030-02-28",
+    "releaseDate": "2026-03-01"
+  },
+  {
+    "cycle": "motorola-razr-fold",
+    "eol": "2033-03-31",
+    "releaseDate": "2026-03-01"
+  },
+  {
+    "cycle": "motorola-edge-70-fusion+",
+    "eol": "2031-11-30",
+    "releaseDate": "2026-02-01"
+  },
+  {
+    "cycle": "motorola-edge-70-fusion",
+    "eol": "2031-11-30",
+    "releaseDate": "2026-02-01"
+  },
+  {
+    "cycle": "moto-g77",
+    "eol": "2030-01-31",
+    "releaseDate": "2026-01-01"
+  },
+  {
+    "cycle": "moto-g67",
+    "eol": "2030-01-31",
+    "releaseDate": "2026-01-01"
+  },
+  {
+    "cycle": "moto-g17-power",
+    "eol": "2028-01-31",
+    "releaseDate": "2026-01-01"
+  },
+  {
+    "cycle": "moto-g17",
+    "eol": "2028-01-31",
+    "releaseDate": "2026-01-01"
+  },
+  {
+    "cycle": "motorola-signature",
+    "eol": "2032-06-30",
+    "releaseDate": "2026-01-01"
+  },
+  {
+    "cycle": "moto-g-power-2026",
+    "eol": "2029-01-31",
+    "releaseDate": "2026-01-01"
+  },
+  {
+    "cycle": "moto-g-2026",
+    "eol": "2028-12-31",
+    "releaseDate": "2025-12-01"
+  },
+  {
+    "cycle": "moto-g57-power",
+    "eol": "2028-06-30",
+    "releaseDate": "2025-11-01"
+  },
+  {
+    "cycle": "moto-g57",
+    "eol": "2028-06-30",
+    "releaseDate": "2025-11-01"
+  },
+  {
+    "cycle": "moto-g-play-2026",
+    "eol": "2028-12-31",
+    "releaseDate": "2025-11-01"
+  },
+  {
+    "cycle": "motorola-edge-70",
+    "eol": "2031-06-30",
+    "releaseDate": "2025-10-01"
+  },
+  {
+    "cycle": "moto-g67-power-5g",
+    "eol": "2028-06-30",
+    "releaseDate": "2025-09-01"
+  },
+  {
+    "cycle": "motorola-edge-60-neo",
+    "eol": "2031-06-30",
+    "releaseDate": "2025-09-01"
+  },
+  {
+    "cycle": "moto-g06-power",
+    "eol": "2027-08-31",
+    "releaseDate": "2025-08-01"
+  },
+  {
+    "cycle": "moto-g06",
+    "eol": "2027-08-31",
+    "releaseDate": "2025-08-01"
+  },
+  {
+    "cycle": "motorola-edge-2025",
+    "eol": "2028-06-30",
+    "releaseDate": "2025-06-01"
+  },
+  {
+    "cycle": "moto-g96-5g",
+    "eol": "2028-06-30",
+    "releaseDate": "2025-06-01"
+  },
+  {
+    "cycle": "moto-g86-power-5g",
+    "eol": "2029-06-30",
+    "releaseDate": "2025-06-01"
+  },
+  {
+    "cycle": "moto-g86-5g",
+    "eol": "2029-06-30",
+    "releaseDate": "2025-06-01"
+  },
+  {
+    "cycle": "moto-g66-5g",
+    "eol": "2029-05-31",
+    "releaseDate": "2025-05-01"
+  },
+  {
+    "cycle": "moto-g56-5g",
+    "eol": "2029-05-31",
+    "releaseDate": "2025-05-01"
+  },
+  {
+    "cycle": "motorola-edge-60s-pro",
+    "eol": "2029-04-30",
+    "releaseDate": "2025-04-01"
+  },
+  {
+    "cycle": "motorola-edge-60-pro",
+    "eol": "2029-04-30",
+    "releaseDate": "2025-04-01"
+  },
+  {
+    "cycle": "motorola-razr-60s",
+    "eol": "2029-06-30",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-razr-60d",
+    "eol": "2029-06-30",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-razr+-2025",
+    "eol": "2029-06-30",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-razr-2025",
+    "eol": "2029-06-30",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-edge-60-fusion",
+    "eol": "2029-03-31",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-edge-60-stylus",
+    "eol": "2028-03-31",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-edge-60",
+    "eol": "2029-03-31",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-razr-60",
+    "eol": "2029-06-30",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "moto-g-stylus-2025",
+    "eol": "2028-03-31",
+    "releaseDate": "2025-03-01"
+  },
+  {
+    "cycle": "motorola-razr-ultra-2025",
+    "eol": "2029-02-28",
+    "releaseDate": "2025-02-01"
+  },
+  {
+    "cycle": "motorola-razr-60-ultra",
+    "eol": "2029-02-28",
+    "releaseDate": "2025-02-01"
+  },
+  {
+    "cycle": "moto-g-power-2025",
+    "eol": "2028-01-31",
+    "releaseDate": "2025-01-01"
+  },
+  {
+    "cycle": "moto-g-2025",
+    "eol": "2027-12-31",
+    "releaseDate": "2024-12-01"
+  },
+  {
+    "cycle": "moto-e15",
+    "eol": "2026-12-31",
+    "releaseDate": "2024-12-01"
+  },
+  {
+    "cycle": "moto-g15-power",
+    "eol": "2026-12-31",
+    "releaseDate": "2024-12-01"
+  },
+  {
+    "cycle": "moto-g15",
+    "eol": "2026-12-31",
+    "releaseDate": "2024-12-01"
+  },
+  {
+    "cycle": "moto-g05",
+    "eol": "2026-12-31",
+    "releaseDate": "2024-12-01"
+  },
+  {
+    "cycle": "moto-g75-5g",
+    "eol": "2030-10-31",
+    "releaseDate": "2024-10-01"
+  },
+  {
+    "cycle": "moto-g55-5g",
+    "eol": "2028-09-30",
+    "releaseDate": "2024-09-01"
+  },
+  {
+    "cycle": "moto-g45-5g",
+    "eol": "2026-09-30",
+    "releaseDate": "2024-09-01"
+  },
+  {
+    "cycle": "moto-g35-5g",
+    "eol": "2027-08-31",
+    "releaseDate": "2024-08-01"
+  },
+  {
+    "cycle": "thinkphone-25-by-motorola",
+    "eol": "2029-08-31",
+    "releaseDate": "2024-08-01"
+  },
+  {
+    "cycle": "motorola-edge-50-neo",
+    "eol": "2029-08-31",
+    "releaseDate": "2024-08-01"
+  },
+  {
+    "cycle": "motorola-edge-50",
+    "eol": "2027-07-31",
+    "releaseDate": "2024-07-01"
+  },
+  {
+    "cycle": "moto-g85-5g",
+    "eol": "2028-06-30",
+    "releaseDate": "2024-06-01"
+  },
+  {
+    "cycle": "motorola-razr+-2024",
+    "eol": "2028-06-30",
+    "releaseDate": "2024-06-01"
+  },
+  {
+    "cycle": "motorola-razr-2024",
+    "eol": "2028-06-30",
+    "releaseDate": "2024-06-01"
+  },
+  {
+    "cycle": "motorola-razr-50-ultra",
+    "eol": "2028-06-30",
+    "releaseDate": "2024-06-01"
+  },
+  {
+    "cycle": "motorola-razr-50s",
+    "eol": "2028-06-30",
+    "releaseDate": "2024-06-01"
+  },
+  {
+    "cycle": "motorola-razr-50d",
+    "eol": "2028-06-30",
+    "releaseDate": "2024-06-01"
+  },
+  {
+    "cycle": "motorola-razr-50",
+    "eol": "2028-06-30",
+    "releaseDate": "2024-06-01"
+  },
+  {
+    "cycle": "moto-g-stylus-5g-2024",
+    "eol": "2027-05-31",
+    "releaseDate": "2024-05-01"
+  },
+  {
+    "cycle": "motorola-edge-2024",
+    "eol": "2027-05-31",
+    "releaseDate": "2024-05-01"
+  },
+  {
+    "cycle": "motorola-edge-50-ultra",
+    "eol": "2028-05-31",
+    "releaseDate": "2024-05-01"
+  },
+  {
+    "cycle": "moto-g64y-5g",
+    "eol": "2027-04-30",
+    "releaseDate": "2024-04-01"
+  },
+  {
+    "cycle": "moto-g64-5g",
+    "eol": "2027-04-30",
+    "releaseDate": "2024-04-01"
+  },
+  {
+    "cycle": "moto-e14",
+    "eol": "2026-04-30",
+    "releaseDate": "2024-04-01"
+  },
+  {
+    "cycle": "motorola-edge-50-fusion",
+    "eol": "2028-04-30",
+    "releaseDate": "2024-04-01"
+  },
+  {
+    "cycle": "moto-g-power-5g-2024",
+    "eol": "2027-03-31",
+    "releaseDate": "2024-03-01"
+  },
+  {
+    "cycle": "moto-g-5g-2024",
+    "eol": "2027-03-31",
+    "releaseDate": "2024-03-01"
+  },
+  {
+    "cycle": "motorola-edge-50-pro",
+    "eol": "2028-02-29",
+    "releaseDate": "2024-03-01"
+  },
+  {
+    "cycle": "moto-g-play-2024",
+    "eol": "2027-01-31",
+    "releaseDate": "2024-01-01"
+  },
+  {
+    "cycle": "moto-g34-5g",
+    "eol": "2027-01-31",
+    "releaseDate": "2024-01-01"
+  },
+  {
+    "cycle": "moto-g24-power",
+    "eol": "2027-01-31",
+    "releaseDate": "2024-01-01"
+  },
+  {
+    "cycle": "moto-g04",
+    "eol": "2026-01-31",
+    "releaseDate": "2024-01-01"
+  },
+  {
+    "cycle": "motorola-razr-40s",
+    "eol": "2027-11-30",
+    "releaseDate": "2023-11-01"
+  },
+  {
+    "cycle": "moto-g54-5g",
+    "eol": "2027-06-30",
+    "releaseDate": "2023-09-01"
+  },
+  {
+    "cycle": "motorola-edge-2023",
+    "eol": "2026-09-30",
+    "releaseDate": "2023-09-01"
+  },
+  {
+    "cycle": "motorola-edge-40-neo",
+    "eol": "2027-06-30",
+    "releaseDate": "2023-09-01"
+  },
+  {
+    "cycle": "motorola-razr-2023",
+    "eol": "2027-09-30",
+    "releaseDate": "2023-09-01"
+  },
+  {
+    "cycle": "moto-g84-5g",
+    "eol": "2027-08-31",
+    "releaseDate": "2023-08-01"
+  },
+  {
+    "cycle": "moto-g14",
+    "eol": "2026-08-31",
+    "releaseDate": "2023-08-01"
+  },
+  {
+    "cycle": "motorola-razr-40",
+    "eol": "2027-07-31",
+    "releaseDate": "2023-07-01"
+  },
+  {
+    "cycle": "moto-g53s-5g",
+    "eol": "2026-12-31",
+    "releaseDate": "2023-06-01"
+  },
+  {
+    "cycle": "moto-g-stylus-5g-2023",
+    "eol": "2026-06-30",
+    "releaseDate": "2023-06-01"
+  },
+  {
+    "cycle": "moto-g53y-5g",
+    "eol": "2026-12-31",
+    "releaseDate": "2023-06-01"
+  },
+  {
+    "cycle": "moto-g53j-5g",
+    "eol": "2026-12-31",
+    "releaseDate": "2023-06-01"
+  },
+  {
+    "cycle": "motorola-razr-40-ultra",
+    "eol": "2027-06-30",
+    "releaseDate": "2023-06-01"
+  },
+  {
+    "cycle": "motorola-razr+-2023",
+    "eol": "2027-06-30",
+    "releaseDate": "2023-06-01"
+  },
+  {
+    "cycle": "moto-g-5g-2023",
+    "eol": "2026-05-31",
+    "releaseDate": "2023-05-01"
+  },
+  {
+    "cycle": "motorola-edge+-2023",
+    "eol": "2027-05-31",
+    "releaseDate": "2023-05-01"
+  },
+  {
+    "cycle": "motorola-edge-40",
+    "eol": "2027-05-31",
+    "releaseDate": "2023-05-01"
+  },
+  {
+    "cycle": "moto-g-stylus-2023",
+    "eol": "2026-04-30",
+    "releaseDate": "2023-04-01"
+  },
+  {
+    "cycle": "moto-g-power-5g-2023",
+    "eol": "2026-04-30",
+    "releaseDate": "2023-04-01"
+  },
+  {
+    "cycle": "motorola-edge-40-pro",
+    "eol": "2027-04-30",
+    "releaseDate": "2023-04-01"
+  },
+  {
+    "cycle": "moto-g-play-2023",
+    "eol": "2025-12-31",
+    "releaseDate": "2023-01-01"
+  },
+  {
+    "cycle": "moto-g73-5g",
+    "eol": "2026-12-31",
+    "releaseDate": "2023-01-01"
+  },
+  {
+    "cycle": "moto-g53-5g",
+    "eol": "2027-01-31",
+    "releaseDate": "2023-01-01"
+  },
+  {
+    "cycle": "moto-g23",
+    "eol": "2026-01-31",
+    "releaseDate": "2023-01-01"
+  },
+  {
+    "cycle": "moto-g13",
+    "eol": "2026-01-31",
+    "releaseDate": "2023-01-01"
+  },
+  {
+    "cycle": "moto-e13",
+    "eol": "2025-01-01",
+    "releaseDate": "2023-01-01"
+  },
+  {
+    "cycle": "thinkphone-by-motorola",
+    "eol": "2028-01-31",
+    "releaseDate": "2023-01-01"
+  },
+  {
+    "cycle": "moto-g72",
+    "eol": "2025-10-31",
+    "releaseDate": "2022-10-01"
+  },
+  {
+    "cycle": "moto-e22s",
+    "eol": "2024-10-01",
+    "releaseDate": "2022-10-01"
+  },
+  {
+    "cycle": "moto-e22i",
+    "eol": "2024-10-01",
+    "releaseDate": "2022-10-01"
+  },
+  {
+    "cycle": "moto-e22",
+    "eol": "2024-10-01",
+    "releaseDate": "2022-10-01"
+  },
+  {
+    "cycle": "motorola-razr-2022",
+    "eol": "2025-10-31",
+    "releaseDate": "2022-10-01"
+  },
+  {
+    "cycle": "motorola-edge-30-ultra",
+    "eol": "2026-09-30",
+    "releaseDate": "2022-09-01"
+  },
+  {
+    "cycle": "motorola-edge-30-neo",
+    "eol": "2025-09-30",
+    "releaseDate": "2022-09-01"
+  },
+  {
+    "cycle": "motorola-edge-30-fusion",
+    "eol": "2025-09-30",
+    "releaseDate": "2022-09-01"
+  },
+  {
+    "cycle": "moto-g32",
+    "eol": "2025-08-31",
+    "releaseDate": "2022-08-01"
+  },
+  {
+    "cycle": "motorola-edge-2022",
+    "eol": "2026-08-31",
+    "releaseDate": "2022-08-01"
+  },
+  {
+    "cycle": "moto-g62-5g",
+    "eol": "2025-06-01",
+    "releaseDate": "2022-06-01"
+  },
+  {
+    "cycle": "moto-g52j-5g",
+    "eol": "2025-06-01",
+    "releaseDate": "2022-06-01"
+  },
+  {
+    "cycle": "moto-g42",
+    "eol": "2025-06-01",
+    "releaseDate": "2022-06-01"
+  },
+  {
+    "cycle": "moto-e32s",
+    "eol": "2024-06-01",
+    "releaseDate": "2022-06-01"
+  },
+  {
+    "cycle": "moto-g82-5g",
+    "eol": "2025-05-01",
+    "releaseDate": "2022-05-01"
+  },
+  {
+    "cycle": "moto-e32",
+    "eol": "2024-05-01",
+    "releaseDate": "2022-05-01"
+  },
+  {
+    "cycle": "motorola-edge-30",
+    "eol": "2025-05-01",
+    "releaseDate": "2022-05-01"
+  },
+  {
+    "cycle": "moto-g-stylus-5g-2022",
+    "eol": "2025-04-30",
+    "releaseDate": "2022-04-01"
+  },
+  {
+    "cycle": "moto-g-5g-2022",
+    "eol": "2025-04-01",
+    "releaseDate": "2022-04-01"
+  },
+  {
+    "cycle": "moto-g52",
+    "eol": "2025-04-01",
+    "releaseDate": "2022-04-01"
+  },
+  {
+    "cycle": "moto-g22",
+    "eol": "2025-03-01",
+    "releaseDate": "2022-03-01"
+  },
+  {
+    "cycle": "moto-g-stylus-2022",
+    "eol": "2024-02-01",
+    "releaseDate": "2022-02-01"
+  },
+  {
+    "cycle": "motorola-edge-30-pro",
+    "eol": "2025-02-01",
+    "releaseDate": "2022-02-01"
+  },
+  {
+    "cycle": "motorola-edge+-2022",
+    "eol": "2025-02-01",
+    "releaseDate": "2022-02-01"
+  },
+  {
+    "cycle": "moto-g-power-2022",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-11-01"
+  },
+  {
+    "cycle": "moto-g200-5g",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-11-01"
+  },
+  {
+    "cycle": "moto-g71-5g",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-11-01"
+  },
+  {
+    "cycle": "moto-g51-5g",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-11-01"
+  },
+  {
+    "cycle": "moto-g41",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-11-01"
+  },
+  {
+    "cycle": "moto-g31",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-11-01"
+  },
+  {
+    "cycle": "moto-g-pure-2021",
+    "eol": "2023-11-01",
+    "releaseDate": "2021-11-01"
+  },
+  {
+    "cycle": "moto-g-pure",
+    "eol": "2023-09-01",
+    "releaseDate": "2021-09-01"
+  },
+  {
+    "cycle": "moto-e40",
+    "eol": "2023-09-01",
+    "releaseDate": "2021-09-01"
+  },
+  {
+    "cycle": "moto-e30",
+    "eol": "2023-09-01",
+    "releaseDate": "2021-09-01"
+  },
+  {
+    "cycle": "moto-e20",
+    "eol": "2023-09-01",
+    "releaseDate": "2021-09-01"
+  },
+  {
+    "cycle": "motorola-edge-20-lite",
+    "eol": "2023-07-01",
+    "releaseDate": "2021-08-01"
+  },
+  {
+    "cycle": "motorola-edge-20-fusion",
+    "eol": "2023-08-01",
+    "releaseDate": "2021-08-01"
+  },
+  {
+    "cycle": "motorola-edge-20",
+    "eol": "2023-08-01",
+    "releaseDate": "2021-08-01"
+  },
+  {
+    "cycle": "motorola-edge-2021",
+    "eol": "2023-08-01",
+    "releaseDate": "2021-08-01"
+  }
+]
