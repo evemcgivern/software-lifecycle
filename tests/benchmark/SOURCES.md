@@ -34,8 +34,8 @@
 ## Where each row came from
 
 - Positive rows for a product and its cycles: the product's file at
-  `https://github.com/endoflife-date/endoflife.date/blob/7cfb122846893f10ee819ab47b615eff261945d0/products/PRODUCT.md`, where PRODUCT is the `expected_product` id. 457 of the 485
-  product files were used.
+  `https://github.com/endoflife-date/endoflife.date/blob/7cfb122846893f10ee819ab47b615eff261945d0/products/PRODUCT.md`, where PRODUCT is the `expected_product` id. Gold rows cover 447 of the 485
+  product files.
 - Hand-written rows (stratum `hand`): written from the vendor naming pages
   above (Programs and Features names, installer names, operating system
   release names, Debian and Red Hat package names, device-management rows).
@@ -48,8 +48,9 @@
   or an architecture suffix. Generated traps use versions that fit no cycle,
   a name and a version that disagree, bare one-word names with no publisher,
   and Debian documentation packages.
-- Rows added in the benchmark commit (Jenkins lines, Office 2019 with 16.0,
-  Windows Server 2019 with build 17763, ten mixed-cycle products) are
-  hand-written from `data/eol/` in this repository. Their notes start with
-  "hand-added".
+- Rows added by hand (Jenkins lines, Office builds, Windows Server 2019,
+  mixed-cycle products, device-management, framework and database rows) are
+  written from `data/eol/` in this repository and the public page named in
+  each row note. Their notes start with "hand-added".
+- Rows that could not be settled are in `unsure.csv`, not in gold.
 - No row comes from a real inventory.
