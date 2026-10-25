@@ -535,7 +535,6 @@ class CoverageAndDataTextTests(unittest.TestCase):
                                          ].index(p)))), body)
         self.assertGreater(len(list((ROOT / "data" / "eol").glob("*.json"))),
                            400)
-        self.assertIn("more than 400 products", body)
 
     def test_no_stale_release_or_commit_text(self):
         manifest = json.loads(text(ROOT / "data" / "manifest.json"))

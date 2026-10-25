@@ -181,16 +181,31 @@ artifact attestation, check it online before you use the release:
 
 ## How it can be wrong
 
-- Coverage is small. `data/aliases.json` holds 19 aliases for
+- Coverage is partial. In the data release bundled when this was written
+  (the weekly job can change the counts), the tool can match 432 of the 485
+  products in `data/eol/`. Most are matched by the product's title from endoflife.date
+  (`data/products.json`). `data/aliases.json` adds 19 aliases for
   11 products (mssqlserver, windows-server, windows, office,
   python, nodejs, ubuntu, eclipse-temurin, windows-powershell, mysql,
-  bellsoft-liberica), out of more than 400 products
-  in `data/eol/`. A realistic inventory leaves many rows unmatched.
-  Examples that are unmatched today: nginx, PHP, Tomcat, Chrome, Firefox,
-  vCenter, Exchange. To add your own, see "Extending the alias table" in
-  [docs/usage.md](docs/usage.md). Golden sources do not apply to unmatched
-  items. The maintainer extends the bundled table from "couldn't match"
-  reports; the issue form takes names only.
+  bellsoft-liberica). `data/curation.json` adds hand-kept vendor names for
+  42 products and a short list of one-word product names. The other 53
+  products are devices, products left out on purpose, or one-word titles
+  with no vendor to check, and never match.
+- That is a count of products, not a hit rate. On the project's own
+  benchmark (the 1,135 hand-written and catalog rows in
+  `tests/benchmark/gold.csv`), 699 rows should match a product and the tool
+  gives the right product and cycle for 414 of them. The other 436 rows are
+  traps that should stay unmatched, and all 436 do. It is a benchmark, not a
+  real estate. The rate on a real estate is unknown.
+- No wrong lifecycle claim was found on the benchmark. That is not proof for
+  other inventories: unknown in general.
+- Software with no lifecycle policy, for example git, curl and vim, is
+  outside the data and will never match. Long "couldn't match" lists will
+  remain. That is safer than a wrong guess. A golden source does not apply
+  to an unmatched item.
+- To add your own aliases, see "Extending the alias table" in
+  [docs/usage.md](docs/usage.md). The maintainer extends the bundled data
+  from "couldn't match" reports; the issue form takes names only.
 - Build numbers versus cycles: a product whose version is a build number
   may map to the wrong cycle or none. Check the cycle shown in the report.
 - Names must match strictly. A name with extra words after the product name
