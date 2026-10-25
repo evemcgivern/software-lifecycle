@@ -4,7 +4,11 @@ The workflows cannot run here, so these tests read them as text. They use
 no YAML library (standard library only); each check is a line-based rule
 that is stricter than it needs to be.
 """
+import os
 import re
+import shutil
+import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -106,6 +110,178 @@ def lint(text):
             problems.append("%s: id-token write outside publish" % name)
         if not (job_key(body, "timeout-minutes") or "").isdigit():
             problems.append("%s: no timeout-minutes" % name)
+    return problems
+
+
+def step_script(text, step_name):
+    """The run: block of the step with this name, dedented."""
+    lines = text.split("\n")
+    start = lines.index("      - name: " + step_name)
+    for i in range(start + 1, len(lines)):
+        if re.match(r"^        run: \|$", lines[i]):
+            break
+        if lines[i].startswith("      - "):
+            raise ValueError("step has no run block")
+    body = []
+    for line in lines[i + 1:]:
+        if line.strip() and len(line) - len(line.lstrip()) <= 8:
+            break
+        body.append(line[10:])
+    return "\n".join(body) + "\n"
+
+
+def run_script(script, env, cwd, stubs=None):
+    """Run a step script the way Actions does; return (code, output, files).
+
+    stubs maps command names to shell bodies placed first on PATH.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        bin_dir = tmp / "bin"
+        bin_dir.mkdir()
+        for name, body in (stubs or {}).items():
+            path = bin_dir / name
+            path.write_text("#!/bin/sh\n" + body + "\n")
+            path.chmod(0o755)
+        (tmp / "step.sh").write_text(script)
+        full = {"PATH": "%s:%s" % (bin_dir, os.environ.get("PATH", "")),
+                "HOME": str(tmp), "RUNNER_TEMP": str(tmp / "runner"),
+                "GITHUB_OUTPUT": str(tmp / "output"),
+                "GITHUB_STEP_SUMMARY": str(tmp / "summary"),
+                "STUB_LOG": str(tmp / "stub.log")}
+        (tmp / "runner").mkdir()
+        full.update(env)
+        setup = full.pop("_SETUP", None)
+        if setup:
+            setup(Path(full["RUNNER_TEMP"]))
+        proc = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-eo", "pipefail",
+             str(tmp / "step.sh")], cwd=str(cwd), env=full,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            universal_newlines=True, timeout=60)
+        files = {}
+        for name in ("output", "stub.log"):
+            path = tmp / name
+            files[name] = path.read_text() if path.exists() else ""
+        return proc.returncode, proc.stdout, files
+
+
+MODE_STEP = "Decide the run mode"
+PUBLISH_IF = ("github.ref == 'refs/heads/main' && "
+              "needs.build.outputs.dry_run == 'false' && "
+              "needs.build.outputs.changed == 'true'")
+GOOD_REASON = "Bulk backfill approved after reading the CISA notice"
+
+
+def _mode(text, cwd, **env):
+    base = {"IS_MANUAL": "true", "REF": "refs/heads/main",
+            "DRY_RUN_INPUT": "", "ALLOW_REMOVED_INPUT": "false",
+            "OVERRIDE_INPUT": "false", "OVERRIDE_REASON": ""}
+    base.update(env)
+    code, out, files = run_script(step_script(text, MODE_STEP), base, cwd)
+    values = dict(line.split("=", 1) for line in files["output"].split("\n")
+                  if "=" in line)
+    return code, values
+
+
+def kev_guards(text):
+    """Problems with kev-daily.yml's publish guards; empty means sound."""
+    problems = []
+    publish_if = " ".join((job_key(jobs(text)["publish"], "if") or "").split())
+    if publish_if != PUBLISH_IF:
+        problems.append("publish if is not exactly the main-only condition")
+    for bad in ("||", "always()", "cancelled()"):
+        if bad in publish_if:
+            problems.append("publish if holds %s" % bad)
+    baseline = step_script(text, "Get the previous KEV snapshot")
+    joined = baseline.replace("\\\n", " ")
+    commands = [l for l in joined.split("\n") if "gh attestation verify" in l]
+    if len(commands) != 1:
+        problems.append("baseline step must hold one attestation check")
+    else:
+        for flag in ("--repo evemcgivern/software-lifecycle",
+                     "--signer-workflow evemcgivern/software-lifecycle/"
+                     ".github/workflows/kev-daily.yml",
+                     "--source-ref refs/heads/main"):
+            if flag not in commands[0]:
+                problems.append("baseline check lacks %s" % flag.split()[0])
+    with tempfile.TemporaryDirectory() as cwd:
+        for env in ({"REF": "refs/heads/feature", "OVERRIDE_INPUT": "true",
+                     "OVERRIDE_REASON": GOOD_REASON},
+                    {"REF": "refs/heads/feature",
+                     "ALLOW_REMOVED_INPUT": "true"}):
+            code, _ = _mode(text, cwd, **env)
+            if code == 0:
+                problems.append("an override ran on a branch other than main")
+        for reason in ("short", "see https://example.com/x for details",
+                       "reason: with a colon here", "line one ok\nline two"):
+            code, _ = _mode(text, cwd, OVERRIDE_INPUT="true",
+                            OVERRIDE_REASON=reason)
+            if code == 0:
+                problems.append("an unsafe override reason was accepted")
+        code, values = _mode(text, cwd, OVERRIDE_INPUT="true",
+                             OVERRIDE_REASON=GOOD_REASON, DRY_RUN_INPUT="false")
+        if code != 0 or values.get("allow_bulk") != "true":
+            problems.append("a valid override on main was refused")
+        for dry_input, expected in (("", "true"), ("true", "true"),
+                                    ("false", "false")):
+            code, values = _mode(text, cwd, DRY_RUN_INPUT=dry_input)
+            if code != 0 or values.get("dry_run") != expected:
+                problems.append("manual dry_run %r did not give %s"
+                                % (dry_input, expected))
+        code, values = _mode(text, cwd, IS_MANUAL="false", DRY_RUN_INPUT="")
+        if values.get("dry_run") != "false":
+            problems.append("a scheduled run became a dry run")
+    publish = step_script(text, "Create the data release")
+    if "pattern='^[A-Za-z0-9 .,;()_-]{10,200}$'" not in publish:
+        problems.append("publish step does not recheck the reason pattern")
+    return problems
+
+
+PROPOSE_STEP = "Push a branch and open the pull request"
+PROCEED = "Opening a pull request from"
+
+
+def _propose(text, gh_exit=0, gh_out="", ls_exit=2):
+    def setup(runner):
+        update = runner / "update"
+        (update / "eol").mkdir(parents=True)
+        (update / "eol" / "demo.json").write_text("[]\n")
+        (update / "manifest.json").write_text("{}\n")
+        (update / "pr-body.md").write_text("body\n")
+    stubs = {
+        "gh": 'echo "gh $*" >> "$STUB_LOG"\n'
+              'if [ "$1 $2" = "pr list" ]; then printf "%s" "$STUB_GH_OUT";'
+              ' exit "$STUB_GH_EXIT"; fi\nexit 0',
+        "git": 'echo "git $*" >> "$STUB_LOG"\n'
+               'if [ "$1" = "ls-remote" ]; then exit "$STUB_LS_EXIT"; fi\nexit 0',
+        "base64": "cat > /dev/null; echo eA==",
+    }
+    env = {"GH_TOKEN": "token", "UPSTREAM_SHA": "a" * 40, "FLAGGED": "false",
+           "STUB_GH_EXIT": str(gh_exit), "STUB_GH_OUT": gh_out,
+           "STUB_LS_EXIT": str(ls_exit), "_SETUP": setup}
+    with tempfile.TemporaryDirectory() as cwd:
+        (Path(cwd) / "data" / "eol").mkdir(parents=True)
+        return run_script(step_script(text, PROPOSE_STEP), env, cwd, stubs)
+
+
+def weekly_guards(text):
+    """Problems with eol-weekly.yml's pull request guards."""
+    problems = []
+    for label, kwargs in (("gh pr list failing", {"gh_exit": 1}),
+                          ("git ls-remote failing", {"ls_exit": 128})):
+        code, out, files = _propose(text, **kwargs)
+        if code == 0 or PROCEED in out or " push " in files["stub.log"]:
+            problems.append("%s did not stop the job" % label)
+    code, out, files = _propose(text, gh_out="data/eol-2026-10-01\n")
+    if code != 0 or " push " in files["stub.log"]:
+        problems.append("an open data/eol pull request did not stop quietly")
+    code, out, files = _propose(text, ls_exit=0)
+    if code == 0 or " push " in files["stub.log"]:
+        problems.append("an existing branch did not stop the job")
+    code, out, files = _propose(text)
+    if code != 0 or PROCEED not in out or " push " not in files["stub.log"]:
+        problems.append("the normal path did not push: %s" % out[-300:])
     return problems
 
 
@@ -415,3 +591,65 @@ class RepoFilesTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(shutil.which("bash"), "needs bash")
+class GuardBehaviourTests(unittest.TestCase):
+    """Run the guard scripts with stubs, and prove the checks catch edits."""
+
+    def test_kev_daily_guards_hold(self):
+        self.assertEqual(kev_guards(read("kev-daily.yml")), [])
+
+    def test_kev_daily_guard_mutations_are_caught(self):
+        text = read("kev-daily.yml")
+        baseline_flags = (
+            "              --signer-workflow evemcgivern/software-lifecycle/"
+            ".github/workflows/kev-daily.yml \\\n"
+            "              --source-ref refs/heads/main\n")
+        mutations = [
+            ("needs.build.outputs.changed == 'true'\n",
+             "needs.build.outputs.changed == 'true' || always()\n"),
+            ("    if: github.ref == 'refs/heads/main' && ",
+             "    if: "),
+            ("--repo evemcgivern/software-lifecycle \\\n" + baseline_flags,
+             "--repo evemcgivern/software-lifecycle\n"),
+            ('              if [ "$on_main" != "true" ]; then',
+             "              if false; then"),
+            ('if [ "$DRY_RUN_INPUT" != "false" ]; then dry_run=true; fi',
+             'if [ "$DRY_RUN_INPUT" = "true" ]; then dry_run=true; fi'),
+            ("pattern='^[A-Za-z0-9 .,;()_-]{10,200}$'\n"
+             "              if ! [[",
+             "pattern='^[A-Za-z0-9 .,:;()_/-]{10,200}$'\n"
+             "              if ! [["),
+        ]
+        for old, new in mutations:
+            self.assertIn(old, text)
+            self.assertTrue(kev_guards(text.replace(old, new, 1)), new)
+
+    def test_eol_weekly_guards_hold(self):
+        self.assertEqual(weekly_guards(read("eol-weekly.yml")), [])
+
+    def test_eol_weekly_fail_open_forms_are_caught(self):
+        text = read("eol-weekly.yml")
+        script = step_script(text, PROPOSE_STEP)
+        start = script.index('if ! open_heads="$(')
+        end = script.index("if ! printf '%s' \"$UPSTREAM_SHA\"")
+        old_pr = script[start:end]
+        fail_open_pr = (
+            "if gh pr list --state open --limit 200 --json headRefName "
+            "--jq '.[].headRefName' | grep -q '^data/eol-'; then\n"
+            '  echo "::notice::open"\n  exit 0\nfi\n')
+        start = script.index("status=0\ngit ls-remote")
+        end = script.index('echo "Opening a pull request')
+        old_ls = script[start:end]
+        fail_open_ls = (
+            'if git ls-remote --exit-code --heads origin "$branch" '
+            '> /dev/null; then\n  echo "exists"\n  exit 1\nfi\n')
+        for old, new in ((old_pr, fail_open_pr), (old_ls, fail_open_ls)):
+            indented = "".join("          " + l if l.strip() else l
+                               for l in old.splitlines(True))
+            replaced = "".join("          " + l if l.strip() else l
+                               for l in new.splitlines(True))
+            self.assertIn(indented, text)
+            mutated = text.replace(indented, replaced, 1)
+            self.assertTrue(weekly_guards(mutated), new)
