@@ -639,6 +639,15 @@ class ProductsSchemaTests(DataCase):
                 with self.assertRaises(DataError):
                     validate_products(products_obj(record(**{key: [bad]})))
 
+    def test_vendor_and_namespace_tokens_are_at_most_100_characters(self):
+        validate_products(products_obj(record(
+            vendors=["v" * 100], namespaces=["n" * 100])))
+        for key in ("vendors", "namespaces"):
+            with self.subTest(key=key):
+                with self.assertRaises(DataError):
+                    validate_products(products_obj(record(
+                        **{key: ["x" * 101]})))
+
     def test_catalog_must_match_the_eol_files(self):
         obj = json.loads(json.dumps(make_fixtures.PRODUCTS))
         extra = dict(obj["products"][0], id="zzz-no-eol-file")

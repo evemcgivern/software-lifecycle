@@ -32,6 +32,7 @@ _NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
 _URL_RE = re.compile(
     r"https://[A-Za-z0-9][A-Za-z0-9.-]*(?::[0-9]{1,5})?(?:[/?#][!-~]*)?")
 MAX_LABEL = 200
+MAX_TOKEN = 100   # longest vendor or namespace token in products.json
 NO_CATALOG_WARNING = ("This data release has no product catalog; "
                       "generated matching is off.")
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
@@ -203,9 +204,11 @@ def _label(value, where: str) -> str:
     return value
 
 
-def _str_list(value, where: str, lower: bool = False, pattern=None) -> list:
+def _str_list(value, where: str, lower: bool = False, pattern=None,
+              max_len=None) -> list:
     """A strictly sorted list of non-empty strings (so no duplicates).
-    With pattern, every string must match it whole."""
+    With pattern, every string must match it whole; with max_len, no
+    string is longer."""
     if not isinstance(value, list):
         raise DataError("%s: expected a list" % where)
     for item in value:
@@ -216,6 +219,9 @@ def _str_list(value, where: str, lower: bool = False, pattern=None) -> list:
         if pattern is not None and not pattern.fullmatch(item):
             raise DataError("%s: a value has characters that are not allowed"
                             % where)
+        if max_len is not None and len(item) > max_len:
+            raise DataError("%s: a value is longer than %d characters"
+                            % (where, max_len))
     if any(a >= b for a, b in zip(value, value[1:])):
         raise DataError("%s: must be sorted with no duplicates" % where)
     return value
@@ -241,9 +247,10 @@ def validate_products(obj) -> dict:
         last = pid
         _label(item["title"], where + ".title")
         _label(item["category"], where + ".category")
-        _str_list(item["vendors"], where + ".vendors", pattern=_VENDOR_RE)
+        _str_list(item["vendors"], where + ".vendors", pattern=_VENDOR_RE,
+                  max_len=MAX_TOKEN)
         _str_list(item["namespaces"], where + ".namespaces",
-                  pattern=_NAMESPACE_RE)
+                  pattern=_NAMESPACE_RE, max_len=MAX_TOKEN)
         out[pid] = item
     return out
 

@@ -914,6 +914,18 @@ class PurlHostileInputTests(unittest.TestCase):
             with self.assertRaises(rd.RefreshError):
                 rd.cpe_vendor(bad, "d")
 
+    def test_cpe_vendor_is_as_strict_as_the_loader(self):
+        # Refresh lowercases the vendor, then applies the loader's pattern,
+        # so a vendor the loader would refuse stops the refresh instead.
+        self.assertEqual(rd.cpe_vendor("cpe:2.3:a:Apache:x", "d"), "apache")
+        for bad in ("cpe:2.3:a:_a:x", "cpe:2.3:a:.a:x", "cpe:/a:+a:x",
+                    "cpe:2.3:a:-a:x"):
+            with self.subTest(bad=bad):
+                with self.assertRaises(rd.RefreshError) as ctx:
+                    rd.cpe_vendor(bad, "d")
+                self.assertIn("a cpe vendor has characters it cannot read",
+                              str(ctx.exception))
+
 
 class ZipTests(unittest.TestCase):
     def test_zip_is_byte_stable_sorted_and_dated_1980(self):

@@ -45,6 +45,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from swlc.data import validate_eol, validate_kev, validate_products  # noqa: E402
+from swlc.data import _VENDOR_RE as _LOADER_VENDOR_RE  # noqa: E402
 from swlc.normalize import normalize_name  # noqa: E402
 from swlc.errors import DataError  # noqa: E402
 
@@ -528,7 +529,9 @@ def product_from_markdown(text: str) -> tuple:
 # or dates.
 
 _IDENT_RE = re.compile(r"\s*-\s+([A-Za-z0-9_]+):(?:[ ]+(.*))?$")
-_VENDOR_RE = re.compile(r"[A-Za-z0-9_.+\-]+")
+# The loader's own vendor pattern, applied after lowercasing, so a vendor
+# that passes refresh never fails the loader.
+_VENDOR_RE = _LOADER_VENDOR_RE
 _NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
 # Purl types that give a namespace; every other type (deb, rpm, apk, alpm,
 # docker, oci, brew, scoop, chocolatey, winget, nuget, pypi, gem, cargo, hex,
@@ -581,6 +584,7 @@ def cpe_vendor(value: str, where: str):
         raise _bad(where, "a cpe identifier has an unexpected form")
     if vendor in ("*", "-", ""):
         return None
+    vendor = vendor.lower()
     if not _VENDOR_RE.fullmatch(vendor):
         raise _bad(where, "a cpe vendor has characters it cannot read")
     return vendor
