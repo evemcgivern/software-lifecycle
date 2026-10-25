@@ -9,7 +9,8 @@ from .errors import DataError, InputError
 from .normalize import normalize_name
 
 REQUIRED = ("name", "version")
-OPTIONAL = ("publisher", "owner", "count", "export_eol", "export_support")
+OPTIONAL = ("publisher", "owner", "count", "export_eol", "export_support",
+            "parent")
 
 # Generic aliases, matched after _norm_header (case, punctuation and
 # spacing ignored). The canonical field name is always an alias of itself.
@@ -31,6 +32,7 @@ GENERIC_ALIASES: dict[str, list[str]] = {
     "export_support": ["export support", "end of support", "eos",
                        "end of support date", "support end date",
                        "support end"],
+    "parent": ["parent", "parent software", "suite", "bundle"],
 }
 
 _HEADER_JUNK = re.compile(r"[^0-9a-z]+")
@@ -197,6 +199,7 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
     keys: dict[str, tuple] = {}
     owners: dict[str, set] = {}
     eols: dict[str, set] = {}
+    parents: dict[str, set] = {}
     for row in rows:
         pub, name, ver = (cell(row, f) for f in ("publisher", "name", "version"))
         key = tuple(normalize_name(x) for x in (pub, name, ver))
@@ -212,6 +215,7 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
                                  "name": name, "version": ver}
             owners[gid] = set()
             eols[gid] = set()
+            parents[gid] = set()
         grp["rows"] += 1
         owner = cell(row, "owner")
         if owner:
@@ -219,7 +223,11 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         eol = cell(row, "export_eol")
         if eol:
             eols[gid].add(eol)
+        parent = cell(row, "parent")
+        if parent:
+            parents[gid].add(parent)
     for gid, grp in groups.items():
         grp["owners"] = sorted(owners[gid])
         grp["export_eols"] = sorted(eols[gid])
+        grp["parents"] = sorted(parents[gid])
     return groups

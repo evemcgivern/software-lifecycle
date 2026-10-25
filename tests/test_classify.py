@@ -5,8 +5,11 @@ so these tests never depend on the bundled data's dates or contents.
 """
 from __future__ import annotations
 
+import csv
 import dataclasses
+import json
 import sys
+import tempfile
 import time
 import unittest
 from datetime import date
@@ -15,8 +18,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from swlc import assess as A  # noqa: E402
 from swlc import classify as C  # noqa: E402
 from swlc.data import load_data  # noqa: E402
+from swlc.inputs import group_rows, item_id, map_columns, read_rows  # noqa
+from swlc.overrides import Exceptions, Golden  # noqa: E402
 
 FIXTURE_DATA = ROOT / "tests" / "fixtures" / "data"
 
@@ -351,6 +357,298 @@ class ApplyTests(unittest.TestCase):
     def test_no_curation_still_classifies(self):
         data = dataclasses.replace(make_data(), curation=None)
         self.assertEqual(run(data, "libssl3", "3.0").cls, "component")
+
+
+ACME = "Acme Corp"
+OS_PATCH = ("Security Update for Demo OS (KB5031356)", ACME, "1")
+
+
+def check(rows, data=None, parent=True):
+    """Assess (name, publisher, version[, parent]) rows; return the report
+    dict and {(name, version): item}."""
+    data = data or make_data()
+    heads = ["Software Name", "Publisher", "Version"] + (
+        ["Parent"] if parent else [])
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "inv.csv"
+        with open(path, "w", encoding="utf-8", newline="") as fh:
+            writer = csv.writer(fh)
+            writer.writerow(heads)
+            for r in rows:
+                r = list(r) + [""] * (4 - len(r))
+                writer.writerow(r[:len(heads)])
+        found, headers = read_rows(str(path))
+    groups = group_rows(found, map_columns(headers, None, None))
+    report = A.assess(groups, data, Golden(), Exceptions(), {},
+                      date(2026, 10, 24))
+    return report, {(it["name"], it["version"]): it
+                    for it in report["items"]}
+
+
+def ident(name, publisher, version):
+    return item_id(publisher, name, version)
+
+
+DOTNET_ROW = {"name": "microsoft .net runtime", "publisher": "microsoft",
+              "class": "governable", "reason": "standalone runtime",
+              "source": SOURCE, "gold": "a|b|c"}
+
+
+class ParentTests(unittest.TestCase):
+    def test_os_part_links_only_to_the_one_os_item(self):
+        os_id = ident("Demo OS 2.0", ACME, "2.0")
+        _r, items = check([("Demo OS 2.0", ACME, "2.0"), OS_PATCH])
+        part = items[(OS_PATCH[0], "1")]
+        self.assertEqual(part["classification"], "bundle_member")
+        self.assertEqual(part["parent_ref"],
+                         {"kind": "os", "value": os_id, "basis": C.OS_PARENT})
+        self.assertEqual(part["inherited_from"], os_id)
+        self.assertIn(C.OS_PARENT, part["classification_basis"])
+        self.assertEqual(part["inherited_lifecycle"]["state"], "supported")
+
+        _r, items = check([("Demo OS 1.0", ACME, "1.0"),
+                           ("Demo OS 2.0", ACME, "2.0"), OS_PATCH])
+        part = items[(OS_PATCH[0], "1")]
+        self.assertEqual(part["classification"], "component")
+        self.assertIsNone(part["parent_ref"])
+        self.assertIsNone(part["inherited_from"])
+
+        _r, items = check([OS_PATCH, ("Example SQL", "Example Vendor", "16")])
+        part = items[(OS_PATCH[0], "1")]
+        self.assertEqual(part["classification"], "component")
+        self.assertIsNone(part["parent_ref"])
+        self.assertIsNone(part["inherited_from"])
+
+    def test_os_part_version_token_must_agree(self):
+        patch = ("Update for Demo OS 1.0 (KB5000001)", ACME, "1")
+        _r, items = check([("Demo OS 1.0", ACME, "1.0"),
+                           ("Demo OS 2.0", ACME, "2.0"), patch])
+        part = items[(patch[0], "1")]
+        self.assertEqual(part["classification"], "bundle_member")
+        self.assertEqual(part["inherited_from"],
+                         ident("Demo OS 1.0", ACME, "1.0"))
+        _r, items = check([("Demo OS 2.0", ACME, "2.0"), patch])
+        self.assertEqual(items[(patch[0], "1")]["classification"],
+                         "component")
+
+    def test_os_part_needs_the_os_publisher(self):
+        patch = ("Security Update for Demo OS (KB5031356)", "Nobody Inc", "1")
+        _r, items = check([("Demo OS 2.0", ACME, "2.0"), patch])
+        self.assertEqual(items[(patch[0], "1")]["classification"],
+                         "component")
+
+    def test_parent_column_links_by_exact_name(self):
+        viewer = ("Contoso Suite Viewer", "Contoso Ltd", "1.0")
+        part = ("Contoso Charts", "Contoso Ltd", "1.0", "Contoso Suite")
+        _r, items = check([viewer, part])
+        got = items[("Contoso Charts", "1.0")]
+        self.assertIsNone(got["parent_ref"])
+        self.assertIsNone(got["inherited_from"])
+        self.assertEqual(got["classification"], "unknown")
+
+        suite = ("Contoso Suite", "Contoso Ltd", "1.0")
+        _r, items = check([viewer, suite, part])
+        got = items[("Contoso Charts", "1.0")]
+        suite_id = ident(*suite)
+        self.assertEqual(got["classification"], "bundle_member")
+        self.assertEqual(got["parent_ref"], {"kind": "item",
+                                             "value": suite_id,
+                                             "basis": C.PARENT_COLUMN})
+        self.assertEqual(got["inherited_from"], suite_id)
+        self.assertIn(C.PARENT_COLUMN, got["classification_basis"])
+        # an unmatched parent: the link is shown, the date is not
+        self.assertIsNone(got["inherited_lifecycle"])
+        self.assertIn(C.PARENT_NO_DATE, got["classification_basis"])
+
+    def test_duplicate_parent_names_give_no_link(self):
+        _r, items = check([
+            ("Example SQL", "Example Vendor", "15"),
+            ("Example SQL", "Example Vendor", "16"),
+            ("Contoso Connector", "Contoso Ltd", "2.0", "Example SQL")])
+        got = items[("Contoso Connector", "2.0")]
+        self.assertEqual(got["classification"], "unknown")
+        self.assertIn(C.PARENT_AMBIGUOUS, got["classification_basis"])
+        self.assertIsNone(got["parent_ref"])
+        self.assertIsNone(got["inherited_from"])
+        self.assertIsNone(got["inherited_lifecycle"])
+
+    def test_ambiguous_parent_keeps_a_name_signal(self):
+        # D2: a part with its own name signal stays component, no link.
+        _r, items = check([
+            ("Example SQL", "Example Vendor", "15"),
+            ("Example SQL", "Example Vendor", "16"),
+            ("Example SQL Language Pack", "Example Vendor", "16",
+             "Example SQL")])
+        got = items[("Example SQL Language Pack", "16")]
+        self.assertEqual(got["classification"], "component")
+        self.assertIn(C.PARENT_AMBIGUOUS, got["classification_basis"])
+        self.assertIsNone(got["parent_ref"])
+
+    def test_parent_that_is_a_part_gets_no_inherited_block(self):
+        # One hop only. The parent case fixture column-names-a-part fixes
+        # inherited_from as null when the parent is itself a part.
+        agent = ("Example SQL Agent", "Example Vendor", "16", "Example SQL")
+        pack = ("Agent Report Pack", "Example Vendor", "16",
+                "Example SQL Agent")
+        _r, items = check([("Example SQL", "Example Vendor", "16"), agent,
+                           pack])
+        mid = items[("Example SQL Agent", "16")]
+        self.assertEqual(mid["classification"], "bundle_member")
+        self.assertEqual(mid["inherited_lifecycle"]["state"], "supported")
+        got = items[("Agent Report Pack", "16")]
+        self.assertEqual(got["classification"], "bundle_member")
+        self.assertEqual(got["parent_ref"]["value"], ident(*agent[:3]))
+        self.assertIsNone(got["inherited_from"])
+        self.assertIsNone(got["inherited_lifecycle"])
+        self.assertIn(C.PARENT_IS_PART, got["classification_basis"])
+
+    def test_group_with_two_parent_values_is_unknown(self):
+        _r, items = check([
+            ("Example SQL", "Example Vendor", "16"),
+            ("Demo OS 2.0", ACME, "2.0"),
+            ("Contoso Widget", "Contoso Ltd", "1.0", "Example SQL"),
+            ("Contoso Widget", "Contoso Ltd", "1.0", "Demo OS 2.0")])
+        got = items[("Contoso Widget", "1.0")]
+        self.assertEqual(got["classification"], "unknown")
+        self.assertIn(C.PARENT_AMBIGUOUS, got["classification_basis"])
+        self.assertIsNone(got["parent_ref"])
+        self.assertIsNone(got["inherited_from"])
+
+    def test_runtime_in_app_is_bundle_member(self):
+        data = make_data(classification_rows=[DOTNET_ROW])
+        app = ("Example SQL", "Example Vendor", "16")
+        inside = ("Microsoft .NET Runtime - 8.0.10 (x64)",
+                  "Microsoft Corporation", "8.0.10.34104", "Example SQL")
+        alone = ("Microsoft .NET Runtime - 6.0.25 (x64)",
+                 "Microsoft Corporation", "6.0.25.33121")
+        _r, items = check([app, inside, alone], data)
+        got = items[(inside[0], inside[2])]
+        self.assertEqual(got["classification"], "bundle_member")
+        self.assertIn(C.ROW_OVERRIDE, got["classification_basis"])
+        self.assertIn(C.PARENT_COLUMN, got["classification_basis"])
+        self.assertEqual(got["inherited_from"], ident(*app))
+        self.assertEqual(items[(alone[0], alone[2])]["classification"],
+                         "governable")
+
+    def test_parent_column_never_beats_a_component_or_unknown_row(self):
+        for cls in ("component", "unknown"):
+            with self.subTest(cls=cls):
+                data = make_data(classification_rows=[
+                    dict(DOTNET_ROW, **{"class": cls})])
+                inside = ("Microsoft .NET Runtime - 8.0.10 (x64)",
+                          "Microsoft Corporation", "8.0.10.34104",
+                          "Example SQL")
+                _r, items = check([("Example SQL", "Example Vendor", "16"),
+                                   inside], data)
+                got = items[(inside[0], inside[2])]
+                self.assertEqual(got["classification"], cls)
+                self.assertIsNone(got["parent_ref"])
+                self.assertIsNone(got["inherited_from"])
+                self.assertIsNone(got["inherited_lifecycle"])
+
+    def test_parent_column_beats_a_curated_suite_link(self):
+        data = make_data(bundle_parents=[OUTLOOK])
+        _r, items = check([
+            ("Contoso Mail Suite", "Contoso Ltd", "3.0"),
+            ("Microsoft Outlook 2019", "Microsoft Corporation", "16.0",
+             "Contoso Mail Suite")], data)
+        got = items[("Microsoft Outlook 2019", "16.0")]
+        self.assertEqual(got["parent_ref"]["kind"], "item")
+        self.assertEqual(got["inherited_from"],
+                         ident("Contoso Mail Suite", "Contoso Ltd", "3.0"))
+
+    def test_curated_suite_link_inherits_from_the_one_item(self):
+        data = make_data(bundle_parents=[OUTLOOK])
+        office = ("Microsoft Office Professional Plus 2019",
+                  "Microsoft Corporation", "16.0.10399")
+        part = ("Microsoft Outlook 2019", "Microsoft Corporation", "16.0")
+        office_item = dict(item(office[0], office[2], "office",
+                                office[1]), id=ident(*office),
+                           cycle="2019", state="supported", eol_used=False,
+                           support=True, extended_support=None)
+        office_item["classification"] = "governable"
+        part_item = dict(item(part[0], part[2], None, part[1]),
+                         id=ident(*part), state="unmatched", eol_used=None,
+                         support=None, extended_support=None)
+        items = [office_item, part_item]
+        C.apply_classification(items, {}, data)
+        self.assertEqual(part_item["parent_ref"]["value"], "office/2019")
+        self.assertEqual(part_item["inherited_from"], ident(*office))
+        self.assertEqual(part_item["inherited_lifecycle"]["cycle"], "2019")
+
+    def test_parent_absent_warning_and_no_date(self):
+        report, items = check([("Contoso Agent", "Contoso Ltd", "1.0",
+                                "Demo OS 2.0")])
+        got = items[("Contoso Agent", "1.0")]
+        self.assertEqual(got["classification"], "bundle_member")
+        self.assertEqual(got["parent_ref"], {"kind": "product",
+                                             "value": "demoos/2.0",
+                                             "basis": C.PARENT_COLUMN})
+        self.assertIsNone(got["inherited_from"])
+        self.assertIsNone(got["inherited_lifecycle"])
+        self.assertIn(C.PARENT_ABSENT, got["classification_basis"])
+        self.assertNotEqual(got["state"], "supported")
+        self.assertIn(A.PARENTS_ABSENT % 1, report["warnings"])
+        self.assertEqual(A.PARENTS_ABSENT % 1,
+                         "1 parts whose parent is not in this inventory")
+
+    def test_no_warning_when_every_parent_is_present(self):
+        report, _items = check([("Demo OS 2.0", ACME, "2.0"), OS_PATCH])
+        self.assertFalse(any("not in this inventory" in w
+                             for w in report["warnings"]))
+
+    def test_parent_no_cycle_labels_no_date(self):
+        _r, items = check([
+            ("Example SQL", "Example Vendor", ""),
+            ("Contoso Agent", "Contoso Ltd", "1.0", "Example SQL")])
+        got = items[("Contoso Agent", "1.0")]
+        self.assertEqual(got["classification"], "bundle_member")
+        self.assertEqual(got["inherited_from"],
+                         ident("Example SQL", "Example Vendor", ""))
+        self.assertIsNone(got["inherited_lifecycle"])
+        self.assertIn(C.PARENT_NO_DATE, got["classification_basis"])
+
+    def test_inherited_block_never_touches_own_fields(self):
+        rows = [("Tidewater Suite", "Example Corp", "4.2"),
+                ("Example SQL", "Example Vendor", "15", "Tidewater Suite")]
+        _r, plain = check(rows, parent=False)
+        _r, linked = check(rows)
+        own, got = plain[("Example SQL", "15")], linked[("Example SQL", "15")]
+        for key in ("eol_used", "eol_endoflife", "state", "support",
+                    "extended_support", "product", "cycle"):
+            self.assertEqual(got[key], own[key], key)
+        self.assertEqual(own["state"], "ends_soon")
+        block = got["inherited_lifecycle"]
+        parent = linked[("Tidewater Suite", "4.2")]
+        self.assertEqual(block, {
+            "parent_id": parent["id"], "product": "tidewatersuite",
+            "cycle": "4", "eol": parent["eol_used"],
+            "support": parent["support"],
+            "extended_support": parent["extended_support"],
+            "state": "past_eol", "label": C.INHERITED_LABEL})
+        self.assertEqual(C.INHERITED_LABEL, "inherited from parent")
+
+    def test_inherited_attention_and_not_past_eol(self):
+        report, items = check([
+            ("Example SQL", "Sample Systems Inc", "14"),
+            ("Contoso Widget", "Contoso Ltd", "1.0", "Example SQL")])
+        got = items[("Contoso Widget", "1.0")]
+        self.assertEqual(got["inherited_lifecycle"]["state"], "past_eol")
+        self.assertEqual(report["counts"]["inherited_attention"], 1)
+        self.assertNotIn(got["id"], report["lists"]["past_eol"])
+        self.assertNotIn(got["id"], report["lists"]["ends_soon"])
+        self.assertIn(got["id"], report["lists"]["unmatched"])
+        self.assertNotIn("lists_inherited", json.dumps(report))
+        self.assertEqual(sorted(report["lists"]), sorted(A.LISTS))
+        self.assertEqual(C.inherited_states,
+                         ("past_eol", "ends_soon", "mainstream_ended"))
+
+    def test_no_parent_column_means_no_column_links(self):
+        report, items = check([("Example SQL", "Example Vendor", "16"),
+                               ("Contoso Widget", "Contoso Ltd", "1.0")],
+                              parent=False)
+        self.assertEqual(report["counts"]["inherited_attention"], 0)
+        self.assertIsNone(items[("Contoso Widget", "1.0")]["parent_ref"])
 
 
 if __name__ == "__main__":

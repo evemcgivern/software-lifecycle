@@ -1,10 +1,13 @@
 """What kind of item a row is: governable, component, bundle_member, unknown.
 
-Pure and per item: a name, a version, the matched product and the loaded
-data in, one Classification out. No inventory context here; parent links
-from the inventory are a later step. The first confident hit wins and every
-signal that fired is recorded in ``basis``. Publisher only confirms a
-curated entry; it never decides a class by itself.
+``classify`` is pure and per item: a name, a version, the matched product
+and the loaded data in, one Classification out. The first confident hit
+wins and every signal that fired is recorded in ``basis``. Publisher only
+confirms a curated entry; it never decides a class by itself.
+
+``resolve_parents`` then uses the whole inventory: the Parent column, the
+one OS item an OS part belongs to, and the parent's dates shown against a
+part. It never changes a part's own state or date fields.
 """
 from __future__ import annotations
 
@@ -12,6 +15,7 @@ import re
 from dataclasses import dataclass
 
 from .catalog_match import strip_arch, tokens
+from .matching import NO_CYCLE, match_product
 from .normalize import best_cycle, normalize_name, split_version
 
 CLASSES = ("governable", "component", "bundle_member", "unknown")
@@ -34,6 +38,19 @@ DEVICE = "device_category"
 UNCATEGORIZED = "category_unknown"
 NO_SIGNAL = "no_signal"
 VERSION_SHAPE = "version_shape"
+# Parent signal codes (resolve_parents)
+PARENT_COLUMN = "parent_column"
+OS_PARENT = "os_parent"
+PARENT_AMBIGUOUS = "parent_ambiguous"
+PARENT_NOT_FOUND = "parent_not_found"
+PARENT_IS_PART = "parent_is_part"
+PARENT_ABSENT = "parent_absent"
+PARENT_NO_DATE = "parent_no_date"
+
+INHERITED_LABEL = "inherited from parent"
+# Parent states that count toward counts.inherited_attention.
+inherited_states = ("past_eol", "ends_soon", "mainstream_ended")
+PART_CLASSES = ("component", "bundle_member")
 
 _VERSION_TOKEN = re.compile(r"v?\d+(?:\.\d+)*[a-z]?")
 _YEAR_OR_VERSION = re.compile(r"\d+(?:\.\d+)*(?:[a-z]+\d*)?")
@@ -304,3 +321,155 @@ def apply_classification(items: list, groups: dict, data) -> None:
         it["parent_ref"] = result.parent_ref
         it["inherited_from"] = None
         it["inherited_lifecycle"] = None
+    resolve_parents(items, groups, data)
+
+
+_GROUPS = re.compile(r"[(\[][^()\[\]]*[)\]]")
+
+
+def _os_token(name: str):
+    """The first year or version word in the name, outside brackets (so not
+    a KB number), as version parts; None when the name has none."""
+    words = _GROUPS.sub(" ", strip_arch(normalize_name(name or ""))).split()
+    for word in words:
+        if _YEAR_OR_VERSION.fullmatch(word):
+            return split_version(word)
+    return None
+
+
+def _agrees(token, cycle) -> bool:
+    if token is None:
+        return True
+    parts = split_version(cycle or "")
+    n = min(len(token), len(parts))
+    return n > 0 and token[:n] == parts[:n]
+
+
+def _locked(it: dict) -> bool:
+    """A curated row that makes the item a component or unknown: no parent
+    signal changes it. A curated governable row does not lock it."""
+    return ROW_OVERRIDE in it["classification_basis"] \
+        and it["classification"] in ("component", "unknown")
+
+
+def _no_link(it: dict, code: str) -> None:
+    """No parent can be named: unknown, except a part that is already a
+    component by its own evidence (D2)."""
+    it["classification_basis"].append(code)
+    it["parent_ref"] = None
+    if it["classification"] != "component":
+        it["classification"] = "unknown"
+
+
+def _link(it: dict, kind: str, value: str, code: str) -> None:
+    it["classification_basis"].append(code)
+    it["classification"] = "bundle_member"
+    it["parent_ref"] = {"kind": kind, "value": value, "basis": code}
+    if kind != "product":
+        it["inherited_from"] = value
+
+
+def _column(it: dict, value: str, by_name: dict, data, index) -> bool:
+    """Link from the Parent column. True when the cycle-less product link
+    came from a version that fits no cycle (so no item can be the parent)."""
+    hits = [o for o in by_name.get(normalize_name(value), []) if o is not it]
+    if len(hits) > 1:
+        _no_link(it, PARENT_AMBIGUOUS)
+        return False
+    if hits:
+        _link(it, "item", hits[0]["id"], PARENT_COLUMN)
+        return False
+    match = match_product(value, "", data.aliases, data.products,
+                          catalog_index=index,
+                          publisher=it.get("publisher") or "")
+    if match.product is None:
+        _no_link(it, PARENT_NOT_FOUND)
+        return False
+    cycle = match.cycle.get("cycle") if match.cycle else None
+    _link(it, "product", "%s/%s" % (match.product, cycle) if cycle
+          else match.product, PARENT_COLUMN)
+    return cycle is None and match.reason == NO_CYCLE
+
+
+def _os_parent(it: dict, items: list, catalog: dict, index) -> None:
+    """Link an OS part to the one OS item that fits by publisher and, when
+    the part names one, by version. Otherwise the class is left as it is.
+    An OS product with no vendor phrase cannot refute the publisher, so it
+    still counts as a second fit; only a confirmed fit is linked."""
+    if index is None:
+        return
+    pub = tokens(it.get("publisher") or "")
+    token = _os_token(it.get("name"))
+    found = [o for o in items if o is not it and o.get("product")
+             and (catalog.get(o["product"]) or {}).get("category") == "os"
+             and (index.confirms(o["product"], pub)
+                  or not index.phrases.get(o["product"]))
+             and _agrees(token, o.get("cycle"))]
+    if len(found) == 1 and index.confirms(found[0]["product"], pub):
+        _link(it, "os", found[0]["id"], OS_PARENT)
+
+
+def _product_parent(it: dict, items: list, unfit: bool) -> None:
+    """D4: a product parent passes on dates only when exactly one item has
+    that product (and cycle, when the link has one)."""
+    product, _sep, cycle = it["parent_ref"]["value"].partition("/")
+    found = [] if unfit else [
+        o for o in items if o is not it and o.get("product") == product
+        and (not cycle or o.get("cycle") == cycle)]
+    if len(found) == 1:
+        it["inherited_from"] = found[0]["id"]
+    else:
+        it["classification_basis"].append(PARENT_ABSENT)
+
+
+def _inherit(it: dict, parent: dict) -> None:
+    """Fill the inherited block from the parent item; one hop only."""
+    if parent["classification"] in PART_CLASSES:
+        it["classification_basis"].append(PARENT_IS_PART)
+        it["inherited_from"] = None
+        return
+    if parent.get("cycle") is None or parent.get("state") == "unmatched":
+        it["classification_basis"].append(PARENT_NO_DATE)
+        return
+    it["inherited_lifecycle"] = {
+        "parent_id": parent["id"],
+        "product": parent.get("product"),
+        "cycle": parent.get("cycle"),
+        "eol": parent.get("eol_used"),
+        "support": parent.get("support"),
+        "extended_support": parent.get("extended_support"),
+        "state": parent.get("state"),
+        "label": INHERITED_LABEL,
+    }
+
+
+def resolve_parents(items: list, groups: dict, data) -> None:
+    """Name each part's parent from the inventory and show the parent's
+    dates against it, in place. Order: the Parent column, then the one OS
+    item for an OS part, then a product parent (column or curated) to the
+    one item with that product. The part's own state and dates never
+    change, and a part never takes a list from its parent."""
+    catalog = data.catalog or {}
+    index = data.matching_index()
+    by_name: dict = {}
+    for it in items:
+        by_name.setdefault(normalize_name(it.get("name") or ""), []).append(it)
+    for it in items:
+        if _locked(it):
+            continue
+        parents = (groups.get(it["id"]) or {}).get("parents") or []
+        unfit = False
+        if len(parents) > 1:
+            _no_link(it, PARENT_AMBIGUOUS)
+        elif parents:
+            unfit = _column(it, parents[0], by_name, data, index)
+        elif it["parent_ref"] is None \
+                and NAME_OS_PART in it["classification_basis"]:
+            _os_parent(it, items, catalog, index)
+        ref = it["parent_ref"]
+        if ref is not None and ref["kind"] == "product":
+            _product_parent(it, items, unfit)
+    by_id = {it["id"]: it for it in items}
+    for it in items:
+        if it["inherited_from"] is not None:
+            _inherit(it, by_id[it["inherited_from"]])

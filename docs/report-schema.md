@@ -46,6 +46,7 @@ inventory, so keep it as private as the inventory.
 | `rows` | Number of inventory rows. |
 | `states` | Count of items in each state. |
 | `lists` | Count of item IDs in each list. |
+| `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 
 ### meta
 
@@ -117,9 +118,39 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `problem_ref` | From the tracking file, or `null`. |
 | `classification` | What kind of item this is: `governable`, `component`, `bundle_member` or `unknown`. See "What kind of item this is" in `docs/usage.md`. |
 | `classification_basis` | List of the signal codes that fired, in rule order. See the `classification_basis` codes below. |
-| `parent_ref` | The named parent of a `bundle_member`, or `null`: an object with `kind` (`product`), `value` (`<product>/<cycle>`) and `basis` (the signal code that named it). |
-| `inherited_from` | The parent item's ID when the parent is in the same inventory; otherwise `null`. Always `null` in this release. |
-| `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's; otherwise `null`. Always `null` in this release. The item's own date fields never change. |
+| `parent_ref` | The named parent of a `bundle_member`, or `null`. See `parent_ref` below. |
+| `inherited_from` | The parent item's ID when the parent is in the same inventory and is not itself a part; otherwise `null`. |
+| `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's, or `null`. See `inherited_lifecycle` below. The item's own date fields never change. |
+
+### parent_ref
+
+| Key | Meaning |
+|---|---|
+| `kind` | `item` (another row named in the inventory's Parent column), `os` (the one OS item an OS part fits) or `product` (a product and cycle, from the Parent column or a curated parent). |
+| `value` | The parent item's ID for `item` and `os`; `<product>/<cycle>` (or `<product>` when no cycle is known) for `product`. |
+| `basis` | The signal code that named it: `parent_column`, `os_parent` or `curated_parent`. |
+
+A `product` parent passes its dates only when exactly one item in the
+inventory has that product and cycle. Otherwise the parent counts as not
+in the inventory: `inherited_from` is `null`, the basis lists
+`parent_absent`, and the report warns "N parts whose parent is not in this
+inventory".
+
+### inherited_lifecycle
+
+Present when `inherited_from` names a parent that has a cycle. One hop
+only: a part whose parent is itself a part gets none.
+
+| Key | Meaning |
+|---|---|
+| `parent_id` | The parent item's ID. |
+| `product` | The parent's product ID. |
+| `cycle` | The parent's cycle. |
+| `eol` | The parent's `eol_used`. |
+| `support` | The parent's `support`. |
+| `extended_support` | The parent's `extended_support`. |
+| `state` | The parent's `state`, in the item state words. |
+| `label` | Always "inherited from parent". |
 
 Date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
 `extended_support`) hold `YYYY-MM-DD` text, `null` for none, or `true` or
@@ -201,6 +232,13 @@ is listed. Publisher only confirms a curated entry and never decides a class.
 | `category_unknown` | The matched product's category is `framework` or `standard`; the item is `unknown`. |
 | `no_signal` | No product matched and no other signal fired; the item is `unknown`. |
 | `version_shape` | The item would be governable, but it has no version in the column or the name; the item is `unknown`. |
+| `parent_column` | The inventory's Parent column names the parent: one other row with the same normalized name, or else a product. The item is a `bundle_member`. It overrides `governable`, also from a curated row, but never a curated row of class `component` or `unknown`. |
+| `os_parent` | An OS part (see `name_os_part`) fits exactly one OS item in the inventory, by publisher and, when the name carries a version, by cycle. The item is a `bundle_member`. With none or two or more, no link. |
+| `parent_ambiguous` | The Parent column holds two different values for the item, or its value names two or more rows. No link; the item is `unknown`, or stays `component` when its own name says so. |
+| `parent_not_found` | The Parent column value names no row and no product. No link; the item is `unknown`, or stays `component` when its own name says so. |
+| `parent_is_part` | The named parent is itself a `component` or `bundle_member`. The link stays; `inherited_from` and `inherited_lifecycle` are `null` (one hop only). |
+| `parent_absent` | The parent is a product, and not exactly one item in the inventory has that product and cycle. No dates are shown. |
+| `parent_no_date` | The parent item is unmatched or has no cycle. The link stays; `inherited_lifecycle` is `null` (the parent has no date). |
 
 ## Lists
 

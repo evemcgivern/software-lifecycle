@@ -24,7 +24,7 @@ from swlc.inputs import item_id  # noqa: E402
 SEED = 20261024
 TOTAL_ROWS = 60
 HEADER = ["Software Name", "Version", "Publisher", "Owner", "Install Count",
-          "End of Life"]
+          "End of Life", "Parent"]
 TEAMS = ["Finance Systems", "Infrastructure", "Support Desk", "HR Systems",
          "Marketing Ops", "Records Office", "Facilities"]
 PAST, SOON, SUPPORTED, MAINSTREAM, UNMATCHED = (
@@ -32,18 +32,24 @@ PAST, SOON, SUPPORTED, MAINSTREAM, UNMATCHED = (
 EC, EV, SS = "Example Corp", "Example Vendor", "Sample Systems Inc"
 FS, PL, NS = "Fictional Software Ltd", "Placeholder Labs", "Northwind Software"
 HOSTILE = "Hostile Corp"
+ACME = "Acme Corp"
+INHERITED_STATES = (PAST, SOON, MAINSTREAM)
 
 
 def case(label, name, version, publisher, state, lists=(), *, rows=None,
-         reason=None, disagree=None, decision=()):
+         reason=None, disagree=None, decision=(), parent="",
+         classification=None, inherited_state=None):
     """One planted item. rows is [(owner, export date)]; default is one
-    row owned by Finance Systems with no export date."""
+    row owned by Finance Systems with no export date. parent is the Parent
+    cell; a parent case also gives its class and the parent's state."""
     return {
         "case": label, "name": name, "version": version,
         "publisher": publisher, "state": state, "reason": reason,
         "lists": sorted(lists), "dates_disagree": disagree,
         "decision_needed": sorted(decision),
-        "rows": rows or [("Finance Systems", "")],
+        "rows": rows or [("Finance Systems", "")], "parent": parent,
+        "classification": classification,
+        "inherited_state": inherited_state,
     }
 
 
@@ -108,6 +114,18 @@ CASES = [
          UNMATCHED, [UNMATCHED], reason="NO_ALIAS"),
     case("hostile_pipe_backtick", "Util | `rm -rf` tool", "2", HOSTILE,
          UNMATCHED, [UNMATCHED], reason="NO_ALIAS"),
+    # Parent cases: the part keeps its own state and lists; the parent's
+    # state is shown against it and never puts it in past_eol.
+    case("part-parent-past-eol", "Harborview CRM Mail Connector", "5.1.2",
+         FS, UNMATCHED, [UNMATCHED], reason="NO_ALIAS",
+         parent="Harborview CRM", classification="bundle_member",
+         inherited_state=PAST),
+    case("part-parent-absent", "Fieldnote Sync Agent", "1.2", PL, UNMATCHED,
+         [UNMATCHED], reason="NO_ALIAS", parent="Demo OS 2.0",
+         classification="bundle_member"),
+    case("os-patch-one-os", "Security Update for Demo OS 1.0 (KB5000001)",
+         "1", ACME, UNMATCHED, [UNMATCHED], reason="NO_ALIAS",
+         classification="bundle_member", inherited_state=PAST),
 ]
 
 # Filler: ordinary supported software, so only the planted rows reach a list.
@@ -115,7 +133,6 @@ FILLER = [
     ("Tidewater Suite", EC, "6.%d", (1, 4)),
     ("Brightline Editor", FS, "8.%d", (1, 3)),
     ("Mapleton Reports", FS, "3.%d", (2, 5)),
-    ("Demo OS", FS, "2.0", None),
     ("Quillbase Database", PL, "15.0.2000.%d", (1, 4)),
     ("Copperfield Notes", PL, "2.%d", (0, 6)),
     ("Lantern Viewer", EC, "11.%d", (0, 5)),
@@ -145,7 +162,7 @@ def build() -> dict:
     for c in CASES:
         for owner, export in c["rows"]:
             rows.append([c["name"], c["version"], c["publisher"], owner,
-                         rng.randint(1, 400), export])
+                         rng.randint(1, 400), export, c["parent"]])
     while len(rows) < TOTAL_ROWS:
         name, publisher, fmt, span = rng.choice(FILLER)
         version = fmt if span is None else fmt % rng.randint(*span)
@@ -153,7 +170,7 @@ def build() -> dict:
             continue
         shown = "%s %s" % (name, version) if name == "Demo OS" else name
         rows.append([shown, version, publisher, rng.choice(TEAMS),
-                     rng.randint(1, 400), ""])
+                     rng.randint(1, 400), "", ""])
     rng.shuffle(rows)
 
     ids = {c["case"]: item_id(*_key(c)) for c in CASES}
@@ -171,8 +188,13 @@ def build() -> dict:
             "golden_overrides")},
         "cases": {ids[c["case"]]: {
             k: c[k] for k in ("case", "name", "version", "state", "reason",
-                              "lists", "dates_disagree", "decision_needed")}
+                              "lists", "dates_disagree", "decision_needed",
+                              "classification", "inherited_state")
+            if k not in ("classification", "inherited_state")
+            or c["classification"] is not None}
             for c in CASES},
+        "counts": {"inherited_attention": sum(
+            1 for c in CASES if c["inherited_state"] in INHERITED_STATES)},
     }
     tracking = [["schema_version", "item_id", "change_ref", "problem_ref"]]
     tracking += [["1", ids[label], chg, prb] for label, chg, prb in TRACKING]

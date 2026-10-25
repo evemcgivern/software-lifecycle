@@ -228,6 +228,13 @@ class MapColumnsTests(unittest.TestCase):
         m = map_columns(["Name", "Version", "Colour"], None, None)
         self.assertEqual(set(m), {"name", "version"})
 
+    def test_parent_aliases_map(self):
+        for heading in ("Parent", "Parent Software", "Suite", "Bundle"):
+            with self.subTest(heading=heading):
+                m = map_columns(["Name", "Version", heading], None, None)
+                self.assertEqual(m["parent"], heading)
+        self.assertIn("parent", inputs.OPTIONAL)
+
 
 class ItemIdTests(unittest.TestCase):
     def test_stable_and_12_hex(self):
@@ -283,6 +290,21 @@ class GroupRowsTests(unittest.TestCase):
         (grp,) = g.values()
         self.assertEqual(grp["owners"], [])
         self.assertEqual(grp["export_eols"], [])
+
+    def test_group_collects_distinct_parents(self):
+        cm = {"name": "N", "version": "V", "parent": "S"}
+        rows = [{"N": "W", "V": "1", "S": "Suite B"},
+                {"N": "W", "V": "1", "S": " Suite A "},
+                {"N": "W", "V": "1", "S": ""},
+                {"N": "W", "V": "1", "S": "Suite B"},
+                {"N": "X", "V": "1", "S": ""}]
+        g = group_rows(rows, cm)
+        self.assertEqual(g[item_id("", "W", "1")]["parents"],
+                         ["Suite A", "Suite B"])
+        self.assertEqual(g[item_id("", "X", "1")]["parents"], [])
+        (grp,) = group_rows([{"N": "W", "V": "1"}],
+                            {"name": "N", "version": "V"}).values()
+        self.assertEqual(grp["parents"], [])
 
     def test_id_collision_raises_data_error(self):
         rows = [{"N": "ZQXONE", "V": "1"}, {"N": "ZQXTWO", "V": "1"}]

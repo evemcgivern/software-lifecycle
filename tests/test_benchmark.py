@@ -313,6 +313,69 @@ class BenchmarkRunTests(unittest.TestCase):
             "never lower floor.json")
 
 
+def run_parent_case(path: Path, exp: dict) -> dict:
+    """{row key: what the tool gave, in the expected file's shape} for one
+    parent case, run on the bundled data on the case's own date. Item ids
+    in parent_ref (kinds item and os) and inherited_from become row keys
+    ("name|publisher|version"); inherited_state is the parent row's state."""
+    result, _meta = cli.build(str(path), as_of=date.fromisoformat(
+        exp["as_of"]))
+    keys = {it["id"]: "%s|%s|%s" % (it["name"], it["publisher"],
+                                    it["version"])
+            for it in result["items"]}
+    states = {it["id"]: it["state"] for it in result["items"]}
+    got = {}
+    for it in result["items"]:
+        ref = it["parent_ref"]
+        if ref is not None:
+            value = ref["value"] if ref["kind"] == "product" \
+                else keys.get(ref["value"], ref["value"])
+            ref = {"kind": ref["kind"], "value": value}
+        src = it["inherited_from"]
+        got[keys[it["id"]]] = {
+            "classification": it["classification"],
+            "parent_ref": ref,
+            "inherited_from": keys.get(src, src) if src else None,
+            "inherited_state": states.get(src) if src else None,
+        }
+    got["__warnings__"] = result["warnings"]
+    return got
+
+
+def parent_case_results() -> list:
+    """[(case name, row key, expected, got)] for every item of every case,
+    plus the warnings check of each case as one more entry."""
+    out = []
+    for path, exp in read_parent_cases():
+        got = run_parent_case(path, exp)
+        for key, want in sorted(exp["items"].items()):
+            out.append((path.stem, key, want, got.get(key)))
+        missing = [w for w in exp["warnings_contain"]
+                   if not any(w in line for line in got["__warnings__"])]
+        out.append((path.stem, "warnings", [], missing))
+    return out
+
+
+class ParentCaseTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.results = parent_case_results()
+        cls.floor = json.loads(FLOOR.read_text(encoding="utf-8"))
+
+    def test_each_case_matches_expected(self):
+        for case, key, want, got in self.results:
+            with self.subTest(case=case, item=key):
+                self.assertEqual(got, want)
+
+    def test_parent_cases_correct_not_below_floor(self):
+        right = sum(1 for _c, key, want, got in self.results
+                    if key != "warnings" and got == want)
+        if wants_report():
+            print("\nparent case items correct: %d of %d" % (
+                right, sum(1 for r in self.results if r[1] != "warnings")))
+        self.assertGreaterEqual(right, self.floor["parent_cases_correct_min"])
+
+
 class ClassificationBenchmarkTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -483,6 +546,7 @@ class GoldFileTests(unittest.TestCase):
                                          "generated_correct_min",
                                          "governable_as_part_max",
                                          "hand_catalog_correct_min", "note",
+                                         "parent_cases_correct_min",
                                          "soft_wrong_max",
                                          "wrong_parent_max"])
         self.assertEqual(floor["governable_as_part_max"], 0)
@@ -495,6 +559,8 @@ class GoldFileTests(unittest.TestCase):
         self.assertGreater(floor["hand_catalog_correct_min"], 0)
         self.assertIsInstance(floor["classification_correct_min"], int)
         self.assertGreater(floor["classification_correct_min"], 0)
+        self.assertIsInstance(floor["parent_cases_correct_min"], int)
+        self.assertGreater(floor["parent_cases_correct_min"], 0)
 
     def test_strata_and_heldout_values(self):
         for r in self.rows:

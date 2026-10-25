@@ -1,6 +1,20 @@
 {
   "as_of": "2026-10-24",
   "cases": {
+    "0879b8a5b037": {
+      "case": "part-parent-absent",
+      "classification": "bundle_member",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "inherited_state": null,
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Fieldnote Sync Agent",
+      "reason": "NO_ALIAS",
+      "state": "unmatched",
+      "version": "1.2"
+    },
     "0a668be21645": {
       "case": "past_eol_flag",
       "dates_disagree": null,
@@ -102,6 +116,20 @@
       "reason": null,
       "state": "past_eol",
       "version": "5.1"
+    },
+    "52f7be6ebed6": {
+      "case": "part-parent-past-eol",
+      "classification": "bundle_member",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "inherited_state": "past_eol",
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Harborview CRM Mail Connector",
+      "reason": "NO_ALIAS",
+      "state": "unmatched",
+      "version": "5.1.2"
     },
     "55be4cfcc848": {
       "case": "exception_expired",
@@ -209,6 +237,20 @@
       "reason": null,
       "state": "supported",
       "version": "6.0"
+    },
+    "86cd3cda695f": {
+      "case": "os-patch-one-os",
+      "classification": "bundle_member",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "inherited_state": "past_eol",
+      "lists": [
+        "unmatched"
+      ],
+      "name": "Security Update for Demo OS 1.0 (KB5000001)",
+      "reason": "NO_ALIAS",
+      "state": "unmatched",
+      "version": "1"
     },
     "8961717c4400": {
       "case": "support_true_supported",
@@ -352,6 +394,9 @@
       "version": "5.0"
     }
   },
+  "counts": {
+    "inherited_attention": 2
+  },
   "format": 1,
   "lists": {
     "accepted_risk": [
@@ -391,9 +436,12 @@
       "c3756f7f9c32"
     ],
     "unmatched": [
+      "0879b8a5b037",
       "1261552c85af",
+      "52f7be6ebed6",
       "61053426d57d",
       "7ba2dda739a2",
+      "86cd3cda695f",
       "b3e080c410cc",
       "bbccc7b93adf",
       "f08603b790e5",
