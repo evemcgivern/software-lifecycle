@@ -31,6 +31,23 @@
 - Repo files read (not fetched): data/aliases.json sources, tests/corpus_versions.csv sources.
 - Not reached / not used: NVD CPE dictionary (API rate limit 5 requests per 30 s without a key; the 1.3M-entry dictionary needs hundreds of paged calls; skipped). npm top packages (skipped: not easy without a third-party list).
 
+## Pages cited in row notes
+
+- https://learn.microsoft.com/en-us/officeupdates/update-history-office-2019 (Office 2019 volume-licensed builds)
+- https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info (Windows Server builds)
+- https://support.microsoft.com/en-us/servicing/sql/kb321185-download-and-install-latest-updates (the same SQL Server build page as above)
+- https://www.graalvm.org/release-calendar/ (GraalVM calendar-year and JDK-based version numbers)
+- endoflife.date product pages: https://endoflife.date/android,
+  https://endoflife.date/centos-stream, https://endoflife.date/cockroachdb,
+  https://endoflife.date/commvault, https://endoflife.date/django,
+  https://endoflife.date/docker-engine, https://endoflife.date/firefox,
+  https://endoflife.date/ios, https://endoflife.date/ipados,
+  https://endoflife.date/jquery, https://endoflife.date/nodejs,
+  https://endoflife.date/nutanix-prism, https://endoflife.date/react,
+  https://endoflife.date/ruby, https://endoflife.date/splunk,
+  https://endoflife.date/spring-boot, https://endoflife.date/spring-framework,
+  https://endoflife.date/tomcat and https://endoflife.date/windows-server
+
 ## Where each row came from
 
 - Positive rows for a product and its cycles: the product's file at
@@ -42,7 +59,9 @@
   The traps are written by hand to look like a product and not be one.
 - Catalog rows (stratum `catalog`): the exact name was found in one of the
   fetched catalogs (winget, Debian or Ubuntu packages, Homebrew). About 120
-  of them matched the catalog only after dropping punctuation.
+  of them matched the catalog only after dropping punctuation. 82 of them
+  are constructed traps with invented versions (notes `trap=nocycle` and
+  `trap=conflict`); see the README.
 - Generated rows (stratum `generated`): built by program from the upstream
   title, the per-cycle latest version, a package name, a vendor plus title,
   or an architecture suffix. Generated traps use versions that fit no cycle,

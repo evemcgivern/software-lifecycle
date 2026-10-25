@@ -45,10 +45,19 @@ Each row gets the first rule that fits:
    traps (absent products, components, look-alikes, devices, bare generic
    names, vendor clashes, ambiguous builds, Mac rows, name and version
    conflicts, versions with no cycle), and the rows added by hand later.
-2. `catalog`: not hand-written, and the exact name was seen in a fetched
-   public catalog (winget, Debian or Ubuntu packages, Homebrew). A catalog
-   row must carry a plausible real version for that package (a test checks
-   that a number in a package name agrees with the version).
+2. `catalog`: not hand-written, and the name was seen in a fetched public
+   catalog (winget, Debian or Ubuntu packages, Homebrew). Most catalog rows
+   carry a plausible real version for that package (a test checks that a
+   number in a package name agrees with the version). 82 do not: they are
+   constructed traps that pair a catalog name with an invented version, to
+   test that no cycle is guessed. 64 have notes starting `trap=nocycle` (a
+   version that fits no cycle, such as `SQLite 10.0.0`), and 18 start
+   `trap=conflict` (the name and the version column disagree, such as
+   `MySQL 26.7.0` with version `5.5.63`). 37 of the 82 carry the invented
+   version in the name itself, so that name is not the catalog's. All 82
+   expect the product with no cycle, and 74 of them are scored correct and
+   count toward the hand and catalog floor. The other 274 catalog rows (226
+   expecting a cycle, 48 expecting `NONE`) carry no invented-version trap.
 3. `generated`: everything else. Built by program from upstream titles and
    per-cycle latest versions, or generated traps.
 
@@ -68,7 +77,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 106 rows. Do not use held-out rows when writing
+are always `0`. That is 109 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks

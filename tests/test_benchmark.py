@@ -288,6 +288,17 @@ class GoldFileTests(unittest.TestCase):
             want = "1" if r["stratum"] != "generated" and digit == 0 else "0"
             self.assertEqual(r["heldout"], want, key)
 
+    def test_readme_heldout_count(self):
+        count = sum(r["heldout"] == "1" for r in self.rows)
+        text = " ".join((BENCH / "README.md").read_text("utf-8").split())
+        self.assertIn("That is %d rows." % count, text)
+
+    def test_every_note_url_is_in_sources(self):
+        sources = (BENCH / "SOURCES.md").read_text("utf-8")
+        for r in self.rows:
+            for url in re.findall(r"https?://[^\s,;)]+", r["notes"]):
+                self.assertIn(url.rstrip("."), sources, r["name"])
+
     def test_no_conflicting_duplicates(self):
         seen = {}
         for r in self.rows:
