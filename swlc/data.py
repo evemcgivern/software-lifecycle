@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
-from .catalog_match import build_index
+from .catalog_match import build_index, tokens
 from .errors import DataError
 from .matching import _check as _check_alias
 from .normalize import normalize_name
@@ -296,6 +296,8 @@ def validate_curation(obj, product_ids=None) -> dict:
         if not isinstance(phrases, list) or not phrases:
             raise DataError("%s: expected a non-empty list" % where)
         _str_list(phrases, where, lower=True)
+        if not all(tokens(ph) for ph in phrases):
+            raise DataError("%s: a phrase has no words" % where)
         _text(entry["reason"], where + ".reason")
         _https(entry["source"], where + ".source")
         named.append(pid)

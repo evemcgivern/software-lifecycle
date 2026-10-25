@@ -702,6 +702,8 @@ class CurationSchemaTests(DataCase):
             curation_obj(publisher_aliases={"alpha": pa("Acme")}),
             curation_obj(publisher_aliases={"alpha": pa(" a")}),
             curation_obj(publisher_aliases={"alpha": pa("")}),
+            curation_obj(publisher_aliases={"alpha": pa("...")}),
+            curation_obj(publisher_aliases={"alpha": pa("a", "-")}),
             curation_obj(publisher_aliases={"alpha": pa("a", reason="")}),
             curation_obj(publisher_aliases={"alpha": pa("a", reason=5)}),
             curation_obj(publisher_aliases={"alpha": pa(
