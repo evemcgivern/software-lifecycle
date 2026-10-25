@@ -15,5 +15,7 @@
   `docs/sop.md`, `docs/checklist.md`, `docs/platform-guide.md`,
   `docs/themes.md` and `docs/crosswalk.csv`.
 - Templates in `templates/`.
+- SECURITY.md updated, CONTRIBUTING.md, AGENTS.md and CLAUDE.md added,
+  with pull request and issue templates and CODEOWNERS in `.github/`.
 - Tests that keep the docs, templates and crosswalk true to the code
   (`tests/test_docs.py`).

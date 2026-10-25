@@ -136,8 +136,8 @@ goes beyond it.
   [docs/sop.md](docs/sop.md).
 - The tool prints roles (asset owner, risk owner, approver, ITAM lead). It
   never assigns people.
-- Details of the supply chain are in `SECURITY.md`. Report problems there,
-  privately.
+- Details of the supply chain are in [SECURITY.md](SECURITY.md). Report
+  problems there, privately.
 
 CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01. It is a reference only. It binds federal civilian agencies only. This tool does not implement it or its deadlines. Details are not reviewed here (Unverified).
 
@@ -238,6 +238,10 @@ Run the tests from the repo root:
     python3 -B -m unittest discover -s tests
 
 ## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full rules, and
+[SECURITY.md](SECURITY.md) to report a security problem privately. Agents
+read [AGENTS.md](AGENTS.md).
 
 If a product lands in "couldn't match", open the "Product the tool could not
 match" issue form. Give the public product name, the publisher and the
