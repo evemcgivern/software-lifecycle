@@ -964,5 +964,57 @@ class BundledSpeedTests(unittest.TestCase):
                 self.assertEqual(ids, (pid,), pid)
 
 
+class GuardedAliasTests(unittest.TestCase):
+    """A failed publisher guard blocks that alias's product everywhere."""
+
+    @classmethod
+    def setUpClass(cls):
+        import json
+        manifest = json.loads((ROOT / "data" / "manifest.json").read_text(
+            encoding="utf-8"))
+        cls.data = load_data(str(ROOT / "data"),
+                             date.fromisoformat(manifest["eol_date"]))
+
+    def run_row(self, name, publisher, version):
+        d = self.data
+        return match_product(name, version, d.aliases, d.products,
+                             catalog_index=d.matching_index(),
+                             publisher=publisher)
+
+    def test_failed_guard_gives_no_guarded_product(self):
+        rows = (("Node.js", "nodejs", "1.0.1"),
+                ("Node.js", "Node.js", "1.0.1"),
+                ("Node.js", "nodejs", "0.12.0"),
+                ("Node.js", "", "20.1.0"),
+                ("Ubuntu", "Google Fonts", "22.04"),
+                ("Ubuntu", "", "latest"),
+                ("Ubuntu", "Ubuntu Font Team", "22.04"))
+        for row in rows:
+            with self.subTest(row=row):
+                self.assertIsNone(self.run_row(*row).product)
+
+    def test_passing_guard_still_matches(self):
+        for pub in ("Node.js Foundation", "OpenJS Foundation"):
+            r = self.run_row("Node.js", pub, "22.1.0")
+            self.assertEqual(r.product, "nodejs", pub)
+        self.assertEqual(self.run_row("Ubuntu", "Canonical", "24.04").product,
+                         "ubuntu")
+
+    def test_other_products_still_match_when_a_guard_fails(self):
+        products = {"a": [{"cycle": "1"}], "b": [{"cycle": "1"}]}
+        aliases = [{"key": "foo bar", "match": "exact", "product": "a",
+                    "version_from": "version", "publisher": ["acme"]}]
+        index = build_index(
+            {"b": {"title": "Foo Bar", "vendors": [], "namespaces": []}}, {})
+        r = match_product("foo bar", "1", aliases, products, catalog_index=index,
+                          publisher="Other")
+        self.assertEqual(r.product, "b")
+        index_a = build_index(
+            {"a": {"title": "Foo Bar", "vendors": [], "namespaces": []}}, {})
+        r = match_product("foo bar", "1", aliases, products, catalog_index=index_a,
+                          publisher="Other")
+        self.assertIsNone(r.product)
+
+
 if __name__ == "__main__":
     unittest.main()

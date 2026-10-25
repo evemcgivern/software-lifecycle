@@ -144,7 +144,8 @@ def match_product(name: str, version: str, aliases: list[dict],
     AMBIGUOUS. Generated matching runs only when no alias hits. Without
     catalog_index, generated matching is off and only aliases are used.
     """
-    hit, result = _curated(name, version, aliases, products, publisher)
+    hit, result, blocked = _curated(name, version, aliases, products,
+                                    publisher)
     if result.product is not None:
         result = replace(result, source=CURATED)
     if catalog_index is None:
@@ -156,15 +157,19 @@ def match_product(name: str, version: str, aliases: list[dict],
         if any(pid != result.product for pid in others):
             return MatchResult(None, None, AMBIGUOUS)
         return result
-    return _generated(name, version, publisher, catalog_index, products)
+    return _generated(name, version, publisher, catalog_index, products,
+                      blocked)
 
 
 def _generated(name: str, version: str, publisher: str, index,
-               products: dict[str, list[dict]]) -> MatchResult:
-    """Generated matching (rule C). The version column is used; when it is
+               products: dict[str, list[dict]],
+               blocked: frozenset = frozenset()) -> MatchResult:
+    """Generated matching (rule C). Products in blocked (their alias hit
+    the name but its publisher guard failed) are never matched here. The version column is used; when it is
     empty, a version token split off the name is used instead. When both
     exist and disagree, the row is not decided: NO_CYCLE, product known."""
     pids, tails = index.lookup(name, publisher)
+    pids = tuple(p for p in pids if p not in blocked)
     if not pids:
         return MatchResult(None, None, NO_ALIAS)
     if len(pids) > 1:
@@ -241,21 +246,27 @@ def _disagree(name_parts: list[str], column: list[str],
 
 def _curated(name: str, version: str, aliases: list[dict],
              products: dict[str, list[dict]], publisher: str = "") -> tuple:
-    """(hit, MatchResult) from the alias table. hit is True when any alias
-    key hits the name, whatever the result: a hit with no result still
-    decides the row and stops generated matching. An alias whose
-    'publisher' list the row's publisher does not satisfy does not hit."""
+    """(hit, MatchResult, blocked) from the alias table. hit is True when
+    any alias key hits the name, whatever the result: a hit with no result
+    still decides the row and stops generated matching. An alias whose
+    'publisher' list the row's publisher does not satisfy does not hit, but
+    its product goes in blocked so generated matching cannot find it."""
     norm = normalize_name(name or "")
     hits: list[tuple[str, dict]] = []
+    blocked = set()
     for pos, entry in enumerate(aliases, 1):
         _check(entry, pos)
         key = _norm_key(entry["key"])
-        if _hits(norm, key, entry["match"]) \
-                and _publisher_ok(entry, publisher):
+        if not _hits(norm, key, entry["match"]):
+            continue
+        if _publisher_ok(entry, publisher):
             hits.append((key, entry))
+        else:
+            blocked.add(entry["product"])
+    blocked = frozenset(blocked)
     if not hits:
-        return False, MatchResult(None, None, NO_ALIAS)
-    return True, _decide(norm, version, hits, products)
+        return False, MatchResult(None, None, NO_ALIAS), blocked
+    return True, _decide(norm, version, hits, products), blocked
 
 
 @lru_cache(maxsize=4096)
