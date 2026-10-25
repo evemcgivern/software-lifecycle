@@ -192,9 +192,10 @@ artifact attestation, check it online before you use the release:
   products are devices, products left out on purpose, or one-word titles
   with no vendor to check, and never match.
 - That is a count of products, not a hit rate. On the project's own
-  benchmark (the 1,135 hand-written and catalog rows in
-  `tests/benchmark/gold.csv`), 699 rows should match a product and the tool
-  gives the right product and cycle for 414 of them. The other 436 rows are
+  benchmark (the 1,142 hand-written and catalog rows in
+  `tests/benchmark/gold.csv`), 706 rows should match a product. 421 of them
+  are scored correct: 320 with the right cycle, and 101 rightly with the
+  product and no cycle. Of the 592 rows that need a cycle, 320 get one. The other 436 rows are
   traps that should stay unmatched, and all 436 do. It is a benchmark, not a
   real estate. The rate on a real estate is unknown.
 - No wrong lifecycle claim was found on the benchmark. That is not proof for
