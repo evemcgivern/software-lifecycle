@@ -7,11 +7,11 @@ Source: https://github.com/endoflife-date/endoflife.date
 Used for:
 
 - `tests/fixtures/upstream/*.md`: trimmed copies of four product files,
-  taken from commit 7cfb122846893f10ee819ab47b615eff261945d0. Page text is
-  removed. See `tests/fixtures/upstream/NOTICE.txt`.
+  taken from the commit named in `tests/fixtures/upstream/NOTICE.txt`. Page
+  text is removed. See `tests/fixtures/upstream/NOTICE.txt`.
 - `data/eol/*.json`: release cycle identifiers and dates read from the
-  endoflife.date product files at commit 7cfb122846893f10ee819ab47b615eff261945d0 (the
-  `upstream_commit` in `data/manifest.json`). Product descriptions are
+  endoflife.date product files at the commit named as `upstream_commit` in
+  `data/manifest.json`. Product descriptions are
   not included.
 
 Licence of the repository (MIT):
@@ -42,8 +42,8 @@ Licence of the repository (MIT):
 Source: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 
 Used for `data/kev.json` (and `kev.json` in data releases): CVE id,
-vendor, product and date added only. The bundled copy is catalog version
-2026.10.23, released 2026-10-23. CISA publishes the catalog under CC0 1.0
+vendor, product and date added only. The bundled copy's catalog version is
+`kev_catalog_version` in `data/manifest.json`. CISA publishes the catalog under CC0 1.0
 (https://github.com/cisagov/kev-data). The feed itself carries no licence
 field, so `refresh_data.py` writes the note `"license": "CC0 1.0"` into
 `kev.json`.

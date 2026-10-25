@@ -12,6 +12,11 @@ practices; not independently assessed.
 It needs Python 3.9 or newer and nothing else. It uses only the standard
 library.
 
+## Install
+
+There is nothing to install. Clone the repo or download a release, then run
+the commands below from the repo root with `python3 software_lifecycle.py`.
+
 ## Quick start
 
 Run these from the repo root.
@@ -40,7 +45,8 @@ The report has these lists. An item can be on more than one.
 - Past end of life.
 - Ends within the lookahead window (12 months unless you change it).
 - Dates disagree: the export's own date and the endoflife.date date differ,
-  or a golden source needs a decision.
+  or a golden source has expired, or a golden source says to use the export
+  date and the export has no usable one (`GOLDEN_EXPORT_UNUSABLE`).
 - Couldn't match: the name and version did not map to a known product and
   cycle. The tool claims no date for these.
 - Review urgently: the item is past or near end of life and its vendor and
@@ -118,8 +124,9 @@ goes beyond it.
 
 - Real inventories are Confidential. Run them only through the local
   script, or through an AI agent in `--counts-only` mode.
-- The tool prints only counts and item IDs in `--counts-only` mode; the
-  full report is written to a file. An agent can still read that file:
+- In `--counts-only` mode the tool prints only counts, item IDs, the
+  checked-on date and the `kev_current` flag; the full report is written to
+  a file. An agent can still read that file:
   nothing technical stops it. Tell the agent not to, and keep the output
   folder out of its reach.
 - No model should read the full report. Letting an AI read the CSV
@@ -136,11 +143,11 @@ CISA's current binding directive for US federal civilian agencies, BOD 26-04, su
 
 ## Data and release verification
 
-The bundled data is release `bundled-2026.10.24`: end-of-life dates from
-the endoflife.date product files at upstream commit
-`7cfb122846893f10ee819ab47b615eff261945d0` (snapshot dated 2026-10-24), and
-the CISA Known Exploited Vulnerabilities catalog version 2026.10.23
-(released 2026-10-23).
+The bundled data holds end-of-life dates from the endoflife.date product
+files and the CISA Known Exploited Vulnerabilities catalog. Its release ID,
+upstream commit, snapshot dates and catalog version are in
+`data/manifest.json`. Read them there; they change when a new data release
+is merged.
 
 - `data/eol/*.json` derive from endoflife.date product files (MIT).
   Product descriptions are not included. See THIRD-PARTY.md for the
@@ -167,6 +174,15 @@ attestation. Check it online before you use a release:
 
 ## How it can be wrong
 
+- Coverage is small. `data/aliases.json` holds 16 aliases for
+  8 products (mssqlserver, windows-server, windows, office,
+  python, nodejs, ubuntu, eclipse-temurin), out of more than 400 products
+  in `data/eol/`. A realistic inventory leaves many rows unmatched.
+  Examples that are unmatched today: nginx, PHP, Tomcat, Chrome, Firefox,
+  vCenter, Exchange. To add your own, see "Extending the alias table" in
+  [docs/usage.md](docs/usage.md). Golden sources do not apply to unmatched
+  items. The maintainer extends the bundled table from "couldn't match"
+  reports; the issue form takes names only.
 - Build numbers versus cycles: a product whose version is a build number
   may map to the wrong cycle or none. Check the cycle shown in the report.
 - Names must match strictly. A name with extra words after the product name
@@ -176,12 +192,21 @@ attestation. Check it online before you use a release:
 - Java 8 names that carry an update number are unmatched.
 - KEV matches vendor and product only, never version. A match means "needs
   review", not "your version is affected".
-- `windows-server` uses the broad Windows KEV pair, because CISA files
-  Windows Server flaws under the product Windows. Every Windows entry
-  matches.
+- KEV is checked through the alias table's vendor and product pairs for
+  matched products. For a product matched by name but without such a pair,
+  the tool compares the publisher and the full inventory name (version
+  included) with KEV, exactly. So `kev: false` means "no match under those
+  rules". It does not mean the software is known safe.
+- `windows-server` and the Windows 10 client aliases use the broad
+  Microsoft and Windows KEV pair, because CISA files Windows flaws under
+  the product Windows. Every Windows entry matches.
+- Windows 10 names with extra words, such as "Windows 10 Enterprise 22H2",
+  land on NO_ALIAS. Windows 11 has no alias and is unmatched.
 - The profiles are Unverified until run on a real export.
 - Data is a snapshot and can be out of date.
-- The tests ran locally on Python 3.9.25 for the 3.9 floor.
+- CI runs the tests on Python 3.9 to 3.13. The tool was tested on macOS
+  and Linux. Windows is untested; the quick-start paths and the `python3`
+  command assume Unix.
 
 ## Maintaining
 
@@ -199,6 +224,14 @@ project. Maintained as time allows, best effort, no SLA, not independently asses
   matrix when that runner image stops offering it.
 - Before the first data release, create the `data-release` environment
   with main as its only deployment branch (see SECURITY.md).
+- Turn on private vulnerability reporting in the repository settings.
+  SECURITY.md and the issue-template link send reporters there, and no
+  email address is given.
+- Turn on "Allow GitHub Actions to create and approve pull requests" in the
+  Actions settings. The weekly end-of-life job opens its pull request with
+  the job token.
+- Create the label `alias-request`. The "Product the tool could not match"
+  issue form applies it.
 
 Run the tests from the repo root:
 
