@@ -23,7 +23,7 @@ who holds each role.
 
 ## Steps
 
-1. **Get the data.** Check the bundled data's age. If the report warns that
+1. **Get the data.** Check the bundled data's age: the report header lists the data release and the snapshot dates. If the report warns that
    the KEV snapshot is older than 3 days or the end-of-life snapshot is
    older than 30 days, fetch a newer data release and verify it online with
    `gh attestation verify` (command in the [README](../README.md)). Then
@@ -34,7 +34,7 @@ who holds each role.
 3. **Run the check locally.** Pass your override files and last quarter's
    report:
 
-       python3 software_lifecycle.py check inventory.csv --golden golden-sources.csv --exceptions exceptions.csv --tracking tracking.csv --previous last-quarter/report.json --out this-quarter
+       python3 software_lifecycle.py check inventory.csv --golden golden-sources.csv --exceptions exceptions.csv --tracking tracking.csv --previous last-quarter/report.json --out ../swlc-this-quarter
 
    If an AI agent runs it, use `--counts-only` and keep the output folder
    out of the agent's reach. No model should read the full report.
@@ -110,7 +110,7 @@ record its reference in `tracking.csv` (step 11).
 published standards as a reference. Some cells are secondary-sourced and
 marked in `unverified_columns`. See [themes.md](themes.md). The KEV overlay
 is a reference for prioritization. It does not show compliance with any
-standard. CISA's current binding directive for US federal civilian agencies, BOD 26-04 (which superseded BOD 22-01), is a reference; it binds federal civilian agencies only; this tool does not implement it or its deadlines; details not reviewed here (Unverified).
+standard. CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01. It is a reference only. It binds federal civilian agencies only. This tool does not implement it or its deadlines. Details are not reviewed here (Unverified).
 
 **What is the support level?** Maintained as time allows, best effort, no
 SLA. The repo is on the Experiment track with a review date of 2027-01-31.

@@ -94,8 +94,8 @@ Fetched or attempted on 2026-10-24.
 - ServiceNow, "Export data from a list" (Xanadu, updated 2024-08-01 per the
   page), fetched 2026-10-24:
   https://www.servicenow.com/docs/r/SbrhqYG7UKQCk7uYwvgVBA/i7sDpMe8BxnzsKw~YbJXxg
-- ServiceNow, listed in `data/profiles.json` as a profile source, attempted,
-  HTTP 403, not read:
+- Flexera's ServiceNow integration page, listed in `data/profiles.json` as a
+  profile source for `servicenow-mbs`, attempted, HTTP 403, not read:
   https://docs.flexera.com/ServiceNowFlexeraIntegrationApp/ITVisibility/v507/helplibrary/ExportFromSNTables.htm
 - Rapid7, "Understanding the reporting data model: dimensions", fetched
   2026-10-24 (first 100,000 of 113,951 characters read):

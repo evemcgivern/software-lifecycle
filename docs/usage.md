@@ -8,7 +8,9 @@ root with `python3 software_lifecycle.py`. Python 3.9 or newer.
     python3 software_lifecycle.py check INVENTORY [flags]
 
 `INVENTORY` is a CSV export with a header row. The layout is in the
-[README](../README.md). Without `--out` the Markdown report prints to the
+[README](../README.md). The KEV overlay is the extra flag that marks items
+whose vendor and product appear in CISA's list of known exploited
+vulnerabilities. Without `--out` the Markdown report prints to the
 screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 `report.csv` into `DIR` and prints one line naming them.
 
@@ -23,8 +25,8 @@ screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 | `--exceptions FILE` | Exceptions CSV (accepted risk). | `--exceptions exceptions.csv` |
 | `--tracking FILE` | Tracking CSV (change and problem references). | `--tracking tracking.csv` |
 | `--previous REPORT.json` | An earlier `report.json`. The new report then shows what is new, gone or changed. | `--previous last-quarter/report.json` |
-| `--out DIR` | Folder for the three report files. It must be a folder, not the input file. The tool will not write through a symbolic link. | `--out out` |
-| `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out out` |
+| `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
+| `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
 | `--fail-on LIST` | Exit with code 10 if any named list has items. Names: `past_eol`, `ends_soon`, `review_urgently`, `dates_disagree`, `unmatched`. Comma separated. | `--fail-on past_eol,review_urgently` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
 | `-h`, `--help` | Show help. | `--help` |
@@ -56,15 +58,15 @@ On success it prints "Data check passed" with the release and file count.
 | Code | Meaning |
 |---|---|
 | 0 | The tool ran. |
-| 2 | Usage error: a bad flag, value or combination. |
-| 3 | Bad input: the inventory, an override file, a columns file or the output location could not be used. |
+| 2 | Usage error: a bad flag, value or combination, including an `--out` that is a file or is the input file. |
+| 3 | Bad input: the inventory, an override file, a columns file or the output could not be written (for example, through a symbolic link). |
 | 4 | A data check failed. |
 | 10 | Findings are present in a list named by `--fail-on`. Only returned with `--fail-on`. |
 | 70 | Unexpected error. The tool prints only the error type. |
 
 ## Counts-only mode
 
-    python3 software_lifecycle.py check INVENTORY --counts-only --out out
+    python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out
 
 It prints:
 
@@ -91,8 +93,8 @@ Real inventories are Confidential.
    Write the output outside the agent's working folder, and tell the agent
    not to open it.
 4. No model should read the full report.
-5. Chat mode, where a model reads the CSV itself, is for synthetic or
-   non-sensitive inventories only.
+5. Letting an AI read the CSV directly is not a mode of the tool. Do it
+   only with synthetic or non-sensitive inventories.
 
 From Python, `swlc.cli.run(...)` returns the same data as `report.json`.
 See [report-schema.md](report-schema.md).

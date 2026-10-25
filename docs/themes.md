@@ -13,10 +13,11 @@ CIS Controls v8.1; ISO/IEC 27001:2022.
   page of a public preview.
 - ITIL 4 cells hold practice names. ITIL 4 has no clause numbers.
 - NIST 800-53, CSF 2.0 and CIS cells were checked against the publishers'
-  own lists, or close copies of them. The CIS control titles are the same
+  own lists, or against third-party summaries of the standard, not the
+  standard text itself. The CIS control titles are the same
   in v8 and v8.1; that rests on matching titles, not on CIS's change log.
 - The `unverified_columns` column lists the columns whose numbers came only
-  from secondary sources: here `iso20000_1`, `cobit2019` and `iso27001`.
+  from third-party summaries of the standard, not the standard text itself: here `iso20000_1`, `cobit2019` and `iso27001`.
   Treat those as leads to check, not as citations.
 - `verified` stays empty on any row that has an unverified column. Every
   row does today.
