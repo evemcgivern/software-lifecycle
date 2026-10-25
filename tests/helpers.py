@@ -8,10 +8,10 @@ from pathlib import Path
 from make_fixtures import build, canonical, resign
 
 
-def make_data_dir(tmp, kev_date, eol_date) -> str:
+def make_data_dir(tmp, kev_date, eol_date, data_format=2) -> str:
     """Build a valid synthetic data dir under tmp; return its path."""
     dest = Path(tmp) / "data"
-    build(dest, kev_date, eol_date)
+    build(dest, kev_date, eol_date, data_format)
     return str(dest)
 
 

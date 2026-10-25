@@ -1,10 +1,14 @@
 {
-  "data_format": 1,
+  "data_format": 2,
   "eol_date": "2026-10-20",
   "files": {
     "aliases.json": {
       "sha256": "08c26545d0878ba97e18c9bcc63d19081a253bf9c417201a397237c40f9d15b2",
       "size": 2236
+    },
+    "curation.json": {
+      "sha256": "4071b1fe9f7aca9b1de8e791f22c61729594b5d782e9d63afc3f6440f0dbfaf4",
+      "size": 119
     },
     "eol/brightlineeditor.json": {
       "sha256": "b921ad386c96ba6d762607e609fa02186e56b7115dc1292c34d3a79dc20659de",
@@ -61,6 +65,10 @@
     "kev.json": {
       "sha256": "740e8a0bb66c7a9449cebc704424506a9578be74499145f0e710c9b87967edda",
       "size": 413
+    },
+    "products.json": {
+      "sha256": "2fc3e7f995aafc61d4663a1ecc873318d8223d2add28b162ceca7e4c05741c2e",
+      "size": 2347
     },
     "profiles.json": {
       "sha256": "d4570242ac5a6218454a078251397b756bd877ed9f6bcb056626f45333e28544",

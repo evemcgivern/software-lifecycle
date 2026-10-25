@@ -468,11 +468,14 @@ class ManifestTests(unittest.TestCase):
         """A data dir built the way the daily job builds one."""
         data = Path(tmp) / "data"
         (data / "eol").mkdir(parents=True)
-        for name in ("aliases.json", "profiles.json"):
+        for name in ("aliases.json", "profiles.json", "curation.json"):
             shutil.copyfile(COMMITTED / name, data / name)
         (data / "kev.json").write_bytes(
             rd.canonical(rd.kev_from_feed(cisa_feed(4))))
-        rd.write_eol(str(data / "eol"), rd.eol_from_archive(make_archive(), SHA))
+        catalog = {}
+        rd.write_eol(str(data / "eol"),
+                     rd.eol_from_archive(make_archive(), SHA, catalog))
+        rd.write_products(str(data / "products.json"), catalog)
         return data
 
     def test_refreshed_dir_passes_verify_data(self):
@@ -488,10 +491,11 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(manifest["release_id"], "data-2026.10.24.1")
             self.assertEqual(manifest["upstream_commit"], SHA)
             self.assertEqual(manifest["min_tool_version"], rd.MIN_TOOL_VERSION)
-            self.assertEqual(manifest["data_format"], 1)
+            self.assertEqual(manifest["data_format"], 2)
             listed = set(manifest["files"])
             self.assertEqual(listed, {
                 "aliases.json", "profiles.json", "kev.json",
+                "products.json", "curation.json",
                 "eol/checkmk.json", "eol/mssqlserver.json",
                 "eol/openai-api-models.json", "eol/rhel.json"})
             for name, meta in manifest["files"].items():
@@ -520,9 +524,13 @@ class ManifestTests(unittest.TestCase):
             with self.assertRaises(rd.RefreshError):
                 rd.build_manifest(str(data), *args)
             (data / "notes.txt").unlink()
-            (data / "kev.json").unlink()
-            with self.assertRaises(rd.RefreshError):
-                rd.build_manifest(str(data), *args)
+            for name in ("kev.json", "products.json", "curation.json"):
+                saved = (data / name).read_bytes()
+                (data / name).unlink()
+                with self.assertRaises(rd.RefreshError, msg=name):
+                    rd.build_manifest(str(data), *args)
+                (data / name).write_bytes(saved)
+            rd.build_manifest(str(data), *args)
 
     def test_bad_flags_are_usage_errors(self):
         base = ["manifest", "--dir", "x", "--kev-date", "2026-10-23",
@@ -536,6 +544,252 @@ class ManifestTests(unittest.TestCase):
             argv[argv.index(flag) + 1] = value
             code, _, _ = run_cli(argv)
             self.assertEqual(code, 2, flag)
+
+
+class ProductRecordTests(unittest.TestCase):
+    def record(self, name):
+        return rd.product_record_from_markdown(
+            (UPSTREAM / name).read_text("utf-8"))
+
+    def test_cpe_vendors_from_both_forms(self):
+        self.assertEqual(self.record("rhel.md"), {
+            "id": "rhel", "title": "Red Hat Enterprise Linux",
+            "category": "os", "vendors": ["redhat"], "namespaces": []})
+        self.assertEqual(self.record("mssqlserver.md")["vendors"],
+                         ["microsoft"])
+
+    def test_purl_owner_is_lowercased(self):
+        self.assertEqual(self.record("checkmk.md"), {
+            "id": "checkmk", "title": "Checkmk", "category": "server-app",
+            "vendors": [], "namespaces": ["checkmk"]})
+
+    def test_no_identifiers_gives_empty_lists(self):
+        rec = self.record("openai-api-models.md")
+        self.assertEqual((rec["vendors"], rec["namespaces"]), ([], []))
+        self.assertEqual(rec["category"], "service")
+
+    def test_only_the_five_keys_and_no_page_text(self):
+        for path in sorted(UPSTREAM.glob("*.md")):
+            rec = rd.product_record_from_markdown(path.read_text("utf-8"))
+            self.assertEqual(set(rec), {"id", "title", "category", "vendors",
+                                        "namespaces"})
+            raw = json.dumps(rec)
+            for word in ("changelog", "releasePolicy", "http", "alternate",
+                         "redhat.com", "versionCommand", "slug"):
+                self.assertNotIn(word, raw)
+
+    def test_id_matches_the_eol_reader(self):
+        for path in sorted(UPSTREAM.glob("*.md")):
+            text = path.read_text("utf-8")
+            self.assertEqual(rd.product_record_from_markdown(text)["id"],
+                             rd.product_from_markdown(text)[0])
+
+    def _md(self, identifiers, title="title: Demo\n", extra=""):
+        return ("---\n%scategory: app\npermalink: /demo\n%s"
+                "identifiers:\n%s\nreleases:\n  - releaseCycle: \"1\"\n"
+                "    eol: 2030-01-01\n---\n" % (title, extra, identifiers))
+
+    def test_identifier_forms(self):
+        ids = "\n".join([
+            "  - cpe: cpe:/a:zeta:one",
+            "  - cpe: cpe:2.3:a:alpha:two:*:*",
+            "  - cpe: cpe:2.3:a:alpha:three",
+            "  # - cpe: cpe:2.3:a:commented:out",
+            "  - repology: whatever",
+            "  - cpe: cpe:2.3:a:*:wild",
+            "  - purl: pkg:github/Golang/go",
+            "  - purl: pkg:npm/%40Angular/core",
+            "  - purl: pkg:npm/left-pad",
+            "  - purl: pkg:maven/org.Apache.Tomcat/tomcat@9?type=jar#x",
+            "  - purl: pkg:golang/github.com/Gorilla/mux",
+            "  - purl: pkg:composer/Laravel/framework",
+            "  - purl: pkg:deb/debian/nginx",
+            "  - purl: pkg:docker/library/golang",
+            "  - purl: pkg:rpm/redhat/go",
+            "  - purl: pkg:pypi/django",
+            "  - purl: pkg:generic/go  # trailing comment"])
+        rec = rd.product_record_from_markdown(self._md(ids))
+        self.assertEqual(rec["vendors"], ["alpha", "zeta"])
+        self.assertEqual(rec["namespaces"], [
+            "angular", "golang", "gorilla", "laravel", "org.apache.tomcat"])
+
+    def test_quoted_titles(self):
+        for line, want in (('title: "Quoted: Title"\n', "Quoted: Title"),
+                           ("title: 'It''s'\n", "It's"),
+                           ("title: Plain # comment\n", "Plain")):
+            rec = rd.product_record_from_markdown(
+                self._md("  - repology: x", title=line))
+            self.assertEqual(rec["title"], want)
+
+    def test_unreadable_input_is_refused_without_echo(self):
+        bad = [
+            self._md("  - cpe: nonsense"),
+            self._md("  - cpe: cpe:2.3:a:ven dor:x"),
+            self._md("  - purl: nonsense"),
+            self._md("  - purl: pkg:github"),
+            self._md("  weird line"),
+            self._md("  - cpe:"),
+            self._md("  - repology: x", title="title:\n"),
+            self._md("  - repology: x", title='title: "a\\nb"\n'),
+            self._md("  - repology: x", title="title: &anchor x\n"),
+            self._md("  - repology: x", title="title: " + "x" * 300 + "\n"),
+            self._md("  - repology: x", title=""),
+            self._md("  - repology: x").replace("category: app\n", ""),
+            self._md("  - repology: x").replace("identifiers:",
+                                                 "identifiers: [a]"),
+        ]
+        for text in bad:
+            with self.subTest(text=text[:60]):
+                with self.assertRaises(rd.RefreshError) as ctx:
+                    rd.product_record_from_markdown(text)
+                self.assertNotIn("nonsense", str(ctx.exception))
+
+    def test_archive_fills_the_catalog_and_output_is_validated(self):
+        catalog = {}
+        eol = rd.eol_from_archive(make_archive(), SHA, catalog)
+        self.assertEqual(set(catalog), set(eol))
+        raw = rd.products_bytes(catalog)
+        self.assertEqual(raw, rd.products_bytes(dict(reversed(
+            list(catalog.items())))))
+        obj = json.loads(raw)
+        self.assertEqual(obj["format"], 1)
+        self.assertEqual([p["id"] for p in obj["products"]],
+                         sorted(eol))
+        self.assertTrue(raw.endswith(b"}\n"))
+        self.assertTrue(raw.isascii())
+        bad = dict(catalog)
+        bad["checkmk"] = dict(catalog["checkmk"], title="")
+        with self.assertRaises(rd.RefreshError):
+            rd.products_bytes(bad)
+
+
+class ProductsCommandTests(unittest.TestCase):
+    def test_eol_command_writes_products_and_is_byte_stable(self):
+        archive = make_archive()
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.object(rd, "fetch", return_value=archive):
+            runs = []
+            for n in (1, 2):
+                out, prod = Path(tmp) / str(n), Path(tmp) / ("p%d.json" % n)
+                code, _, err = run_cli(["eol", "--upstream-commit", SHA,
+                                        "--out", str(out),
+                                        "--products-out", str(prod)])
+                self.assertEqual(code, 0, err)
+                runs.append((prod.read_bytes(), sorted(
+                    p.name for p in out.iterdir())))
+            self.assertEqual(runs[0], runs[1])
+            self.assertEqual(rd.fetch.call_count, 2)
+            self.assertNotIn("products.json", runs[0][1])
+            code, _, err = run_cli(["eol", "--upstream-commit", SHA,
+                                    "--out", str(Path(tmp) / "3"),
+                                    "--products-out", str(prod)])
+            self.assertEqual(code, 1)
+            self.assertIn("already exists", err)
+
+    def test_eol_command_without_the_flag_writes_no_catalog(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.object(rd, "fetch", return_value=make_archive()):
+            code, _, err = run_cli(["eol", "--upstream-commit", SHA,
+                                    "--out", str(Path(tmp) / "o")])
+            self.assertEqual(code, 0, err)
+            self.assertEqual(sorted(p.name for p in Path(tmp).iterdir()),
+                             ["o"])
+
+
+def rec(pid, title, vendors=()):
+    return {"id": pid, "title": title, "category": "app",
+            "vendors": sorted(vendors), "namespaces": []}
+
+
+class ProductsSummaryTests(unittest.TestCase):
+    OLD = {"a": rec("a", "Alpha"), "b": rec("b", "Beta"),
+           "c": rec("c", "Gamma"), "d": rec("d", "Delta")}
+
+    def test_unchanged(self):
+        s = rd.products_change_summary(dict(self.OLD), dict(self.OLD))
+        self.assertEqual((s["added"], s["removed"], s["retitled"],
+                          s["collisions"]), ([], [], [], []))
+        self.assertEqual((s["products_old"], s["products_new"]), (4, 4))
+
+    def test_added_removed_retitled(self):
+        new = dict(self.OLD)
+        del new["b"]
+        new["e"] = rec("e", "Epsilon")
+        new["c"] = rec("c", "Gamma Pro")
+        s = rd.products_change_summary(new, self.OLD)
+        self.assertEqual(s["added"], ["e"])
+        self.assertEqual(s["removed"], ["b"])
+        self.assertEqual(s["retitled"],
+                         [{"id": "c", "old": "Gamma", "new": "Gamma Pro"}])
+        self.assertEqual(s["collisions"], [])
+
+    def test_vendor_only_change_is_not_a_retitle(self):
+        new = dict(self.OLD)
+        new["a"] = rec("a", "Alpha", ["acme"])
+        s = rd.products_change_summary(new, self.OLD)
+        self.assertEqual(s["retitled"], [])
+
+    def test_normalized_title_collisions_in_the_new_catalog(self):
+        new = dict(self.OLD)
+        new["e"] = rec("e", "ALPHA")
+        new["f"] = rec("f", "  Alpha  ")
+        new["g"] = rec("g", "Delta Server")
+        s = rd.products_change_summary(new, self.OLD)
+        self.assertEqual(len(s["collisions"]), 1)
+        self.assertEqual(s["collisions"][0]["ids"], ["a", "e", "f"])
+        # Old collisions are not reported: only the new catalog is checked.
+        s = rd.products_change_summary(self.OLD, new)
+        self.assertEqual(s["collisions"], [])
+
+    def test_text_is_fixed_and_escapes_titles(self):
+        new = dict(self.OLD)
+        new["c"] = rec("c", "Gamma `x` [y](http://z)")
+        new["e"] = rec("e", "Alpha")
+        text = rd.products_summary_text(
+            rd.products_change_summary(new, self.OLD))
+        self.assertTrue(text.startswith("## Product catalog change summary"))
+        for line in ("- Products: 4 before, 5 after",
+                     "- Products added: `e`",
+                     "- Products removed: none"):
+            self.assertIn(line, text)
+        self.assertIn("`c` (`Gamma` to `Gamma 'x' [y](http://z)`)", text)
+        self.assertIn("- Normalized-title collisions: `alpha`: `a`, `e`", text)
+        self.assertNotIn("``", text)
+
+    def test_cli_adds_a_catalog_section_and_keeps_the_exit_code(self):
+        eol = {"alpha": [{"cycle": "1", "eol": "2026-01-01", "support": True}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            rd.write_eol(str(tmp / "old"), eol)
+            rd.write_eol(str(tmp / "new"), eol)
+            (tmp / "old.json").write_bytes(rd.products_bytes(self.OLD))
+            changed = dict(self.OLD)
+            changed["e"] = rec("e", "Alpha")
+            (tmp / "new.json").write_bytes(rd.products_bytes(changed))
+            base = ["eol-summary", "--new", str(tmp / "new"),
+                    "--old", str(tmp / "old")]
+            code, out, err = run_cli(base)
+            self.assertEqual((code, "Product catalog" in out), (0, False))
+            code, out, err = run_cli(base + [
+                "--new-products", str(tmp / "new.json"),
+                "--old-products", str(tmp / "old.json")])
+            self.assertEqual(code, 0, err)
+            self.assertTrue(out.startswith("## endoflife.date change summary"))
+            self.assertIn("## Product catalog change summary", out)
+            self.assertIn("- Products added: `e`", out)
+            code, _, err = run_cli(base + [
+                "--new-products", str(tmp / "new.json")])
+            self.assertEqual(code, 1)
+            code, _, err = run_cli(base + [
+                "--new-products", str(tmp / "missing.json"),
+                "--old-products", str(tmp / "old.json")])
+            self.assertEqual(code, 1)
+            (tmp / "bad.json").write_text('{"format": 1, "products": 5}')
+            code, _, err = run_cli(base + [
+                "--new-products", str(tmp / "bad.json"),
+                "--old-products", str(tmp / "old.json")])
+            self.assertEqual(code, 1)
+            self.assertIn("schema check", err)
 
 
 class ZipTests(unittest.TestCase):

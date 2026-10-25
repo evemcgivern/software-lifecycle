@@ -132,12 +132,58 @@ EOL = {
 }
 
 
+# One record per fictional product in EOL, in the products.json shape.
+PRODUCTS = {
+    "format": 1,
+    "products": [
+        {"id": "brightlineeditor", "title": "Brightline Editor",
+         "category": "app", "vendors": ["brightline"], "namespaces": []},
+        {"id": "copperfieldnotes", "title": "Copperfield Notes",
+         "category": "app", "vendors": ["copperfield"], "namespaces": []},
+        {"id": "demoos", "title": "Demo OS", "category": "os",
+         "vendors": ["acme"], "namespaces": []},
+        {"id": "examplesql", "title": "Example SQL", "category": "database",
+         "vendors": ["examplevendor"], "namespaces": ["examplevendor"]},
+        {"id": "harborviewcrm", "title": "Harborview CRM",
+         "category": "app", "vendors": ["harborview"], "namespaces": []},
+        {"id": "ironwoodscheduler", "title": "Ironwood Scheduler",
+         "category": "server-app", "vendors": ["ironwood"],
+         "namespaces": []},
+        {"id": "lanternviewer", "title": "Lantern Viewer",
+         "category": "app", "vendors": [], "namespaces": ["lantern"]},
+        {"id": "mapletonreports", "title": "Mapleton Reports",
+         "category": "app", "vendors": ["mapleton"], "namespaces": []},
+        {"id": "northwindgateway", "title": "Northwind Gateway",
+         "category": "server-app", "vendors": ["examplecorp"],
+         "namespaces": ["northwind"]},
+        {"id": "pineconearchive", "title": "Pinecone Archive",
+         "category": "app", "vendors": ["pinecone"], "namespaces": []},
+        {"id": "quillbase", "title": "Quillbase", "category": "database",
+         "vendors": ["quillbase"], "namespaces": []},
+        {"id": "redwoodbackup", "title": "Redwood Backup",
+         "category": "app", "vendors": ["redwood"], "namespaces": []},
+        {"id": "tidewatersuite", "title": "Tidewater Suite",
+         "category": "app", "vendors": ["tidewater"], "namespaces": []},
+    ],
+}
+
+# Hand-kept in the real data folder; empty here, K3 and K4 fill the real one.
+CURATION = {
+    "format": 1,
+    "publisher_aliases": {},
+    "single_word_allowlist": [],
+    "exclusions": [],
+    "generated_off": [],
+}
+
+
 def _iso(value) -> str:
     return value.isoformat() if isinstance(value, date) else str(value)
 
 
-def data_files(kev_date, eol_date) -> dict:
-    """Relative path -> bytes for every file except the manifest."""
+def data_files(kev_date, eol_date, data_format=2) -> dict:
+    """Relative path -> bytes for every file except the manifest. Data
+    format 1 has no products.json or curation.json."""
     kev = {
         "catalogVersion": "2026.10.22",
         "dateReleased": _iso(kev_date),
@@ -154,28 +200,31 @@ def data_files(kev_date, eol_date) -> dict:
         "profiles.json": canonical(PROFILES),
         "kev.json": canonical(kev),
     }
+    if data_format == 2:
+        files["products.json"] = canonical(PRODUCTS)
+        files["curation.json"] = canonical(CURATION)
     for name, cycles in EOL.items():
         files["eol/" + name] = canonical(cycles)
     return files
 
 
-def manifest_bytes(files: dict, kev_date, eol_date) -> bytes:
+def manifest_bytes(files: dict, kev_date, eol_date, data_format=2) -> bytes:
     return _manifest_bytes(files, _iso(kev_date), _iso(eol_date),
                            upstream_commit="0" * 40,
                            kev_catalog_version="2026.10.22",
-                           release_id="fixture-1")
+                           release_id="fixture-1", data_format=data_format)
 
 
 def build(dest, kev_date=COMMITTED_KEV_DATE,
-          eol_date=COMMITTED_EOL_DATE) -> Path:
+          eol_date=COMMITTED_EOL_DATE, data_format=2) -> Path:
     dest = Path(dest)
-    files = data_files(kev_date, eol_date)
+    files = data_files(kev_date, eol_date, data_format)
     for name, data in files.items():
         path = dest / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
     (dest / "manifest.json").write_bytes(
-        manifest_bytes(files, kev_date, eol_date))
+        manifest_bytes(files, kev_date, eol_date, data_format))
     return dest
 
 
@@ -185,7 +234,8 @@ def resign(dest) -> None:
     manifest = json.loads((dest / "manifest.json").read_bytes())
     files = {name: (dest / name).read_bytes() for name in manifest["files"]}
     (dest / "manifest.json").write_bytes(
-        manifest_bytes(files, manifest["kev_date"], manifest["eol_date"]))
+        manifest_bytes(files, manifest["kev_date"], manifest["eol_date"],
+                       manifest["data_format"]))
 
 
 if __name__ == "__main__":

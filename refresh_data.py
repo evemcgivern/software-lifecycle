@@ -8,11 +8,14 @@ dates come from the feeds' own fields or from explicit flags.
 
 Commands:
   kev --out DIR                       download KEV, write DIR/kev.json
-  eol --upstream-commit SHA --out DIR build DIR/<product>.json at SHA
+  eol --upstream-commit SHA --out DIR [--products-out FILE]
+                                      build DIR/<product>.json at SHA, and
+                                      the products.json catalog if asked
   manifest --dir DIR ...              rebuild DIR/manifest.json
   check-kev --new FILE --old FILE     publish gate for a new kev.json
   zip --dir DIR --out FILE            reproducible zip of a data folder
-  eol-summary --new DIR --old DIR     change summary for the weekly PR
+  eol-summary --new DIR --old DIR [--new-products F --old-products F]
+                                      change summary for the weekly PR
 
 Exit codes: 0 ok; 1 gate failed or refresh failed; 2 usage error.
 Messages are fixed text plus counts and product ids, never feed content.
@@ -39,7 +42,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from swlc.data import validate_eol, validate_kev  # noqa: E402
+from swlc.data import validate_eol, validate_kev, validate_products  # noqa: E402
+from swlc.normalize import normalize_name  # noqa: E402
 from swlc.errors import DataError  # noqa: E402
 
 KEV_URL = ("https://www.cisa.gov/sites/default/files/feeds/"
@@ -60,7 +64,7 @@ PRODUCTS_MAX = 5000
 # 1.0 (https://github.com/cisagov/kev-data), so the note is a constant that
 # this script writes into kev.json, and the daily gate checks it is there.
 LICENCE_NOTE = "CC0 1.0"
-DATA_FORMAT = 1
+DATA_FORMAT = 2
 MIN_TOOL_VERSION = "0.1.0"
 COUNT_TOLERANCE = 0.20
 MAX_TEXT = 200
@@ -76,7 +80,10 @@ _PRODUCT_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
 _CYCLE_RE = re.compile(r"[a-z0-9.\-+_]+")  # upstream's own releaseCycle rule
 _CATALOG_RE = re.compile(r"[0-9A-Za-z][0-9A-Za-z.\-]{0,31}")
 _RELEASE_RE = re.compile(r"[0-9A-Za-z][0-9A-Za-z._\-]{0,63}")
-_REQUIRED = ("aliases.json", "profiles.json", "kev.json")
+# Data format 2: products.json is generated here; curation.json is a
+# hand-kept file, listed in the manifest but never written by this script.
+_REQUIRED = ("aliases.json", "profiles.json", "kev.json", "products.json",
+             "curation.json")
 
 
 class RefreshError(Exception):
@@ -443,6 +450,14 @@ def _parse_releases(block: list, where: str) -> list:
     return items
 
 
+def _permalink_id(top: dict) -> str:
+    permalink = _strip_comment(top.get("permalink") or "")
+    if not permalink.startswith("/") or not _PRODUCT_RE.fullmatch(
+            permalink[1:]):
+        raise _bad("file", "permalink is missing or not a plain product id")
+    return permalink[1:]
+
+
 def product_from_markdown(text: str) -> tuple:
     """One upstream product file -> (product id, list of cycle dicts)."""
     lines = _front_matter(text)
@@ -465,11 +480,7 @@ def product_from_markdown(text: str) -> tuple:
             continue
         if current == "releases":
             releases_block.append(line)
-    permalink = _strip_comment(top.get("permalink") or "")
-    if not permalink.startswith("/") or not _PRODUCT_RE.fullmatch(
-            permalink[1:]):
-        raise _bad("file", "permalink is missing or not a plain product id")
-    pid = permalink[1:]
+    pid = _permalink_id(top)
     if not releases_block:
         raise _bad(pid, "no releases list")
     cycles, seen = [], set()
@@ -499,8 +510,151 @@ def product_from_markdown(text: str) -> tuple:
     return pid, cycles
 
 
-def eol_from_archive(raw: bytes, sha: str) -> dict:
-    """GitHub's tar.gz of the upstream repo at sha -> {product id: cycles}."""
+# --- product catalog (products.json) ----------------------------------------
+#
+# The same upstream front matter, at the same pinned commit, also gives the
+# product catalog. Only these upstream fields are read for it:
+#   permalink    -> id (shared with the eol files)
+#   title        -> title
+#   category     -> category
+#   identifiers  -> entries of kind cpe (the vendor part, in both the
+#                   cpe:/a:vendor:product and cpe:2.3:a:vendor:product
+#                   forms) and kind purl (the owner part, for purl types
+#                   that have one: see _OWNER_PURLS). Entries of any other
+#                   kind (repology) are skipped.
+# Nothing else is read: no descriptions, slugs, alternate_urls, page text
+# or dates.
+
+_IDENT_RE = re.compile(r"\s*-\s+([A-Za-z0-9_]+):(?:[ ]+(.*))?$")
+_VENDOR_RE = re.compile(r"[A-Za-z0-9_.\-]+")
+_OWNER_PURLS = ("github", "npm", "maven", "composer", "golang")
+
+
+def _plain_text(value, key: str, where: str) -> str:
+    """A title or identifier value: plain or quoted, no escapes."""
+    value = (value or "").strip()
+    if not value:
+        raise _bad(where, "%s has no value" % key)
+    if value[0] in "\"'":
+        quote = value[0]
+        pos = 1
+        while True:
+            end = value.find(quote, pos)
+            if end < 0:
+                raise _bad(where, "%s has a quoted value it cannot read" % key)
+            if quote == "'" and value[end + 1:end + 2] == "'":
+                pos = end + 2
+                continue
+            break
+        inner = value[1:end]
+        if quote == '"' and "\\" in inner:
+            raise _bad(where, "%s has a quoted value it cannot read" % key)
+        rest = value[end + 1:].strip()
+        if rest and not rest.startswith("#"):
+            raise _bad(where, "%s has text after a quoted value" % key)
+        text = inner.replace("''", "'") if quote == "'" else inner
+    else:
+        if value[0] in "|>[{&*!%@`":
+            raise _bad(where, "%s has a value it cannot read" % key)
+        text = _strip_comment(value)
+    if not text or len(text) > MAX_TEXT or _bad_char(text):
+        raise _bad(where, "%s has a value that is empty, too long or has "
+                          "unreadable characters" % key)
+    return text
+
+
+def cpe_vendor(value: str, where: str):
+    """The vendor token of a CPE 2.2 URI or 2.3 string; None for * or -."""
+    parts = value.split(":")
+    if value.startswith("cpe:2.3:") and len(parts) >= 5:
+        vendor = parts[3]
+    elif value.startswith("cpe:/") and len(parts) >= 3:
+        vendor = parts[2]
+    else:
+        raise _bad(where, "a cpe identifier has an unexpected form")
+    if vendor in ("*", "-", ""):
+        return None
+    if not _VENDOR_RE.fullmatch(vendor):
+        raise _bad(where, "a cpe vendor has characters it cannot read")
+    return vendor
+
+
+def purl_namespace(value: str, where: str):
+    """The owner part of a purl, lower-cased; None when the type has none."""
+    if not value.startswith("pkg:"):
+        raise _bad(where, "a purl identifier has an unexpected form")
+    path = value[4:].split("#")[0].split("?")[0]
+    segments = path.split("/")
+    if len(segments) < 2 or not segments[0]:
+        raise _bad(where, "a purl identifier has an unexpected form")
+    if segments[0] not in _OWNER_PURLS or len(segments) < 3:
+        return None
+    spaces = [urllib.parse.unquote(seg) for seg in segments[1:-1]]
+    if segments[0] == "golang":
+        if "." in spaces[0] and len(spaces) > 1:
+            spaces = spaces[1:]          # drop the host, keep the owner
+        space = spaces[0]
+    elif segments[0] == "maven":
+        space = ".".join(spaces)
+    else:
+        space = "/".join(spaces)
+    space = space.lstrip("@").strip().lower()
+    return space or None
+
+
+def product_record_from_markdown(text: str) -> dict:
+    """One upstream product file -> one products.json record."""
+    top, blocks, current = {}, {}, None
+    for line in _front_matter(text):
+        if not line or line.startswith("#"):
+            continue
+        if line[0] not in " -\t":
+            match = _TOP_RE.match(line)
+            if not match:
+                raise _bad("file", "a top-level line has an unexpected layout")
+            current = match.group(1)
+            if current in top:
+                raise _bad("file", "a top-level key appears twice")
+            top[current] = match.group(2)
+            blocks[current] = []
+        elif current is not None:
+            blocks[current].append(line)
+    pid = _permalink_id(top)
+    vendors, spaces = set(), set()
+    if (top.get("identifiers") or "").strip():
+        raise _bad(pid, "identifiers is not a block list")
+    for line in blocks.get("identifiers", []):
+        if not line.strip() or line.strip().startswith("#"):
+            continue
+        match = _IDENT_RE.match(line)
+        if not match:
+            raise _bad(pid, "an identifiers line has an unexpected layout")
+        kind = match.group(1)
+        if kind not in ("cpe", "purl"):
+            continue
+        value = _plain_text(match.group(2), kind, pid)
+        if kind == "cpe":
+            vendor = cpe_vendor(value, pid)
+            if vendor:
+                vendors.add(vendor)
+        else:
+            space = purl_namespace(value, pid)
+            if space:
+                spaces.add(space)
+    return {
+        "id": pid,
+        "title": _plain_text(top.get("title"), "title", pid),
+        "category": _plain_text(top.get("category"), "category", pid),
+        "vendors": sorted(vendors),
+        "namespaces": sorted(spaces),
+    }
+
+
+def eol_from_archive(raw: bytes, sha: str, catalog: dict | None = None) -> dict:
+    """GitHub's tar.gz of the upstream repo at sha -> {product id: cycles}.
+
+    When catalog is a dict, it is filled with {product id: products.json
+    record} from the same files."""
     try:
         with gzip.GzipFile(fileobj=io.BytesIO(raw)) as gz:
             unpacked = gz.read(UNPACKED_MAX_BYTES + 1)
@@ -542,6 +696,8 @@ def eol_from_archive(raw: bytes, sha: str) -> dict:
                     raise RefreshError("endoflife.date archive has two "
                                        "products with id %s" % pid)
                 products[pid] = cycles
+                if catalog is not None:
+                    catalog[pid] = product_record_from_markdown(text)
     except tarfile.TarError:
         raise RefreshError("endoflife.date archive is not a tar file") from None
     if not products:
@@ -575,16 +731,34 @@ def write_eol(out_dir: str, products: dict) -> None:
         (out / (pid + ".json")).write_bytes(canonical(products[pid]))
 
 
+def products_bytes(catalog: dict) -> bytes:
+    """Canonical products.json bytes for {product id: record}."""
+    obj = {"format": 1, "products": [catalog[pid] for pid in sorted(catalog)]}
+    try:
+        validate_products(obj)
+    except DataError as exc:
+        raise RefreshError("the product catalog fails the schema check: %s"
+                           % exc) from None
+    return canonical(obj)
+
+
+def write_products(path: str, catalog: dict) -> None:
+    target = Path(path)
+    if target.is_symlink() or target.exists():
+        raise RefreshError("--products-out already exists")
+    target.write_bytes(products_bytes(catalog))
+
+
 def manifest_bytes(files: dict, kev_date: str, eol_date: str,
                    upstream_commit: str, kev_catalog_version: str,
-                   release_id: str) -> bytes:
+                   release_id: str, data_format: int = DATA_FORMAT) -> bytes:
     """files maps relative names to bytes; the manifest lists each one."""
     listing = {
         name: {"sha256": hashlib.sha256(data).hexdigest(), "size": len(data)}
         for name, data in files.items()
     }
     return canonical({
-        "data_format": DATA_FORMAT,
+        "data_format": data_format,
         "release_id": release_id,
         "min_tool_version": MIN_TOOL_VERSION,
         "upstream_commit": upstream_commit,
@@ -598,7 +772,8 @@ def manifest_bytes(files: dict, kev_date: str, eol_date: str,
 def build_manifest(data_dir: str, kev_date: str, eol_date: str,
                    upstream_commit: str, kev_catalog_version: str,
                    release_id: str) -> bytes:
-    """Write data_dir/manifest.json for aliases, profiles, kev and eol/*."""
+    """Write data_dir/manifest.json (data format 2) for aliases, profiles, kev,
+    products, curation and eol/*."""
     root = Path(data_dir)
     if root.is_symlink() or not root.is_dir():
         raise RefreshError("--dir is not a folder")
@@ -721,6 +896,64 @@ def summary_text(summary: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def products_change_summary(new: dict, old: dict) -> dict:
+    """Compare {product id: record} catalogs: added, removed and retitled
+    products, and normalized-title collisions in the new catalog."""
+    by_title = {}
+    for pid in sorted(new):
+        by_title.setdefault(normalize_name(new[pid]["title"]), []).append(pid)
+    return {
+        "products_old": len(old), "products_new": len(new),
+        "added": sorted(set(new) - set(old)),
+        "removed": sorted(set(old) - set(new)),
+        "retitled": [
+            {"id": pid, "old": old[pid]["title"], "new": new[pid]["title"]}
+            for pid in sorted(set(new) & set(old))
+            if new[pid]["title"] != old[pid]["title"]],
+        "collisions": [
+            {"title": title, "ids": ids}
+            for title, ids in sorted(by_title.items()) if len(ids) > 1],
+    }
+
+
+def products_summary_text(summary: dict) -> str:
+    """Fixed-text Markdown section for the weekly pull request body.
+    Titles come from upstream, so they are shown as code with backticks
+    removed."""
+    def ids(names):
+        return ", ".join("`%s`" % n for n in names) if names else "none"
+
+    def title(text):
+        return "`%s`" % text.replace("`", "'")
+    retitled = ", ".join("`%s` (%s to %s)" % (r["id"], title(r["old"]),
+                                            title(r["new"]))
+                         for r in summary["retitled"]) or "none"
+    collisions = "; ".join("%s: %s" % (title(c["title"]), ids(c["ids"]))
+                           for c in summary["collisions"]) or "none"
+    lines = [
+        "## Product catalog change summary", "",
+        "- Products: %d before, %d after" % (summary["products_old"],
+                                            summary["products_new"]),
+        "- Products added: %s" % ids(summary["added"]),
+        "- Products removed: %s" % ids(summary["removed"]),
+        "- Products retitled: %s" % retitled,
+        "- Normalized-title collisions: %s" % collisions,
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def _load_catalog(path: str, label: str) -> dict:
+    try:
+        obj = json.loads(Path(path).read_bytes().decode("utf-8"))
+        return validate_products(obj)
+    except (OSError, ValueError, RecursionError):
+        raise RefreshError("%s products file cannot be read as JSON"
+                           % label) from None
+    except DataError as exc:
+        raise RefreshError("%s products file fails the schema check: %s"
+                           % (label, exc)) from None
+
+
 def _load_eol_dir(path: str) -> dict:
     root = Path(path)
     if not root.is_dir():
@@ -780,6 +1013,8 @@ def _parser() -> argparse.ArgumentParser:
     eol.add_argument("--upstream-commit", required=True, metavar="SHA",
                      type=_pattern(_SHA_RE, "--upstream-commit"))
     eol.add_argument("--out", required=True, metavar="DIR")
+    eol.add_argument("--products-out", metavar="FILE",
+                     help="also write the product catalog (products.json)")
     man = sub.add_parser("manifest", help="rebuild manifest.json")
     man.add_argument("--dir", required=True, metavar="DIR")
     man.add_argument("--kev-date", required=True, type=_iso)
@@ -805,6 +1040,10 @@ def _parser() -> argparse.ArgumentParser:
     summary = sub.add_parser("eol-summary", help="weekly change summary")
     summary.add_argument("--new", required=True, metavar="DIR")
     summary.add_argument("--old", required=True, metavar="DIR")
+    summary.add_argument("--new-products", metavar="FILE",
+                         help="new products.json; adds a catalog section")
+    summary.add_argument("--old-products", metavar="FILE",
+                         help="previous products.json (with --new-products)")
     return parser
 
 
@@ -817,8 +1056,11 @@ def _run(args) -> int:
     if args.command == "eol":
         _empty_dir(args.out)
         raw = fetch(EOL_ARCHIVE_URL % args.upstream_commit, ARCHIVE_MAX_BYTES)
-        products = eol_from_archive(raw, args.upstream_commit)
+        catalog = {} if args.products_out else None
+        products = eol_from_archive(raw, args.upstream_commit, catalog)
         write_eol(args.out, products)
+        if args.products_out:
+            write_products(args.products_out, catalog)
         print("endoflife.date written: %d products" % len(products))
         return 0
     if args.command == "manifest":
@@ -847,9 +1089,15 @@ def _run(args) -> int:
         print("KEV gate passed: %d entries, %d added"
               % (len(new["entries"]), added))
         return 0
+    if bool(args.new_products) != bool(args.old_products):
+        raise RefreshError("--new-products and --old-products go together")
     summary = eol_change_summary(_load_eol_dir(args.new),
                                  _load_eol_dir(args.old))
     sys.stdout.write(summary_text(summary))
+    if args.new_products:
+        sys.stdout.write("\n" + products_summary_text(products_change_summary(
+            _load_catalog(args.new_products, "new"),
+            _load_catalog(args.old_products, "previous"))))
     return 1 if summary["flagged"] else 0
 
 

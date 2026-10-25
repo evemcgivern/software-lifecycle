@@ -25,6 +25,7 @@
     "eol_age_days": 4,
     "file_hashes": {
       "aliases.json": "08c26545d0878ba97e18c9bcc63d19081a253bf9c417201a397237c40f9d15b2",
+      "curation.json": "4071b1fe9f7aca9b1de8e791f22c61729594b5d782e9d63afc3f6440f0dbfaf4",
       "eol/brightlineeditor.json": "b921ad386c96ba6d762607e609fa02186e56b7115dc1292c34d3a79dc20659de",
       "eol/copperfieldnotes.json": "ed94f6341412455e945aa138dc4d51fd56b2d20e58b3a209c35a0c53e6c20b0f",
       "eol/demoos.json": "db2b2d0df9f15dfe88cf5955ddcba026a4921e133ee965cfd8c01024b0712e7d",
@@ -39,6 +40,7 @@
       "eol/redwoodbackup.json": "406c4b0fe542c33cda3c9d6e47e4530052fc7d4b52b370e79e7cc7300e54a554",
       "eol/tidewatersuite.json": "c922f96dbcd270392b1a6366d9b25785abbfcf797cc76c788d109eb88d868120",
       "kev.json": "740e8a0bb66c7a9449cebc704424506a9578be74499145f0e710c9b87967edda",
+      "products.json": "2fc3e7f995aafc61d4663a1ecc873318d8223d2add28b162ceca7e4c05741c2e",
       "profiles.json": "d4570242ac5a6218454a078251397b756bd877ed9f6bcb056626f45333e28544"
     },
     "id": "fixture-1",
@@ -1719,6 +1721,7 @@
     "data_release": {
       "file_hashes": {
         "aliases.json": "08c26545d0878ba97e18c9bcc63d19081a253bf9c417201a397237c40f9d15b2",
+        "curation.json": "4071b1fe9f7aca9b1de8e791f22c61729594b5d782e9d63afc3f6440f0dbfaf4",
         "eol/brightlineeditor.json": "b921ad386c96ba6d762607e609fa02186e56b7115dc1292c34d3a79dc20659de",
         "eol/copperfieldnotes.json": "ed94f6341412455e945aa138dc4d51fd56b2d20e58b3a209c35a0c53e6c20b0f",
         "eol/demoos.json": "db2b2d0df9f15dfe88cf5955ddcba026a4921e133ee965cfd8c01024b0712e7d",
@@ -1733,6 +1736,7 @@
         "eol/redwoodbackup.json": "406c4b0fe542c33cda3c9d6e47e4530052fc7d4b52b370e79e7cc7300e54a554",
         "eol/tidewatersuite.json": "c922f96dbcd270392b1a6366d9b25785abbfcf797cc76c788d109eb88d868120",
         "kev.json": "740e8a0bb66c7a9449cebc704424506a9578be74499145f0e710c9b87967edda",
+        "products.json": "2fc3e7f995aafc61d4663a1ecc873318d8223d2add28b162ceca7e4c05741c2e",
         "profiles.json": "d4570242ac5a6218454a078251397b756bd877ed9f6bcb056626f45333e28544"
       },
       "id": "fixture-1"

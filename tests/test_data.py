@@ -14,7 +14,8 @@ import make_fixtures  # noqa: E402
 from helpers import make_data_dir, replace_file  # noqa: E402
 from swlc import data  # noqa: E402
 from swlc.data import (  # noqa: E402
-    kev_match, load_data, validate_eol, validate_kev, verify_data)
+    kev_match, load_data, validate_curation, validate_eol, validate_kev,
+    validate_products, verify_data)
 from swlc.errors import DataError  # noqa: E402
 from swlc.matching import match_product  # noqa: E402
 
@@ -52,10 +53,13 @@ class LoadTests(DataCase):
                 "harborviewcrm", "pineconearchive", "redwoodbackup",
                 "copperfieldnotes", "lanternviewer"}
         self.assertEqual(set(d.file_hashes), {
-            "aliases.json", "profiles.json", "kev.json",
-            "eol/examplesql.json", "eol/demoos.json"}
+            "aliases.json", "profiles.json", "kev.json", "products.json",
+            "curation.json", "eol/examplesql.json", "eol/demoos.json"}
             | {"eol/%s.json" % name for name in demo})
         self.assertEqual(set(d.products), {"examplesql", "demoos"} | demo)
+        self.assertEqual(set(d.catalog), set(d.products))
+        self.assertEqual(d.catalog["demoos"]["title"], "Demo OS")
+        self.assertEqual(d.curation, make_fixtures.CURATION)
         self.assertEqual(d.kev_catalog_version, "2026.10.22")
         self.assertEqual(d.kev_age_days, 1)
         self.assertEqual(d.eol_age_days, 1)
@@ -188,12 +192,84 @@ class ManifestTests(DataCase):
                          (skill / "VERSION").read_text().strip())
 
     def test_unsupported_data_format(self):
+        for value in (3, 0, True, "2", None):
+            with self.subTest(value=value):
+                d = make_data_dir(tempfile.mkdtemp(dir=self.tmp),
+                                  days_ago(1), days_ago(1))
+                m = self.manifest(d)
+                m["data_format"] = value
+                self.write_manifest(d, m)
+                with self.assertRaises(DataError):
+                    load_data(d, AS_OF)
+
+    def test_unknown_format_is_reported_before_file_names(self):
+        # A future format may list files this tool has never heard of. An
+        # old tool must say "data format not supported", not complain about
+        # a file name.
         d = self.make()
         m = self.manifest(d)
-        m["data_format"] = 2
+        m["data_format"] = 3
+        m["files"]["future-thing.json"] = {"sha256": "0" * 64, "size": 2}
+        m["files"]["eol/Bad Name.json"] = {"sha256": "0" * 64, "size": 2}
+        del m["files"]["products.json"]
         self.write_manifest(d, m)
-        with self.assertRaises(DataError):
+        with self.assertRaises(DataError) as ctx:
             load_data(d, AS_OF)
+        self.assertEqual(
+            str(ctx.exception),
+            "manifest.json: data format is not supported by this tool")
+        self.assertEqual(verify_data_quiet(d), 4)
+
+    def test_format_1_loads_without_a_catalog(self):
+        d = make_data_dir(self.tmp, days_ago(1), days_ago(1), data_format=1)
+        self.assertFalse((Path(d) / "products.json").exists())
+        self.assertFalse((Path(d) / "curation.json").exists())
+        loaded = load_data(d, AS_OF)
+        self.assertIsNone(loaded.catalog)
+        self.assertIsNone(loaded.curation)
+        self.assertEqual(loaded.warnings, [
+            "This data release has no product catalog; "
+            "generated matching is off."])
+        self.assertEqual(set(loaded.file_hashes), {
+            "aliases.json", "profiles.json", "kev.json"}
+            | {"eol/%s.json" % p for p in loaded.products})
+        self.assertEqual(verify_data_quiet(d), 0)
+
+    def test_format_1_warning_comes_after_staleness_warnings(self):
+        d = make_data_dir(self.tmp, days_ago(5), days_ago(1), data_format=1)
+        warnings = load_data(d, AS_OF).warnings
+        self.assertEqual(len(warnings), 2)
+        self.assertEqual(warnings[-1], data.NO_CATALOG_WARNING)
+
+    def test_format_2_has_no_catalog_warning(self):
+        self.assertNotIn(data.NO_CATALOG_WARNING,
+                         load_data(self.make(), AS_OF).warnings)
+
+    def test_format_1_may_not_list_the_format_2_files(self):
+        d = make_data_dir(self.tmp, days_ago(1), days_ago(1), data_format=1)
+        for name in ("products.json", "curation.json"):
+            with self.subTest(name=name):
+                m = self.manifest(d)
+                m["files"][name] = {"sha256": "0" * 64, "size": 2}
+                self.write_manifest(d, m)
+                with self.assertRaises(DataError):
+                    load_data(d, AS_OF)
+                del m["files"][name]
+                self.write_manifest(d, m)
+
+    def test_format_2_needs_both_new_files_listed(self):
+        for name in ("products.json", "curation.json"):
+            with self.subTest(name=name):
+                d = make_data_dir(tempfile.mkdtemp(dir=self.tmp),
+                                  days_ago(1), days_ago(1))
+                m = self.manifest(d)
+                del m["files"][name]
+                self.write_manifest(d, m)
+                with self.assertRaises(DataError) as ctx:
+                    load_data(d, AS_OF)
+                self.assertEqual(
+                    str(ctx.exception),
+                    "manifest.json: files: %s is not listed" % name)
 
     def test_bad_manifest_fields(self):
         for key, value in (("release_id", ""), ("kev_date", "2026-13-40"),
@@ -444,6 +520,200 @@ def verify_data_quiet(d):
     with contextlib.redirect_stdout(io.StringIO()), \
             contextlib.redirect_stderr(io.StringIO()):
         return verify_data(d)
+
+
+def products_obj(*records):
+    return {"format": 1, "products": list(records)}
+
+
+def record(pid="alpha", **over):
+    rec = {"id": pid, "title": "Alpha", "category": "app",
+           "vendors": [], "namespaces": []}
+    rec.update(over)
+    return rec
+
+
+def curation_obj(**over):
+    obj = {"format": 1, "publisher_aliases": {}, "single_word_allowlist": [],
+           "exclusions": [], "generated_off": []}
+    obj.update(over)
+    return obj
+
+
+GOOD_EXCLUSION = {"product": "alpha", "name": "alpha desktop",
+                  "publisher": "", "reason": "client", "gold": "a|b|c"}
+GOOD_ALLOW = {"product": "alpha", "reason": "vendor says so",
+              "source": "https://example.com/a"}
+
+
+class ProductsSchemaTests(DataCase):
+    def test_valid_catalog_returns_id_to_record(self):
+        out = validate_products(products_obj(
+            record("alpha", vendors=["a", "b"], namespaces=["x"]),
+            record("beta", title="Beta")))
+        self.assertEqual(list(out), ["alpha", "beta"])
+        self.assertEqual(out["alpha"]["vendors"], ["a", "b"])
+        self.assertEqual(validate_products(products_obj()), {})
+
+    def test_bad_catalogs_are_refused(self):
+        bad = [
+            [], {"format": 1}, {"products": []},
+            {"format": 2, "products": []}, {"format": True, "products": []},
+            {"format": 1, "products": [], "extra": 1},
+            {"format": 1, "products": {}},
+            products_obj("x"),
+            products_obj(record(extra=1)),
+            products_obj({"id": "alpha", "title": "A", "category": "a"}),
+            products_obj(record(id="Alpha")),
+            products_obj(record(id="a b")),
+            products_obj(record(id=5)),
+            products_obj(record(title="")),
+            products_obj(record(title=3)),
+            products_obj(record(category=" ")),
+            products_obj(record(vendors="a")),
+            products_obj(record(vendors=["b", "a"])),
+            products_obj(record(vendors=["a", "a"])),
+            products_obj(record(vendors=[""])),
+            products_obj(record(vendors=[3])),
+            products_obj(record(vendors=[" a"])),
+            products_obj(record(namespaces=["Upper"])),
+            products_obj(record(namespaces=["b", "a"])),
+            products_obj(record("b"), record("a")),
+            products_obj(record("a"), record("a")),
+        ]
+        for obj in bad:
+            with self.subTest(obj=obj):
+                with self.assertRaises(DataError):
+                    validate_products(obj)
+
+    def test_errors_never_echo_values(self):
+        for obj in (products_obj(record(id="SECRET", title="SECRET")),
+                    products_obj(record(vendors=["SECRET", "SECRET"])),
+                    products_obj(record(namespaces=["SECRET"] + ["A"]))):
+            with self.assertRaises(DataError) as ctx:
+                validate_products(obj)
+            self.assertNotIn("SECRET", str(ctx.exception))
+
+    def test_bad_catalog_fails_load_and_verify_naming_the_file(self):
+        d = self.make()
+        replace_file(d, "products.json", products_obj(record(id="Bad")))
+        with self.assertRaises(DataError) as ctx:
+            load_data(d, AS_OF)
+        self.assertTrue(str(ctx.exception).startswith("products.json: "))
+        self.assertEqual(verify_data_quiet(d), 4)
+
+    def test_catalog_is_read_from_the_verified_bytes(self):
+        d = self.make()
+        replace_file(d, "products.json", products_obj(
+            record("examplesql", title="Changed")))
+        self.assertEqual(
+            load_data(d, AS_OF).catalog["examplesql"]["title"], "Changed")
+
+
+class CurationSchemaTests(DataCase):
+    def test_valid_curation_is_returned(self):
+        obj = curation_obj(
+            publisher_aliases={"alpha": ["acme", "acme software"]},
+            single_word_allowlist=[GOOD_ALLOW],
+            exclusions=[GOOD_EXCLUSION, dict(GOOD_EXCLUSION, publisher="p")],
+            generated_off=["alpha", "beta"])
+        self.assertIs(validate_curation(obj), obj)
+        self.assertIs(validate_curation(obj, ["alpha", "beta"]), obj)
+        validate_curation(curation_obj(), [])
+
+    def test_bad_curation_is_refused(self):
+        bad = [
+            [], {}, dict(curation_obj(), extra=1),
+            {k: v for k, v in curation_obj().items() if k != "format"},
+            curation_obj(format=2), curation_obj(format=True),
+            curation_obj(publisher_aliases=[]),
+            curation_obj(publisher_aliases={"Alpha": ["a"]}),
+            curation_obj(publisher_aliases={"alpha": []}),
+            curation_obj(publisher_aliases={"alpha": "a"}),
+            curation_obj(publisher_aliases={"alpha": ["b", "a"]}),
+            curation_obj(publisher_aliases={"alpha": ["a", "a"]}),
+            curation_obj(publisher_aliases={"alpha": ["Acme"]}),
+            curation_obj(publisher_aliases={"alpha": [" a"]}),
+            curation_obj(publisher_aliases={"alpha": [""]}),
+            curation_obj(single_word_allowlist={}),
+            curation_obj(single_word_allowlist=[GOOD_ALLOW, GOOD_ALLOW]),
+            curation_obj(single_word_allowlist=[dict(GOOD_ALLOW, extra=1)]),
+            curation_obj(single_word_allowlist=[
+                {"product": "alpha", "reason": "r"}]),
+            curation_obj(single_word_allowlist=[dict(GOOD_ALLOW, reason="")]),
+            curation_obj(single_word_allowlist=[
+                dict(GOOD_ALLOW, source="http://example.com/a")]),
+            curation_obj(single_word_allowlist=[
+                dict(GOOD_ALLOW, source="https://")]),
+            curation_obj(single_word_allowlist=[
+                dict(GOOD_ALLOW, source="https://a b")]),
+            curation_obj(single_word_allowlist=[
+                dict(GOOD_ALLOW, source="ftp://example.com")]),
+            curation_obj(single_word_allowlist=[dict(GOOD_ALLOW, source=5)]),
+            curation_obj(exclusions={}),
+            curation_obj(exclusions=["x"]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, extra=1)]),
+            curation_obj(exclusions=[
+                {k: v for k, v in GOOD_EXCLUSION.items() if k != "gold"}]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, name="")]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, publisher="A")]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, publisher="a b")]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, publisher=None)]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, reason="")]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, gold="a|b")]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, gold="a|b|c|d")]),
+            curation_obj(exclusions=[dict(GOOD_EXCLUSION, gold="")]),
+            curation_obj(exclusions=[GOOD_EXCLUSION, dict(GOOD_EXCLUSION)]),
+            curation_obj(generated_off="alpha"),
+            curation_obj(generated_off=["b", "a"]),
+            curation_obj(generated_off=["a", "a"]),
+            curation_obj(generated_off=["Alpha"]),
+            curation_obj(generated_off=[5]),
+        ]
+        for obj in bad:
+            with self.subTest(obj=obj):
+                with self.assertRaises(DataError):
+                    validate_curation(obj)
+
+    def test_every_named_product_must_exist_when_ids_are_given(self):
+        known = ["alpha"]
+        for obj in (
+                curation_obj(publisher_aliases={"gone": ["a"]}),
+                curation_obj(single_word_allowlist=[
+                    dict(GOOD_ALLOW, product="gone")]),
+                curation_obj(exclusions=[
+                    dict(GOOD_EXCLUSION, product="gone")]),
+                curation_obj(generated_off=["gone"])):
+            with self.subTest(obj=obj):
+                validate_curation(obj)              # fine without ids
+                with self.assertRaises(DataError) as ctx:
+                    validate_curation(obj, known)
+                self.assertNotIn("gone", str(ctx.exception))
+
+    def test_errors_never_echo_values(self):
+        for obj in (
+                curation_obj(single_word_allowlist=[
+                    dict(GOOD_ALLOW, source="http://SECRET.example")]),
+                curation_obj(generated_off=["SECRET", "Alpha"]),
+                curation_obj(exclusions=[dict(GOOD_EXCLUSION,
+                                              gold="SECRET")])):
+            with self.assertRaises(DataError) as ctx:
+                validate_curation(obj)
+            self.assertNotIn("SECRET", str(ctx.exception))
+
+    def test_bad_curation_fails_load_and_verify_naming_the_file(self):
+        d = self.make()
+        replace_file(d, "curation.json", curation_obj(generated_off=["b", "a"]))
+        with self.assertRaises(DataError) as ctx:
+            load_data(d, AS_OF)
+        self.assertTrue(str(ctx.exception).startswith("curation.json: "))
+        self.assertEqual(verify_data_quiet(d), 4)
+
+    def test_curation_is_read_from_the_verified_bytes(self):
+        d = self.make()
+        obj = curation_obj(generated_off=["demoos"])
+        replace_file(d, "curation.json", obj)
+        self.assertEqual(load_data(d, AS_OF).curation, obj)
 
 
 class SchemaTests(DataCase):
