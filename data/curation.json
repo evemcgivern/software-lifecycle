@@ -20,6 +20,46 @@
     "claude",
     "openai-api-models"
   ],
+  "no_cycle_versions": {
+    "graalvm-ce": {
+      "prefixes": [
+        "20.0.0",
+        "20.0.1",
+        "20.1",
+        "20.2",
+        "20.3",
+        "21.0.0",
+        "21.1",
+        "21.2",
+        "21.3",
+        "22.0.0",
+        "22.1",
+        "22.2",
+        "22.3"
+      ],
+      "reason": "Before 2023 GraalVM numbered releases by calendar year (19.x to 22.x: 20.3.6, 21.3.1, 22.0.0.2, 22.3.3). These cycles are the JDK-based releases from 2023 (21.0.2, 22.0.1). The old 20.x, 21.x and 22.x lines overlap cycles 20, 21 and 22, so an old version would get a cycle with the wrong dates. 20.0.1, 21.0.0 and 22.0.0 exist in both numberings and are left undecided too.",
+      "source": "https://www.graalvm.org/release-calendar/"
+    },
+    "oracle-graalvm": {
+      "prefixes": [
+        "20.0.0",
+        "20.0.1",
+        "20.1",
+        "20.2",
+        "20.3",
+        "21.0.0",
+        "21.1",
+        "21.2",
+        "21.3",
+        "22.0.0",
+        "22.1",
+        "22.2",
+        "22.3"
+      ],
+      "reason": "Oracle's GraalVM Enterprise releases before 2023 used the same calendar numbering (20.3.x, 21.3.x, 22.3.0). These cycles are the JDK-based releases from 2023 (21.0.5). The old 20.x, 21.x and 22.x lines overlap cycles 20, 21 and 22, so an old version would get a cycle with the wrong dates. 20.0.1, 21.0.0 and 22.0.0 exist in both numberings and are left undecided too.",
+      "source": "https://www.graalvm.org/release-calendar/"
+    }
+  },
   "publisher_aliases": {
     "ansible": {
       "phrases": [

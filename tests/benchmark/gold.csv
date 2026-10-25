@@ -2184,3 +2184,10 @@ Node.js,Node.js,1.0.1,NONE,,"trap=lookalike; a third-party winget package named 
 Ubuntu,,latest,NONE,,"trap=lookalike; the Ubuntu font (Homebrew cask font-ubuntu, version latest, no publisher), not the Ubuntu operating system",hand,1
 Python,Microsoft Corporation,2023.22.1,NONE,,"trap=lookalike; the Python extension for Visual Studio Code, versioned by year, not the Python language",hand,0
 MySQL Server 8.4,Oracle Corporation,8.4.9,mysql,8.4,"hand-added: the MySQL installer's display name, from the winget Oracle.MySQL 8.4.9 installer manifest",hand,0
+GraalVM Community Edition 22.3.3,,22.3.3,graalvm-ce,none,"hand-added: calendar-year GraalVM 22.3.3 (July 2023), not the JDK-based cycle 22 (GraalVM for JDK 22, 2024); https://www.graalvm.org/release-calendar/",hand,1
+GraalVM Community Edition 21.3.1,Oracle Corporation,21.3.1,graalvm-ce,none,"hand-added: calendar-year GraalVM 21.3.1 (January 2022), not the JDK-based cycle 21; https://www.graalvm.org/release-calendar/",hand,0
+GraalVM Community Edition,GraalVM Community,20.3.6,graalvm-ce,none,"hand-added: calendar-year GraalVM 20.3.6 (April 2022), not the JDK-based cycle 20; https://www.graalvm.org/release-calendar/",hand,0
+GraalVM Community Edition 22.0.0.2,,22.0.0.2,graalvm-ce,none,"hand-added: calendar-year GraalVM CE 22.0.0.2 (release vm-22.0.0.2 in graalvm-ce-builds, 2022), not the JDK-based cycle 22; https://www.graalvm.org/release-calendar/",hand,1
+Oracle GraalVM,Oracle,22.3.0,oracle-graalvm,none,"hand-added: calendar-year GraalVM 22.3.0 (October 2022), not the JDK-based cycle 22 of Oracle GraalVM; https://www.graalvm.org/release-calendar/",hand,0
+GraalVM Community Edition,GraalVM Community,21.0.2,graalvm-ce,21,"hand-added: GraalVM for JDK 21 Community 21.0.2 (January 2024, release jdk-21.0.2 in graalvm-ce-builds), the JDK-based cycle 21; https://www.graalvm.org/release-calendar/",hand,0
+Oracle GraalVM,Oracle Corporation,21.0.5,oracle-graalvm,21,"hand-added: Oracle GraalVM for JDK 21 21.0.5 (October 2024 CPU), the JDK-based cycle 21; https://www.graalvm.org/release-calendar/",hand,0

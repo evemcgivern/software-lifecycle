@@ -167,7 +167,8 @@ def _generated(name: str, version: str, publisher: str, index,
     """Generated matching (rule C). Products in blocked (their alias hit
     the name but its publisher guard failed) are never matched here. The version column is used; when it is
     empty, a version token split off the name is used instead. When both
-    exist and disagree, the row is not decided: NO_CYCLE, product known."""
+    exist and disagree, the row is not decided: NO_CYCLE, product known.
+    So is a version starting with a curated no_cycle_versions prefix."""
     pids, tails = index.lookup(name, publisher)
     pids = tuple(p for p in pids if p not in blocked)
     if not pids:
@@ -184,6 +185,10 @@ def _generated(name: str, version: str, publisher: str, index,
     parts = column or split_version(tail or "")
     if not parts:
         return result(None, NO_VERSION)
+    if _old_numbering(index.no_cycle.get(product, ()),
+                      (parts, split_version(tail or ""))):
+        # A version in a numbering the cycles do not use (curated).
+        return result(None, NO_CYCLE)
     labels = [c.get("cycle", "") for c in products.get(product) or []]
     best, tied = best_cycle(parts, labels)
     if best is None:
@@ -195,6 +200,11 @@ def _generated(name: str, version: str, publisher: str, index,
     if column and tail and _disagree(split_version(tail), column, labels):
         return result(None, NO_CYCLE)
     return result(_cycle_dict(products[product], best), None)
+
+
+def _old_numbering(prefixes: tuple, versions: tuple) -> bool:
+    """Whether any version starts with one of the curated prefixes."""
+    return any(tuple(v[:len(p)]) == p for p in prefixes for v in versions)
 
 
 def _finer_cycle_missed(parts: list[str], best: str,

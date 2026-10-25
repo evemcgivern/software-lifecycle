@@ -669,6 +669,59 @@ class FixRoundTests(unittest.TestCase):
         self.assertEqual(INDEX.max_lead, 3)   # clam anti virus
 
 
+class NoCycleVersionTests(unittest.TestCase):
+    """no_cycle_versions: an older numbering whose numbers overlap the
+    product's cycles (calendar 21.3.1 against cycle 21)."""
+    CAT = {"vm-ce": rec("vm-ce", "Vm Community Edition")}
+    CYC = {"vm-ce": [{"cycle": c} for c in ("17", "21", "22", "25")]}
+    CUR = {"format": 1, "publisher_aliases": {}, "single_word_allowlist": [],
+           "exclusions": [], "generated_off": [],
+           "no_cycle_versions": {"vm-ce": {
+               "prefixes": ["21.0.0", "21.3", "22.0.0", "22.3"],
+               "reason": "calendar numbering", "source": "https://example.com/v"}}}
+
+    def m(self, name, version="", cur=None):
+        index = build_index(self.CAT, self.CUR if cur is None else cur)
+        return got(match_product(name, version, [], self.CYC,
+                                 catalog_index=index))
+
+    def test_old_numbering_gets_no_cycle(self):
+        for name, ver in (("Vm Community Edition", "22.3.3"),
+                          ("Vm Community Edition 21.3.1", "21.3.1"),
+                          ("Vm Community Edition 22.0.0.2", ""),
+                          ("Vm Community Edition 21.3.1", ""),
+                          ("Vm Community Edition", "21.0.0")):
+            with self.subTest(name=name, ver=ver):
+                self.assertEqual(self.m(name, ver),
+                                 ("vm-ce", None, NO_CYCLE, GENERATED))
+
+    def test_new_numbering_keeps_its_cycle(self):
+        for name, ver, cyc in (("Vm Community Edition", "21.0.2", "21"),
+                               ("Vm Community Edition 22.0.1", "", "22"),
+                               ("Vm Community Edition", "22", "22"),
+                               ("Vm Community Edition", "25.4.4.1.1", "25"),
+                               ("Vm Community Edition", "17.0.9", "17")):
+            with self.subTest(name=name, ver=ver):
+                self.assertEqual(self.m(name, ver),
+                                 ("vm-ce", cyc, None, GENERATED))
+
+    def test_a_name_in_old_numbering_is_checked_too(self):
+        self.assertEqual(self.m("Vm Community Edition 21.3.1", "21.0.2"),
+                         ("vm-ce", None, NO_CYCLE, GENERATED))
+
+    def test_without_the_entry_the_cycle_is_picked(self):
+        cur = dict(self.CUR)
+        del cur["no_cycle_versions"]
+        self.assertEqual(self.m("Vm Community Edition", "22.3.3", cur),
+                         ("vm-ce", "22", None, GENERATED))
+
+    def test_index_holds_part_tuples(self):
+        index = build_index(self.CAT, self.CUR)
+        self.assertEqual(index.no_cycle["vm-ce"],
+                         (("21", "0", "0"), ("21", "3"), ("22", "0", "0"),
+                          ("22", "3")))
+
+
 # --- assess: match_source, overrides on generated rows, format 1 -----------
 
 AS_OF = date(2026, 10, 24)

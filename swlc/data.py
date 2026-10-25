@@ -29,6 +29,8 @@ _NAME_RE_V2 = re.compile(
     r"|eol/[a-z0-9][a-z0-9_.-]*\.json")
 _ID_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
 _VENDOR_RE = re.compile(r"[a-z0-9][a-z0-9_.+-]*")
+# A version prefix in no_cycle_versions: numbers joined by dots.
+_PREFIX_RE = re.compile(r"[0-9]+(?:\.[0-9]+)*")
 _NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
 _URL_RE = re.compile(
     r"https://[A-Za-z0-9][A-Za-z0-9.-]*(?::[0-9]{1,5})?(?:[/?#][!-~]*)?")
@@ -279,8 +281,11 @@ def _https(value, where: str) -> str:
 def validate_curation(obj, product_ids=None) -> dict:
     """Check a parsed curation.json; return it. With product_ids, every
     product it names must be in that collection."""
-    _keys(obj, ("format", "publisher_aliases", "single_word_allowlist",
-                "exclusions", "generated_off"), "top level")
+    # no_cycle_versions is optional, so files written before it still load.
+    _keys({k: v for k, v in obj.items() if k != "no_cycle_versions"}
+          if isinstance(obj, dict) else obj,
+          ("format", "publisher_aliases", "single_word_allowlist",
+           "exclusions", "generated_off"), "top level")
     if not _is_format_one(obj["format"]):
         raise DataError("format: expected 1")
     named = []
@@ -351,6 +356,20 @@ def validate_curation(obj, product_ids=None) -> dict:
     for pid in off:
         _ident(pid, "generated_off")
     named.extend(off)
+
+    nocyc = obj.get("no_cycle_versions", {})
+    if not isinstance(nocyc, dict):
+        raise DataError("no_cycle_versions: expected an object")
+    for pid, entry in nocyc.items():
+        where = "no_cycle_versions entry"
+        _ident(pid, where)
+        _keys(entry, ("prefixes", "reason", "source"), where)
+        if not isinstance(entry["prefixes"], list) or not entry["prefixes"]:
+            raise DataError("%s: expected a non-empty list" % where)
+        _str_list(entry["prefixes"], where, pattern=_PREFIX_RE)
+        _text(entry["reason"], where + ".reason")
+        _https(entry["source"], where + ".source")
+        named.append(pid)
 
     if product_ids is not None:
         known = set(product_ids)

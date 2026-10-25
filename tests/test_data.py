@@ -757,6 +757,33 @@ class CurationSchemaTests(DataCase):
                 with self.assertRaises(DataError):
                     validate_curation(obj)
 
+    def test_no_cycle_versions(self):
+        good = {"prefixes": ["21.0.0", "21.3"], "reason": "old numbering",
+                "source": "https://example.com/v"}
+        obj = curation_obj(no_cycle_versions={"alpha": good})
+        self.assertIs(validate_curation(obj, ["alpha"]), obj)
+        validate_curation(curation_obj(no_cycle_versions={}))
+        for entry in (
+                [], dict(good, extra=1),
+                {k: v for k, v in good.items() if k != "source"},
+                dict(good, prefixes=[]), dict(good, prefixes="21.3"),
+                dict(good, prefixes=["21.3", "21.0.0"]),
+                dict(good, prefixes=["21.3", "21.3"]),
+                dict(good, prefixes=["21.x"]), dict(good, prefixes=["21."]),
+                dict(good, prefixes=[".21"]), dict(good, prefixes=[21]),
+                dict(good, reason=""),
+                dict(good, source="http://example.com/v")):
+            with self.subTest(entry=entry):
+                with self.assertRaises(DataError):
+                    validate_curation(curation_obj(
+                        no_cycle_versions={"alpha": entry}))
+        for bad in ([], {"Alpha": good}):
+            with self.assertRaises(DataError):
+                validate_curation(curation_obj(no_cycle_versions=bad))
+        with self.assertRaises(DataError):
+            validate_curation(curation_obj(no_cycle_versions={"gone": good}),
+                              ["alpha"])
+
     def test_every_named_product_must_exist_when_ids_are_given(self):
         known = ["alpha"]
         for obj in (

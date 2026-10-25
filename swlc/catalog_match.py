@@ -46,7 +46,9 @@ single_word_allowlist. Products on generated_off and products whose catalog
 category is "device" never match here. An exclusion blocks one product when
 its cleaned name equals ANY candidate form of the row (whole, cleaned,
 vendor-dropped, version-split) and, when given, its publisher token is in
-the publisher; exclusions never touch curated aliases. A name of more than
+the publisher; exclusions never touch curated aliases. no_cycle_versions
+lists version prefixes of an older numbering per product; swlc/matching.py
+gives such a version no cycle. A name of more than
 MAX_WORDS words is never matched by title.
 """
 from __future__ import annotations
@@ -55,7 +57,7 @@ import re
 from dataclasses import dataclass
 from types import MappingProxyType
 
-from .normalize import normalize_name
+from .normalize import normalize_name, split_version
 
 _TOKEN_RE = re.compile(r"[^\W_]+")
 _TAIL_RE = re.compile(r"v?\d+(?:\.\d+)*[a-z]?")
@@ -160,6 +162,7 @@ class CatalogIndex:
     off: frozenset                # generated_off ids
     devices: frozenset            # ids with category "device"
     exclusions: MappingProxyType  # cleaned name -> ((id, publisher), ...)
+    no_cycle: MappingProxyType = MappingProxyType({})  # id -> version prefixes
 
     def phrase_ok(self, pid: str, phrase: tuple, pub: tuple) -> bool:
         """Whether this confirming phrase of pid is in the publisher. A
@@ -308,4 +311,7 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
         off=frozenset(cur.get("generated_off") or ()),
         devices=frozenset(devices),
         exclusions=MappingProxyType(
-            {k: tuple(sorted(v)) for k, v in exclusions.items()}))
+            {k: tuple(sorted(v)) for k, v in exclusions.items()}),
+        no_cycle=MappingProxyType({
+            pid: tuple(tuple(split_version(p)) for p in entry["prefixes"])
+            for pid, entry in (cur.get("no_cycle_versions") or {}).items()}))

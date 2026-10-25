@@ -218,7 +218,9 @@ and `source`), `single_word_allowlist` (a list of `product`, `reason`,
 `exclusions` (a list of `product`, `name`, `publisher`, `reason` and `gold`;
 `publisher` is one lowercase word, or empty to apply whatever the
 publisher)
-and `generated_off` (a sorted list of product ids). The tool refuses a file
+`generated_off` (a sorted list of product ids) and, optionally,
+`no_cycle_versions` (a product id to an object of `prefixes`, a sorted list
+of version prefixes such as `21.3`, `reason` and `source`). The tool refuses a file
 with an unknown key, a wrong type, a duplicate or an unsorted list where
 sorting is promised.
 
@@ -297,6 +299,12 @@ rules in "The data folder".
   publisher word. Give the `product`, `name`, `publisher`, `reason` and a
   `gold` row.
 - `generated_off` lists products that never match by title.
+- `no_cycle_versions` names version prefixes from an older numbering that
+  overlaps a product's cycles. GraalVM numbered releases by year until 2023
+  (21.3.1), and its cycles are the later JDK-based releases (21.0.2). A
+  title match whose version, in the column or in the name, starts with a
+  listed prefix gets the product with no cycle. Give the `prefixes`, a
+  `reason` and a `source`. Curated aliases are not affected.
 
 For the bundled file, the rules in `CONTRIBUTING.md` also apply: every
 entry cites its evidence and the benchmark must not get worse.
