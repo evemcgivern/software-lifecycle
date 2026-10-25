@@ -1,10 +1,14 @@
 {
-  "data_format": 1,
+  "data_format": 2,
   "eol_date": "2026-10-24",
   "files": {
     "aliases.json": {
-      "sha256": "08eb870177fabe5bdfc629655a1402011be62fa559e2e0dabc516778096b56e1",
-      "size": 7188
+      "sha256": "20d6ee4be882f4f0dd340c93affd0cf850af66d1214621ee5d705f0bc06238e5",
+      "size": 9580
+    },
+    "curation.json": {
+      "sha256": "a844d0db8ad82fc64592f2f5233782672369aa1672816685cc4680a2fef117e1",
+      "size": 19679
     },
     "eol/adonisjs.json": {
       "sha256": "becaf3f1f663a31df0a8db2cc922988cfd2e6bd012ced57c18ee2872d6b1704d",
@@ -1950,6 +1954,10 @@
       "sha256": "1a070b807a983a2deada6c3122742787f0b01a9b3bb40ec8241e68a8579501c7",
       "size": 260755
     },
+    "products.json": {
+      "sha256": "f3c656fdd33cbd7b9208ab139f6ba4e80462415777d20d580b9f1b1150e72a7f",
+      "size": 81291
+    },
     "profiles.json": {
       "sha256": "de569a287932f84b3e060361d1e91bc9177b6c8b42ec0c0eff887c9a0171863d",
       "size": 1761
@@ -1958,6 +1966,6 @@
   "kev_catalog_version": "2026.10.23",
   "kev_date": "2026-10-23",
   "min_tool_version": "0.1.0",
-  "release_id": "bundled-2026.10.24",
+  "release_id": "bundled-2026.10.25",
   "upstream_commit": "7cfb122846893f10ee819ab47b615eff261945d0"
 }

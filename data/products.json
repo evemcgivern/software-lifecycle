@@ -1,0 +1,4313 @@
+{
+  "format": 1,
+  "products": [
+    {
+      "category": "framework",
+      "id": "adonisjs",
+      "namespaces": [
+        "adonisjs"
+      ],
+      "title": "AdonisJS",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "akeneo-pim",
+      "namespaces": [
+        "akeneo"
+      ],
+      "title": "Akeneo PIM",
+      "vendors": [
+        "akeneo"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "alibaba-ack",
+      "namespaces": [],
+      "title": "Alibaba ACK",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "alibaba-dragonwell",
+      "namespaces": [],
+      "title": "Alibaba Dragonwell",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "almalinux",
+      "namespaces": [],
+      "title": "AlmaLinux OS",
+      "vendors": [
+        "almalinux"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "alpine-linux",
+      "namespaces": [],
+      "title": "Alpine Linux",
+      "vendors": [
+        "alpinelinux"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "amazon-aurora-mysql",
+      "namespaces": [],
+      "title": "Amazon Aurora MySQL",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-aurora-postgresql",
+      "namespaces": [],
+      "title": "Amazon Aurora PostgreSQL",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "amazon-cdk",
+      "namespaces": [
+        "aws"
+      ],
+      "title": "Amazon CDK",
+      "vendors": [
+        "amazon"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "amazon-corretto",
+      "namespaces": [
+        "corretto"
+      ],
+      "title": "Amazon Corretto",
+      "vendors": [
+        "amazon"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "amazon-documentdb",
+      "namespaces": [],
+      "title": "Amazon DocumentDB",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-eks",
+      "namespaces": [],
+      "title": "Amazon EKS",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-elasticache-redis",
+      "namespaces": [],
+      "title": "Amazon ElastiCache for Redis OSS",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-elasticsearch",
+      "namespaces": [],
+      "title": "Amazon Elasticsearch",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-glue",
+      "namespaces": [],
+      "title": "Amazon Glue",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "amazon-linux",
+      "namespaces": [],
+      "title": "Amazon Linux",
+      "vendors": [
+        "amazon"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "amazon-mq-activemq",
+      "namespaces": [],
+      "title": "Amazon MQ for ActiveMQ",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-mq-rabbitmq",
+      "namespaces": [],
+      "title": "Amazon MQ for RabbitMQ",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-msk",
+      "namespaces": [],
+      "title": "Amazon MSK",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-neptune",
+      "namespaces": [],
+      "title": "Amazon Neptune",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-opensearch",
+      "namespaces": [],
+      "title": "Amazon OpenSearch",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-rds-mariadb",
+      "namespaces": [],
+      "title": "Amazon RDS for MariaDB",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-rds-mysql",
+      "namespaces": [],
+      "title": "Amazon RDS for MySQL",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "amazon-rds-postgresql",
+      "namespaces": [],
+      "title": "Amazon RDS for PostgreSQL",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "android",
+      "namespaces": [],
+      "title": "Android OS",
+      "vendors": [
+        "google"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "angular",
+      "namespaces": [
+        "angular"
+      ],
+      "title": "Angular",
+      "vendors": [
+        "angular"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "angularjs",
+      "namespaces": [
+        "angular"
+      ],
+      "title": "AngularJS",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "ansible",
+      "namespaces": [
+        "ansible"
+      ],
+      "title": "Ansible",
+      "vendors": [
+        "redhat"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "ansible-core",
+      "namespaces": [],
+      "title": "Ansible-core",
+      "vendors": [
+        "ansible",
+        "redhat"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "ant",
+      "namespaces": [
+        "apache",
+        "org.apache.ant"
+      ],
+      "title": "Apache Ant",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "antix",
+      "namespaces": [],
+      "title": "antiX Linux",
+      "vendors": [
+        "antixlinux"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-activemq",
+      "namespaces": [
+        "org.apache.activemq"
+      ],
+      "title": "Apache ActiveMQ Classic",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "apache-airflow",
+      "namespaces": [],
+      "title": "Apache Airflow",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-apisix",
+      "namespaces": [],
+      "title": "Apache APISIX",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-artemis",
+      "namespaces": [
+        "apache"
+      ],
+      "title": "Apache Artemis",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "apache-camel",
+      "namespaces": [
+        "apache",
+        "org.apache.camel"
+      ],
+      "title": "Apache Camel",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "apache-cassandra",
+      "namespaces": [
+        "apache",
+        "org.apache.cassandra"
+      ],
+      "title": "Apache Cassandra",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-celeborn",
+      "namespaces": [
+        "apache"
+      ],
+      "title": "Apache Celeborn",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "apache-couchdb",
+      "namespaces": [
+        "apache"
+      ],
+      "title": "Apache CouchDB",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-flink",
+      "namespaces": [
+        "apache"
+      ],
+      "title": "Apache Flink",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "apache-groovy",
+      "namespaces": [
+        "org.apache.groovy",
+        "org.codehaus.groovy"
+      ],
+      "title": "Apache Groovy",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "apache-hadoop",
+      "namespaces": [
+        "apache",
+        "org.apache.hadoop"
+      ],
+      "title": "Apache Hadoop",
+      "vendors": [
+        "apache",
+        "cloudera"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "apache-hop",
+      "namespaces": [],
+      "title": "Apache Hop",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "apache-http-server",
+      "namespaces": [
+        "apache"
+      ],
+      "title": "Apache HTTP Server",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-kafka",
+      "namespaces": [
+        "apache"
+      ],
+      "title": "Apache Kafka",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "apache-lucene",
+      "namespaces": [],
+      "title": "Apache Lucene",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "apache-maven",
+      "namespaces": [
+        "apache",
+        "org.apache.maven"
+      ],
+      "title": "Apache Maven",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-nifi",
+      "namespaces": [
+        "apache",
+        "org.apache.nifi"
+      ],
+      "title": "Apache NiFi",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-pulsar",
+      "namespaces": [],
+      "title": "Apache Pulsar",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-spark",
+      "namespaces": [
+        "apache"
+      ],
+      "title": "Apache Spark",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "apache-struts",
+      "namespaces": [
+        "org.apache.struts"
+      ],
+      "title": "Apache Struts",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "apache-subversion",
+      "namespaces": [],
+      "title": "Apache Subversion",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "api-platform",
+      "namespaces": [
+        "api-platform"
+      ],
+      "title": "API Platform",
+      "vendors": [
+        "api-platform"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "apple-watch",
+      "namespaces": [],
+      "title": "Apple Watch",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "arangodb",
+      "namespaces": [],
+      "title": "ArangoDB",
+      "vendors": [
+        "arangodb"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "argo-cd",
+      "namespaces": [
+        "argoproj"
+      ],
+      "title": "Argo CD",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "argo-workflows",
+      "namespaces": [
+        "argoproj"
+      ],
+      "title": "Argo Workflows",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "artifactory",
+      "namespaces": [],
+      "title": "Artifactory",
+      "vendors": [
+        "jfrog"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "authentik",
+      "namespaces": [
+        "goauthentik"
+      ],
+      "title": "authentik",
+      "vendors": [
+        "goauthentik"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "aws-lambda",
+      "namespaces": [],
+      "title": "AWS Lambda",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "azul-zulu",
+      "namespaces": [],
+      "title": "Azul Zulu",
+      "vendors": [
+        "azul"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "azure-database-for-mysql",
+      "namespaces": [],
+      "title": "Azure Database for MySQL",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "azure-database-for-postgresql",
+      "namespaces": [],
+      "title": "Azure Database for PostgreSQL",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "azure-devops-server",
+      "namespaces": [],
+      "title": "Azure DevOps Server",
+      "vendors": [
+        "microsoft"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "azure-kubernetes-service",
+      "namespaces": [],
+      "title": "Azure Kubernetes Service",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "backdrop",
+      "namespaces": [],
+      "title": "Backdrop",
+      "vendors": [
+        "backdropcms"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "bamboo",
+      "namespaces": [],
+      "title": "Bamboo",
+      "vendors": [
+        "atlassian"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "bazel",
+      "namespaces": [
+        "bazelbuild"
+      ],
+      "title": "Bazel",
+      "vendors": [
+        "google"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "beats",
+      "namespaces": [],
+      "title": "Elastic Beats",
+      "vendors": [
+        "elastic"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "behat",
+      "namespaces": [
+        "behat"
+      ],
+      "title": "Behat",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "bellsoft-liberica",
+      "namespaces": [],
+      "title": "Bellsoft Liberica JDK",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "big-ip",
+      "namespaces": [],
+      "title": "BIG-IP",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "bigbluebutton",
+      "namespaces": [],
+      "title": "BigBlueButton",
+      "vendors": [
+        "bigbluebutton"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "bind-9",
+      "namespaces": [],
+      "title": "BIND 9",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "bitbucket",
+      "namespaces": [],
+      "title": "Bitbucket",
+      "vendors": [
+        "atlassian"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "bitcoin-core",
+      "namespaces": [],
+      "title": "Bitcoin Core",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "blender",
+      "namespaces": [],
+      "title": "Blender",
+      "vendors": [
+        "blender"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "bootstrap",
+      "namespaces": [
+        "twbs"
+      ],
+      "title": "Bootstrap",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "boundary",
+      "namespaces": [],
+      "title": "Hashicorp Boundary",
+      "vendors": [
+        "hashicorp"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "bun",
+      "namespaces": [
+        "oven-sh"
+      ],
+      "title": "Bun",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "cachet",
+      "namespaces": [
+        "cachethq"
+      ],
+      "title": "Cachet",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "caddy",
+      "namespaces": [
+        "caddyserver"
+      ],
+      "title": "Caddy",
+      "vendors": [
+        "caddyserver"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "cakephp",
+      "namespaces": [],
+      "title": "CakePHP",
+      "vendors": [
+        "cakefoundation",
+        "cakephp"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "calico",
+      "namespaces": [
+        "projectcalico"
+      ],
+      "title": "Calico",
+      "vendors": [
+        "projectcalico"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "centos",
+      "namespaces": [],
+      "title": "CentOS",
+      "vendors": [
+        "centos"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "centos-stream",
+      "namespaces": [],
+      "title": "CentOS Stream",
+      "vendors": [
+        "centos"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "centreon",
+      "namespaces": [],
+      "title": "Centreon",
+      "vendors": [
+        "centreon"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "ceph",
+      "namespaces": [
+        "ceph"
+      ],
+      "title": "Ceph",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "cert-manager",
+      "namespaces": [],
+      "title": "cert-manager",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "cfengine",
+      "namespaces": [],
+      "title": "CFEngine",
+      "vendors": [
+        "gnu"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "checkmk",
+      "namespaces": [
+        "checkmk"
+      ],
+      "title": "Checkmk",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "chef-infra-client",
+      "namespaces": [],
+      "title": "Chef Infra Client",
+      "vendors": [
+        "chef"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "chef-infra-server",
+      "namespaces": [],
+      "title": "Chef Infra Server",
+      "vendors": [
+        "progress"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "chef-inspec",
+      "namespaces": [],
+      "title": "Chef InSpec",
+      "vendors": [
+        "chef"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "chef-supermarket",
+      "namespaces": [],
+      "title": "Chef Supermarket",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "chef-workstation",
+      "namespaces": [],
+      "title": "Chef Workstation",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "chrome",
+      "namespaces": [],
+      "title": "Google Chrome",
+      "vendors": [
+        "google"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "chromecast",
+      "namespaces": [],
+      "title": "Google Chromecast",
+      "vendors": [
+        "google"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "cilium",
+      "namespaces": [
+        "cilium"
+      ],
+      "title": "Cilium",
+      "vendors": [
+        "cilium"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "cisco-ios-xe",
+      "namespaces": [],
+      "title": "Cisco IOS XE",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "citrix-vad",
+      "namespaces": [],
+      "title": "Citrix Virtual Apps and Desktops",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "ckeditor",
+      "namespaces": [],
+      "title": "CKEditor",
+      "vendors": [
+        "ckeditor"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "clamav",
+      "namespaces": [],
+      "title": "ClamAV",
+      "vendors": [
+        "cisco",
+        "clam_anti-virus",
+        "clamav"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "claude",
+      "namespaces": [],
+      "title": "Anthropic Claude",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "clear-linux",
+      "namespaces": [],
+      "title": "Clear Linux",
+      "vendors": [
+        "intel"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "clickhouse",
+      "namespaces": [
+        "clickhouse"
+      ],
+      "title": "ClickHouse",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "cloud-sql-auth-proxy",
+      "namespaces": [],
+      "title": "Cloud SQL Auth Proxy",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "cnspec",
+      "namespaces": [
+        "mondoohq"
+      ],
+      "title": "cnspec",
+      "vendors": [
+        "cnspec"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "cockroachdb",
+      "namespaces": [],
+      "title": "CockroachDB",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "coder",
+      "namespaces": [
+        "coder"
+      ],
+      "title": "Coder",
+      "vendors": [
+        "coder"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "coldfusion",
+      "namespaces": [],
+      "title": "Adobe ColdFusion",
+      "vendors": [
+        "adobe"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "commvault",
+      "namespaces": [],
+      "title": "Commvault",
+      "vendors": [
+        "commvault"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "composer",
+      "namespaces": [
+        "composer"
+      ],
+      "title": "Composer",
+      "vendors": [
+        "getcomposer"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "concrete-cms",
+      "namespaces": [
+        "concrete5",
+        "concretecms"
+      ],
+      "title": "Concrete CMS",
+      "vendors": [
+        "concretecms"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "confluence",
+      "namespaces": [],
+      "title": "Confluence",
+      "vendors": [
+        "atlassian"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "consul",
+      "namespaces": [
+        "hashicorp"
+      ],
+      "title": "Hashicorp Consul",
+      "vendors": [
+        "hashicorp"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "containerd",
+      "namespaces": [],
+      "title": "containerd",
+      "vendors": [
+        "linuxfoundation"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "contao",
+      "namespaces": [],
+      "title": "Contao",
+      "vendors": [
+        "contao"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "contour",
+      "namespaces": [
+        "projectcontour"
+      ],
+      "title": "Contour",
+      "vendors": [
+        "projectcontour"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "controlm",
+      "namespaces": [],
+      "title": "Control-M",
+      "vendors": [
+        "bmc"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "cortex-xdr",
+      "namespaces": [],
+      "title": "Palo Alto Networks Cortex XDR agent",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "cos",
+      "namespaces": [],
+      "title": "Google Container-Optimized OS (COS)",
+      "vendors": [
+        "google"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "couchbase-server",
+      "namespaces": [],
+      "title": "Couchbase Server",
+      "vendors": [
+        "couchbase"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "craft-cms",
+      "namespaces": [],
+      "title": "Craft CMS",
+      "vendors": [
+        "craftcms"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "dapr",
+      "namespaces": [],
+      "title": "Dapr",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "dbt-core",
+      "namespaces": [],
+      "title": "dbt Core",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "dce",
+      "namespaces": [],
+      "title": "DaoCloud Enterprise",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "debian",
+      "namespaces": [],
+      "title": "Debian",
+      "vendors": [
+        "debian"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "deno",
+      "namespaces": [
+        "denoland"
+      ],
+      "title": "Deno",
+      "vendors": [
+        "deno"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "dependency-track",
+      "namespaces": [],
+      "title": "Dependency-Track",
+      "vendors": [
+        "owasp"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "devuan",
+      "namespaces": [],
+      "title": "Devuan",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "discourse",
+      "namespaces": [],
+      "title": "Discourse",
+      "vendors": [
+        "discourse"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "django",
+      "namespaces": [
+        "django"
+      ],
+      "title": "Django",
+      "vendors": [
+        "djangoproject"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "docker-engine",
+      "namespaces": [],
+      "title": "Docker Engine",
+      "vendors": [
+        "docker"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "dotnet",
+      "namespaces": [],
+      "title": "Microsoft .NET",
+      "vendors": [
+        "microsoft"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "dotnetfx",
+      "namespaces": [],
+      "title": "Microsoft .NET Framework",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "dovecot",
+      "namespaces": [],
+      "title": "Dovecot",
+      "vendors": [
+        "dovecot"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "dropwizard",
+      "namespaces": [
+        "dropwizard"
+      ],
+      "title": "Dropwizard",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "drupal",
+      "namespaces": [
+        "drupal"
+      ],
+      "title": "Drupal",
+      "vendors": [
+        "drupal"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "drush",
+      "namespaces": [
+        "drush",
+        "drush-ops"
+      ],
+      "title": "Drush",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "duckdb",
+      "namespaces": [],
+      "title": "DuckDB",
+      "vendors": [
+        "duckdb"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "eclipse-jetty",
+      "namespaces": [
+        "org.eclipse.jetty"
+      ],
+      "title": "Eclipse Jetty",
+      "vendors": [
+        "eclipse"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "eclipse-temurin",
+      "namespaces": [],
+      "title": "Eclipse Temurin",
+      "vendors": [
+        "eclipse"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "elasticsearch",
+      "namespaces": [
+        "elastic",
+        "org.elasticsearch"
+      ],
+      "title": "Elasticsearch",
+      "vendors": [
+        "elastic",
+        "elasticsearch"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "electron",
+      "namespaces": [],
+      "title": "Electron",
+      "vendors": [
+        "electronjs"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "elixir",
+      "namespaces": [],
+      "title": "Elixir",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "emberjs",
+      "namespaces": [
+        "emberjs"
+      ],
+      "title": "Ember",
+      "vendors": [
+        "emberjs"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "envoy",
+      "namespaces": [
+        "envoyproxy"
+      ],
+      "title": "Envoy",
+      "vendors": [
+        "envoyproxy"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "erlang",
+      "namespaces": [],
+      "title": "Erlang",
+      "vendors": [
+        "erlang"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "eslint",
+      "namespaces": [
+        "eslint"
+      ],
+      "title": "ESLint",
+      "vendors": [
+        "openjsf"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "esxi",
+      "namespaces": [],
+      "title": "VMware ESXi",
+      "vendors": [
+        "vmware"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "etcd",
+      "namespaces": [
+        "etcd-io"
+      ],
+      "title": "etcd",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "eurolinux",
+      "namespaces": [],
+      "title": "EuroLinux",
+      "vendors": [
+        "eurolinux"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "exim",
+      "namespaces": [],
+      "title": "Exim",
+      "vendors": [
+        "exim"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "express",
+      "namespaces": [
+        "expressjs"
+      ],
+      "title": "Express",
+      "vendors": [
+        "openjsf"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "external-dns",
+      "namespaces": [
+        "kubernetes-sigs"
+      ],
+      "title": "ExternalDNS",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "fairphone",
+      "namespaces": [],
+      "title": "Fairphone",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "fedora",
+      "namespaces": [],
+      "title": "Fedora Linux",
+      "vendors": [
+        "fedoraproject"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "ffmpeg",
+      "namespaces": [
+        "ffmpeg"
+      ],
+      "title": "FFmpeg",
+      "vendors": [
+        "ffmpeg"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "filemaker",
+      "namespaces": [],
+      "title": "FileMaker Platform",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "firefox",
+      "namespaces": [],
+      "title": "Firefox",
+      "vendors": [
+        "mozilla"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "fluent-bit",
+      "namespaces": [
+        "fluent"
+      ],
+      "title": "Fluent Bit",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "flux",
+      "namespaces": [],
+      "title": "Flux",
+      "vendors": [
+        "fluxcd"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "font-awesome",
+      "namespaces": [
+        "fortawesome"
+      ],
+      "title": "Font Awesome",
+      "vendors": [
+        "fontawesome"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "foreman",
+      "namespaces": [],
+      "title": "Foreman",
+      "vendors": [
+        "theforeman"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "forgejo",
+      "namespaces": [],
+      "title": "Forgejo",
+      "vendors": [
+        "forgejo"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "fortios",
+      "namespaces": [],
+      "title": "FortiOS",
+      "vendors": [
+        "fortinet"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "foundationdb",
+      "namespaces": [
+        "apple"
+      ],
+      "title": "FoundationDB",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "freebsd",
+      "namespaces": [],
+      "title": "FreeBSD",
+      "vendors": [
+        "freebsd"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "freedesktop-sdk",
+      "namespaces": [],
+      "title": "Freedesktop SDK",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "gatekeeper",
+      "namespaces": [
+        "open-policy-agent"
+      ],
+      "title": "Gatekeeper",
+      "vendors": [
+        "openpolicyagent"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "gerrit",
+      "namespaces": [],
+      "title": "Gerrit",
+      "vendors": [
+        "google"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "ghc",
+      "namespaces": [],
+      "title": "Glasgow Haskell Compiler (GHC)",
+      "vendors": []
+    },
+    {
+      "category": "service",
+      "id": "github-actions-runner-images",
+      "namespaces": [],
+      "title": "GitHub Actions Runner Images",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "gitlab",
+      "namespaces": [],
+      "title": "GitLab",
+      "vendors": [
+        "gitlab"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "gitlab-runner",
+      "namespaces": [],
+      "title": "GitLab Runner",
+      "vendors": [
+        "gitlab"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "gleam",
+      "namespaces": [
+        "gleam-lang"
+      ],
+      "title": "Gleam",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "go",
+      "namespaces": [],
+      "title": "Go",
+      "vendors": [
+        "golang"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "goaccess",
+      "namespaces": [],
+      "title": "GoAccess",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "godot",
+      "namespaces": [],
+      "title": "Godot",
+      "vendors": [
+        "godotengine"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "google-kubernetes-engine",
+      "namespaces": [],
+      "title": "Google Kubernetes Engine",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "google-nexus",
+      "namespaces": [],
+      "title": "Google Nexus",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "gorilla",
+      "namespaces": [
+        "gorilla"
+      ],
+      "title": "Gorilla Toolkit",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "graalvm-ce",
+      "namespaces": [],
+      "title": "GraalVM Community Edition",
+      "vendors": [
+        "oracle"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "gradle",
+      "namespaces": [],
+      "title": "Gradle",
+      "vendors": [
+        "gradle"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "grafana",
+      "namespaces": [
+        "grafana"
+      ],
+      "title": "Grafana",
+      "vendors": [
+        "grafana"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "grafana-loki",
+      "namespaces": [
+        "grafana"
+      ],
+      "title": "Grafana Loki",
+      "vendors": [
+        "grafana"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "grails",
+      "namespaces": [
+        "org.apache.grails"
+      ],
+      "title": "Apache Grails Framework",
+      "vendors": [
+        "apache",
+        "grails"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "graylog",
+      "namespaces": [],
+      "title": "Graylog",
+      "vendors": [
+        "graylog"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "greenlight",
+      "namespaces": [],
+      "title": "Greenlight",
+      "vendors": [
+        "bigbluebutton"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "grumphp",
+      "namespaces": [
+        "phpro"
+      ],
+      "title": "GrumPHP",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "grunt",
+      "namespaces": [
+        "gruntjs"
+      ],
+      "title": "Grunt",
+      "vendors": [
+        "gruntjs"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "gstreamer",
+      "namespaces": [],
+      "title": "GStreamer",
+      "vendors": [
+        "gstreamer",
+        "gstreamer_project"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "guzzle",
+      "namespaces": [
+        "guzzle",
+        "guzzlehttp"
+      ],
+      "title": "Guzzle",
+      "vendors": [
+        "guzzlephp"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "haproxy",
+      "namespaces": [],
+      "title": "HAProxy",
+      "vendors": [
+        "haproxy"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "haproxy-ingress",
+      "namespaces": [
+        "jcmoraisjr"
+      ],
+      "title": "HAProxy Ingress",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "harbor",
+      "namespaces": [
+        "goharbor"
+      ],
+      "title": "Harbor",
+      "vendors": [
+        "linuxfoundation"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "hashicorp-packer",
+      "namespaces": [],
+      "title": "Hashicorp Packer",
+      "vendors": [
+        "hashicorp"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "hashicorp-vault",
+      "namespaces": [],
+      "title": "Hashicorp Vault",
+      "vendors": [
+        "hashicorp"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "hbase",
+      "namespaces": [],
+      "title": "Apache HBase",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "heroku-postgres",
+      "namespaces": [],
+      "title": "Heroku Postgres",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "hibernate-orm",
+      "namespaces": [
+        "org.hibernate",
+        "org.hibernate.orm"
+      ],
+      "title": "Hibernate ORM",
+      "vendors": [
+        "hibernate"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "horizon",
+      "namespaces": [],
+      "title": "Omnissa Horizon",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "ibm-aix",
+      "namespaces": [],
+      "title": "IBM AIX",
+      "vendors": [
+        "ibm"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "ibm-db2",
+      "namespaces": [],
+      "title": "IBM Db2",
+      "vendors": [
+        "ibm"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "ibm-i",
+      "namespaces": [],
+      "title": "IBM iSeries",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "ibm-mq",
+      "namespaces": [],
+      "title": "IBM MQ",
+      "vendors": [
+        "ibm"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "ibm-semeru-runtime",
+      "namespaces": [],
+      "title": "IBM Semeru Runtime",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "icinga",
+      "namespaces": [
+        "icinga"
+      ],
+      "title": "Icinga",
+      "vendors": [
+        "icinga"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "icinga-web",
+      "namespaces": [
+        "icinga"
+      ],
+      "title": "Icinga Web",
+      "vendors": [
+        "icinga"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "idl",
+      "namespaces": [],
+      "title": "IDL",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "influxdb",
+      "namespaces": [],
+      "title": "InfluxDB",
+      "vendors": [
+        "influxdata"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "intel-processors",
+      "namespaces": [],
+      "title": "Intel Processors",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "internet-explorer",
+      "namespaces": [],
+      "title": "Internet Explorer",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "ionic",
+      "namespaces": [
+        "ionic",
+        "ionic-team"
+      ],
+      "title": "Ionic Framework",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "ios",
+      "namespaces": [],
+      "title": "Apple iOS",
+      "vendors": [
+        "apple"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "ipad",
+      "namespaces": [],
+      "title": "Apple iPad",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "ipados",
+      "namespaces": [],
+      "title": "Apple iPadOS",
+      "vendors": [
+        "apple"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "iphone",
+      "namespaces": [],
+      "title": "Apple iPhone",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "isc-dhcp",
+      "namespaces": [],
+      "title": "ISC DHCP",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "istio",
+      "namespaces": [
+        "istio"
+      ],
+      "title": "Istio",
+      "vendors": [
+        "istio"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "jaeger",
+      "namespaces": [],
+      "title": "Jaeger",
+      "vendors": [
+        "linuxfoundation"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "jekyll",
+      "namespaces": [],
+      "title": "Jekyll",
+      "vendors": [
+        "jekyllrb"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "jenkins",
+      "namespaces": [],
+      "title": "Jenkins",
+      "vendors": [
+        "jenkins"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "jfrog-xray",
+      "namespaces": [],
+      "title": "JFrog Xray",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "jhipster",
+      "namespaces": [],
+      "title": "JHipster",
+      "vendors": [
+        "jhipster"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "jira-service-management",
+      "namespaces": [],
+      "title": "Jira Service Management",
+      "vendors": [
+        "atlassian"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "jira-software",
+      "namespaces": [],
+      "title": "Jira Software",
+      "vendors": [
+        "atlassian"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "joomla",
+      "namespaces": [],
+      "title": "Joomla!",
+      "vendors": [
+        "joomla"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "jquery",
+      "namespaces": [
+        "jquery",
+        "org.webjars"
+      ],
+      "title": "jQuery",
+      "vendors": [
+        "jquery"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "jquery-ui",
+      "namespaces": [
+        "jquery",
+        "org.webjars"
+      ],
+      "title": "jQuery UI",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "jreleaser",
+      "namespaces": [
+        "jreleaser",
+        "org.jreleaser"
+      ],
+      "title": "JReleaser",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "jruby",
+      "namespaces": [
+        "jruby",
+        "org.jruby"
+      ],
+      "title": "JRuby",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "julia",
+      "namespaces": [],
+      "title": "Julia",
+      "vendors": [
+        "julialang"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "karpenter",
+      "namespaces": [
+        "kubernetes-sigs"
+      ],
+      "title": "Karpenter",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "kde-plasma",
+      "namespaces": [],
+      "title": "KDE Plasma",
+      "vendors": [
+        "kde"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "keda",
+      "namespaces": [
+        "kedacore"
+      ],
+      "title": "KEDA",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "keycloak",
+      "namespaces": [
+        "keycloak",
+        "org.keycloak"
+      ],
+      "title": "Keycloak",
+      "vendors": [
+        "redhat"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "kiali",
+      "namespaces": [
+        "kiali"
+      ],
+      "title": "Kiali",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "kibana",
+      "namespaces": [],
+      "title": "Kibana",
+      "vendors": [
+        "elastic"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "kindle",
+      "namespaces": [],
+      "title": "Amazon Kindle",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "kirby",
+      "namespaces": [],
+      "title": "Kirby",
+      "vendors": [
+        "getkirby"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "knative",
+      "namespaces": [
+        "knative"
+      ],
+      "title": "Knative",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "kong-gateway",
+      "namespaces": [
+        "kong"
+      ],
+      "title": "Kong Gateway",
+      "vendors": [
+        "konghq"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "kotlin",
+      "namespaces": [],
+      "title": "Kotlin",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "kubernetes",
+      "namespaces": [
+        "kubernetes"
+      ],
+      "title": "Kubernetes",
+      "vendors": [
+        "kubernetes"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "kubernetes-csi-node-driver-registrar",
+      "namespaces": [
+        "kubernetes-csi"
+      ],
+      "title": "Kubernetes CSI Node Driver Registrar",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "kubernetes-node-feature-discovery",
+      "namespaces": [
+        "kubernetes-sigs"
+      ],
+      "title": "Kubernetes Node Feature Discovery",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "kuma",
+      "namespaces": [],
+      "title": "Kuma",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "kyverno",
+      "namespaces": [
+        "kyverno"
+      ],
+      "title": "Kyverno",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "laravel",
+      "namespaces": [
+        "laravel"
+      ],
+      "title": "Laravel",
+      "vendors": [
+        "laravel"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "ldap-account-manager",
+      "namespaces": [],
+      "title": "LDAP Account Manager",
+      "vendors": [
+        "ldap-account-manager"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "libreoffice",
+      "namespaces": [],
+      "title": "LibreOffice",
+      "vendors": [
+        "libreoffice"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "lineageos",
+      "namespaces": [],
+      "title": "LineageOS",
+      "vendors": [
+        "lineageos"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "linux",
+      "namespaces": [],
+      "title": "Linux Kernel",
+      "vendors": [
+        "linux"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "linuxmint",
+      "namespaces": [],
+      "title": "Linux Mint",
+      "vendors": [
+        "linuxmint"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "liquibase",
+      "namespaces": [],
+      "title": "Liquibase",
+      "vendors": [
+        "liquibase"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "liquibase-secure",
+      "namespaces": [
+        "com.liquibase",
+        "org.liquibase"
+      ],
+      "title": "Liquibase Secure",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "log4j",
+      "namespaces": [
+        "log4j",
+        "org.apache.logging.log4j"
+      ],
+      "title": "Apache Log4j",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "logstash",
+      "namespaces": [],
+      "title": "Logstash",
+      "vendors": [
+        "elastic"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "longhorn",
+      "namespaces": [
+        "longhorn"
+      ],
+      "title": "Longhorn",
+      "vendors": [
+        "linuxfoundation"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "looker",
+      "namespaces": [],
+      "title": "Looker",
+      "vendors": [
+        "google"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "lua",
+      "namespaces": [],
+      "title": "Lua",
+      "vendors": [
+        "lua"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "macos",
+      "namespaces": [],
+      "title": "Apple macOS",
+      "vendors": [
+        "apple"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "mageia",
+      "namespaces": [],
+      "title": "Mageia",
+      "vendors": [
+        "mageia"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "magento",
+      "namespaces": [],
+      "title": "Magento",
+      "vendors": [
+        "magento"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "mandrel",
+      "namespaces": [],
+      "title": "Mandrel",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "mariadb",
+      "namespaces": [],
+      "title": "MariaDB",
+      "vendors": [
+        "mariadb"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "mastodon",
+      "namespaces": [],
+      "title": "Mastodon",
+      "vendors": [
+        "joinmastodon"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "matomo",
+      "namespaces": [
+        "matomo-org"
+      ],
+      "title": "Matomo",
+      "vendors": [
+        "matomo"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "mattermost",
+      "namespaces": [],
+      "title": "Mattermost",
+      "vendors": [
+        "mattermost"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "mautic",
+      "namespaces": [
+        "mautic"
+      ],
+      "title": "Mautic",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "mediawiki",
+      "namespaces": [],
+      "title": "MediaWiki",
+      "vendors": [
+        "mediawiki"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "meilisearch",
+      "namespaces": [],
+      "title": "Meilisearch",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "memcached",
+      "namespaces": [],
+      "title": "Memcached",
+      "vendors": [
+        "memcached"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "metabase",
+      "namespaces": [
+        "metabase"
+      ],
+      "title": "Metabase",
+      "vendors": [
+        "metabase"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "metallb",
+      "namespaces": [],
+      "title": "MetalLB",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "micronaut",
+      "namespaces": [
+        "io.micronaut",
+        "micronaut-projects"
+      ],
+      "title": "Micronaut Framework",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "microsoft-build-of-openjdk",
+      "namespaces": [],
+      "title": "Microsoft Build of OpenJDK",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "mongodb",
+      "namespaces": [],
+      "title": "MongoDB Server",
+      "vendors": [
+        "mongodb",
+        "mongodb-org-server"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "moodle",
+      "namespaces": [],
+      "title": "Moodle",
+      "vendors": [
+        "moodle"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "motorola-mobility",
+      "namespaces": [],
+      "title": "Motorola Mobility",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "msexchange",
+      "namespaces": [],
+      "title": "Microsoft Exchange",
+      "vendors": [
+        "microsoft"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "mssqlserver",
+      "namespaces": [],
+      "title": "Microsoft SQL Server",
+      "vendors": [
+        "microsoft"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "mulesoft-runtime",
+      "namespaces": [],
+      "title": "Mule Runtime",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "mxlinux",
+      "namespaces": [],
+      "title": "MX Linux",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "mysql",
+      "namespaces": [],
+      "title": "MySQL",
+      "vendors": [
+        "oracle"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "neo4j",
+      "namespaces": [
+        "neo4j"
+      ],
+      "title": "Neo4j",
+      "vendors": [
+        "neo4j"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "neos",
+      "namespaces": [
+        "neos"
+      ],
+      "title": "Neos",
+      "vendors": [
+        "neos"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "netapp-ontap",
+      "namespaces": [],
+      "title": "NetApp ONTAP",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "netbackup-appliance-os",
+      "namespaces": [],
+      "title": "NetBackup Appliance OS",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "netbsd",
+      "namespaces": [],
+      "title": "NetBSD",
+      "vendors": [
+        "netbsd"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "nextcloud",
+      "namespaces": [],
+      "title": "Nextcloud",
+      "vendors": [
+        "nextcloud"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "nextjs",
+      "namespaces": [
+        "vercel"
+      ],
+      "title": "Next.js",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "nexus",
+      "namespaces": [
+        "sonatype"
+      ],
+      "title": "Nexus Repository",
+      "vendors": [
+        "sonatype"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "nginx",
+      "namespaces": [
+        "nginx"
+      ],
+      "title": "nginx",
+      "vendors": [
+        "f5"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "nix",
+      "namespaces": [],
+      "title": "nix",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "nixos",
+      "namespaces": [],
+      "title": "NixOS",
+      "vendors": [
+        "nixos"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "nodejs",
+      "namespaces": [],
+      "title": "Node.js",
+      "vendors": [
+        "nodejs"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "nokia",
+      "namespaces": [],
+      "title": "Nokia Mobile",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "nomad",
+      "namespaces": [],
+      "title": "Nomad",
+      "vendors": [
+        "hashicorp"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "notepad-plus-plus",
+      "namespaces": [],
+      "title": "Notepad++",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "numpy",
+      "namespaces": [
+        "numpy"
+      ],
+      "title": "NumPy",
+      "vendors": [
+        "numpy"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "nura",
+      "namespaces": [],
+      "title": "Nura",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "nutanix-aos",
+      "namespaces": [],
+      "title": "Nutanix AOS",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "nutanix-files",
+      "namespaces": [],
+      "title": "Nutanix Files",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "nutanix-prism",
+      "namespaces": [],
+      "title": "Nutanix Prism Central",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "nuxt",
+      "namespaces": [
+        "nuxt"
+      ],
+      "title": "Nuxt",
+      "vendors": [
+        "nuxt"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "nvidia",
+      "namespaces": [],
+      "title": "NVIDIA Driver",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "nvidia-gpu",
+      "namespaces": [],
+      "title": "NVIDIA GPUs",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "nvm",
+      "namespaces": [
+        "nvm-sh"
+      ],
+      "title": "nvm",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "office",
+      "namespaces": [],
+      "title": "Microsoft Office",
+      "vendors": [
+        "microsoft"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "oneplus",
+      "namespaces": [],
+      "title": "OnePlus",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "oniguruma",
+      "namespaces": [
+        "kkos"
+      ],
+      "title": "Oniguruma",
+      "vendors": [
+        "oniguruma_project"
+      ]
+    },
+    {
+      "category": "service",
+      "id": "openai-api-models",
+      "namespaces": [],
+      "title": "OpenAI API Models",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "openbao",
+      "namespaces": [
+        "openbao"
+      ],
+      "title": "OpenBao",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "openbsd",
+      "namespaces": [],
+      "title": "OpenBSD",
+      "vendors": [
+        "openbsd"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "openjdk-builds-from-oracle",
+      "namespaces": [],
+      "title": "OpenJDK builds from Oracle",
+      "vendors": [
+        "oracle"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "opensearch",
+      "namespaces": [],
+      "title": "OpenSearch",
+      "vendors": [
+        "amazon"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "openssl",
+      "namespaces": [],
+      "title": "OpenSSL",
+      "vendors": [
+        "openssl"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "opensuse",
+      "namespaces": [],
+      "title": "openSUSE",
+      "vendors": [
+        "opensuse"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "opentofu",
+      "namespaces": [
+        "opentofu"
+      ],
+      "title": "OpenTofu",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "openvpn",
+      "namespaces": [
+        "openvpn"
+      ],
+      "title": "OpenVPN",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "openwrt",
+      "namespaces": [
+        "openwrt"
+      ],
+      "title": "OpenWrt",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "openzfs",
+      "namespaces": [],
+      "title": "OpenZFS",
+      "vendors": [
+        "openzfs"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "opnsense",
+      "namespaces": [],
+      "title": "OPNsense",
+      "vendors": [
+        "opnsense"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "oracle-apex",
+      "namespaces": [],
+      "title": "Oracle APEX",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "oracle-database",
+      "namespaces": [],
+      "title": "Oracle Database",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "oracle-graalvm",
+      "namespaces": [],
+      "title": "Oracle GraalVM",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "oracle-jdk",
+      "namespaces": [],
+      "title": "Oracle JDK",
+      "vendors": [
+        "oracle"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "oracle-linux",
+      "namespaces": [],
+      "title": "Oracle Linux",
+      "vendors": [
+        "oracle"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "oracle-solaris",
+      "namespaces": [],
+      "title": "Oracle Solaris",
+      "vendors": [
+        "oracle"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "otobo",
+      "namespaces": [],
+      "title": "OTOBO",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "ovirt",
+      "namespaces": [
+        "ovirt"
+      ],
+      "title": "oVirt",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "pangp",
+      "namespaces": [],
+      "title": "Palo Alto Networks GlobalProtect App",
+      "vendors": [
+        "paloaltonetworks"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "panos",
+      "namespaces": [],
+      "title": "Palo Alto Networks PAN-OS",
+      "vendors": []
+    },
+    {
+      "category": "standard",
+      "id": "pci-dss",
+      "namespaces": [],
+      "title": "PCI-DSS",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "perl",
+      "namespaces": [],
+      "title": "Perl",
+      "vendors": [
+        "perl"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "pgadmin",
+      "namespaces": [],
+      "title": "pgAdmin",
+      "vendors": [
+        "pgadmin"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "phoenix-framework",
+      "namespaces": [
+        "phoenixframework"
+      ],
+      "title": "Phoenix Framework",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "photon",
+      "namespaces": [],
+      "title": "VMware Photon",
+      "vendors": [
+        "vmware"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "php",
+      "namespaces": [],
+      "title": "PHP",
+      "vendors": [
+        "php"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "phpbb",
+      "namespaces": [],
+      "title": "phpBB",
+      "vendors": [
+        "phpbb"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "phpmyadmin",
+      "namespaces": [
+        "phpmyadmin"
+      ],
+      "title": "phpMyAdmin",
+      "vendors": [
+        "phpmyadmin"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "pigeonhole",
+      "namespaces": [],
+      "title": "Pigeonhole",
+      "vendors": [
+        "dovecot"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "pixel",
+      "namespaces": [],
+      "title": "Google Pixel",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "pixel-watch",
+      "namespaces": [],
+      "title": "Google Pixel Watch",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "plesk",
+      "namespaces": [],
+      "title": "Plesk",
+      "vendors": [
+        "plesk"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "plone",
+      "namespaces": [],
+      "title": "Plone",
+      "vendors": [
+        "plone"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "pnpm",
+      "namespaces": [
+        "pnpm"
+      ],
+      "title": "pnpm",
+      "vendors": [
+        "pnpm"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "podman",
+      "namespaces": [],
+      "title": "Podman",
+      "vendors": [
+        "podman_project"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "pop-os",
+      "namespaces": [],
+      "title": "Pop!_OS",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "postfix",
+      "namespaces": [],
+      "title": "Postfix",
+      "vendors": [
+        "postfix"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "postgresql",
+      "namespaces": [],
+      "title": "PostgreSQL",
+      "vendors": [
+        "postgresql"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "postmarketos",
+      "namespaces": [],
+      "title": "postmarketOS",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "powershell",
+      "namespaces": [
+        "powershell"
+      ],
+      "title": "Microsoft PowerShell",
+      "vendors": [
+        "microsoft"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "privatebin",
+      "namespaces": [],
+      "title": "PrivateBin",
+      "vendors": [
+        "privatebin"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "proftpd",
+      "namespaces": [],
+      "title": "ProFTPD",
+      "vendors": [
+        "proftpd"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "prometheus",
+      "namespaces": [
+        "prometheus"
+      ],
+      "title": "Prometheus",
+      "vendors": [
+        "prometheus"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "protractor",
+      "namespaces": [],
+      "title": "Protractor",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "proxmox-backup-server",
+      "namespaces": [
+        "proxmox"
+      ],
+      "title": "Proxmox Backup Server",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "proxmox-datacenter-manager",
+      "namespaces": [
+        "proxmox"
+      ],
+      "title": "Proxmox Datacenter Manager",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "proxmox-mail-gateway",
+      "namespaces": [
+        "proxmox"
+      ],
+      "title": "Proxmox Mail Gateway",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "proxmox-ve",
+      "namespaces": [],
+      "title": "Proxmox VE",
+      "vendors": [
+        "proxmox"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "puppet",
+      "namespaces": [],
+      "title": "Puppet",
+      "vendors": [
+        "puppet"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "python",
+      "namespaces": [
+        "python"
+      ],
+      "title": "Python",
+      "vendors": [
+        "python"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "qt",
+      "namespaces": [],
+      "title": "Qt",
+      "vendors": [
+        "qt"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "quarkus-framework",
+      "namespaces": [
+        "io.quarkus.platform"
+      ],
+      "title": "Quarkus",
+      "vendors": [
+        "quarkus"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "quasar",
+      "namespaces": [],
+      "title": "Quasar",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "rabbitmq",
+      "namespaces": [],
+      "title": "RabbitMQ",
+      "vendors": [
+        "pivotal_software",
+        "vmware"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "rails",
+      "namespaces": [
+        "rails"
+      ],
+      "title": "Ruby on Rails",
+      "vendors": [
+        "rubyonrails"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "rancher",
+      "namespaces": [],
+      "title": "Rancher",
+      "vendors": [
+        "suse"
+      ]
+    },
+    {
+      "category": "device",
+      "id": "raspberry-pi",
+      "namespaces": [],
+      "title": "Raspberry Pi",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "react",
+      "namespaces": [
+        "facebook"
+      ],
+      "title": "React",
+      "vendors": [
+        "facebook"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "react-native",
+      "namespaces": [
+        "facebook"
+      ],
+      "title": "React Native",
+      "vendors": [
+        "facebook"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "red-hat-ansible-automation-platform",
+      "namespaces": [],
+      "title": "Red Hat Ansible Automation Platform",
+      "vendors": [
+        "redhat"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "red-hat-openshift",
+      "namespaces": [],
+      "title": "Red Hat OpenShift",
+      "vendors": [
+        "redhat"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "redhat-build-of-openjdk",
+      "namespaces": [],
+      "title": "Red Hat build of OpenJDK",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "redhat-jboss-eap",
+      "namespaces": [],
+      "title": "Red Hat JBoss Enterprise Application Platform",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "redhat-satellite",
+      "namespaces": [],
+      "title": "Red Hat Satellite",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "redis",
+      "namespaces": [],
+      "title": "Redis",
+      "vendors": [
+        "redis"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "redmine",
+      "namespaces": [],
+      "title": "Redmine",
+      "vendors": [
+        "redmine"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "renovate",
+      "namespaces": [],
+      "title": "Renovate CLI",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "rhel",
+      "namespaces": [],
+      "title": "Red Hat Enterprise Linux",
+      "vendors": [
+        "redhat"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "robo",
+      "namespaces": [
+        "consolidation"
+      ],
+      "title": "Robo",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "rocket-chat",
+      "namespaces": [],
+      "title": "Rocket.Chat",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "rocky-linux",
+      "namespaces": [],
+      "title": "Rocky Linux",
+      "vendors": [
+        "rocky"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "ros",
+      "namespaces": [
+        "ros"
+      ],
+      "title": "ROS",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "ros-2",
+      "namespaces": [],
+      "title": "ROS 2",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "roundcube",
+      "namespaces": [],
+      "title": "Roundcube Webmail",
+      "vendors": [
+        "roundcube"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "routeros",
+      "namespaces": [],
+      "title": "RouterOS",
+      "vendors": [
+        "mikrotik"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "rtpengine",
+      "namespaces": [],
+      "title": "rtpengine",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "ruby",
+      "namespaces": [],
+      "title": "Ruby",
+      "vendors": [
+        "ruby-lang"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "rust",
+      "namespaces": [],
+      "title": "Rust",
+      "vendors": [
+        "rust-lang"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "salt",
+      "namespaces": [],
+      "title": "Salt",
+      "vendors": [
+        "saltstack"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "samba",
+      "namespaces": [
+        "samba-team"
+      ],
+      "title": "Samba",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "samsung-galaxy-tab",
+      "namespaces": [],
+      "title": "Samsung Galaxy Tab",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "samsung-galaxy-watch",
+      "namespaces": [],
+      "title": "Samsung Galaxy Watch",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "samsung-mobile",
+      "namespaces": [],
+      "title": "Samsung Mobile",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "sapmachine",
+      "namespaces": [],
+      "title": "SapMachine",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "scala",
+      "namespaces": [],
+      "title": "Scala",
+      "vendors": [
+        "scala-lang"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "sharepoint",
+      "namespaces": [],
+      "title": "Microsoft SharePoint",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "shopware",
+      "namespaces": [],
+      "title": "Shopware",
+      "vendors": [
+        "shopware"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "silverstripe",
+      "namespaces": [
+        "silverstripe"
+      ],
+      "title": "Silverstripe CMS",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "slackware",
+      "namespaces": [],
+      "title": "Slackware Linux",
+      "vendors": [
+        "slackware"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "sles",
+      "namespaces": [],
+      "title": "SUSE Linux Enterprise Server",
+      "vendors": [
+        "suse"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "sns-firmware",
+      "namespaces": [],
+      "title": "Stormshield Firmware",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "sns-hardware",
+      "namespaces": [],
+      "title": "Stormshield Firewall",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "sns-smc",
+      "namespaces": [],
+      "title": "Stormshield Management Center",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "solr",
+      "namespaces": [],
+      "title": "Apache Solr",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "sonarqube-community",
+      "namespaces": [],
+      "title": "SonarQube Community Build",
+      "vendors": [
+        "sonarsource"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "sonarqube-server",
+      "namespaces": [],
+      "title": "SonarQube Server",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "sony-xperia",
+      "namespaces": [],
+      "title": "Sony Xperia",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "sourcegraph",
+      "namespaces": [],
+      "title": "Sourcegraph",
+      "vendors": [
+        "sourcegraph"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "splunk",
+      "namespaces": [],
+      "title": "Splunk",
+      "vendors": [
+        "splunk"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "spring-boot",
+      "namespaces": [
+        "org.springframework.boot",
+        "spring-projects"
+      ],
+      "title": "Spring Boot",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "spring-cloud",
+      "namespaces": [
+        "org.springframework.cloud",
+        "spring-cloud"
+      ],
+      "title": "Spring Cloud",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "spring-framework",
+      "namespaces": [
+        "org.springframework",
+        "spring-projects"
+      ],
+      "title": "Spring Framework",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "spring-security",
+      "namespaces": [
+        "org.springframework.security",
+        "spring-projects"
+      ],
+      "title": "Spring Security",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "sqlite",
+      "namespaces": [
+        "sqlite"
+      ],
+      "title": "SQLite",
+      "vendors": [
+        "sqlite"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "squid",
+      "namespaces": [],
+      "title": "Squid",
+      "vendors": [
+        "squid-cache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "statamic",
+      "namespaces": [
+        "statamic"
+      ],
+      "title": "Statamic",
+      "vendors": [
+        "statamic"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "steamos",
+      "namespaces": [],
+      "title": "SteamOS",
+      "vendors": [
+        "valvesoftware"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "strapi",
+      "namespaces": [
+        "strapi"
+      ],
+      "title": "Strapi",
+      "vendors": []
+    },
+    {
+      "category": "device",
+      "id": "surface",
+      "namespaces": [],
+      "title": "Microsoft Surface",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "suse-linux-micro",
+      "namespaces": [],
+      "title": "SUSE Linux Micro",
+      "vendors": [
+        "suse"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "suse-manager",
+      "namespaces": [],
+      "title": "SUSE Multi-Linux Manager",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "svelte",
+      "namespaces": [
+        "sveltejs"
+      ],
+      "title": "Svelte",
+      "vendors": [
+        "svelte"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "sylius",
+      "namespaces": [
+        "sylius"
+      ],
+      "title": "Sylius",
+      "vendors": [
+        "sylius"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "symfony",
+      "namespaces": [],
+      "title": "Symfony",
+      "vendors": [
+        "sensiolabs"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "tails",
+      "namespaces": [],
+      "title": "Tails",
+      "vendors": [
+        "tails_project"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "tailwind-css",
+      "namespaces": [
+        "tailwindlabs"
+      ],
+      "title": "Tailwind CSS",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "tarantool",
+      "namespaces": [],
+      "title": "Tarantool",
+      "vendors": [
+        "tarantool"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "tarteaucitron",
+      "namespaces": [
+        "amauric"
+      ],
+      "title": "tarteaucitron",
+      "vendors": [
+        "amauri"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "telegraf",
+      "namespaces": [],
+      "title": "Telegraf",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "teleport",
+      "namespaces": [
+        "gravitational"
+      ],
+      "title": "Teleport",
+      "vendors": [
+        "goteleport"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "terraform",
+      "namespaces": [
+        "hashicorp"
+      ],
+      "title": "Hashicorp Terraform",
+      "vendors": [
+        "hashicorp"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "thumbor",
+      "namespaces": [],
+      "title": "Thumbor",
+      "vendors": []
+    },
+    {
+      "category": "standard",
+      "id": "tls",
+      "namespaces": [],
+      "title": "TLS",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "tomcat",
+      "namespaces": [
+        "apache",
+        "org.apache.tomcat"
+      ],
+      "title": "Apache Tomcat",
+      "vendors": [
+        "apache"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "traefik",
+      "namespaces": [
+        "traefik"
+      ],
+      "title": "Traefik",
+      "vendors": [
+        "traefik"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "truenas",
+      "namespaces": [],
+      "title": "TrueNAS",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "tvos",
+      "namespaces": [],
+      "title": "Apple tvOS",
+      "vendors": [
+        "apple"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "twig",
+      "namespaces": [],
+      "title": "Twig",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "typo3",
+      "namespaces": [
+        "typo3"
+      ],
+      "title": "TYPO3",
+      "vendors": [
+        "typo3"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "ubuntu",
+      "namespaces": [],
+      "title": "Ubuntu",
+      "vendors": [
+        "canonical"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "umbraco",
+      "namespaces": [],
+      "title": "Umbraco CMS",
+      "vendors": [
+        "umbraco"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "unity",
+      "namespaces": [],
+      "title": "Unity",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "unrealircd",
+      "namespaces": [],
+      "title": "UnrealIRCd",
+      "vendors": [
+        "unrealircd"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "valkey",
+      "namespaces": [
+        "valkey-io"
+      ],
+      "title": "Valkey",
+      "vendors": [
+        "lfprojects"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "vcenter",
+      "namespaces": [],
+      "title": "VMware vCenter Server",
+      "vendors": [
+        "vmware"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "veeam-backup-and-replication",
+      "namespaces": [],
+      "title": "Veeam Backup & Replication",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "veeam-backup-for-microsoft-365",
+      "namespaces": [],
+      "title": "Veeam Backup for Microsoft 365",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "veeam-one",
+      "namespaces": [],
+      "title": "Veeam ONE",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "vinyl-cache",
+      "namespaces": [],
+      "title": "Vinyl Cache",
+      "vendors": [
+        "varnish_cache_project"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "virtualbox",
+      "namespaces": [],
+      "title": "VirtualBox",
+      "vendors": [
+        "oracle"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "visionos",
+      "namespaces": [],
+      "title": "Apple visionOS",
+      "vendors": [
+        "apple"
+      ]
+    },
+    {
+      "category": "lang",
+      "id": "visual-cobol",
+      "namespaces": [],
+      "title": "Visual COBOL",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "visual-studio",
+      "namespaces": [],
+      "title": "Microsoft Visual Studio",
+      "vendors": []
+    },
+    {
+      "category": "database",
+      "id": "vitess",
+      "namespaces": [
+        "vitessio"
+      ],
+      "title": "Vitess",
+      "vendors": [
+        "linuxfoundation"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "vmware-cloud-foundation",
+      "namespaces": [],
+      "title": "VMware Cloud Foundation",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "vmware-harbor-registry",
+      "namespaces": [],
+      "title": "VMware Harbor Registry",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "vmware-srm",
+      "namespaces": [],
+      "title": "VMware Site Recovery Manager",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "vue",
+      "namespaces": [
+        "vuejs"
+      ],
+      "title": "Vue",
+      "vendors": []
+    },
+    {
+      "category": "framework",
+      "id": "vuetify",
+      "namespaces": [],
+      "title": "Vuetify",
+      "vendors": [
+        "vuetifyjs"
+      ]
+    },
+    {
+      "category": "framework",
+      "id": "wagtail",
+      "namespaces": [],
+      "title": "Wagtail",
+      "vendors": [
+        "torchbox"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "watchos",
+      "namespaces": [],
+      "title": "Apple watchOS",
+      "vendors": [
+        "apple"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "weakforced",
+      "namespaces": [],
+      "title": "Weakforced",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "weechat",
+      "namespaces": [],
+      "title": "WeeChat",
+      "vendors": [
+        "weechat"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "windows",
+      "namespaces": [],
+      "title": "Microsoft Windows",
+      "vendors": [
+        "microsoft"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "windows-embedded",
+      "namespaces": [],
+      "title": "Microsoft Windows Embedded",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "windows-nano-server",
+      "namespaces": [],
+      "title": "Microsoft Nano Server",
+      "vendors": []
+    },
+    {
+      "category": "lang",
+      "id": "windows-powershell",
+      "namespaces": [],
+      "title": "Microsoft Windows PowerShell",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "windows-server",
+      "namespaces": [],
+      "title": "Microsoft Windows Server",
+      "vendors": []
+    },
+    {
+      "category": "os",
+      "id": "windows-server-core",
+      "namespaces": [],
+      "title": "Microsoft Windows Server Core",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "wireshark",
+      "namespaces": [],
+      "title": "Wireshark",
+      "vendors": [
+        "wireshark"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "wordpress",
+      "namespaces": [],
+      "title": "WordPress",
+      "vendors": [
+        "wordpress"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "xcp-ng",
+      "namespaces": [],
+      "title": "XCP-ng",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "yarn",
+      "namespaces": [
+        "yarnpkg"
+      ],
+      "title": "Yarn",
+      "vendors": [
+        "yarnpkg"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "yocto",
+      "namespaces": [],
+      "title": "Yocto Project",
+      "vendors": [
+        "linuxfoundation"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "youtrack",
+      "namespaces": [],
+      "title": "YouTrack",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "zabbix",
+      "namespaces": [
+        "zabbix"
+      ],
+      "title": "Zabbix",
+      "vendors": [
+        "zabbix"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "zentyal",
+      "namespaces": [],
+      "title": "Zentyal",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "zerto",
+      "namespaces": [],
+      "title": "HPE Zerto",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
+      "id": "zookeeper",
+      "namespaces": [
+        "apache",
+        "org.apache.zookeeper"
+      ],
+      "title": "Apache ZooKeeper",
+      "vendors": [
+        "apache"
+      ]
+    }
+  ]
+}

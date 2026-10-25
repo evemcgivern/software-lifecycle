@@ -1,0 +1,454 @@
+{
+  "exclusions": [
+    {
+      "gold": "Mattermost|Mattermost, Inc.|5.6.0",
+      "name": "mattermost",
+      "product": "mattermost",
+      "publisher": "mattermost",
+      "reason": "The Mattermost desktop app is published as \"Mattermost\" by Mattermost, Inc., the same name and publisher as the server, with its own version line. Accepted cost: server rows with that exact name and publisher are not matched by product title either."
+    },
+    {
+      "gold": "Nextcloud|Nextcloud GmbH|3.11.0",
+      "name": "nextcloud",
+      "product": "nextcloud",
+      "publisher": "nextcloud",
+      "reason": "The Nextcloud desktop sync client is published as \"Nextcloud\" by Nextcloud GmbH, the same name and publisher as the server, with its own version line. Accepted cost: server rows with that exact name and publisher are not matched by product title either."
+    },
+    {
+      "gold": "Moodle|Moodle Pty Ltd|4.4.0",
+      "name": "moodle",
+      "product": "moodle",
+      "publisher": "moodle",
+      "reason": "The Moodle mobile app is published as \"Moodle\" by Moodle Pty Ltd, the same name and publisher as the LMS, with its own version line. Accepted cost: LMS rows with that exact name and publisher are not matched by product title either."
+    }
+  ],
+  "format": 1,
+  "generated_off": [
+    "claude",
+    "openai-api-models"
+  ],
+  "no_cycle_versions": {
+    "graalvm-ce": {
+      "prefixes": [
+        "20.0.0",
+        "20.0.1",
+        "20.1",
+        "20.2",
+        "20.3",
+        "21.0.0",
+        "21.1",
+        "21.2",
+        "21.3",
+        "22.0.0",
+        "22.1",
+        "22.2",
+        "22.3"
+      ],
+      "reason": "Before 2023 GraalVM numbered releases by calendar year (19.x to 22.x: 20.3.6, 21.3.1, 22.0.0.2, 22.3.3). These cycles are the JDK-based releases from 2023 (21.0.2, 22.0.1). The old 20.x, 21.x and 22.x lines overlap cycles 20, 21 and 22, so an old version would get a cycle with the wrong dates. 20.0.1, 21.0.0 and 22.0.0 exist in both numberings and are left undecided too.",
+      "source": "https://www.graalvm.org/release-calendar/"
+    },
+    "oracle-graalvm": {
+      "prefixes": [
+        "20.0.0",
+        "20.0.1",
+        "20.1",
+        "20.2",
+        "20.3",
+        "21.0.0",
+        "21.1",
+        "21.2",
+        "21.3",
+        "22.0.0",
+        "22.1",
+        "22.2",
+        "22.3"
+      ],
+      "reason": "Oracle's GraalVM Enterprise releases before 2023 used the same calendar numbering (20.3.x, 21.3.x, 22.3.0). These cycles are the JDK-based releases from 2023 (21.0.5). The old 20.x, 21.x and 22.x lines overlap cycles 20, 21 and 22, so an old version would get a cycle with the wrong dates. 20.0.1, 21.0.0 and 22.0.0 exist in both numberings and are left undecided too.",
+      "source": "https://www.graalvm.org/release-calendar/"
+    }
+  },
+  "publisher_aliases": {
+    "ceph": {
+      "phrases": [
+        "ceph packaging team"
+      ],
+      "reason": "Debian's ceph source package names the maintainer \"Ceph Packaging Team\".",
+      "source": "https://sources.debian.org/data/main/c/ceph/16.2.15+ds-0+deb12u2/debian/control"
+    },
+    "coder": {
+      "phrases": [
+        "coder technologies"
+      ],
+      "reason": "The winget manifest for Coder gives the publisher \"Coder Technologies, Inc.\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/c/Coder/Coder/2.9.4/Coder.Coder.locale.en-US.yaml"
+    },
+    "commvault": {
+      "phrases": [
+        "commvault systems"
+      ],
+      "reason": "Commvault's legal page names the company Commvault Systems, Inc.",
+      "source": "https://www.commvault.com/legal"
+    },
+    "deno": {
+      "phrases": [
+        "deno land"
+      ],
+      "reason": "The winget manifest for Deno gives the publisher \"Deno Land Inc.\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/d/DenoLand/Deno/2.9.8/DenoLand.Deno.locale.en-US.yaml"
+    },
+    "discourse": {
+      "phrases": [
+        "civilized discourse construction kit"
+      ],
+      "reason": "The Discourse LICENSE.txt names the copyright holder Civilized Discourse Construction Kit, Inc. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
+      "source": "https://github.com/discourse/discourse/blob/main/LICENSE.txt"
+    },
+    "dovecot": {
+      "phrases": [
+        "open-xchange"
+      ],
+      "reason": "The Dovecot site names the copyright holder Open-Xchange Oy. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
+      "source": "https://www.dovecot.org/"
+    },
+    "drupal": {
+      "phrases": [
+        "drupal association"
+      ],
+      "reason": "The Drupal Association page says it administers Drupal.org for the Drupal community. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
+      "source": "https://www.drupal.org/association"
+    },
+    "electron": {
+      "phrases": [
+        "openjs foundation"
+      ],
+      "reason": "The Electron site says Electron is a project under the OpenJS Foundation.",
+      "source": "https://www.electronjs.org/"
+    },
+    "elixir": {
+      "phrases": [
+        "elixir team"
+      ],
+      "reason": "The Elixir site says the Elixir Team steers the language.",
+      "source": "https://elixir-lang.org/"
+    },
+    "erlang": {
+      "phrases": [
+        "debian erlang packagers",
+        "ericsson"
+      ],
+      "reason": "The winget manifest for Erlang OTP gives the publisher \"Ericsson AB\". Debian's erlang source package names the maintainer \"Debian Erlang Packagers\" (https://sources.debian.org/data/main/e/erlang/1:25.2.3+dfsg-1+deb12u4/debian/control).",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/e/Erlang/ErlangOTP/29.1.2/Erlang.ErlangOTP.locale.en-US.yaml"
+    },
+    "flux": {
+      "phrases": [
+        "flux project"
+      ],
+      "reason": "The Flux site calls the project the Flux project.",
+      "source": "https://fluxcd.io/"
+    },
+    "grafana": {
+      "phrases": [
+        "grafana labs"
+      ],
+      "reason": "The winget manifest for Grafana OSS gives the publisher \"Grafana Labs\", the company that makes Grafana.",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/g/GrafanaLabs/Grafana/OSS/9.5.0.0/GrafanaLabs.Grafana.OSS.locale.en-US.yaml"
+    },
+    "haproxy": {
+      "phrases": [
+        "debian haproxy maintainers",
+        "haproxy technologies"
+      ],
+      "reason": "HAProxy Technologies is the company behind HAProxy and is named on its site. Debian's haproxy source package names the maintainer \"Debian HAProxy Maintainers\" (https://sources.debian.org/data/main/h/haproxy/2.6.12-1+deb12u3/debian/control).",
+      "source": "https://www.haproxy.com/"
+    },
+    "harbor": {
+      "phrases": [
+        "cloud native computing foundation",
+        "cncf"
+      ],
+      "reason": "The Harbor site says Harbor is a CNCF Graduated project. The CNCF hosts Harbor; it is not shown as the publisher. A catalog row naming the CNCF as Harbor's publisher: Not found. Kept only because gold rows use it.",
+      "source": "https://goharbor.io/"
+    },
+    "istio": {
+      "phrases": [
+        "istio authors"
+      ],
+      "reason": "The Istio site footer reads \"the Istio Authors\", the copyright holder used in the project's files.",
+      "source": "https://istio.io/"
+    },
+    "joomla": {
+      "phrases": [
+        "open source matters"
+      ],
+      "reason": "The Open Source Matters site says the Joomla name and logo are trademarks of Open Source Matters, Inc. A catalog row naming it as publisher: Not found. Kept only because gold rows use it.",
+      "source": "https://www.opensourcematters.org/"
+    },
+    "julia": {
+      "phrases": [
+        "julia language"
+      ],
+      "reason": "The winget manifest for Julia gives the publisher \"Julia Language\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/j/Julialang/Julia/1.9.4/Julialang.Julia.locale.en-US.yaml"
+    },
+    "kotlin": {
+      "phrases": [
+        "jetbrains"
+      ],
+      "reason": "The Kotlin site says Kotlin is supported and developed by JetBrains.",
+      "source": "https://kotlinlang.org/"
+    },
+    "kubernetes": {
+      "phrases": [
+        "kubernetes authors"
+      ],
+      "reason": "The Kubernetes site footer reads \"The Kubernetes Authors\", the copyright holder used in the project's files.",
+      "source": "https://kubernetes.io/"
+    },
+    "libreoffice": {
+      "phrases": [
+        "debian libreoffice maintainers",
+        "document foundation"
+      ],
+      "reason": "The winget manifest for LibreOffice gives the publisher \"The Document Foundation\". Debian's libreoffice source package names the maintainer \"Debian LibreOffice Maintainers\" (https://sources.debian.org/data/main/libr/libreoffice/4:7.4.7-1+deb12u14/debian/control).",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/t/TheDocumentFoundation/LibreOffice/26.8.1.1/TheDocumentFoundation.LibreOffice.locale.en-US.yaml"
+    },
+    "mariadb": {
+      "phrases": [
+        "mariadb corporation"
+      ],
+      "reason": "The winget manifest for MariaDB Server gives the publisher \"MariaDB Corporation Ab\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/m/MariaDB/Server/13.0.2.0/MariaDB.Server.locale.en-US.yaml"
+    },
+    "mediawiki": {
+      "phrases": [
+        "mediawiki packaging team"
+      ],
+      "reason": "Debian's mediawiki source package names the maintainer \"MediaWiki packaging team\".",
+      "source": "https://sources.debian.org/data/main/m/mediawiki/1:1.39.17-1+deb12u2/debian/control"
+    },
+    "nginx": {
+      "phrases": [
+        "debian nginx maintainers",
+        "nginx packaging"
+      ],
+      "reason": "Debian's nginx source package names the maintainer \"Debian Nginx Maintainers\". The nginx.org Ubuntu package index (https://nginx.org/packages/ubuntu/dists/jammy/nginx/binary-amd64/Packages) names \"NGINX Packaging\".",
+      "source": "https://sources.debian.org/data/main/n/nginx/1.26.3-3+deb13u10/debian/control"
+    },
+    "openssl": {
+      "phrases": [
+        "debian openssl team"
+      ],
+      "reason": "Debian's openssl source package names the maintainer \"Debian OpenSSL Team\".",
+      "source": "https://sources.debian.org/data/main/o/openssl/3.0.17-1~deb12u2/debian/control"
+    },
+    "openvpn": {
+      "phrases": [
+        "openvpn maintainers"
+      ],
+      "reason": "Debian's openvpn source package (unstable) names the maintainer \"OpenVPN Maintainers\".",
+      "source": "https://sources.debian.org/data/main/o/openvpn/2.7.8-1/debian/control"
+    },
+    "pgadmin": {
+      "phrases": [
+        "pgadmin development team"
+      ],
+      "reason": "The winget manifest for pgAdmin gives the publisher \"The pgAdmin Development Team\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/p/PostgreSQL/pgAdmin/9.9/PostgreSQL.pgAdmin.locale.en-US.yaml"
+    },
+    "php": {
+      "phrases": [
+        "debian php maintainers",
+        "php group"
+      ],
+      "reason": "The PHP license page names The PHP Group as the copyright holder of PHP. Debian's php-defaults source package names the maintainer \"Debian PHP Maintainers\" (https://sources.debian.org/data/main/p/php-defaults/93/debian/control).",
+      "source": "https://www.php.net/license/"
+    },
+    "phpmyadmin": {
+      "phrases": [
+        "phpmyadmin packaging team"
+      ],
+      "reason": "Debian's phpmyadmin source package names the maintainer \"phpMyAdmin Packaging Team\".",
+      "source": "https://sources.debian.org/data/main/p/phpmyadmin/4:5.2.1+dfsg-1+deb12u1/debian/control"
+    },
+    "podman": {
+      "phrases": [
+        "red hat"
+      ],
+      "reason": "Red Hat publishes the Podman installer: its winget manifest gives the publisher as Red Hat, and the Podman gold row has that publisher. The catalog vendor is podman_project, which never contains the words Red Hat.",
+      "source": "https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml"
+    },
+    "postgresql": {
+      "phrases": [
+        "debian postgresql maintainers",
+        "postgresql global development group"
+      ],
+      "reason": "The winget manifest for PostgreSQL 16 gives the publisher \"PostgreSQL Global Development Group\"; the licence page at https://www.postgresql.org/about/licence/ uses the same name. Debian's postgresql-common source package names the maintainer \"Debian PostgreSQL Maintainers\" (https://sources.debian.org/data/main/p/postgresql-common/248+deb12u1/debian/control).",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/p/PostgreSQL/PostgreSQL/16/16.9-3/PostgreSQL.PostgreSQL.16.locale.en-US.yaml"
+    },
+    "prometheus": {
+      "phrases": [
+        "prometheus authors"
+      ],
+      "reason": "The Prometheus site footer reads \"Prometheus Authors\", the copyright holder used in the project's files.",
+      "source": "https://prometheus.io/"
+    },
+    "puppet": {
+      "phrases": [
+        "puppet labs",
+        "puppet package maintainers"
+      ],
+      "reason": "Debian's puppet-agent copyright file names the copyright holder \"Puppet Labs Inc\", the company's earlier name. Its control file (https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/control) names the maintainer \"Puppet Package Maintainers\".",
+      "source": "https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/copyright"
+    },
+    "salt": {
+      "phrases": [
+        "salt project"
+      ],
+      "reason": "Salt is published by the Salt Project, named on its site.",
+      "source": "https://saltproject.io/"
+    },
+    "samba": {
+      "phrases": [
+        "samba team"
+      ],
+      "reason": "The Samba site names the Samba Team.",
+      "source": "https://www.samba.org/"
+    },
+    "scala": {
+      "phrases": [
+        "epfl"
+      ],
+      "reason": "The Scala site names the copyright holder Ecole Polytechnique Federale Lausanne (EPFL).",
+      "source": "https://www.scala-lang.org/"
+    },
+    "sqlite": {
+      "phrases": [
+        "sqlite consortium"
+      ],
+      "reason": "The SQLite Consortium page on sqlite.org describes the consortium that funds SQLite development. It does not show the consortium as a publisher string. A catalog row naming it as publisher: Not found (looked in winget, Debian and Homebrew). Kept only because gold rows use it.",
+      "source": "https://www.sqlite.org/consortium.html"
+    },
+    "squid": {
+      "phrases": [
+        "squid project"
+      ],
+      "reason": "The Squid site calls the project the Squid project.",
+      "source": "https://www.squid-cache.org/"
+    },
+    "telegraf": {
+      "phrases": [
+        "influxdata"
+      ],
+      "reason": "The winget manifest for Telegraf gives the publisher \"InfluxData Inc.\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/i/InfluxData/Telegraf/1.36.3/InfluxData.Telegraf.locale.en-US.yaml"
+    },
+    "traefik": {
+      "phrases": [
+        "traefik labs"
+      ],
+      "reason": "Traefik Labs is the company behind Traefik and is named on its site.",
+      "source": "https://traefik.io/"
+    },
+    "wireshark": {
+      "phrases": [
+        "wireshark developer community"
+      ],
+      "reason": "The winget manifest for Wireshark gives the publisher \"The Wireshark developer community, https://www.wireshark.org\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/w/WiresharkFoundation/Wireshark/4.6.9/WiresharkFoundation.Wireshark.locale.en-US.yaml"
+    },
+    "yarn": {
+      "phrases": [
+        "yarn contributors"
+      ],
+      "reason": "The winget manifest for Yarn gives the publisher \"Yarn Contributors\".",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/y/Yarn/Yarn/1.22.22/Yarn.Yarn.locale.en-US.yaml"
+    },
+    "zabbix": {
+      "phrases": [
+        "zabbix sia"
+      ],
+      "reason": "The Zabbix contact page names the company Zabbix SIA.",
+      "source": "https://www.zabbix.com/contact"
+    }
+  },
+  "single_word_allowlist": [
+    {
+      "gold": "Bazel||9.3.1",
+      "product": "bazel",
+      "reason": "Bazel is a coined build-tool name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/bazel"
+    },
+    {
+      "gold": "CFEngine|Northern.tech|3.28.0",
+      "product": "cfengine",
+      "reason": "CFEngine is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/cfengine"
+    },
+    {
+      "gold": "etcd|etcd|3.7.3",
+      "product": "etcd",
+      "reason": "etcd is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/etcd"
+    },
+    {
+      "gold": "GStreamer||1.28.8",
+      "product": "gstreamer",
+      "reason": "GStreamer is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/gstreamer"
+    },
+    {
+      "gold": "JReleaser||1.26.0",
+      "product": "jreleaser",
+      "reason": "JReleaser is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/jreleaser"
+    },
+    {
+      "gold": "Keycloak|Red Hat|23.0.3",
+      "product": "keycloak",
+      "reason": "Keycloak is a coined product name, not an ordinary word and not another catalog product. Its CPE vendor, redhat, never equals the two words Red Hat.",
+      "source": "https://endoflife.date/keycloak"
+    },
+    {
+      "gold": "Liquibase||5.0.4",
+      "product": "liquibase",
+      "reason": "Liquibase is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/liquibase"
+    },
+    {
+      "gold": "Notepad++|Notepad++ Team|8.9.8.1",
+      "product": "notepad-plus-plus",
+      "reason": "Notepad++ is a distinctive product name; the catalog has no vendor for it, and the publisher Notepad++ Team cannot confirm a name with symbols.",
+      "source": "https://endoflife.date/notepad-plus-plus"
+    },
+    {
+      "gold": "OpenBao||2.7.1",
+      "product": "openbao",
+      "reason": "OpenBao is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/openbao"
+    },
+    {
+      "gold": "OpenTofu||1.13.2",
+      "product": "opentofu",
+      "reason": "OpenTofu is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/opentofu"
+    },
+    {
+      "gold": "RabbitMQ|Broadcom Inc.|4.3.7",
+      "product": "rabbitmq",
+      "reason": "RabbitMQ is a coined product name, not an ordinary word and not another catalog product. Its publisher changed (Pivotal, VMware, Broadcom), so a vendor check misses current rows.",
+      "source": "https://endoflife.date/rabbitmq"
+    },
+    {
+      "gold": "Valkey|Valkey|9.1.2",
+      "product": "valkey",
+      "reason": "Valkey is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/valkey"
+    },
+    {
+      "gold": "XCP-ng|Vates|8.2.1",
+      "product": "xcp-ng",
+      "reason": "XCP-ng is a coined product name, not an ordinary word and not another catalog product.",
+      "source": "https://endoflife.date/xcp-ng"
+    }
+  ]
+}

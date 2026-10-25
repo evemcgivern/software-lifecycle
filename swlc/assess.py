@@ -121,7 +121,9 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
           golden_clashes: list) -> dict:
     name, version = group["name"], group["version"]
     norm_name = normalize_name(name)
-    match = match_product(name, version, data.aliases, data.products)
+    match = match_product(name, version, data.aliases, data.products,
+                          catalog_index=data.matching_index(),
+                          publisher=group["publisher"])
     cycle = match.cycle
     export_date, export_readable, export_conflict, export_raw = \
         _read_exports(list(group.get("export_eols") or []))
@@ -207,6 +209,7 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "state": state,
         "state_endoflife": state_endoflife,
         "reason": match.reason,
+        "match_source": match.source,
         "eol_endoflife": _iso(eol_endoflife),
         "eol_export": _iso(export_date),
         "eol_export_raw": export_raw,

@@ -20,6 +20,9 @@ KEV_LINE = ("The vendor and product appear in CISA KEV. This does not mean "
             "your version is affected.")
 CLAIMS = ("Runs locally with no network by default; built to enterprise "
           "security practices; not independently assessed.")
+CAVEAT = ("Matches rest on name and publisher only. Rows we could not tell "
+          "apart are listed as unmatched. Check the source and cycle before "
+          "relying on any row.")
 
 
 class Base(unittest.TestCase):
@@ -49,6 +52,22 @@ class MarkdownTests(Base):
                  "## Golden source overrides", "```findings"]
         pos = [self.md.index(h) for h in heads]
         self.assertEqual(pos, sorted(pos))
+
+    def test_match_caveat_once_under_the_counts(self):
+        lines = self.md.split("\n")
+        self.assertEqual(lines.count(CAVEAT), 1)
+        self.assertEqual(self.md.count(CAVEAT), 1)
+        at = lines.index(CAVEAT)
+        counts = [i for i, l in enumerate(lines) if l.startswith("Items: ")]
+        first_section = min(i for i, l in enumerate(lines)
+                            if l.startswith("## "))
+        self.assertEqual(len(counts), 1)
+        self.assertTrue(counts[0] < at < first_section)
+        self.assertEqual(report.MATCH_CAVEAT, CAVEAT)
+
+    def test_match_caveat_not_in_json_or_csv(self):
+        self.assertNotIn(CAVEAT, report.render_json(self.result, self.meta))
+        self.assertNotIn(CAVEAT, report.render_csv(self.result))
 
     def test_fixed_wording(self):
         self.assertIn(KEV_LINE, self.md)
@@ -181,6 +200,31 @@ class JsonTests(Base):
         self.assertTrue(text.endswith("\n"))
         self.assertEqual(
             text, json.dumps(obj, sort_keys=True, indent=2) + "\n")
+
+
+class MatchSourceTests(Base):
+    def test_markdown_names_how_the_product_was_matched(self):
+        self.assertIn("Product matched by a curated alias.", self.md)
+        result = copy.deepcopy(self.result)
+        for it in result["items"]:
+            if it["match_source"] == "curated":
+                it["match_source"] = "generated"
+        md = report.render_markdown(result, self.meta)
+        self.assertIn("Product matched by product title.", md)
+        self.assertNotIn("Product matched by a curated alias.", md)
+
+    def test_no_source_line_without_a_product(self):
+        it = self.item("Mystery Tool")
+        self.assertIsNone(it["match_source"])
+        block = self.md[self.md.index("**Mystery Tool**"):]
+        block = block[:block.index("\n- ")] if "\n- " in block else block
+        self.assertNotIn("Product matched by", block)
+
+    def test_csv_adds_match_source_as_the_last_column(self):
+        rows = list(csv.reader(io.StringIO(report.render_csv(self.result))))
+        self.assertEqual(rows[0][-2:], ["lists", "match_source"])
+        col = rows[0].index("match_source")
+        self.assertEqual({r[col] for r in rows[1:]}, {"curated", ""})
 
 
 class CsvTests(Base):

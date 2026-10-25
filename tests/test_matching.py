@@ -135,8 +135,11 @@ class RuleTests(unittest.TestCase):
     def test_version_from_name_ignores_version_column(self):
         a = [alias("python", "python", match="prefix", version_from="name")]
         products = {"python": cycles("3.11")}
+        # "launcher" is not a version, so it is a tail word the strict
+        # prefix rule rejects: no product (it was python, NO_CYCLE, before
+        # the gold benchmark showed it as a wrong product).
         r = match_product("Python Launcher", "3.11.4150.0", a, products)
-        self.assertEqual((r.product, r.reason), ("python", NO_CYCLE))
+        self.assertEqual((r.product, r.reason), (None, NO_ALIAS))
         r = match_product("Python", "3.11.4", a, products)
         self.assertEqual(r.reason, NO_VERSION)
 
@@ -234,7 +237,11 @@ class RuleTests(unittest.TestCase):
         products = {"ubuntu": cycles("20.04", "22.04")}
         r = match_product("Ubuntu", "22.04.3 LTS", a, products)
         self.assertEqual(r.cycle, {"cycle": "22.04"})
+        # The name says 20.04, the version column 22.04: not decided.
         r = match_product("Ubuntu 20.04.6 LTS", "22.04", a, products)
+        self.assertEqual((r.product, r.cycle, r.reason),
+                         ("ubuntu", None, NO_CYCLE))
+        r = match_product("Ubuntu 20.04.6 LTS", "20.04.6", a, products)
         self.assertEqual(r.cycle, {"cycle": "20.04"})
 
     def test_longest_key_wins_for_same_product(self):
@@ -329,6 +336,61 @@ class RuleTests(unittest.TestCase):
                                         products).kev)
         self.assertIsNone(match_product("x", "9", [alias("x", "x", kev=kev)],
                                         products).kev)
+
+    def test_publisher_guard_needs_a_whole_word_run(self):
+        products = {"nodejs": cycles("18", "20")}
+        a = [alias("Node.js", "nodejs",
+                   publisher=["node.js foundation", "openjs foundation"])]
+        for pub, want in (("Node.js Foundation", "18"),
+                          ("OpenJS Foundation", "18"),
+                          ("The OpenJS Foundation, Inc.", "18"),
+                          ("CollabFS", None), ("", None),
+                          ("OpenJSFoundation", None),
+                          ("Foundation OpenJS", None)):
+            with self.subTest(pub=pub):
+                r = match_product("Node.js", "18.19.0", a, products,
+                                  publisher=pub)
+                self.assertEqual(r.cycle["cycle"] if r.cycle else None, want)
+                self.assertEqual(r.product, "nodejs" if want else None)
+                if not want:
+                    self.assertEqual(r.reason, NO_ALIAS)
+
+    def test_publisher_guard_failing_is_no_hit(self):
+        # A guarded alias that does not apply leaves the row to other
+        # aliases (and to title matching), as if it were absent.
+        products = {"a": cycles("1"), "b": cycles("1")}
+        aliases = [alias("x", "a", publisher=["acme"]), alias("x", "b")]
+        self.assertEqual(match_product("x", "1", aliases, products,
+                                       publisher="Other").product, "b")
+        self.assertEqual(match_product("x", "1", aliases, products,
+                                       publisher="Acme").reason, AMBIGUOUS)
+
+    def test_bad_publisher_guard_is_data_error(self):
+        products = {"x": cycles("1")}
+        for pubs in ([], "acme", [1], [""], ["  "], ["..."], None, {"a": 1}):
+            with self.assertRaises(DataError, msg=repr(pubs)):
+                match_product("x", "1", [alias("x", "x", publisher=pubs)],
+                              products, publisher="acme")
+
+    def test_year_version_for_a_name_reading_alias_is_another_product(self):
+        products = {"python": cycles("3.12", "3.11", "2.7")}
+        a = [alias("python", "python", match="prefix", version_from="name")]
+        r = match_product("Python", "2023.22.1", a, products,
+                          publisher="Microsoft Corporation")
+        self.assertEqual((r.product, r.cycle, r.reason),
+                         (None, None, NO_ALIAS))
+        # Not a year, or the name carries the version: unchanged.
+        self.assertEqual(match_product("Python", "1.0.1", a, products).reason,
+                         NO_VERSION)
+        self.assertEqual(match_product("Python", "", a, products).reason,
+                         NO_VERSION)
+        self.assertEqual(match_product("Python 3.12.1", "2023.22.1", a,
+                                       products).product, "python")
+        # A product whose cycles are years keeps the year.
+        years = {"office": cycles("2019", "2021")}
+        o = [alias("office", "office", match="prefix", version_from="name")]
+        self.assertEqual(match_product("Office", "2021.1", o, years).product,
+                         "office")
 
 
 def _hits(name, key, mode):
@@ -465,6 +527,12 @@ EOL_CYCLE_LABELS = {
                    "7", "6", "5", "1.4", "1.3", "1.2", "1.1", "1.0"],
     "eclipse-temurin": ["27", "26", "25", "24", "23", "22", "21", "20", "19",
                         "18", "17", "11", "16", "8"],
+    "windows-powershell": ["5.1", "5.0", "4.0", "3.0", "2.0", "1.0"],
+    "mysql": ["26.7", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0",
+              "8.4", "8.3", "8.2", "8.1", "8.0", "5.7", "5.6", "5.5"],
+    "bellsoft-liberica": ["27", "26", "25", "24", "23", "22", "21", "20",
+                          "19", "18", "17", "16", "15", "14", "13", "12",
+                          "11", "10", "8", "7", "6"],
 }
 EOL_PRODUCTS = {p: cycles(*labels) for p, labels in EOL_CYCLE_LABELS.items()}
 
@@ -490,8 +558,8 @@ class AliasFileTests(unittest.TestCase):
         entries = self.doc["aliases"]
         self.assertGreaterEqual(len(entries), 12)
         allowed = {"key", "match", "product", "version_from", "cycle",
-                   "build_map", "source", "edition_words", "kev",
-                   "note"}
+                   "build_map", "column_map", "source", "edition_words",
+                   "kev", "note", "publisher"}
         for e in entries:
             self.assertLessEqual(set(e), allowed, e)
             self.assertIn(e["match"], ("exact", "prefix"))
@@ -499,6 +567,8 @@ class AliasFileTests(unittest.TestCase):
             self.assertEqual(e["key"], normalize_name(e["key"]), e)
             self.assertTrue(e["source"].startswith("https://"), e)
             self.assertIn(e["product"], EOL_CYCLE_LABELS, e)
+            for p in e.get("publisher", []):
+                self.assertEqual(p, normalize_name(p), e)
             for w in e.get("edition_words", []):
                 self.assertEqual(w, normalize_name(w), e)
                 self.assertEqual(len(w.split()), 1, e)
@@ -516,10 +586,17 @@ class AliasFileTests(unittest.TestCase):
             targets = []
             if "cycle" in e:
                 targets.append(e["cycle"])
-            for v in e.get("build_map", {}).values():
-                targets.extend(v if isinstance(v, list) else [v])
+            for field in ("build_map", "column_map"):
+                for v in e.get(field, {}).values():
+                    targets.extend(v if isinstance(v, list) else [v])
             for t in targets:
                 self.assertIn(t, labels, e)
+
+    def test_column_map_only_on_name_reading_build_map_aliases(self):
+        for e in self.doc["aliases"]:
+            if "column_map" in e:
+                self.assertEqual(e["version_from"], "name", e["key"])
+                self.assertIn("build_map", e, e["key"])
 
     def test_no_name_hits_two_products(self):
         # Every key, used as a product name, must hit only one product.
@@ -540,7 +617,7 @@ class CorpusTests(unittest.TestCase):
         false_matches, missed, hits = [], [], 0
         for row in rows:
             r = match_product(row["name"], row["version"], doc["aliases"],
-                              EOL_PRODUCTS)
+                              EOL_PRODUCTS, publisher=row["publisher"])
             got = r.cycle["cycle"] if r.cycle else "NONE"
             want = row["expected_cycle"]
             self.assertTrue(row["source"].startswith("https://"), row)

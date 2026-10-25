@@ -4,6 +4,11 @@
 it. This page lists every key and code in schema version 1. A test in this
 repo fails if a key in a real run is missing from this page.
 
+`report.md` also prints one fixed line, once, under the summary counts:
+"Matches rest on name and publisher only. Rows we could not tell apart are
+listed as unmatched. Check the source and cycle before relying on any
+row." It is not a key and is not in `report.json` or `report.csv`.
+
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.
 
@@ -87,7 +92,8 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `name`, `version`, `publisher` | As in the inventory. |
 | `owners` | Sorted list of distinct owners. |
 | `rows` | How many inventory rows made this item. |
-| `product` | The endoflife.date product. `null` only when no alias matched (`NO_ALIAS`, or `AMBIGUOUS` across products). Set when the product is known but no cycle matched (`NO_VERSION`, `NO_CYCLE`, or `AMBIGUOUS` between cycles). |
+| `product` | The endoflife.date product. `null` only when no product matched (`NO_ALIAS`, or `AMBIGUOUS` across products). Set when the product is known but no cycle matched (`NO_VERSION`, `NO_CYCLE`, or `AMBIGUOUS` between cycles). |
+| `match_source` | How the product was found: `curated` (an alias in `aliases.json`), `generated` (the name equals the product's title in `products.json`, under the rules in `docs/usage.md`), or `null` when `product` is `null`. Set also when the product is known but no cycle matched (the item then stays `unmatched` with `product` set and `cycle` `null`). With a format 1 data folder it is `curated` or `null`. |
 | `cycle` | The matched cycle label, or `null`. |
 | `state` | One of the states below. |
 | `state_endoflife` | The state using only the endoflife.date date. `null` if unmatched. |
@@ -137,10 +143,10 @@ mean your version is affected. The tool never says "vulnerable".
 
 | Code | Meaning |
 |---|---|
-| `NO_ALIAS` | No alias entry for this name, or the name has extra words after the product name that the strict tail-word rule rejects. |
-| `NO_CYCLE` | The product is known, but no cycle matches this version. |
+| `NO_ALIAS` | No alias entry and no product title fits this name, or the name has extra words after an alias that the strict tail-word rule rejects. |
+| `NO_CYCLE` | The product is known, but no cycle matches this version, or the version in the name and the version column disagree (they would pick different cycles), so the row is not decided. `product` and `match_source` are still set; `cycle` is `null`. |
 | `NO_VERSION` | No version was given. |
-| `AMBIGUOUS` | The name matches aliases for more than one product, or more than one cycle fits this version. |
+| `AMBIGUOUS` | The name matches more than one product (aliases, product titles, or an alias and a title), or more than one cycle fits this version. |
 
 ### dates_disagree codes
 
@@ -197,7 +203,9 @@ The Markdown report still prints a "Decision needed" line for it.
 
 ### diff.changed_state
 
-Each entry in `changed_state` has these keys.
+Each entry in `changed_state` has these keys. The first run after the data
+changes from format 1 to format 2 lists many items here: rows that were
+`unmatched` now match by product title.
 
 | Key | Meaning |
 |---|---|

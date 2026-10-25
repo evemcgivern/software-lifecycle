@@ -76,6 +76,15 @@
         "2022": "2022",
         "2025": "2025"
       },
+      "column_map": {
+        "10.0.14393": "2016",
+        "10.0.17763": [
+          "2019",
+          "1809-sac"
+        ],
+        "10.0.20348": "2022",
+        "10.0.26100": "2025"
+      },
       "edition_words": [
         "datacenter",
         "standard"
@@ -99,6 +108,15 @@
         "2019": "2019",
         "2022": "2022",
         "2025": "2025"
+      },
+      "column_map": {
+        "10.0.14393": "2016",
+        "10.0.17763": [
+          "2019",
+          "1809-sac"
+        ],
+        "10.0.20348": "2022",
+        "10.0.26100": "2025"
       },
       "edition_words": [
         "datacenter",
@@ -182,6 +200,15 @@
         "2019": "2019",
         "2021": "2021"
       },
+      "column_map": {
+        "14.0": "2010",
+        "15.0": "2013",
+        "16.0": [
+          "2016",
+          "2019",
+          "2021"
+        ]
+      },
       "kev": {
         "product": "Office",
         "vendor": "Microsoft"
@@ -198,6 +225,15 @@
         "2016": "2016",
         "2019": "2019",
         "2021": "2021"
+      },
+      "column_map": {
+        "14.0": "2010",
+        "15.0": "2013",
+        "16.0": [
+          "2016",
+          "2019",
+          "2021"
+        ]
       },
       "kev": {
         "product": "Office",
@@ -219,14 +255,23 @@
     {
       "key": "node.js",
       "match": "exact",
+      "note": "Applies only when the publisher names the Node.js Foundation or the OpenJS Foundation, as the official installer does (winget OpenJS.NodeJS gives Node.js Foundation), so third-party packages named Node.js do not match.",
       "product": "nodejs",
+      "publisher": [
+        "node.js foundation",
+        "openjs foundation"
+      ],
       "source": "https://nodejs.org/en/about/previous-releases",
       "version_from": "version"
     },
     {
       "key": "ubuntu",
       "match": "exact",
+      "note": "Applies only when the publisher names Canonical (winget gives Canonical Group Limited), so the Ubuntu font and other same-name packages do not match. Rows with a blank publisher are not matched by this alias.",
       "product": "ubuntu",
+      "publisher": [
+        "canonical"
+      ],
       "source": "https://ubuntu.com/about/release-cycle",
       "version_from": "version"
     },
@@ -236,7 +281,11 @@
       ],
       "key": "ubuntu",
       "match": "prefix",
+      "note": "Applies only when the publisher names Canonical (winget gives Canonical Group Limited), so the Ubuntu font and other same-name packages do not match. Rows with a blank publisher are not matched by this alias.",
       "product": "ubuntu",
+      "publisher": [
+        "canonical"
+      ],
       "source": "https://ubuntu.com/about/release-cycle",
       "version_from": "name"
     },
@@ -262,6 +311,27 @@
       "match": "prefix",
       "product": "eclipse-temurin",
       "source": "https://github.com/adoptium/installer/blob/master/wix/Includes/OpenJDK.Variables.wxi.template",
+      "version_from": "name"
+    },
+    {
+      "key": "windows powershell",
+      "match": "exact",
+      "product": "windows-powershell",
+      "source": "https://learn.microsoft.com/en-us/powershell/scripting/what-is-windows-powershell",
+      "version_from": "version"
+    },
+    {
+      "key": "mysql server",
+      "match": "prefix",
+      "product": "mysql",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/Oracle/MySQL/8.4.9/Oracle.MySQL.installer.yaml",
+      "version_from": "name"
+    },
+    {
+      "key": "liberica jdk",
+      "match": "prefix",
+      "product": "bellsoft-liberica",
+      "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/b/BellSoft/LibericaJDK/17/17.0.9.11/BellSoft.LibericaJDK.17.installer.yaml",
       "version_from": "name"
     }
   ],

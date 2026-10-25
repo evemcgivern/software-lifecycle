@@ -20,6 +20,10 @@ KEV_LINE = ("The vendor and product appear in CISA KEV. This does not mean "
             "your version is affected.")
 CLAIMS_LINE = ("Runs locally with no network by default; built to "
                "enterprise security practices; not independently assessed.")
+# Fixed text, printed once in report.md under the summary counts.
+MATCH_CAVEAT = ("Matches rest on name and publisher only. Rows we could not "
+                "tell apart are listed as unmatched. Check the source and "
+                "cycle before relying on any row.")
 
 STATE_TEXT = {
     "supported": "supported",
@@ -29,13 +33,18 @@ STATE_TEXT = {
     "unmatched": "could not be matched",
 }
 REASON_TEXT = {
-    "NO_ALIAS": "no alias entry for this name",
-    "NO_CYCLE": "no cycle matches this version",
+    "NO_ALIAS": "no alias entry or product title fits this name",
+    "NO_CYCLE": ("no cycle matches this version, or the version in the name "
+                 "disagrees with it"),
     "NO_VERSION": "no version given",
     "AMBIGUOUS": "more than one cycle fits this version",
 }
 REASON_TEXT_NO_PRODUCT = {
-    "AMBIGUOUS": "the name fits aliases for more than one product",
+    "AMBIGUOUS": "the name fits more than one product",
+}
+SOURCE_TEXT = {
+    "curated": "matched by a curated alias",
+    "generated": "matched by product title",
 }
 DECISION_TEXT = {
     "DIFFERENT_DATE": (
@@ -79,7 +88,7 @@ CSV_COLUMNS = (
     "eol_export", "eol_export_raw", "support", "extended_support",
     "golden_applied", "golden_expired", "dates_disagree", "accepted_risk",
     "exception_expired", "decision_needed", "kev", "kev_stale",
-    "change_ref", "problem_ref", "lists")
+    "change_ref", "problem_ref", "lists", "match_source")
 
 _MD_SPECIAL = "\\`*_[]()#|~!"
 
@@ -217,6 +226,8 @@ def _item_block(it: dict, eol_snap: str) -> list:
     out = [head + " (id `%s`)" % it["id"]]
     sub = []
     sub.append("State: %s" % STATE_TEXT[it["state"]])
+    if it.get("match_source") in SOURCE_TEXT:
+        sub.append("Product %s." % SOURCE_TEXT[it["match_source"]])
     owners = ", ".join(_disp(o) for o in it["owners"])
     if owners:
         sub.append("Owners: %s. Rows: %d" % (owners, it["rows"]))
@@ -288,6 +299,7 @@ def render_markdown(result: dict, meta: dict) -> str:
         result["counts"]["items"], result["counts"]["rows"],
         "; ".join("%s %d" % (h.lower(), counts[name])
                   for name, h, _ in SECTIONS))]
+    out += ["", MATCH_CAVEAT]
 
     for number, (name, heading, _) in enumerate(SECTIONS, 1):
         ids = result["lists"][name]

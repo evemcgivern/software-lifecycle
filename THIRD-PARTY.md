@@ -13,6 +13,12 @@ Used for:
   endoflife.date product files at the commit named as `upstream_commit` in
   `data/manifest.json`. Product descriptions are
   not included.
+- `data/products.json`: product id, title, category, the vendor part of
+  each CPE identifier and, for the five package URL types that name an
+  owner (github, npm, composer, golang on github.com, maven), the owner
+  part, read from the same product files at the same commit. The other
+  package URL types give no owner. Descriptions, page text and dates are
+  not included.
 
 Licence of the repository (MIT):
 

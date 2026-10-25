@@ -64,20 +64,187 @@ On success it prints "Data check passed" with the release and file count.
 | 10 | Findings are present in a list named by `--fail-on`. Only returned with `--fail-on`. |
 | 70 | Unexpected error. The tool prints only the error type. |
 
+## How names are matched
+
+Each item's name is matched in two steps. `match_source` in the report says
+which one found the product.
+
+1. **Curated aliases** (`aliases.json`). An alias that hits the name decides
+   the item, even when it then finds no cycle or its strict tail-word rule
+   rejects the name. A curated alias matches by name regardless of
+   publisher, unless it has a `publisher` list: then it applies only when
+   the row's publisher holds one of those phrases as whole words (the
+   `node.js` alias needs the Node.js Foundation or the OpenJS Foundation,
+   the `ubuntu` aliases need Canonical), and otherwise it does not hit at
+   all. When an alias reads the version from the name, the name carries no
+   version and the column is a calendar version such as `2023.22.1` while
+   the product's cycles are not years (the Python extension for VS Code
+   against Python 3.x), the row is another product: no match. When an
+   alias reads the version from the name and the version column is not
+   empty, the column is checked:
+   - an alias without a `build_map`: the name's version and the column must
+     pick the same cycle (or, when either picks none, be equal on their
+     shared leading parts);
+   - an alias with a `build_map` (names that carry a year, such as Windows
+     Server 2019): the column is checked only when its leading parts are a
+     key of the alias's `column_map` (builds to the cycles they can be, for
+     example `10.0.17763` is 2019 or 1809), a key of the `build_map`, or a
+     cycle label. Then the year in the name must be one of the cycles the
+     column can be. A column that is none of these, such as a Windows
+     Server 2012 build, which the `column_map` does not list, is not
+     checked.
+
+   If the check fails, the item is not decided (`NO_CYCLE`, product known).
+2. **Product titles** (`products.json`), only when no alias hits. The name
+   must equal a product's title after normalizing. Before comparing, the
+   tool drops architecture and locale groups such as `(x64 en-US)` or
+   `[x64]` (a locale is any ISO language-region pair, such as `es-AR`; a word
+   like `go-to` is not one), drops a leading vendor word when the publisher carries that
+   vendor (`Mozilla Firefox` with publisher Mozilla), and splits a trailing
+   version number off the name (`Foo 2.1`). A whole title wins over a split
+   one. The version column is used; when it is empty, the version from the
+   name is used; when both exist and pick different cycles, the item is not
+   decided. A name of more than 64 words is never matched by title.
+   - A one-word title matches only when the publisher names the product's
+     vendor as whole words, or when the product is on the one-word
+     allowlist in `curation.json`. `The Apache Software Foundation`
+     confirms the vendor `apache`; `ApacheFriends` does not. A vendor
+     written as one word, such as `redhat`, is not confirmed by
+     `Red Hat, Inc.`.
+   - When the vendor word is the product's own title (vendor `prometheus`
+     for Prometheus), the publisher must be that word alone, apart from
+     words such as Inc, Ltd, GmbH, Foundation, Project, Team or The. So
+     `Prometheus Group Inc.` does not confirm Prometheus, and `Grafana Labs`
+     confirms Grafana only through its curated publisher alias. Known limit: a different
+     product from a same-name vendor still confirms unless an exclusion
+     stops it (the Moodle app from Moodle Pty Ltd is excluded).
+   - Products whose catalog category is `device`, and products on
+     `generated_off`, are never matched by title.
+   - An exclusion stops one product for a name: it applies when its name
+     equals any form of the row's name (whole, without architecture groups,
+     without the vendor word, or with the version split off) and, when it
+     gives one, its publisher word is in the publisher.
+   - No slugs, fragments or fuzzy scores are used.
+
+When a version has more parts than the chosen cycle and that cycle has finer
+cycles in the same product (4.6 has 4.6.1 and 4.6.2), the next part is
+checked. If it names one of the finer cycles, that cycle is used. If it
+names none and is shaped like a build (not all digits, more than three
+digits, or a zero-padded number such as `01`), the item is not decided
+(`NO_CYCLE`). So `.NET Framework` with the registry build `4.6.01590` gets
+no cycle rather than the wrong one. A plain number of three digits or fewer
+with no leading zero is read as a patch of the chosen cycle: Log4j `2.17.1`
+is cycle 2 and Jenkins `2.587` is cycle 2. A cycle with no finer cycles is
+unchanged (`3.12.1150.0` is Python 3.12).
+
+A name that fits two products, by alias, by title or one of each, is
+`AMBIGUOUS` and stays unmatched. A data folder without `products.json`
+(format 1) matches by alias only.
+
+## Known limits of matching
+
+These are known and not fixed. The tool leaves the row unmatched or says
+so; it does not hide them.
+
+- A curated alias matches by name, whatever the publisher, unless it has a
+  `publisher` list. Only some aliases have one (`node.js`, `ubuntu`).
+- Two products with the same name from the same vendor cannot be told
+  apart. The Moodle mobile app and the Moodle LMS are an example: both are
+  left unmatched, by an exclusion.
+- A Jenkins weekly build whose number equals a long-term-support baseline
+  (for example `2.426`) maps to that baseline's cycle. A weekly build that
+  is not a baseline maps to cycle `2`.
+- A cycle is left open (`NO_CYCLE`, product known) when a version's extra
+  part looks like a build number, for example `.NET Framework` `4.6.01590`.
+- Software with no lifecycle policy (git, curl, vim) is not in the data and
+  never matches.
+- Ansible rows from Red Hat stay unmatched. The catalog vendor is
+  `redhat`, one word, and the Red Hat VS Code extension named Ansible
+  shares the name and publisher, so no publisher alias adds Red Hat.
+- A bare `podman` row with no publisher stays unmatched: the PyPI `podman`
+  package (the API bindings) and the Homebrew `podman` formula look the
+  same to the matcher. Podman matches when the publisher is Red Hat or the
+  Podman project.
+- The VS Code extensions for Julia and Deno share vendor words with the
+  Julia and Deno products, so an extension row can be read as the product.
+
 ## How KEV is checked
 
 KEV is checked only for matched items that are past end of life or end
 within the window. The check uses the alias table's vendor and product pair
-for the matched product. If the alias has no pair, the tool compares the
+for the matched product. If the alias has no pair, or the product was
+matched by title, the tool compares the
 publisher and the full inventory name (version included) with KEV, exactly.
 `kev: false` therefore means "no match under those rules", not "known
 safe". The `windows-server` and Windows 10 client aliases use the broad
 Microsoft and Windows pair, so every Windows entry in KEV matches them.
 
+## The data folder
+
+A data folder holds these files. `data/manifest.json` lists every one with
+its SHA-256 and size, and the tool checks them on every load.
+
+| File | Made by | Holds |
+|---|---|---|
+| `aliases.json` | the maintainer, by hand | Names that map to a product. |
+| `profiles.json` | the maintainer, by hand | Pre-filled column alias lists. |
+| `curation.json` | the maintainer, by hand | Publisher aliases, a one-word allowlist, exclusions and a list of products left out of generated matching. Each list entry carries a reason or a source URL. |
+| `products.json` | `refresh_data.py` | One record per endoflife.date product: `id`, `title`, `category`, `vendors` and `namespaces`. |
+| `kev.json` | `refresh_data.py` | The CISA KEV catalog. |
+| `eol/*.json` | `refresh_data.py` | Release cycles and end-of-life dates, one file per product. |
+
+Never edit a generated file by hand. The weekly job regenerates
+`products.json` and `eol/*.json` from the same endoflife.date commit.
+
+`products.json` reads only these upstream fields: `permalink` (the id),
+`title`, `category` and the `identifiers` list. From `identifiers` it keeps
+the vendor part of each `cpe` entry (both the `cpe:/a:vendor:product` and
+`cpe:2.3:a:vendor:product` forms) as `vendors`, and the owner part of each
+`purl` entry as `namespaces`, lower-cased and checked to hold only letters,
+digits, `_`, `.` and `-`. Five purl types give a namespace: `github` and
+`composer` (the first namespace segment), `npm` (the scope, without the
+`@`), `golang` (the owner, and only for modules on github.com) and `maven`
+(the whole group id). Every other purl type gives none: `deb`, `rpm`,
+`apk`, `alpm`, `docker`, `oci`, `brew`, `scoop`, `chocolatey`, `winget`,
+`nuget`, `pypi`, `gem`, `cargo`, `hex`, `generic` and `swid`, because their
+namespaces name a distribution, a tap or a repackager, not an owner. Other
+identifier kinds are skipped. A value with unexpected characters stops the
+refresh. The file holds no descriptions, slugs, alternate URLs, page text
+or dates.
+
+`curation.json` has the keys `format`, `publisher_aliases` (a product id to
+an object of `phrases`, a sorted list of lowercase vendor phrases, `reason`
+and `source`), `single_word_allowlist` (a list of `product`, `reason`,
+`source` and `gold`, the gold benchmark row it was checked on, as
+`name|publisher|version`), where each `source` is an https URL,
+`exclusions` (a list of `product`, `name`, `publisher`, `reason` and `gold`;
+`publisher` is one lowercase word, or empty to apply whatever the
+publisher)
+`generated_off` (a sorted list of product ids) and, optionally,
+`no_cycle_versions` (a product id to an object of `prefixes`, a sorted list
+of version prefixes such as `21.3`, `reason` and `source`). The tool refuses a file
+with an unknown key, a wrong type, a duplicate or an unsorted list where
+sorting is promised.
+
+### Data format
+
+`data_format` in the manifest is 2. A format 2 folder must list both
+`products.json` and `curation.json`; the tool loads both or stops with a
+data error that names the file. A format 1 folder, which has neither, still
+loads as before. The report then carries this warning and the product
+catalog is absent: "This data release has no product catalog; generated
+matching is off." A tool that does not know a data format stops with "data
+format is not supported by this tool" before it looks at any file name. In a
+format 2 folder every product in `products.json` must have an `eol/` file
+and the other way round, and `curation.json` may name only products in
+`products.json`; otherwise the load stops with a data error that names the
+file and echoes no value.
+
 ## Extending the alias table
 
-The bundled `data/aliases.json` covers few products (see the README). To
-add one, edit a copy of the data folder. Do not edit `data/` in place.
+Most products match by their endoflife.date title (see the README). Use
+an alias for a name the title does not cover. To add one, edit a copy of
+the data folder. Do not edit `data/` in place.
 
 1. Copy the folder: `cp -R data ../my-data`.
 2. Add an entry to the `aliases` list in `../my-data/aliases.json`. This one
@@ -97,8 +264,12 @@ add one, edit a copy of the data folder. Do not edit `data/` in place.
    or `prefix`. `product` is the file name in `data/eol/` without `.json`.
    `version_from` is `version` (read the version column) or `name` (read
    the version from the end of the name). Optional fields: `cycle` (a fixed
-   cycle label), `build_map`, `kev` (an object with `vendor` and
-   `product`), `note` and `edition_words`. `source` is a link to where you
+   cycle label), `build_map`, `column_map` (for an alias that reads the
+   version from the name: version-column builds to the cycles they can be,
+   used only to check the name), `kev` (an object with `vendor` and
+   `product`), `note`, `edition_words` and `publisher` (a non-empty list of
+   lowercase publisher phrases; the alias then applies only when the row's
+   publisher holds one of them as whole words). `source` is a link to where you
    confirmed the mapping.
 3. Rebuild the manifest. Copy the dates, catalog version and upstream commit
    from `data/manifest.json` into the placeholders:
@@ -112,6 +283,33 @@ Golden sources do not apply to unmatched items. Add the alias first, and
 then a golden source if you need one. If you want the bundled table to
 cover a product, open the "Product the tool could not match" issue form
 with names only.
+
+## Extending the curation file
+
+`curation.json` holds the maintainer's decisions about generated matching.
+Edit it in a copy of the data folder, like the alias table, and rebuild the
+manifest (steps 3 to 5 above). The tool refuses a file that breaks the
+rules in "The data folder".
+
+- A publisher alias adds vendor names for one product, so a one-word or
+  short title can be confirmed by the row's publisher. Give `phrases`
+  (lowercase), a `reason` and an https `source`.
+- A one-word allowlist entry lets a one-word title match with no vendor.
+  Give the `product`, a `reason`, a `source` and a `gold` row
+  (`name|publisher|version`) that shows it is right.
+- An exclusion stops one product for one name, optionally for one
+  publisher word. Give the `product`, `name`, `publisher`, `reason` and a
+  `gold` row.
+- `generated_off` lists products that never match by title.
+- `no_cycle_versions` names version prefixes from an older numbering that
+  overlaps a product's cycles. GraalVM numbered releases by year until 2023
+  (21.3.1), and its cycles are the later JDK-based releases (21.0.2). A
+  title match whose version, in the column or in the name, starts with a
+  listed prefix gets the product with no cycle. Give the `prefixes`, a
+  `reason` and a `source`. Curated aliases are not affected.
+
+For the bundled file, the rules in `CONTRIBUTING.md` also apply: every
+entry cites its evidence and the benchmark must not get worse.
 
 ## Counts-only mode
 

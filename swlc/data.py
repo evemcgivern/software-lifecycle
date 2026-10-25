@@ -5,21 +5,39 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
+from .catalog_match import build_index, tokens
 from .errors import DataError
 from .matching import _check as _check_alias
 from .normalize import normalize_name
 
-SUPPORTED_DATA_FORMATS = (1,)
+SUPPORTED_DATA_FORMATS = (1, 2)
 KEV_WARN_DAYS = 3
 KEV_STALE_DAYS = 7
 EOL_WARN_DAYS = 30
 
 _REQUIRED = ("aliases.json", "profiles.json", "kev.json")
+# Format 2 adds the product catalog and the hand-kept curation file.
+_REQUIRED_V2 = _REQUIRED + ("products.json", "curation.json")
 _NAME_RE = re.compile(r"(?:aliases|profiles|kev)\.json|eol/[a-z0-9][a-z0-9_.-]*\.json")
+_NAME_RE_V2 = re.compile(
+    r"(?:aliases|profiles|kev|products|curation)\.json"
+    r"|eol/[a-z0-9][a-z0-9_.-]*\.json")
+_ID_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
+_VENDOR_RE = re.compile(r"[a-z0-9][a-z0-9_.+-]*")
+# A version prefix in no_cycle_versions: numbers joined by dots.
+_PREFIX_RE = re.compile(r"[0-9]+(?:\.[0-9]+)*")
+_NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
+_URL_RE = re.compile(
+    r"https://[A-Za-z0-9][A-Za-z0-9.-]*(?::[0-9]{1,5})?(?:[/?#][!-~]*)?")
+MAX_LABEL = 200
+MAX_TOKEN = 100   # longest vendor or namespace token in products.json
+NO_CATALOG_WARNING = ("This data release has no product catalog; "
+                      "generated matching is off.")
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 _SHA_RE = re.compile(r"[0-9a-f]{64}")
 _VERSION_RE = re.compile(r"\d{1,6}(?:\.\d{1,6}){0,2}")
@@ -41,6 +59,22 @@ class Data:
     kev_current: bool = True
     warnings: list = field(default_factory=list)
     profiles: dict = field(default_factory=dict)
+    # Format 2 only: id -> record from products.json, and the validated
+    # curation.json. Both are None for a format 1 data folder.
+    catalog: dict | None = None
+    curation: dict | None = None
+    _index: object = field(default=None, init=False, repr=False,
+                           compare=False)
+
+    def matching_index(self):
+        """The generated-matching index (swlc.catalog_match), built on first
+        use and then reused for the whole run. None without a catalog (data
+        format 1): generated matching is off."""
+        if self.catalog is None:
+            return None
+        if self._index is None:
+            self._index = build_index(self.catalog, self.curation)
+        return self._index
 
 
 def tool_version() -> str:
@@ -155,6 +189,195 @@ def _validate_profiles(obj) -> dict:
     return profiles
 
 
+def _ident(value, where: str) -> str:
+    if not isinstance(value, str) or not _ID_RE.fullmatch(value):
+        raise DataError("%s: expected a product id" % where)
+    return value
+
+
+def _keys(obj, allowed: tuple, where: str) -> None:
+    if not isinstance(obj, dict):
+        raise DataError("%s: expected an object" % where)
+    if set(obj) != set(allowed):
+        raise DataError("%s: unexpected or missing keys" % where)
+
+
+def _is_format_one(value) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) \
+        and value == 1
+
+
+def _label(value, where: str) -> str:
+    """Display text: at most MAX_LABEL characters, none of them a control,
+    format (zero-width, bidi override) or line or paragraph separator."""
+    if not isinstance(value, str) or not value.strip() \
+            or len(value) > MAX_LABEL or any(
+                unicodedata.category(c) in ("Cc", "Cf", "Zl", "Zp")
+                for c in value):
+        raise DataError("%s: expected plain text of at most %d characters"
+                        % (where, MAX_LABEL))
+    return value
+
+
+def _str_list(value, where: str, lower: bool = False, pattern=None,
+              max_len=None) -> list:
+    """A strictly sorted list of non-empty strings (so no duplicates).
+    With pattern, every string must match it whole; with max_len, no
+    string is longer."""
+    if not isinstance(value, list):
+        raise DataError("%s: expected a list" % where)
+    for item in value:
+        if not isinstance(item, str) or not item.strip() \
+                or item != item.strip() or (lower and item != item.lower()):
+            raise DataError("%s: expected plain non-empty %sstrings"
+                            % (where, "lowercase " if lower else ""))
+        if pattern is not None and not pattern.fullmatch(item):
+            raise DataError("%s: a value has characters that are not allowed"
+                            % where)
+        if max_len is not None and len(item) > max_len:
+            raise DataError("%s: a value is longer than %d characters"
+                            % (where, max_len))
+    if any(a >= b for a, b in zip(value, value[1:])):
+        raise DataError("%s: must be sorted with no duplicates" % where)
+    return value
+
+
+def validate_products(obj) -> dict:
+    """Check a parsed products.json; return {product id: record}."""
+    _keys(obj, ("format", "products"), "top level")
+    if not _is_format_one(obj["format"]):
+        raise DataError("format: expected 1")
+    items = obj["products"]
+    if not isinstance(items, list):
+        raise DataError("products: expected a list")
+    out, last = {}, None
+    for pos, item in enumerate(items, 1):
+        where = "products[%d]" % pos
+        _keys(item, ("id", "title", "category", "vendors", "namespaces"),
+              where)
+        pid = _ident(item["id"], where + ".id")
+        if last is not None and pid <= last:
+            raise DataError("%s: ids must be sorted with no duplicates"
+                            % where)
+        last = pid
+        _label(item["title"], where + ".title")
+        _label(item["category"], where + ".category")
+        _str_list(item["vendors"], where + ".vendors", pattern=_VENDOR_RE,
+                  max_len=MAX_TOKEN)
+        _str_list(item["namespaces"], where + ".namespaces",
+                  pattern=_NAMESPACE_RE, max_len=MAX_TOKEN)
+        out[pid] = item
+    return out
+
+
+def _https(value, where: str) -> str:
+    if (not isinstance(value, str) or len(value) > 500
+            or not _URL_RE.fullmatch(value)):
+        raise DataError("%s: expected an https URL with a host and no "
+                        "user name" % where)
+    return value
+
+
+def validate_curation(obj, product_ids=None) -> dict:
+    """Check a parsed curation.json; return it. With product_ids, every
+    product it names must be in that collection."""
+    # no_cycle_versions is optional, so files written before it still load.
+    _keys({k: v for k, v in obj.items() if k != "no_cycle_versions"}
+          if isinstance(obj, dict) else obj,
+          ("format", "publisher_aliases", "single_word_allowlist",
+           "exclusions", "generated_off"), "top level")
+    if not _is_format_one(obj["format"]):
+        raise DataError("format: expected 1")
+    named = []
+
+    aliases = obj["publisher_aliases"]
+    if not isinstance(aliases, dict):
+        raise DataError("publisher_aliases: expected an object")
+    for pid, entry in aliases.items():
+        where = "publisher_aliases entry"
+        _ident(pid, where)
+        _keys(entry, ("phrases", "reason", "source"), where)
+        phrases = entry["phrases"]
+        if not isinstance(phrases, list) or not phrases:
+            raise DataError("%s: expected a non-empty list" % where)
+        _str_list(phrases, where, lower=True)
+        if not all(tokens(ph) for ph in phrases):
+            raise DataError("%s: a phrase has no words" % where)
+        _text(entry["reason"], where + ".reason")
+        _https(entry["source"], where + ".source")
+        named.append(pid)
+
+    allow = obj["single_word_allowlist"]
+    if not isinstance(allow, list):
+        raise DataError("single_word_allowlist: expected a list")
+    seen = set()
+    for pos, item in enumerate(allow, 1):
+        where = "single_word_allowlist[%d]" % pos
+        _keys(item, ("product", "reason", "source", "gold"), where)
+        pid = _ident(item["product"], where + ".product")
+        if pid in seen:
+            raise DataError("%s: product listed twice" % where)
+        seen.add(pid)
+        _text(item["reason"], where + ".reason")
+        _https(item["source"], where + ".source")
+        if _text(item["gold"], where + ".gold").count("|") != 2:
+            raise DataError("%s.gold: expected name|publisher|version"
+                            % where)
+        named.append(pid)
+
+    excl = obj["exclusions"]
+    if not isinstance(excl, list):
+        raise DataError("exclusions: expected a list")
+    seen = set()
+    for pos, item in enumerate(excl, 1):
+        where = "exclusions[%d]" % pos
+        _keys(item, ("product", "name", "publisher", "reason", "gold"), where)
+        pid = _ident(item["product"], where + ".product")
+        name = _text(item["name"], where + ".name")
+        pub = item["publisher"]
+        if not isinstance(pub, str) or pub != pub.lower() \
+                or pub != pub.strip() or any(c.isspace() for c in pub):
+            raise DataError("%s.publisher: expected a lowercase token or "
+                            "an empty string" % where)
+        _text(item["reason"], where + ".reason")
+        gold = _text(item["gold"], where + ".gold")
+        if gold.count("|") != 2:
+            raise DataError("%s.gold: expected name|publisher|version"
+                            % where)
+        if (pid, name, pub) in seen:
+            raise DataError("%s: duplicate exclusion" % where)
+        seen.add((pid, name, pub))
+        named.append(pid)
+
+    off = obj["generated_off"]
+    if not isinstance(off, list):
+        raise DataError("generated_off: expected a list")
+    _str_list(off, "generated_off")
+    for pid in off:
+        _ident(pid, "generated_off")
+    named.extend(off)
+
+    nocyc = obj.get("no_cycle_versions", {})
+    if not isinstance(nocyc, dict):
+        raise DataError("no_cycle_versions: expected an object")
+    for pid, entry in nocyc.items():
+        where = "no_cycle_versions entry"
+        _ident(pid, where)
+        _keys(entry, ("prefixes", "reason", "source"), where)
+        if not isinstance(entry["prefixes"], list) or not entry["prefixes"]:
+            raise DataError("%s: expected a non-empty list" % where)
+        _str_list(entry["prefixes"], where, pattern=_PREFIX_RE)
+        _text(entry["reason"], where + ".reason")
+        _https(entry["source"], where + ".source")
+        named.append(pid)
+
+    if product_ids is not None:
+        known = set(product_ids)
+        if any(pid not in known for pid in named):
+            raise DataError("a product named here is not in the catalog")
+    return obj
+
+
 # --- manifest and file verification ---------------------------------------
 
 def _parse(raw: bytes, name: str):
@@ -185,9 +408,11 @@ def _read_manifest(data_dir: str) -> dict:
     def check(m):
         if not isinstance(m, dict):
             raise DataError("top level must be an object")
-        if m.get("data_format") not in SUPPORTED_DATA_FORMATS or isinstance(
-                m.get("data_format"), bool):
+        fmt_value = m.get("data_format")
+        if type(fmt_value) is not int or \
+                fmt_value not in SUPPORTED_DATA_FORMATS:
             raise DataError("data format is not supported by this tool")
+        fmt = m["data_format"]
         _text(m.get("release_id"), "release_id")
         _text(m.get("kev_catalog_version"), "kev_catalog_version")
         _text(m.get("upstream_commit"), "upstream_commit")
@@ -200,7 +425,7 @@ def _read_manifest(data_dir: str) -> dict:
         if not isinstance(files, dict) or not files:
             raise DataError("files: expected a non-empty object")
         for name, meta in files.items():
-            if not _NAME_RE.fullmatch(name):
+            if not (_NAME_RE_V2 if fmt == 2 else _NAME_RE).fullmatch(name):
                 raise DataError("files: a listed file name is not allowed")
             if not isinstance(meta, dict):
                 raise DataError("files: bad entry for %s" % name)
@@ -209,7 +434,7 @@ def _read_manifest(data_dir: str) -> dict:
                 raise DataError("files: bad sha256 for %s" % name)
             if isinstance(size, bool) or not isinstance(size, int) or size < 0:
                 raise DataError("files: bad size for %s" % name)
-        for name in _REQUIRED:
+        for name in (_REQUIRED_V2 if fmt == 2 else _REQUIRED):
             if name not in files:
                 raise DataError("files: %s is not listed" % name)
 
@@ -271,6 +496,8 @@ def _verify(data_dir: str) -> tuple:
 
 
 def _parse_all(blobs: dict) -> tuple:
+    """Returns (aliases, kev, eol products, profiles, catalog, curation);
+    catalog and curation are None when products.json is not in blobs."""
     aliases = _wrap("aliases.json", _validate_aliases,
                     _parse(blobs["aliases.json"], "aliases.json"))
     profiles = _wrap("profiles.json", _validate_profiles,
@@ -282,13 +509,24 @@ def _parse_all(blobs: dict) -> tuple:
         if name.startswith("eol/"):
             products[name[4:-5]] = _wrap(
                 name, validate_eol, _parse(blobs[name], name))
-    return aliases, kev, products, profiles
+    catalog = curation = None
+    if "products.json" in blobs:
+        catalog = _wrap("products.json", validate_products,
+                        _parse(blobs["products.json"], "products.json"))
+        if set(catalog) != set(products):
+            raise DataError(
+                "products.json: the product records and the eol/ files "
+                "do not list the same products")
+        curation = _wrap("curation.json", validate_curation,
+                         _parse(blobs["curation.json"], "curation.json"),
+                         set(catalog))
+    return aliases, kev, products, profiles, catalog, curation
 
 
 def load_data(data_dir: str, as_of: date) -> Data:
     """Verify the manifest and files first, then parse. Raises DataError."""
     manifest, blobs = _verify(data_dir)
-    aliases, kev, products, profiles = _parse_all(blobs)
+    aliases, kev, products, profiles, catalog, curation = _parse_all(blobs)
     kev_age = (as_of - date.fromisoformat(manifest["kev_date"])).days
     eol_age = (as_of - date.fromisoformat(manifest["eol_date"])).days
     warnings = []
@@ -305,6 +543,8 @@ def load_data(data_dir: str, as_of: date) -> Data:
         warnings.append("End-of-life snapshot date is in the future")
     elif eol_age > EOL_WARN_DAYS:
         warnings.append("End-of-life snapshot is %d days old" % eol_age)
+    if catalog is None:
+        warnings.append(NO_CATALOG_WARNING)
     return Data(
         release_id=manifest["release_id"],
         file_hashes={n: manifest["files"][n]["sha256"] for n in blobs},
@@ -312,7 +552,8 @@ def load_data(data_dir: str, as_of: date) -> Data:
         kev_catalog_version=manifest["kev_catalog_version"],
         kev_age_days=kev_age, eol_age_days=eol_age,
         kev_current=future <= kev_age <= KEV_STALE_DAYS,
-        warnings=warnings, profiles=profiles)
+        warnings=warnings, profiles=profiles,
+        catalog=catalog, curation=curation)
 
 
 def kev_match(kev: list, vendor: str, product: str) -> bool:

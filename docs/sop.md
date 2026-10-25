@@ -39,7 +39,12 @@ who holds each role.
    If an AI agent runs it, use `--counts-only` and keep the output folder
    out of the agent's reach. No model should read the full report.
 4. **Read the "Changes since the previous report" section** to see what is
-   new, gone or changed.
+   new, gone or changed. The first run after an upgrade that adds matching
+   by product title shows a long state-changed list (`diff.changed_state`):
+   items that were unmatched now match, and golden-source and exception
+   rows keyed by product id now apply to them. Check those rows once. A data folder in format 1 still loads
+   with a warning and generated matching off, so its report matches by alias
+   only.
 5. **Work "Past end of life" and "Ends within the lookahead window".** For
    each item, the owner chooses: replace, upgrade, retire, or request risk
    acceptance (step 8).
@@ -47,7 +52,8 @@ who holds each role.
 6. **Work "Review urgently".** These items are past or near end of life and
    their vendor and product appear in CISA KEV. This does not mean your
    version is affected. A person checks the version against the KEV entries
-   and decides the priority.
+   and decides the priority. `kev: false` means "no match under those rules", not
+   "known safe".
    **Decision needed:** whether each item is affected, and its priority.
 7. **Settle "Dates disagree".** The ITAM lead picks the right date for each
    item. If it will keep recurring, record the choice as a row in
@@ -117,3 +123,39 @@ standard. CISA's current binding directive for US federal civilian agencies, BOD
 
 **What is the support level?** Maintained as time allows, best effort, no
 SLA. This is an experiment with a review date of 2027-01-31. On that date the maintainer decides whether to keep it, archive it, or fold it into another project.
+
+## Maintainer: when the weekly data job fails
+
+This part is for the project maintainer, not for a quarterly review. The
+"endoflife.date weekly pull request" job runs the full test suite on the
+new data before it opens a pull request. When a test fails, it opens no
+pull request and opens or updates one issue labelled `eol-weekly-failed`.
+
+1. **Find the failing test.** Open the run linked from the issue. The
+   step that failed is either `verify-data` (the data check) or the test
+   suite. In the suite's output, find the failing test's name and message.
+2. **Find the product.** Usually upstream renamed or removed a product
+   that a gold row in `tests/benchmark/gold.csv` or an entry in
+   `data/curation.json` names. A data check that stops with
+   "curation.json: a product named here is not in the catalog" means a
+   curation entry names a removed product. Compare the run's catalog
+   summary with `data/products.json` on main to see which one.
+3. **Fix it on main.**
+   - A curation entry names a removed or renamed product: update or
+     remove that entry in `data/curation.json` with its reason and source,
+     rebuild the manifest (see "Extending the curation file" in
+     [usage.md](usage.md)) and run the full suite.
+   - A gold row or a floor no longer holds: open an issue that names the
+     product and the test. Do not merge a workaround.
+   - Never lower `tests/benchmark/floor.json` and never edit a gold row
+     to make a test pass, unless the maintainer has recorded the decision
+     and its reason in the commit and in `tests/benchmark/README.md`.
+4. **Run it again.** After the fix is on main, run "endoflife.date weekly
+   pull request" by hand from the Actions tab, or wait for the next weekly
+   run. Close the issue once a pull request opens.
+
+The weekly job sets `SWLC_WEEKLY_JOB`. With it, the generated-row floor of
+the benchmark is reported (in the test's skip message), not checked,
+because an ordinary upstream rename changes generated rows. The hand and
+catalog floor, hard wrong and soft wrong are checked in every run. Every
+pull request and local run checks the generated floor too.

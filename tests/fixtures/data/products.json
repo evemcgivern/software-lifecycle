@@ -1,0 +1,126 @@
+{
+  "format": 1,
+  "products": [
+    {
+      "category": "app",
+      "id": "brightlineeditor",
+      "namespaces": [],
+      "title": "Brightline Editor",
+      "vendors": [
+        "brightline"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "copperfieldnotes",
+      "namespaces": [],
+      "title": "Copperfield Notes",
+      "vendors": [
+        "copperfield"
+      ]
+    },
+    {
+      "category": "os",
+      "id": "demoos",
+      "namespaces": [],
+      "title": "Demo OS",
+      "vendors": [
+        "acme"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "examplesql",
+      "namespaces": [
+        "examplevendor"
+      ],
+      "title": "Example SQL",
+      "vendors": [
+        "examplevendor"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "harborviewcrm",
+      "namespaces": [],
+      "title": "Harborview CRM",
+      "vendors": [
+        "harborview"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "ironwoodscheduler",
+      "namespaces": [],
+      "title": "Ironwood Scheduler",
+      "vendors": [
+        "ironwood"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "lanternviewer",
+      "namespaces": [
+        "lantern"
+      ],
+      "title": "Lantern Viewer",
+      "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "mapletonreports",
+      "namespaces": [],
+      "title": "Mapleton Reports",
+      "vendors": [
+        "mapleton"
+      ]
+    },
+    {
+      "category": "server-app",
+      "id": "northwindgateway",
+      "namespaces": [
+        "northwind"
+      ],
+      "title": "Northwind Gateway",
+      "vendors": [
+        "examplecorp"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "pineconearchive",
+      "namespaces": [],
+      "title": "Pinecone Archive",
+      "vendors": [
+        "pinecone"
+      ]
+    },
+    {
+      "category": "database",
+      "id": "quillbase",
+      "namespaces": [],
+      "title": "Quillbase",
+      "vendors": [
+        "quillbase"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "redwoodbackup",
+      "namespaces": [],
+      "title": "Redwood Backup",
+      "vendors": [
+        "redwood"
+      ]
+    },
+    {
+      "category": "app",
+      "id": "tidewatersuite",
+      "namespaces": [],
+      "title": "Tidewater Suite",
+      "vendors": [
+        "tidewater"
+      ]
+    }
+  ]
+}

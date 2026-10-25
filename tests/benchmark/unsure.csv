@@ -1,0 +1,25 @@
+name,publisher,version,expected_product,expected_cycle,notes
+Harbor,VMware,2.10.0,harbor,2.10,borderline: a vmware-harbor-registry product with a 2.10 cycle also exists; either answer is defensible
+Elastic Agent,Elastic,8.11.3,NONE,,borderline: follows Elastic support dates but no matching product id exists
+Microsoft .NET,Microsoft Corporation,4.8,NONE,,borderline: .NET versus .NET Framework; version fits the Framework only
+Microsoft .NET Framework 4.8.1,Microsoft Corporation,4.8.09032,dotnetfx,4.8.1,Unverified: the build number 4.8.09032 comes from community knowledge; no vendor page found. Expected dotnetfx 4.8.1
+Omnissa Horizon Agent,Omnissa,2406,horizon,8.2406,unverified: the agent version string in an installed-programs list was not checked against a vendor page
+NVIDIA Graphics Driver 551.86,NVIDIA Corporation,31.0.15.5186,nvidia,r550-windows,unverified: branch for driver 551.86 not checked against a vendor page
+Filebeat,Elastic,8.17.0,beats,8.17,unsure
+Microsoft Azure DevOps Server 2022,Microsoft Corporation,19.225.34309.2,azure-devops-server,2022.1,year in name; build 19.225 needs a build table
+Omnissa Horizon Connection Server,Omnissa,8.12.0,horizon,8.2312,unsure
+kernel,"Red Hat, Inc.",5.14.0-427.13.1.el9_4,linux,5.14,unsure
+Electron,OpenJS Foundation,28.1.0,electron,28,unsure
+NVIDIA Graphics Driver 552.22,NVIDIA Corporation,552.22,nvidia,r550-windows,branch from driver number
+Splunk,,9.1.2,NONE?,,generic; not generic in practice
+Kubernetes CLI,,1.28.4,NONE?,,component; kubectl
+Microsoft SQL Server 2016 (64-bit),Microsoft Corporation,13.0.1601.5,NONE?,,"nocycle; 2016 RTM build; snapshot only has 13.0 cycles per service pack, RTM row is ambiguous"
+Microsoft Windows 10 Enterprise,Microsoft Corporation,10.0.19044.3086,NONE?,,nocycle; build 19044 = 21H2 Enterprise; ambiguous with LTSC 2021
+Microsoft Office Professional Plus 2007,Microsoft Corporation,12.0.6612.1000,NONE?,,nocycle; 2007 cycle exists
+Microsoft Exchange Server 2007,Microsoft Corporation,8.3.517.0,NONE?,,nocycle; 2007 cycle exists
+Kibana,Elastic,7.10.2,NONE?,,nocycle; 7 cycle fits 7.10.2
+Microsoft Windows XP Professional,Microsoft Corporation,5.1.2600,NONE?,,nocycle; XP not in snapshot (5-sp3 is)
+UniversalForwarder,"Splunk, Inc.",9.2.1.0,splunk,9.2,unverified: the four-part Windows version string for the forwarder was not confirmed
+Oracle Solaris 11.4,Oracle Corporation,11.4.42.111.0,oracle-solaris,11.4,unverified: only build 11.4.42.113.1 was found on a vendor page; the 111.0 build string is not confirmed
+Windows 11 Enterprise LTSC 2024,Microsoft Corporation,10.0.26100.1742,windows,11-24h2-e-lts,unverified: no vendor page pairs LTSC 2024 with build 26100.1742
+Windows Server Core,Microsoft Corporation,10.0.20348.2849,windows-server-core,2022,"defensible either way: Server Core is an installation option of Windows Server 2022, so windows-server 2022 also fits"
