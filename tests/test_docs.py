@@ -36,13 +36,25 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+ROOT_MD = ["README.md", "CONTRIBUTING.md", "SECURITY.md", "AGENTS.md",
+           "CLAUDE.md"]
+GITHUB = ROOT / ".github"
+
+
+def github_files() -> list:
+    return sorted(p for p in GITHUB.rglob("*") if p.is_file())
+
+
 def doc_files() -> list:
-    return [README] + sorted(DOCS.glob("*.md"))
+    return [ROOT / n for n in ROOT_MD] + sorted(DOCS.glob("*.md"))
 
 
 def public_files() -> list:
+    """The scanned set: root markdown, docs, templates and everything
+    under .github. Not data/."""
     out = doc_files() + sorted(DOCS.glob("*.csv"))
     out += [p for p in sorted(TEMPLATES.iterdir()) if p.is_file()]
+    out += github_files()
     return out
 
 
@@ -125,6 +137,106 @@ class FixedWordingTests(unittest.TestCase):
         body = " ".join(text(README).split())
         self.assertEqual(body.count(CLAIMS_LINE), 1)
         self.assertEqual(body.count(KEV_LINE), 1)
+        security = " ".join(text(ROOT / "SECURITY.md").split())
+        self.assertEqual(security.count(CLAIMS_LINE), 1)
+
+
+def workflow_check_names() -> list:
+    body = text(GITHUB / "workflows" / "ci.yml")
+    jobs = body.split("\njobs:\n", 1)[1]
+    test_job = re.search(r"^  test:\n(.*?)(?=^  [a-z]+:\n)", jobs,
+                         re.S | re.M).group(1)
+    assert "name:" not in test_job.split("steps:")[0]
+    versions = re.search(r"python: \[(.*?)\]", test_job).group(1)
+    return ["test (%s)" % v.strip('" ') for v in versions.split(",")]
+
+
+def parse_form(path: Path) -> dict:
+    """A small structural reader for an issue form."""
+    lines = text(path).split("\n")
+    top = {}
+    for line in lines:
+        m = re.match(r"^([a-z_]+):(.*)$", line)
+        if m:
+            top[m.group(1)] = m.group(2).strip()
+    body = text(path)
+    ids = re.findall(r"^    id: (\S+)$", body, re.M)
+    types = re.findall(r"^  - type: (\S+)$", body, re.M)
+    labels = re.findall(r'"([^"]+)"', top.get("labels", ""))
+    return {"top": top, "ids": ids, "types": types, "labels": labels,
+            "text": body}
+
+
+class NewFilesTests(unittest.TestCase):
+    FORMS = ("bug-report.yml", "feature-request.yml", "unmatched-product.yml")
+
+    def test_files_exist(self):
+        for rel in ("SECURITY.md", "CONTRIBUTING.md", "AGENTS.md",
+                    "CLAUDE.md", ".github/CODEOWNERS",
+                    ".github/PULL_REQUEST_TEMPLATE.md",
+                    ".github/ISSUE_TEMPLATE/config.yml"):
+            self.assertTrue((ROOT / rel).is_file(), rel)
+        for name in self.FORMS:
+            self.assertTrue((GITHUB / "ISSUE_TEMPLATE" / name).is_file())
+        self.assertEqual(text(GITHUB / "CODEOWNERS").strip(),
+                         "* @evemcgivern")
+
+    def test_issue_forms_are_well_formed(self):
+        labels = set()
+        for name in self.FORMS:
+            form = parse_form(GITHUB / "ISSUE_TEMPLATE" / name)
+            for key in ("name", "description", "labels", "body"):
+                self.assertIn(key, form["top"], name)
+            self.assertTrue(form["labels"], name)
+            labels |= set(form["labels"])
+            self.assertEqual(len(form["ids"]), len(set(form["ids"])), name)
+            self.assertIn("markdown", form["types"], name)
+            self.assertIn("checkboxes", form["types"], name)
+            flat = " ".join(form["text"].split())
+            self.assertIn("Do not paste inventory rows", flat, name)
+            self.assertIn("required: true", flat, name)
+        self.assertEqual(labels, {"bug", "enhancement", "alias-request"})
+        contributing = text(ROOT / "CONTRIBUTING.md")
+        for label in labels:
+            self.assertIn("`%s`" % label, contributing)
+
+    def test_config_keeps_blank_issues_off_and_links_security(self):
+        config = text(GITHUB / "ISSUE_TEMPLATE" / "config.yml")
+        self.assertIn("blank_issues_enabled: false", config)
+        self.assertIn("/blob/main/SECURITY.md", config)
+
+    def test_claude_md_is_a_pointer(self):
+        path = ROOT / "CLAUDE.md"
+        self.assertFalse(path.is_symlink())
+        body = text(path)
+        self.assertIn("AGENTS.md", body)
+        self.assertLess(len(body.strip().split("\n")), 10)
+
+    def test_contributing_names_the_real_checks_and_command(self):
+        body = text(ROOT / "CONTRIBUTING.md")
+        names = workflow_check_names()
+        self.assertEqual(len(names), 5)
+        for name in names:
+            self.assertIn("`%s`" % name, body)
+        self.assertIn("python3 -B -m unittest discover -s tests", body)
+        self.assertIn("discover -s tests -p 'test_x.py'", body)
+
+    def test_agents_md_has_each_hard_rule(self):
+        body = text(ROOT / "AGENTS.md")
+        for keyword in ("--counts-only", "tests/make_fixtures.py",
+                        "dependencies", "pull_request_target",
+                        "schema_version", "Never push to main",
+                        "Never force-push", "commit SHA", "claims line",
+                        "KEV line", "synthetic", "test_weekly_gate"):
+            self.assertIn(keyword, body, keyword)
+
+    def test_security_md_command_matches_the_release_notes(self):
+        workflow = text(GITHUB / "workflows" / "kev-daily.yml")
+        command = re.search(r"^\s+(gh attestation verify data\.zip --repo "
+                            r"\S+ --signer-workflow \S+ --source-ref \S+)$",
+                            workflow, re.M).group(1)
+        self.assertIn(command, text(ROOT / "SECURITY.md"))
+        self.assertIn(command, text(README))
 
 
 def parser_flags() -> set:
@@ -285,7 +397,12 @@ class BannedWordTests(unittest.TestCase):
             hit = hashed_terms(low) & BANNED_DIGESTS
             self.assertFalse(hit, "%s: banned term, digest %s"
                              % (path.name, sorted(hit)))
-            self.assertIsNone(re.search(r"\bsigned\b", low), path.name)
+
+    def test_signed_only_in_never_sentence(self):
+        for path in public_files():
+            for s in sentences(text(path)):
+                if re.search(r"\bsigned\b", s.lower()):
+                    self.assertIn("never", s.lower(), path.name)
 
     def test_bod_22_01_only_as_superseded(self):
         for path in public_files():
