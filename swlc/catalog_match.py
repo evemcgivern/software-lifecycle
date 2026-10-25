@@ -54,7 +54,7 @@ MAX_WORDS words is never matched by title.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from types import MappingProxyType
 
 from .normalize import normalize_name, split_version
@@ -162,7 +162,8 @@ class CatalogIndex:
     off: frozenset                # generated_off ids
     devices: frozenset            # ids with category "device"
     exclusions: MappingProxyType  # cleaned name -> ((id, publisher), ...)
-    no_cycle: MappingProxyType = MappingProxyType({})  # id -> version prefixes
+    no_cycle: MappingProxyType = field(  # id -> version prefixes
+        default_factory=lambda: MappingProxyType({}))
 
     def phrase_ok(self, pid: str, phrase: tuple, pub: tuple) -> bool:
         """Whether this confirming phrase of pid is in the publisher. A
