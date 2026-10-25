@@ -71,24 +71,50 @@ which one found the product.
 
 1. **Curated aliases** (`aliases.json`). An alias that hits the name decides
    the item, even when it then finds no cycle or its strict tail-word rule
-   rejects the name. When an alias reads the version from the name and the
-   version column is not empty, the two must pick the same cycle; if they
-   do not, the item is not decided (`NO_CYCLE`, product known).
+   rejects the name. A curated alias matches by name regardless of
+   publisher. When an alias reads the version from the name and the version
+   column is not empty, the column is checked:
+   - an alias without a `build_map`: the name's version and the column must
+     pick the same cycle (or, when either picks none, be equal on their
+     shared leading parts);
+   - an alias with a `build_map` (names that carry a year, such as Windows
+     Server 2019): the column is checked only when its leading parts are a
+     key of the alias's `column_map` (builds to the cycles they can be, for
+     example `10.0.17763` is 2019 or 1809), a key of the `build_map`, or a
+     cycle label. Then the year in the name must be one of the cycles the
+     column can be. A column that is none of these, such as a Windows
+     Server 2012 build, which the `column_map` does not list, is not
+     checked.
+
+   If the check fails, the item is not decided (`NO_CYCLE`, product known).
 2. **Product titles** (`products.json`), only when no alias hits. The name
    must equal a product's title after normalizing. Before comparing, the
-   tool drops architecture and locale groups such as `(x64 en-US)` or
+   tool drops architecture and real locale groups such as `(x64 en-US)` or
    `[x64]`, drops a leading vendor word when the publisher carries that
    vendor (`Mozilla Firefox` with publisher Mozilla), and splits a trailing
    version number off the name (`Foo 2.1`). A whole title wins over a split
    one. The version column is used; when it is empty, the version from the
    name is used; when both exist and pick different cycles, the item is not
-   decided. A one-word title matches only when the publisher names the
-   product's vendor as whole words (`Red Hat` confirms the vendor
-   `red_hat`; `RedHat` or `Red Gate` does not), or when the product is on
-   the one-word allowlist in `curation.json`. Products on `generated_off`
-   are never matched by title, and an exclusion stops one name (and, when
-   given, one publisher word) from matching one product by title. No slugs,
-   fragments or fuzzy scores are used.
+   decided. A name of more than 64 words is never matched by title.
+   - A one-word title matches only when the publisher names the product's
+     vendor as whole words, or when the product is on the one-word
+     allowlist in `curation.json`. `The Apache Software Foundation`
+     confirms the vendor `apache`; `ApacheFriends` does not. A vendor
+     written as one word, such as `redhat`, is not confirmed by
+     `Red Hat, Inc.`.
+   - Products whose catalog category is `device`, and products on
+     `generated_off`, are never matched by title.
+   - An exclusion stops one product for a name: it applies when its name
+     equals the row's whole name or the name without architecture groups
+     and, when it gives one, its publisher word is in the publisher.
+   - No slugs, fragments or fuzzy scores are used.
+
+When a version has more parts than the chosen cycle and that cycle has finer
+cycles in the same product (4.6 has 4.6.1 and 4.6.2), the next part must be
+one of them; otherwise the item is not decided (`NO_CYCLE`). So
+`.NET Framework` with the registry build `4.6.01590` gets no cycle rather
+than the wrong one. A cycle with no finer cycles is unchanged
+(`3.12.1150.0` is Python 3.12).
 
 A name that fits two products, by alias, by title or one of each, is
 `AMBIGUOUS` and stays unmatched. A data folder without `products.json`
@@ -183,7 +209,9 @@ add one, edit a copy of the data folder. Do not edit `data/` in place.
    or `prefix`. `product` is the file name in `data/eol/` without `.json`.
    `version_from` is `version` (read the version column) or `name` (read
    the version from the end of the name). Optional fields: `cycle` (a fixed
-   cycle label), `build_map`, `kev` (an object with `vendor` and
+   cycle label), `build_map`, `column_map` (for an alias that reads the
+   version from the name: version-column builds to the cycles they can be,
+   used only to check the name), `kev` (an object with `vendor` and
    `product`), `note` and `edition_words`. `source` is a link to where you
    confirmed the mapping.
 3. Rebuild the manifest. Copy the dates, catalog version and upstream commit
