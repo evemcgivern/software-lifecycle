@@ -47,15 +47,17 @@ def _check(entry: dict, pos: int) -> None:
     if "cycle" in entry and not (isinstance(entry["cycle"], str)
                                  and entry["cycle"].strip()):
         raise bad("'cycle' must be a non-empty string")
-    if "build_map" in entry:
-        bmap = entry["build_map"]
+    for field in ("build_map", "column_map"):
+        if field not in entry:
+            continue
+        bmap = entry[field]
         if not isinstance(bmap, dict) or not bmap:
-            raise bad("'build_map' must be a non-empty object")
+            raise bad("'%s' must be a non-empty object" % field)
         for value in bmap.values():
             values = value if isinstance(value, list) else [value]
             if not values or not all(isinstance(v, str) and v.strip()
                                      for v in values):
-                raise bad("'build_map' values must be cycle strings")
+                raise bad("'%s' values must be cycle strings" % field)
     if "kev" in entry:
         kev = entry["kev"]
         if not isinstance(kev, dict) or set(kev) != {"vendor", "product"} \
@@ -263,7 +265,8 @@ def _decide(norm: str, version: str, hits: list,
             return finish(MatchResult(product, None, NO_CYCLE), first)
         targets = _targets(bmap, tied_keys)
         used = len(split_version(best_key))
-        if column and _map_disagrees(column, targets, bmap, labels):
+        if column and _map_disagrees(column, targets, bmap, labels,
+                                     entry.get("column_map")):
             return finish(MatchResult(product, None, NO_CYCLE), used)
         return finish(_exact_cycle(product, targets, products, labels), used)
 
@@ -280,18 +283,24 @@ def _decide(norm: str, version: str, hits: list,
 
 
 def _map_disagrees(column: list[str], targets: list[str], bmap: dict,
-                   labels: list[str]) -> bool:
-    """For a build-map alias reading the name: the map's keys are name forms
-    (years) and the column is usually a build number in another space, so
-    the column counts only when it reads as a map key or as a cycle label
-    itself; then it must name the same cycle as the name."""
+                   labels: list[str], cmap=None) -> bool:
+    """For a build-map alias reading the name. The map's keys are name
+    forms (years) and the column is usually a build number in another
+    space, so the column counts only when its leading parts are a key of
+    the alias's column_map (builds to the cycles they can be), a key of
+    the build_map, or a cycle label. Then the cycle the name gives must be
+    among the cycles the column can be; otherwise the row is not decided.
+    A column that is none of these is not checked."""
     want = set(_distinct_by_parts(targets))
-    key, tied = best_cycle(column, list(bmap))
-    if key is not None and set(_distinct_by_parts(_targets(bmap, tied))) \
-            != want:
-        return True
+    for space in (cmap, bmap):
+        if not space:
+            continue
+        key, tied = best_cycle(column, list(space))
+        if key is not None and not want <= set(
+                _distinct_by_parts(_targets(space, tied))):
+            return True
     by_label = _picks(column, labels)
-    return bool(by_label) and by_label != want
+    return bool(by_label) and not want <= by_label
 
 
 def _versionish(word: str) -> bool:

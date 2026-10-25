@@ -59,3 +59,6 @@ Microsoft SQL Server 2019 T-SQL Language Service,15.0.2000.5,,NONE,https://learn
 Microsoft SQL Server 2019 Native Client,15.0.2000.5,,NONE,https://learn.microsoft.com/en-us/sql/relational-databases/native-client/sql-server-native-client
 Windows Server Update Services,10.0.17763,,NONE,https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus
 Windows 10 SDK,10.0.19045.1,,NONE,https://learn.microsoft.com/en-us/windows/apps/windows-sdk/downloads
+Microsoft Windows Server 2022 Standard,10.0.17763.6532,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+Microsoft Office Standard 2013,16.0.4266.1001,,NONE,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft Office Standard 2013,15.0.4569.1506,office,2013,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer

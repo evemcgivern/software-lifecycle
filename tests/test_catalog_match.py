@@ -416,6 +416,37 @@ class CuratedCrossCheckTests(unittest.TestCase):
         self.assertEqual(m("Microsoft SQL Server 2019", "2022"),
                          ("mssqlserver", None, NO_CYCLE, CURATED))
 
+    def test_column_map_catches_a_build_from_another_year(self):
+        a = [alias("windows server", "windows-server", match="prefix",
+                   version_from="name", edition_words=["standard"],
+                   build_map={"2019": "2019", "2022": "2022"},
+                   column_map={"10.0.17763": ["2019", "1809-sac"],
+                               "10.0.20348": "2022"})]
+        products = {"windows-server": [{"cycle": c} for c in
+                                       ("2019", "2022", "1809-sac")]}
+
+        def m(name, version):
+            return got(match_product(name, version, a, products))
+        self.assertEqual(m("Windows Server 2022 Standard", "10.0.17763.6532"),
+                         ("windows-server", None, NO_CYCLE, CURATED))
+        self.assertEqual(m("Windows Server 2019 Standard", "10.0.17763.6532"),
+                         ("windows-server", "2019", None, CURATED))
+        self.assertEqual(m("Windows Server 2022 Standard", "10.0.20348.2849"),
+                         ("windows-server", "2022", None, CURATED))
+        # A build the column_map does not list is not checked.
+        self.assertEqual(m("Windows Server 2022 Standard", "10.0.99999"),
+                         ("windows-server", "2022", None, CURATED))
+
+
+    def test_bad_column_map_is_a_data_error(self):
+        from swlc.errors import DataError
+        for bad in ({}, [], {"1": []}, {"1": ""}, {"1": [1]}):
+            a = [alias("x", "x", version_from="name", build_map={"1": "1"},
+                       column_map=bad)]
+            with self.assertRaises(DataError):
+                match_product("x 1", "1", a, {"x": [{"cycle": "1"}]})
+
+
     def test_year_name_with_build_column_still_decides(self):
         # Windows Server cycles are years and the column is a build: the
         # column reads as neither a map key nor a label, so it takes no part.

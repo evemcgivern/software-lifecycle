@@ -497,8 +497,8 @@ class AliasFileTests(unittest.TestCase):
         entries = self.doc["aliases"]
         self.assertGreaterEqual(len(entries), 12)
         allowed = {"key", "match", "product", "version_from", "cycle",
-                   "build_map", "source", "edition_words", "kev",
-                   "note"}
+                   "build_map", "column_map", "source", "edition_words",
+                   "kev", "note"}
         for e in entries:
             self.assertLessEqual(set(e), allowed, e)
             self.assertIn(e["match"], ("exact", "prefix"))
@@ -523,10 +523,17 @@ class AliasFileTests(unittest.TestCase):
             targets = []
             if "cycle" in e:
                 targets.append(e["cycle"])
-            for v in e.get("build_map", {}).values():
-                targets.extend(v if isinstance(v, list) else [v])
+            for field in ("build_map", "column_map"):
+                for v in e.get(field, {}).values():
+                    targets.extend(v if isinstance(v, list) else [v])
             for t in targets:
                 self.assertIn(t, labels, e)
+
+    def test_column_map_only_on_name_reading_build_map_aliases(self):
+        for e in self.doc["aliases"]:
+            if "column_map" in e:
+                self.assertEqual(e["version_from"], "name", e["key"])
+                self.assertIn("build_map", e, e["key"])
 
     def test_no_name_hits_two_products(self):
         # Every key, used as a product name, must hit only one product.

@@ -2159,3 +2159,5 @@ Node.js 0.10.48,Node.js Foundation,0.10.48,nodejs,none,"hand-added (K1); product
 Ruby 1.8.7,Ruby Core Team,1.8.7,ruby,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/ruby",hand,0
 Docker Engine 1.13.1,Docker Inc.,1.13.1,docker-engine,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/docker-engine",hand,0
 Splunk 5.0.4,"Splunk, Inc.",5.0.4,splunk,none,"hand-added (K1); product right, the version fits no cycle in the snapshot; cycle list https://endoflife.date/splunk",hand,0
+Microsoft Windows Server 2022 Standard,Microsoft Corporation,10.0.17763.6532,windows-server,none,"trap=conflict; name says 2022, build 17763 is Windows Server 2019 (source https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info); no cycle can be decided",hand,0
+Microsoft Office Standard 2013,Microsoft Corporation,16.0.4266.1001,office,none,"trap=conflict; name says 2013 (version 15.0), build 16.0 is Office 2016 or later; no cycle can be decided",hand,0
