@@ -89,8 +89,9 @@ which one found the product.
    If the check fails, the item is not decided (`NO_CYCLE`, product known).
 2. **Product titles** (`products.json`), only when no alias hits. The name
    must equal a product's title after normalizing. Before comparing, the
-   tool drops architecture and real locale groups such as `(x64 en-US)` or
-   `[x64]`, drops a leading vendor word when the publisher carries that
+   tool drops architecture and locale groups such as `(x64 en-US)` or
+   `[x64]` (a locale is any ISO language-region pair, such as `es-AR`; a word
+   like `go-to` is not one), drops a leading vendor word when the publisher carries that
    vendor (`Mozilla Firefox` with publisher Mozilla), and splits a trailing
    version number off the name (`Foo 2.1`). A whole title wins over a split
    one. The version column is used; when it is empty, the version from the

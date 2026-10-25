@@ -581,12 +581,43 @@ class FixRoundTests(unittest.TestCase):
     def test_locale_strip_needs_a_real_locale_tag(self):
         self.assertEqual(strip_arch("foo go-to"), "foo go-to")
         self.assertEqual(strip_arch("foo (go-to)"), "foo (go-to)")
-        self.assertEqual(strip_arch("foo ab-cd"), "foo ab-cd")
+        self.assertEqual(strip_arch("foo zz-yy"), "foo zz-yy")
         for tag in ("en-us", "en_gb", "de-ch", "pt-br", "zh_tw", "ar-sa"):
             with self.subTest(tag=tag):
                 self.assertEqual(strip_arch("foo " + tag), "foo")
                 self.assertEqual(strip_arch("foo (x64 %s)" % tag), "foo")
         self.assertIsNone(gen("Foo Tool go-to", "2.1").product)
+
+    def test_any_language_region_pair_is_a_locale(self):
+        tags = ("es-AR fy-NL ga-IE gu-IN hi-IN hy-AM ne-NP nn-NO pa-IN "
+                "es-CL en-ZA en-CA pt-PT sv-SE nb-NO zh-CN zh-TW cs-CZ "
+                "he-IL th-TH ms-MY").split()
+        self.assertEqual(len(tags), 20 + 1)
+        for tag in tags:
+            for form in (tag, tag.replace("-", "_")):
+                with self.subTest(tag=form):
+                    norm = normalize_name("Foo Tool (%s)" % form)
+                    self.assertEqual(strip_arch(norm), "foo tool")
+                    self.assertEqual(strip_arch("foo tool " + form.lower()),
+                                     "foo tool")
+        self.assertEqual(got(gen("Foo Tool (es-AR)", "2.2.0")),
+                         ("foo-tool", "2.2", None, GENERATED))
+
+    def test_words_of_locale_shape_that_are_not_pairs_stay(self):
+        # First part not a language, or second part not a region.
+        for word in ("go-to", "up-to", "on-off", "zz-us", "en-zz", "en-usa",
+                     "e-us", "en-u", "en--us"):
+            with self.subTest(word=word):
+                self.assertEqual(strip_arch("foo " + word), "foo " + word)
+                self.assertEqual(strip_arch("foo (%s)" % word),
+                                 "foo (%s)" % word)
+
+    def test_locale_sets_are_constant_strings(self):
+        from swlc import catalog_match as cm
+        self.assertEqual(len(cm._LANGS), 183)
+        self.assertEqual(len(cm._REGIONS), 249)
+        self.assertTrue(all(len(c) == 2 and c.islower() and c.isalpha()
+                            for c in cm._LANGS | cm._REGIONS))
 
     def test_long_names_are_never_matched_by_title(self):
         name = "Foo Tool " + " ".join(["x"] * 70)
