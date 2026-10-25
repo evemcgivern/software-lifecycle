@@ -8,7 +8,8 @@ name: endoflife.date weekly pull request
 #
 # Feed text never reaches a run script, a step name or an expression: it
 # moves through files, and the commit id and date are checked against a
-# fixed pattern first.
+# fixed pattern first. The build job, which handles feed data, has a
+# read-only token; only the propose job can push, and it runs no feed code.
 on:
   schedule:
     - cron: "23 8 * * 1"
@@ -26,14 +27,19 @@ defaults:
     shell: bash
 
 jobs:
-  propose:
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
+    outputs:
+      changed: ${{ steps.build.outputs.changed }}
+      flagged: ${{ steps.build.outputs.flagged }}
+      sha: ${{ steps.upstream.outputs.sha }}
     steps:
-      # Credentials stay in the checkout because this job pushes one branch.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.13"
@@ -103,28 +109,10 @@ jobs:
           # workflow, so the full test suite runs here before the push.
           python3 -B -m unittest discover -s tests
 
-      - name: Push a branch and open the pull request
-        if: steps.build.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
-          FLAGGED: ${{ steps.build.outputs.flagged }}
-        run: |
-          branch="data/eol-$(date -u +%Y-%m-%d)"
-          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
-            echo "Branch $branch already exists. Close or merge its pull request first."
-            exit 1
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -c "$branch"
-          git add data/eol data/manifest.json
-          git commit -q -m "chore(data): update endoflife.date snapshot" \
-            -m "Upstream commit: $UPSTREAM_SHA"
-          git push origin "HEAD:refs/heads/$branch"
-
-          title="chore(data): update endoflife.date snapshot"
-          if [ "$FLAGGED" = "true" ]; then title="$title (flagged)"; fi
+          update="$RUNNER_TEMP/update"
+          mkdir -p "$update/eol"
+          cp data/eol/*.json "$update/eol/"
+          cp data/manifest.json "$update/manifest.json"
           {
             echo "Upstream: endoflife-date/endoflife.date at commit $UPSTREAM_SHA."
             echo
@@ -134,6 +122,80 @@ jobs:
             echo "end-of-life date is the failure this review exists to catch."
             echo "After the merge, the next KEV daily data release publishes"
             echo "these dates."
-          } > "$RUNNER_TEMP/pr-body.md"
+          } > "$update/pr-body.md"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: steps.build.outputs.changed == 'true'
+        with:
+          name: eol-update
+          path: ${{ runner.temp }}/update/
+          if-no-files-found: error
+          retention-days: 14
+
+  propose:
+    needs: build
+    if: needs.build.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: eol-update
+          path: ${{ runner.temp }}/update
+
+      - name: Push a branch and open the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPSTREAM_SHA: ${{ needs.build.outputs.sha }}
+          FLAGGED: ${{ needs.build.outputs.flagged }}
+        run: |
+          # Keep pull requests in order: one open data/eol pull request at a time.
+          if gh pr list --state open --limit 200 --json headRefName --jq '.[].headRefName' | grep -q '^data/eol-'; then
+            echo "::notice::A data/eol pull request is already open. Review it first; no new pull request was opened."
+            exit 0
+          fi
+          if ! printf '%s' "$UPSTREAM_SHA" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "The upstream commit id has an unexpected form."
+            exit 1
+          fi
+          update="$RUNNER_TEMP/update"
+          for file in "$update"/eol/*; do
+            if ! basename "$file" | grep -Eq '^[a-z0-9][a-z0-9_.-]*\.json$'; then
+              echo "The update holds a file name that is not allowed."
+              exit 1
+            fi
+          done
+          if [ ! -f "$update/manifest.json" ] || [ ! -f "$update/pr-body.md" ]; then
+            echo "The update is incomplete."
+            exit 1
+          fi
+          branch="data/eol-$(date -u +%Y-%m-%d)"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "Branch $branch already exists. Close or merge its pull request first."
+            exit 1
+          fi
+          rm -f data/eol/*.json
+          cp "$update"/eol/*.json data/eol/
+          cp "$update/manifest.json" data/manifest.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add data/eol data/manifest.json
+          git commit -q -m "chore(data): update endoflife.date snapshot" \
+            -m "Upstream commit: $UPSTREAM_SHA"
+          # The credential exists only for this one push command.
+          auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" \
+            push origin "HEAD:refs/heads/$branch"
+
+          title="chore(data): update endoflife.date snapshot"
+          if [ "$FLAGGED" = "true" ]; then title="$title (flagged)"; fi
           gh pr create --base main --head "$branch" --title "$title" \
-            --body-file "$RUNNER_TEMP/pr-body.md"
+            --body-file "$update/pr-body.md"

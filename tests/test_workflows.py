@@ -12,6 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 GITHUB = ROOT / ".github"
 WORKFLOWS = GITHUB / "workflows"
 NAMES = ("ci.yml", "kev-daily.yml", "eol-weekly.yml")
+VERIFY = ("gh attestation verify data.zip --repo evemcgivern/software-lifecycle"
+          " --signer-workflow evemcgivern/software-lifecycle/.github/workflows/"
+          "kev-daily.yml --source-ref refs/heads/main")
 USES_RE = re.compile(
     r"^\s*(?:- )?uses: ([A-Za-z0-9_.-]+/[A-Za-z0-9_./-]+)@([0-9a-f]{40})"
     r" # v\d+\.\d+\.\d+$")
@@ -52,6 +55,58 @@ def block(text, key):
             break
         out.append(line)
     return out
+
+
+def jobs(text):
+    """{job name: [lines]} for the jobs under the top-level jobs: key."""
+    out, current = {}, None
+    for line in block(text, "jobs"):
+        match = re.match(r"^  ([A-Za-z0-9_-]+):\s*$", line)
+        if match:
+            current = match.group(1)
+            out[current] = []
+        elif current:
+            out[current].append(line)
+    return out
+
+
+def job_key(lines, key):
+    """The value of a job-level key (indent 4), or None."""
+    for line in lines:
+        match = re.match(r"^    %s:(.*)$" % re.escape(key), line)
+        if match:
+            return match.group(1).strip()
+    return None
+
+
+def lint(text):
+    """Problems in one workflow's text; an empty list means clean."""
+    problems = []
+    lines = text.split("\n")
+    for number, line in enumerate(lines, 1):
+        match = re.match(r"^(\s*)permissions:(.*)$", line)
+        if match:
+            if match.group(2).strip():
+                problems.append("%d: permissions must be a block" % number)
+            col = len(match.group(1))
+            for entry in lines[number:]:
+                if not entry.strip():
+                    continue
+                if len(entry) - len(entry.lstrip()) <= col:
+                    break
+                if not re.match(r"^\s+[a-z-]+: (read|write|none)$", entry):
+                    problems.append("%d: odd permission line" % number)
+        if "write-all" in line or "read-all" in line:
+            problems.append("%d: write-all or read-all" % number)
+        if re.match(r"^\s*(?:- )?if:", line) and "github.event." in line:
+            problems.append("%d: github.event in an if" % number)
+    for name, body in jobs(text).items():
+        if any(l.strip() == "id-token: write" for l in body) and \
+                name != "publish":
+            problems.append("%s: id-token write outside publish" % name)
+        if not (job_key(body, "timeout-minutes") or "").isdigit():
+            problems.append("%s: no timeout-minutes" % name)
+    return problems
 
 
 class WorkflowFileTests(unittest.TestCase):
@@ -113,6 +168,34 @@ class WorkflowFileTests(unittest.TestCase):
             for secret in re.findall(r"secrets\.([A-Za-z0-9_]+)", read(name)):
                 self.assertEqual(secret, "GITHUB_TOKEN", name)
 
+    def test_lint_is_clean(self):
+        for name in NAMES:
+            self.assertEqual(lint(read(name)), [], name)
+
+    def test_lint_catches_each_mutation(self):
+        text = read("kev-daily.yml")
+        mutations = [
+            ("    permissions:\n      issues: write",
+             "    permissions: write-all"),
+            ("    permissions:\n      issues: write",
+             "    permissions:\n      issues: write\n      id-token: write"),
+            ("    permissions:\n      issues: write",
+             "    permissions:\n      issues: write-all"),
+            ("      - name: Fetch the KEV catalog\n",
+             "      - name: Fetch the KEV catalog\n"
+             "        if: github.event.issue.title == 'x'\n"),
+            ("    timeout-minutes: 10\n", ""),
+        ]
+        for old, new in mutations:
+            self.assertIn(old, text)
+            self.assertTrue(lint(text.replace(old, new, 1)), new)
+
+    def test_every_checkout_keeps_no_credentials(self):
+        for name in NAMES:
+            text = read(name)
+            self.assertEqual(text.count("actions/checkout@"),
+                             text.count("persist-credentials: false"), name)
+
     def test_expressions_use_known_contexts_only(self):
         allowed = ("github.", "inputs.", "steps.", "needs.", "matrix.",
                    "runner.temp")
@@ -148,11 +231,15 @@ class CiWorkflowTests(unittest.TestCase):
         self.assertIn('"bomFormat": "CycloneDX"', text)
         self.assertIn("actions/upload-artifact@", text)
 
-    def test_checkouts_keep_no_credentials(self):
-        for name in ("ci.yml", "kev-daily.yml"):
-            text = read(name)
-            self.assertEqual(text.count("actions/checkout@"),
-                             text.count("persist-credentials: false"), name)
+    def test_matrix_runner_is_pinned(self):
+        self.assertEqual(job_key(jobs(read("ci.yml"))["test"], "runs-on"),
+                         "ubuntu-24.04")
+
+    def test_timeouts(self):
+        expected = {"test": "10", "sbom": "10", "upstream-format": "15"}
+        found = {n: job_key(b, "timeout-minutes")
+                 for n, b in jobs(read("ci.yml")).items()}
+        self.assertEqual(found, expected)
 
 
 class KevDailyTests(unittest.TestCase):
@@ -193,6 +280,59 @@ class KevDailyTests(unittest.TestCase):
                        "data-gate-failed", "GITHUB_STEP_SUMMARY"):
             self.assertIn(needle, self.text, needle)
 
+    def test_publish_only_from_main_through_an_environment(self):
+        body = jobs(self.text)["publish"]
+        self.assertTrue(job_key(body, "if").startswith(
+            "github.ref == 'refs/heads/main' && "))
+        self.assertEqual(job_key(body, "environment"), "data-release")
+        self.assertEqual(job_key(body, "timeout-minutes"), "15")
+
+    def test_baseline_and_notes_pin_signer_and_ref(self):
+        self.assertIn("--signer-workflow evemcgivern/software-lifecycle/"
+                      ".github/workflows/kev-daily.yml", self.text)
+        self.assertIn("--source-ref refs/heads/main", self.text)
+        self.assertIn(VERIFY, self.text)
+
+    def test_override_needs_a_reason_and_main(self):
+        lines = "\n".join(block(self.text, "on"))
+        for needle in ("override_gate:", "override_reason:",
+                       "type: string"):
+            self.assertIn(needle, lines)
+        chunk = lines[lines.index("override_gate:"):][:200]
+        self.assertIn("type: boolean", chunk)
+        self.assertIn("default: false", chunk)
+        chunk = lines[lines.index("allow_removed:"):][:200]
+        self.assertIn("default: false", chunk)
+        mode = self.text[self.text.index("- name: Decide the run mode"):]
+        mode = mode[:mode.index("- name:", 10)]
+        self.assertIn('[ "$REF" = "refs/heads/main" ]', mode)
+        self.assertIn("REF: ${{ github.ref }}", mode)
+        self.assertIn("--allow-bulk", self.text)
+        self.assertIn("Override reason", self.text)
+
+    def test_zip_is_reproducible(self):
+        self.assertIn("refresh_data.py zip --dir", self.text)
+        # No shell zip command: it records file times and directory order.
+        self.assertIsNone(re.search(r"(?<![\w./-])zip -[A-Za-z]", self.text))
+        self.assertIsNotNone(re.search(r"(?<![\w./-])zip -[A-Za-z]",
+                                       "(cd x && zip -X -r a.zip .)"))
+
+    def test_missing_bundled_data_is_plain_text(self):
+        self.assertIn("Main has no bundled end-of-life data", self.text)
+
+    def test_failed_dry_runs_open_no_issue(self):
+        body = jobs(self.text)["report"]
+        condition = job_key(body, "if")
+        self.assertIn("github.event_name == 'schedule' || "
+                      "needs.build.outputs.dry_run == 'false'", condition)
+        self.assertNotIn("!= 'true'", condition)
+
+    def test_timeouts(self):
+        found = {n: job_key(b, "timeout-minutes")
+                 for n, b in jobs(self.text).items()}
+        self.assertEqual(found, {"build": "15", "publish": "15",
+                                 "report": "10"})
+
     def test_release_id_form_is_checked(self):
         self.assertIn(r"^data-[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$",
                       self.text)
@@ -210,6 +350,21 @@ class EolWeeklyTests(unittest.TestCase):
         self.assertIn('"HEAD:refs/heads/$branch"', self.text)
         for bad in ("push origin main", "HEAD:main", "refs/heads/main"):
             self.assertNotIn(bad, self.text)
+
+    def test_push_credential_only_in_the_push_job(self):
+        found = jobs(self.text)
+        self.assertEqual(sorted(found), ["build", "propose"])
+        build = "\n".join(found["build"])
+        self.assertNotIn("contents: write", build)
+        self.assertNotIn("git push", build)
+        self.assertEqual(self.text.count("extraheader"), 1)
+        self.assertIn("::add-mask::", self.text)
+        for name in found:
+            self.assertEqual(job_key(found[name], "timeout-minutes"), "15")
+
+    def test_stops_when_a_data_pr_is_open(self):
+        self.assertIn("gh pr list --state open", self.text)
+        self.assertIn("grep -q '^data/eol-'", self.text)
 
     def test_weekly_schedule(self):
         self.assertRegex(self.text, r'- cron: "\d+ \d+ \* \* [0-6]"')
@@ -230,6 +385,12 @@ class RepoFilesTests(unittest.TestCase):
         self.assertIn('package-ecosystem: "github-actions"', text)
         self.assertIn('interval: "weekly"', text)
 
+    def test_readme_has_maintainer_notes(self):
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("## Maintaining", text)
+        self.assertIn("60 days", text)
+        self.assertIn("ubuntu-24.04", text)
+
     def test_issue_template_asks_for_names_only(self):
         text = (GITHUB / "ISSUE_TEMPLATE" / "unmatched-product.yml").read_text(
             encoding="utf-8")
@@ -244,8 +405,9 @@ class RepoFilesTests(unittest.TestCase):
 
     def test_security_file_makes_no_offline_signature_claim(self):
         text = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
-        self.assertIn("gh attestation verify", text)
-        self.assertIn("--repo evemcgivern/software-lifecycle", text)
+        self.assertIn(VERIFY, text)
+        self.assertIn("data-release", text)
+        self.assertIn("environment", text)
         self.assertIn("not independently assessed", text)
         self.assertIn("does not and cannot verify signatures offline", text)
         self.assertIn("private vulnerability reporting", text)

@@ -20,9 +20,17 @@ on:
         type: boolean
         default: true
       allow_removed:
-        description: "Accept KEV entries that CISA removed (check the CISA notice first)"
+        description: "Accept KEV entries that CISA removed (check the CISA notice first; main only)"
         type: boolean
         default: false
+      override_gate:
+        description: "Accept a bulk change: relaxes only the count, added and changed limits (main only)"
+        type: boolean
+        default: false
+      override_reason:
+        description: "Why the override is safe (10 to 200 plain characters; goes in the release notes)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -38,6 +46,7 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       attestations: read
@@ -46,6 +55,7 @@ jobs:
       changed: ${{ steps.assemble.outputs.changed }}
       release_id: ${{ steps.assemble.outputs.release_id }}
       zip_sha256: ${{ steps.assemble.outputs.zip_sha256 }}
+      override_reason: ${{ steps.mode.outputs.override_reason }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -54,23 +64,59 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Check main has the bundled data
+        run: |
+          if [ ! -f data/manifest.json ] || ! compgen -G "data/eol/*.json" > /dev/null; then
+            msg="Main has no bundled end-of-life data (data/manifest.json and data/eol/*.json). Nothing was published."
+            echo "$msg"
+            echo "$msg" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
       - name: Decide the run mode
         id: mode
         env:
           IS_MANUAL: ${{ github.event_name == 'workflow_dispatch' }}
+          REF: ${{ github.ref }}
           DRY_RUN_INPUT: ${{ inputs.dry_run }}
           ALLOW_REMOVED_INPUT: ${{ inputs.allow_removed }}
+          OVERRIDE_INPUT: ${{ inputs.override_gate }}
+          OVERRIDE_REASON: ${{ inputs.override_reason }}
         run: |
           dry_run=false
           allow_removed=false
+          allow_bulk=false
+          reason=""
           if [ "$IS_MANUAL" = "true" ]; then
-            # A manual run publishes only when dry_run is set to false.
+            # A manual run publishes only when dry_run is set to false; an
+            # empty or missing value is a dry run.
             if [ "$DRY_RUN_INPUT" != "false" ]; then dry_run=true; fi
+            if [ "$REF" = "refs/heads/main" ]; then on_main=true; else on_main=false; fi
+            if [ "$ALLOW_REMOVED_INPUT" = "true" ] || [ "$OVERRIDE_INPUT" = "true" ]; then
+              if [ "$on_main" != "true" ]; then
+                echo "allow_removed and override_gate are honored only on main."
+                exit 1
+              fi
+            fi
             if [ "$ALLOW_REMOVED_INPUT" = "true" ]; then allow_removed=true; fi
+            if [ "$OVERRIDE_INPUT" = "true" ]; then
+              pattern='^[A-Za-z0-9 .,:;()_/-]{10,200}$'
+              if ! [[ $OVERRIDE_REASON =~ $pattern ]]; then
+                echo "override_gate needs a reason of 10 to 200 plain characters."
+                exit 1
+              fi
+              allow_bulk=true
+              reason="$OVERRIDE_REASON"
+            fi
           fi
-          echo "dry_run=$dry_run" >> "$GITHUB_OUTPUT"
-          echo "allow_removed=$allow_removed" >> "$GITHUB_OUTPUT"
-          echo "Dry run: $dry_run. Allow removed entries: $allow_removed." >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "dry_run=$dry_run"
+            echo "allow_removed=$allow_removed"
+            echo "allow_bulk=$allow_bulk"
+            echo "override_reason=$reason"
+          } >> "$GITHUB_OUTPUT"
+          echo "Dry run: $dry_run. Allow removed entries: $allow_removed. Override: $allow_bulk." >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$reason" ]; then echo "Override reason: $reason" >> "$GITHUB_STEP_SUMMARY"; fi
 
       - name: Fetch the KEV catalog
         run: python3 -B refresh_data.py kev --out "$RUNNER_TEMP/new"
@@ -85,8 +131,9 @@ jobs:
           if [ -n "$tag" ]; then
             gh release download "$tag" --pattern data.zip --dir "$RUNNER_TEMP/prev"
             # Trust the previous release only if this workflow attested it.
-            gh attestation verify "$RUNNER_TEMP/prev/data.zip" --repo "$GITHUB_REPOSITORY" \
-              --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/kev-daily.yml"
+            gh attestation verify "$RUNNER_TEMP/prev/data.zip" --repo evemcgivern/software-lifecycle \
+              --signer-workflow evemcgivern/software-lifecycle/.github/workflows/kev-daily.yml \
+              --source-ref refs/heads/main
             unzip -q "$RUNNER_TEMP/prev/data.zip" -d "$RUNNER_TEMP/prev/data"
             python3 -B software_lifecycle.py verify-data --data "$RUNNER_TEMP/prev/data"
             cp "$RUNNER_TEMP/prev/data/kev.json" "$RUNNER_TEMP/old-kev.json"
@@ -106,9 +153,11 @@ jobs:
       - name: Check the new KEV snapshot
         env:
           ALLOW_REMOVED: ${{ steps.mode.outputs.allow_removed }}
+          ALLOW_BULK: ${{ steps.mode.outputs.allow_bulk }}
         run: |
           args=(--new "$RUNNER_TEMP/new/kev.json" --old "$RUNNER_TEMP/old-kev.json" --digest "$RUNNER_TEMP/digest.md")
           if [ "$ALLOW_REMOVED" = "true" ]; then args+=(--allow-removed); fi
+          if [ "$ALLOW_BULK" = "true" ]; then args+=(--allow-bulk); fi
           if python3 -B refresh_data.py check-kev "${args[@]}" 2> "$RUNNER_TEMP/gate.txt"; then
             cat "$RUNNER_TEMP/digest.md" >> "$GITHUB_STEP_SUMMARY"
           else
@@ -160,7 +209,9 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-          (cd "$out" && zip -X -q -r "$RUNNER_TEMP/release/data.zip" .)
+          # Sorted names, fixed 1980 times, no compression: the same folder
+          # always gives the same zip bytes.
+          python3 -B refresh_data.py zip --dir "$out" --out "$RUNNER_TEMP/release/data.zip"
           cp "$out/manifest.json" "$RUNNER_TEMP/release/manifest.json"
           echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
           echo "zip_sha256=$(sha256sum "$RUNNER_TEMP/release/data.zip" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
@@ -177,8 +228,12 @@ jobs:
 
   publish:
     needs: build
-    if: needs.build.outputs.dry_run == 'false' && needs.build.outputs.changed == 'true'
+    # Only main publishes. The data-release environment adds a second guard
+    # once Eve creates it with main as the only deployment branch.
+    if: github.ref == 'refs/heads/main' && needs.build.outputs.dry_run == 'false' && needs.build.outputs.changed == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: data-release
     permissions:
       contents: write
       id-token: write
@@ -215,7 +270,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_ID: ${{ needs.build.outputs.release_id }}
+          OVERRIDE_REASON: ${{ needs.build.outputs.override_reason }}
         run: |
+          pattern='^[A-Za-z0-9 .,:;()_/-]{10,200}$'
+          if [ -n "$OVERRIDE_REASON" ] && ! [[ $OVERRIDE_REASON =~ $pattern ]]; then
+            echo "The override reason has an unexpected form."
+            exit 1
+          fi
           # Data releases are never retagged or edited: stop if the tag exists.
           if gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_ID" > /dev/null 2>&1; then
             echo "Tag $RELEASE_ID already exists. Nothing was published."
@@ -226,19 +287,25 @@ jobs:
 
           Check this release before use:
 
-              gh attestation verify data.zip --repo $GH_REPO
+              gh attestation verify data.zip --repo evemcgivern/software-lifecycle --signer-workflow evemcgivern/software-lifecycle/.github/workflows/kev-daily.yml --source-ref refs/heads/main
 
           The tool checks the SHA-256 manifest on every load. It does not check
           signatures offline.
           EOF
+          if [ -n "$OVERRIDE_REASON" ]; then
+            printf '\nA person overrode the volume checks for this release.\nOverride reason: %s\n' "$OVERRIDE_REASON" >> notes.md
+          fi
           gh release create "$RELEASE_ID" release/data.zip release/manifest.json \
             --target "$GITHUB_SHA" --title "Data release $RELEASE_ID" \
             --notes-file notes.md --latest=false
 
   report:
     needs: [build, publish]
-    if: always() && needs.build.outputs.dry_run != 'true' && (needs.build.result == 'failure' || needs.publish.result == 'failure')
+    # Scheduled runs and manual runs with dry_run false report a failure; a
+    # manual dry run (dry_run true, empty or missing) never opens the issue.
+    if: always() && (github.event_name == 'schedule' || needs.build.outputs.dry_run == 'false') && (needs.build.result == 'failure' || needs.publish.result == 'failure')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       issues: write
     steps:
