@@ -36,13 +36,25 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+ROOT_MD = ["README.md", "CONTRIBUTING.md", "SECURITY.md", "AGENTS.md",
+           "CLAUDE.md"]
+GITHUB = ROOT / ".github"
+
+
+def github_files() -> list:
+    return sorted(p for p in GITHUB.rglob("*") if p.is_file())
+
+
 def doc_files() -> list:
-    return [README] + sorted(DOCS.glob("*.md"))
+    return [ROOT / n for n in ROOT_MD] + sorted(DOCS.glob("*.md"))
 
 
 def public_files() -> list:
+    """The scanned set: root markdown, docs, templates and everything
+    under .github. Not data/."""
     out = doc_files() + sorted(DOCS.glob("*.csv"))
     out += [p for p in sorted(TEMPLATES.iterdir()) if p.is_file()]
+    out += github_files()
     return out
 
 
@@ -125,6 +137,135 @@ class FixedWordingTests(unittest.TestCase):
         body = " ".join(text(README).split())
         self.assertEqual(body.count(CLAIMS_LINE), 1)
         self.assertEqual(body.count(KEV_LINE), 1)
+        security = " ".join(text(ROOT / "SECURITY.md").split())
+        self.assertEqual(security.count(CLAIMS_LINE), 1)
+
+
+def workflow_check_names() -> list:
+    body = text(GITHUB / "workflows" / "ci.yml")
+    jobs = body.split("\njobs:\n", 1)[1]
+    test_job = re.search(r"^  test:\n(.*?)(?=^  [a-z]+:\n)", jobs,
+                         re.S | re.M).group(1)
+    assert "name:" not in test_job.split("steps:")[0]
+    versions = re.search(r"python: \[(.*?)\]", test_job).group(1)
+    return ["test (%s)" % v.strip('" ') for v in versions.split(",")]
+
+
+def parse_form(path: Path) -> dict:
+    """A small structural reader for an issue form."""
+    lines = text(path).split("\n")
+    top = {}
+    for line in lines:
+        m = re.match(r"^([a-z_]+):(.*)$", line)
+        if m:
+            top[m.group(1)] = m.group(2).strip()
+    body = text(path)
+    ids = re.findall(r"^    id: (\S+)$", body, re.M)
+    types = re.findall(r"^  - type: (\S+)$", body, re.M)
+    labels = re.findall(r'"([^"]+)"', top.get("labels", ""))
+    return {"top": top, "ids": ids, "types": types, "labels": labels,
+            "text": body}
+
+
+class NewFilesTests(unittest.TestCase):
+    FORMS = ("bug-report.yml", "feature-request.yml", "unmatched-product.yml")
+
+    def test_files_exist(self):
+        for rel in ("SECURITY.md", "CONTRIBUTING.md", "AGENTS.md",
+                    "CLAUDE.md", ".github/CODEOWNERS",
+                    ".github/PULL_REQUEST_TEMPLATE.md",
+                    ".github/ISSUE_TEMPLATE/config.yml"):
+            self.assertTrue((ROOT / rel).is_file(), rel)
+        for name in self.FORMS:
+            self.assertTrue((GITHUB / "ISSUE_TEMPLATE" / name).is_file())
+        self.assertEqual(text(GITHUB / "CODEOWNERS").strip(),
+                         "* @evemcgivern")
+
+    def test_issue_forms_are_well_formed(self):
+        labels = set()
+        for name in self.FORMS:
+            form = parse_form(GITHUB / "ISSUE_TEMPLATE" / name)
+            for key in ("name", "description", "labels", "body"):
+                self.assertIn(key, form["top"], name)
+            self.assertTrue(form["labels"], name)
+            labels |= set(form["labels"])
+            self.assertEqual(len(form["ids"]), len(set(form["ids"])), name)
+            self.assertIn("markdown", form["types"], name)
+            self.assertIn("checkboxes", form["types"], name)
+            flat = " ".join(form["text"].split())
+            self.assertIn("Do not paste inventory rows", flat, name)
+            self.assertIn("required: true", flat, name)
+        self.assertEqual(labels, {"bug", "enhancement", "alias-request"})
+        contributing = text(ROOT / "CONTRIBUTING.md")
+        for label in labels:
+            self.assertIn("`%s`" % label, contributing)
+
+    def test_warning_is_the_first_body_element(self):
+        for name in self.FORMS:
+            body = text(GITHUB / "ISSUE_TEMPLATE" / name)
+            first = body.split("\nbody:\n", 1)[1].split("\n  - type:")[0]
+            self.assertIn("type: markdown", first, name)
+            self.assertIn("Do not paste inventory rows",
+                          " ".join(first.split()), name)
+
+    def test_private_status_note_and_phrases(self):
+        note = ("This repository is currently private. This policy and "
+                "process apply when it is public.")
+        for name in ("SECURITY.md", "CONTRIBUTING.md"):
+            flat = " ".join(text(ROOT / name).replace("> ", " ").split())
+            self.assertIn(note, flat, name)
+
+    def test_agents_blocked_rule(self):
+        flat = " ".join(text(ROOT / "AGENTS.md").split())
+        self.assertIn("If a hook, a test, a guard or branch protection "
+                      "blocks you, stop and ask in the issue. Do not work "
+                      "around it.", flat)
+
+    def test_agents_and_contributing_agree_on_data_files(self):
+        for name in ("AGENTS.md", "CONTRIBUTING.md"):
+            flat = " ".join(text(ROOT / name).split())
+            self.assertIn("data/profiles.json", flat, name)
+            self.assertIn("data/aliases.json", flat, name)
+            self.assertIn("source URL", flat, name)
+            self.assertIn("negative corpus row", flat, name)
+
+    def test_config_keeps_blank_issues_off_and_links_security(self):
+        config = text(GITHUB / "ISSUE_TEMPLATE" / "config.yml")
+        self.assertIn("blank_issues_enabled: false", config)
+        self.assertIn("/blob/main/SECURITY.md", config)
+
+    def test_claude_md_is_a_pointer(self):
+        path = ROOT / "CLAUDE.md"
+        self.assertFalse(path.is_symlink())
+        body = text(path)
+        self.assertIn("AGENTS.md", body)
+        self.assertLess(len(body.strip().split("\n")), 10)
+
+    def test_contributing_names_the_real_checks_and_command(self):
+        body = text(ROOT / "CONTRIBUTING.md")
+        names = workflow_check_names()
+        self.assertEqual(len(names), 5)
+        for name in names:
+            self.assertIn("`%s`" % name, body)
+        self.assertIn("python3 -B -m unittest discover -s tests", body)
+        self.assertIn("discover -s tests -p 'test_x.py'", body)
+
+    def test_agents_md_has_each_hard_rule(self):
+        body = text(ROOT / "AGENTS.md")
+        for keyword in ("--counts-only", "tests/make_fixtures.py",
+                        "dependencies", "pull_request_target",
+                        "schema_version", "Never push to main",
+                        "Never force-push", "commit SHA", "claims line",
+                        "KEV line", "synthetic", "test_weekly_gate"):
+            self.assertIn(keyword, body, keyword)
+
+    def test_security_md_command_matches_the_release_notes(self):
+        workflow = text(GITHUB / "workflows" / "kev-daily.yml")
+        command = re.search(r"^\s+(gh attestation verify data\.zip --repo "
+                            r"\S+ --signer-workflow \S+ --source-ref \S+)$",
+                            workflow, re.M).group(1)
+        self.assertIn(command, text(ROOT / "SECURITY.md"))
+        self.assertIn(command, text(README))
 
 
 def parser_flags() -> set:
@@ -270,6 +411,36 @@ BANNED_DIGESTS = {
 }
 
 
+def signed_problems(body: str) -> list:
+    """Sentences that use the word "signed" outside a rule sentence.
+
+    Text is cut into units at blank lines and list items (wrapped lines are
+    joined), then into sentences at . ! ?. The stricter option is used: the
+    word is allowed only in a sentence of the form "never call/say/claim/
+    write ... signed" or "does not claim/say ... signed". A bare "never"
+    elsewhere in the sentence is not enough.
+    """
+    units, current = [], []
+    for line in body.split("\n"):
+        if not line.strip() or re.match(r"\s*(?:[-*]|[0-9]+\.)\s", line):
+            if current:
+                units.append(" ".join(current))
+            current = [] if not line.strip() else [line.strip()]
+        else:
+            current.append(line.strip())
+    if current:
+        units.append(" ".join(current))
+    allowed = re.compile(r"never (?:call|say|claim|write)[^.]*signed|"
+                         r"does not (?:claim|say)[^.]*signed")
+    out = []
+    for unit in units:
+        for sent in re.split(r"(?<=[.!?])\s+", unit):
+            low = sent.lower()
+            if re.search(r"\bsigned\b", low) and not allowed.search(low):
+                out.append(sent)
+    return out
+
+
 def hashed_terms(body: str) -> set:
     words = re.findall(r"[a-z0-9]+", body.lower())
     terms = set(words) | {a + " " + b for a, b in zip(words, words[1:])}
@@ -285,7 +456,44 @@ class BannedWordTests(unittest.TestCase):
             hit = hashed_terms(low) & BANNED_DIGESTS
             self.assertFalse(hit, "%s: banned term, digest %s"
                              % (path.name, sorted(hit)))
-            self.assertIsNone(re.search(r"\bsigned\b", low), path.name)
+
+    def test_signed_only_in_rule_sentences(self):
+        for path in public_files():
+            self.assertEqual(signed_problems(text(path)), [], path.name)
+
+    def test_signed_check_catches_bad_sentences(self):
+        bad = [
+            "- Releases are never changed\n- Releases are signed\n",
+            "Data releases are never re-tagged and are signed by the "
+            "workflow.",
+            "Never trust a release that is not signed.",
+            "Our releases are signed.",
+            "Each release has a GPG-signed tag.",
+        ]
+        for body in bad:
+            self.assertTrue(signed_problems(body), body)
+        good = ['Never call a release "signed".',
+                "The project does not claim that a release is signed."]
+        for body in good:
+            self.assertEqual(signed_problems(body), [], body)
+        for name in ("AGENTS.md", "CONTRIBUTING.md"):
+            body = text(ROOT / name)
+            self.assertRegex(" ".join(body.split()),
+                             r'Never call a release "signed"')
+
+    def test_no_overclaims_or_email_addresses(self):
+        files = [ROOT / n for n in ("SECURITY.md", "CONTRIBUTING.md",
+                                    "AGENTS.md", "README.md")]
+        files += [p for p in github_files() if "workflows" not in p.parts]
+        phrases = ("enterprise-grade", "enterprise-secure", "audited and",
+                   "certified", "fully compliant")
+        for path in files:
+            low = text(path).replace(CLAIMS_LINE, "").lower()
+            for phrase in phrases:
+                self.assertNotIn(phrase, low, path.name)
+            self.assertIsNone(
+                re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", text(path)),
+                path.name)
 
     def test_bod_22_01_only_as_superseded(self):
         for path in public_files():

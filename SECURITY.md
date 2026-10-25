@@ -1,16 +1,52 @@
 # Security
 
-Runs locally with no network by default; built to enterprise security
-practices; not independently assessed.
+Runs locally with no network by default; built to enterprise security practices; not independently assessed.
+
+> This repository is currently private. This policy and process apply when
+> it is public.
 
 ## Reporting a vulnerability
 
-Report vulnerabilities privately with GitHub
-private vulnerability reporting: open the repository's **Security** tab and
-choose **Report a vulnerability**. Do not open a public issue for a security
-problem, and do not include real inventory data in a report.
+When the repository is public, private vulnerability reporting is
+turned on. Open the repository's **Security** tab and choose **Report a
+vulnerability**. Do not open a public issue for a security problem. Do not
+include real inventory data in a report.
 
-Support is best effort, with no service level.
+While the repository is private, GitHub does not offer it. Contact the
+repository owner on GitHub instead.
+
+This project is maintained as time allows. Support is best effort, with no
+service level. There is no promised response time. A report is read and
+answered when the maintainer can.
+
+## Supported versions
+
+Only the latest release and the latest data release are supported. Older
+ones are not patched. No tool release exists yet, so the tool's supported
+version is `main` until the first release.
+
+| What | Supported |
+|---|---|
+| The tool: the latest release, or `main` until the first tool release | Yes, best effort |
+| The data: the latest data release | Yes, best effort |
+| Anything older | No |
+
+## Scope
+
+In scope:
+
+- the tool (`swlc/` and `software_lifecycle.py`);
+- the refresh script (`refresh_data.py`);
+- the GitHub workflows;
+- the data pipeline that builds and publishes data releases;
+- the documentation, when it claims more than the code does.
+
+Out of scope:
+
+- findings about your own inventory (the tool reports on those);
+- errors in the upstream data. Report a wrong end-of-life date to
+  endoflife.date, and a KEV question to CISA;
+- how an AI agent behaves when someone runs it with the tool.
 
 ## What the tool claims
 
@@ -25,23 +61,22 @@ Support is best effort, with no service level.
   it loads its data. This catches a damaged or partly replaced data folder.
   It does not prove who made the files: someone who changes both a data
   file and the manifest is not caught by this check.
-- Each data release (`data-YYYY.MM.DD.N`) carries a GitHub artifact
-  attestation made by the release workflow on main. Check it online before
-  use, naming the workflow and the branch that must have made it:
+- When the repository is public, each data release (`data-YYYY.MM.DD.N`)
+  carries a GitHub artifact attestation made by the release workflow on
+  main. Release attestations on a private repository need GitHub
+  Enterprise Cloud. Check one online before use, naming the workflow and
+  the branch that must have made it:
 
       gh attestation verify data.zip --repo evemcgivern/software-lifecycle --signer-workflow evemcgivern/software-lifecycle/.github/workflows/kev-daily.yml --source-ref refs/heads/main
 
   Checking `--repo` alone is not enough: it also accepts an attestation
   made by a run on another branch.
+- The tool does not and cannot verify signatures offline. It never checks
+  attestations offline.
 - Only main can publish a data release. The publish job runs only for
-  `refs/heads/main` and uses the GitHub environment `data-release`. The
-  maintainer must create that environment (Settings, Environments) and
-  allow only the main branch to deploy to it. If the environment does not
-  exist, GitHub creates it with no protection, so the main-branch check in
-  the workflow stays the real guard.
-
-- The tool does not and cannot verify signatures offline. Nothing in this
-  project claims offline signature checking.
+  `refs/heads/main` and uses the GitHub environment `data-release`, which
+  allows deployment from main only. The scheduled workflows run when they
+  are enabled; they are disabled while the repository is private.
 - Data releases are never changed or re-tagged. A fix is a new, higher
   release.
 - Only `refresh_data.py`, run by the data workflows, opens network

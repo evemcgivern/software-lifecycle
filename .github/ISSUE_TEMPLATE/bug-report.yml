@@ -1,0 +1,60 @@
+name: Bug report
+description: Something the tool did that it should not have, or did not do.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public. Do not paste inventory rows, report files,
+        owner names, internal application names, host names, or any
+        confidential data.** If you need to show input, make a few
+        synthetic rows with made-up names. For a security problem, use
+        the private Security tab instead.
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened
+      description: What the tool did, in plain words. Include any error text, with names removed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The command you ran, and synthetic input if it helps.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Tool version
+      description: The contents of the VERSION file.
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      description: The output of python3 --version.
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confidential data
+      options:
+        - label: This issue holds no inventory rows, owner names, internal application names or other confidential data.
+          required: true
