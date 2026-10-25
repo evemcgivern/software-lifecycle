@@ -158,9 +158,9 @@ so; it does not hide them.
   part looks like a build number, for example `.NET Framework` `4.6.01590`.
 - Software with no lifecycle policy (git, curl, vim) is not in the data and
   never matches.
-- The Red Hat VS Code extension named Ansible has the same name and
-  publisher as the Ansible entry, so two of its versions (2.9 and 2.10) can
-  be given an Ansible cycle they do not have.
+- Ansible rows from Red Hat stay unmatched. The catalog vendor is
+  `redhat`, one word, and the Red Hat VS Code extension named Ansible
+  shares the name and publisher, so no publisher alias adds Red Hat.
 - The PyPI `podman` package and the Homebrew `podman` formula look the same
   to the matcher, so the package can be read as the Podman product.
 - The VS Code extensions for Julia and Deno share vendor words with the

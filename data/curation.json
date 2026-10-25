@@ -61,13 +61,6 @@
     }
   },
   "publisher_aliases": {
-    "ansible": {
-      "phrases": [
-        "red hat"
-      ],
-      "reason": "Red Hat makes Ansible (Red Hat Ansible Automation Platform). Its CPE vendor is written as one word, redhat, which never equals the two words Red Hat.",
-      "source": "https://www.redhat.com/en/technologies/management/ansible"
-    },
     "ceph": {
       "phrases": [
         "ceph packaging team"

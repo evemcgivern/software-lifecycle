@@ -37,6 +37,7 @@
 - https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info (Windows Server builds)
 - https://support.microsoft.com/en-us/servicing/sql/kb321185-download-and-install-latest-updates (the same SQL Server build page as above)
 - https://www.graalvm.org/release-calendar/ (GraalVM calendar-year and JDK-based version numbers)
+- https://marketplace.visualstudio.com/items?itemName=redhat.ansible (the Red Hat VS Code extension named Ansible; its versions read from the Marketplace gallery API)
 - endoflife.date product pages: https://endoflife.date/android,
   https://endoflife.date/centos-stream, https://endoflife.date/cockroachdb,
   https://endoflife.date/commvault, https://endoflife.date/django,

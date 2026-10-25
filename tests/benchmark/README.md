@@ -65,10 +65,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 366 | 32 | 388 | 786 |
+| hand | 366 | 32 | 391 | 789 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1422 | 305 | 465 | 2192 |
+| all | 1422 | 305 | 468 | 2195 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -77,7 +77,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 109 rows. Do not use held-out rows when writing
+are always `0`. That is 111 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks
@@ -106,6 +106,16 @@ exclusions, aliases or rules. The test reports them separately.
   pull request and local run. The weekly data job sets `SWLC_WEEKLY_JOB`
   and only reports it, because an upstream rename changes generated rows
   (see "Maintainer: when the weekly data job fails" in `docs/sop.md`).
+- Floor lowerings: the floor is lowered only by a decision the maintainer
+  records here, with the rows it loses.
+  - 2026-10-25, removing the `red hat` publisher alias for `ansible`. The
+    Red Hat VS Code extension named Ansible matched Ansible through it.
+    `hand_catalog_correct_min` 421 to 418 and `generated_correct_min` 723
+    to 718. Rows lost (now missed): `Ansible|Red Hat|9.1.0` (hand),
+    `Ansible|Red Hat|14.5.0` and `Ansible|Red Hat|1.0.1` (catalog),
+    `Ansible 7.7.0|Red Hat|7.7.0`, `Red Hat Ansible|Red Hat|7.7.0`,
+    `Ansible (x64)|Red Hat|14.5.0`, `Ansible 21.0.0|Red Hat|21.0.0` and
+    `Ansible 14.5.0|Red Hat|2.9.27` (generated).
 - Every product id and cycle exists in `data/eol/`. No two rows share an
   item id (names are normalized as the tool does). Rows in `unsure.csv` are
   not in gold.

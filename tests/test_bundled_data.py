@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT / "tests"))
 from helpers import run_main, write_inventory  # noqa: E402
 from swlc.data import (  # noqa: E402
     load_data, validate_curation, validate_products)
+from swlc.matching import match_product  # noqa: E402
 
 # SWLC_DATA_DIR lets a test point this module at a scratch copy of data/.
 DATA = Path(os.environ.get("SWLC_DATA_DIR") or ROOT / "data")
@@ -125,6 +126,26 @@ class BundledCatalogTests(unittest.TestCase):
         validate_products(read("products.json"))
         validate_curation(self.data.curation, set(self.data.catalog))
         validate_curation(read("curation.json"), set(self.data.products))
+
+
+class BundledCurationRows(unittest.TestCase):
+    """Rows the maintainer's curation decisions settle on the bundled data."""
+    @classmethod
+    def setUpClass(cls):
+        cls.data = load_data(str(DATA), AS_OF)
+
+    def product(self, name, publisher, version):
+        return match_product(name, version, self.data.aliases,
+                             self.data.products,
+                             catalog_index=self.data.matching_index(),
+                             publisher=publisher).product
+
+    def test_red_hat_ansible_extension_rows_stay_unmatched(self):
+        # The VS Code extension redhat.ansible is named Ansible by Red Hat.
+        for pub, ver in (("Red Hat", "2.10.130"), ("Red Hat", "2.9.118"),
+                         ("Red Hat", "26.8.2"), ("Red Hat, Inc.", "2.16.2")):
+            with self.subTest(pub=pub, ver=ver):
+                self.assertIsNone(self.product("Ansible", pub, ver))
 
 
 class BundledSmokeTest(unittest.TestCase):
