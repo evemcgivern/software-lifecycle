@@ -130,9 +130,18 @@ class CheckTests(CliBase):
         self.assertEqual(code, 2)
 
     def test_clock_default_used_only_in_main(self):
-        code, out, err = run_main(["check", self.inv, "--data", self.data])
+        fixed = date(2026, 10, 24)
+
+        class FakeDate(date):
+            @classmethod
+            def today(cls):
+                return fixed
+
+        with mock.patch.object(cli, "date", FakeDate):
+            code, out, err = run_main(
+                ["check", self.inv, "--data", self.data])
         self.assertEqual(code, 0, err)
-        self.assertIn("Checked on: %s" % date.today().isoformat(), out)
+        self.assertIn("Checked on: 2026-10-24", out)
 
 
 class FailureTests(CliBase):
