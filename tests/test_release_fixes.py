@@ -59,7 +59,8 @@ class ReportWordingTests(unittest.TestCase):
             ["Zzz Unknown Tool", "1.0", "Nobody", "b"]])
         self.assertIn("product known (mssqlserver), but no cycle was "
                       "matched. Reason NO_CYCLE: no cycle matches this "
-                      "version.", md)
+                      "version, or the version in the name disagrees with "
+                      "it.", md)
         self.assertIn("no known product was matched. Reason NO_ALIAS",
                       md)
         self.assertNotIn("not matched to a known product", md)

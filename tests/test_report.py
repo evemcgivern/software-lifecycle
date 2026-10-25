@@ -183,6 +183,31 @@ class JsonTests(Base):
             text, json.dumps(obj, sort_keys=True, indent=2) + "\n")
 
 
+class MatchSourceTests(Base):
+    def test_markdown_names_how_the_product_was_matched(self):
+        self.assertIn("Product matched by a curated alias.", self.md)
+        result = copy.deepcopy(self.result)
+        for it in result["items"]:
+            if it["match_source"] == "curated":
+                it["match_source"] = "generated"
+        md = report.render_markdown(result, self.meta)
+        self.assertIn("Product matched by product title.", md)
+        self.assertNotIn("Product matched by a curated alias.", md)
+
+    def test_no_source_line_without_a_product(self):
+        it = self.item("Mystery Tool")
+        self.assertIsNone(it["match_source"])
+        block = self.md[self.md.index("**Mystery Tool**"):]
+        block = block[:block.index("\n- ")] if "\n- " in block else block
+        self.assertNotIn("Product matched by", block)
+
+    def test_csv_adds_match_source_as_the_last_column(self):
+        rows = list(csv.reader(io.StringIO(report.render_csv(self.result))))
+        self.assertEqual(rows[0][-2:], ["lists", "match_source"])
+        col = rows[0].index("match_source")
+        self.assertEqual({r[col] for r in rows[1:]}, {"curated", ""})
+
+
 class CsvTests(Base):
     def rows(self, result):
         return list(csv.reader(io.StringIO(report.render_csv(result))))
