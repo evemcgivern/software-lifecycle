@@ -19,7 +19,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
 from helpers import run_main, write_inventory  # noqa: E402
-from swlc.data import load_data  # noqa: E402
+from swlc.data import (  # noqa: E402
+    load_data, validate_curation, validate_products)
 
 # SWLC_DATA_DIR lets a test point this module at a scratch copy of data/.
 DATA = Path(os.environ.get("SWLC_DATA_DIR") or ROOT / "data")
@@ -82,6 +83,48 @@ class BundledDataTests(unittest.TestCase):
         self.assertTrue(RELEASE_ID.fullmatch(MANIFEST["release_id"]),
                         "release_id must be bundled-YYYY.MM.DD or "
                         "main-eol-YYYY-MM-DD")
+
+
+class BundledCatalogTests(unittest.TestCase):
+    def setUp(self):
+        self.data = load_data(str(DATA), as_of=AS_OF)
+
+    def test_manifest_is_format_2_and_lists_the_new_files(self):
+        self.assertEqual(MANIFEST["data_format"], 2)
+        self.assertEqual(MANIFEST["min_tool_version"], "0.1.0")
+        self.assertIn("products.json", MANIFEST["files"])
+        self.assertIn("curation.json", MANIFEST["files"])
+        self.assertNotIn(
+            "This data release has no product catalog; "
+            "generated matching is off.", self.data.warnings)
+
+    def test_catalog_has_one_record_per_eol_product(self):
+        self.assertEqual(set(self.data.catalog), set(self.data.products))
+        self.assertEqual(
+            [p["id"] for p in read("products.json")["products"]],
+            sorted(self.data.products))
+
+    def test_catalog_files_are_canonical_json(self):
+        import refresh_data
+        for name in ("products.json", "curation.json"):
+            raw = (DATA / name).read_bytes()
+            self.assertEqual(raw, refresh_data.canonical(json.loads(raw)),
+                             name)
+
+    def test_catalog_holds_only_the_five_keys(self):
+        for rec in self.data.catalog.values():
+            self.assertEqual(set(rec), {"id", "title", "category", "vendors",
+                                        "namespaces"})
+        self.assertTrue(any(r["vendors"] for r in self.data.catalog.values()))
+        self.assertTrue(
+            any(r["namespaces"] for r in self.data.catalog.values()))
+
+    def test_curation_names_only_products_in_the_data(self):
+        # Trivially true while curation.json is empty; it fails as soon as
+        # a weekly update removes a product that curation still names.
+        validate_products(read("products.json"))
+        validate_curation(self.data.curation, set(self.data.catalog))
+        validate_curation(read("curation.json"), set(self.data.products))
 
 
 class BundledSmokeTest(unittest.TestCase):
