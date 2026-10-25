@@ -38,6 +38,9 @@ No install step. Run from the repo root.
   themes, crosswalk.
 - `templates/`: blank input and override files.
 - `tests/`: the suite. `tests/fixtures/` is generated.
+- `tests/benchmark/`: the gold benchmark (`gold.csv`, `floor.json`) scored
+  by `tests/test_benchmark.py`. Never lower `floor.json`. Never change a gold
+  row to make a rule pass. A wrong match is a bug in the rule.
 - `.github/workflows/`: `ci.yml`, `kev-daily.yml`, `eol-weekly.yml`.
 
 ## Hard rules

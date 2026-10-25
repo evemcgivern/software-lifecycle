@@ -55,6 +55,8 @@ def public_files() -> list:
     out = doc_files() + sorted(DOCS.glob("*.csv"))
     out += [p for p in sorted(TEMPLATES.iterdir()) if p.is_file()]
     out += github_files()
+    out += [p for p in sorted((ROOT / "tests" / "benchmark").iterdir())
+            if p.is_file() and p.suffix in (".csv", ".md", ".json")]
     return out
 
 

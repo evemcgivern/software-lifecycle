@@ -68,6 +68,9 @@ If you have Python 3.9, run the suite on it too. The floor is 3.9.
   words come only from the vendor's own edition list. See "Extending the
   alias table" in [docs/usage.md](docs/usage.md).
 - The docs are tested. Change docs and tests together.
+- The gold benchmark is `tests/benchmark/gold.csv` (see its README). Never
+  lower `floor.json`, never weaken a gold row to make a rule pass: a wrong
+  match is a bug in the rule.
 - What the report's keys promise: see [docs/report-schema.md](docs/report-schema.md).
   Adding a state, a list, a reason code or a decision code bumps
   `schema_version`.
