@@ -24,7 +24,10 @@ def write_text(path: str, text: str, input_path: str | None = None) -> None:
     directory = os.path.dirname(os.path.abspath(path))
     fd, tmp = tempfile.mkstemp(dir=directory, prefix=".swlc-", suffix=".tmp")
     try:
-        os.fchmod(fd, 0o600)
+        # mkstemp already makes the file owner-only where the system
+        # supports it; os.fchmod is missing on Windows before Python 3.13.
+        if hasattr(os, "fchmod"):
+            os.fchmod(fd, 0o600)
         with os.fdopen(fd, "w", encoding="utf-8", newline="") as fh:
             fd = -1
             fh.write(text)
