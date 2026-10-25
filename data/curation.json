@@ -13,6 +13,13 @@
       "product": "nextcloud",
       "publisher": "nextcloud",
       "reason": "The Nextcloud desktop sync client is published as \"Nextcloud\" by Nextcloud GmbH, the same name and publisher as the server, with its own version line. Accepted cost: server rows with that exact name and publisher are not matched by product title either."
+    },
+    {
+      "gold": "Moodle|Moodle Pty Ltd|4.4.0",
+      "name": "moodle",
+      "product": "moodle",
+      "publisher": "moodle",
+      "reason": "The Moodle mobile app is published as \"Moodle\" by Moodle Pty Ltd, the same name and publisher as the LMS, with its own version line. Accepted cost: LMS rows with that exact name and publisher are not matched by product title either."
     }
   ],
   "format": 1,

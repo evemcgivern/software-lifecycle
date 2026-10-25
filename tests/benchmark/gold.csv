@@ -266,6 +266,7 @@ WordPress,WordPress.org,6.4.2,wordpress,6.4,curated; vmap=yes; bare title,hand,0
 Drupal,Drupal Association,10.2.1,drupal,10.2,curated; vmap=yes; bare title,hand,0
 Joomla!,Open Source Matters,4.4.1,joomla,4,curated; vmap=yes; title with !,hand,0
 Moodle,Moodle Pty Ltd,4.1.7,moodle,4.1,curated; vmap=yes; bare title,hand,0
+Moodle,Moodle Pty Ltd,4.4.0,NONE,,"trap=lookalike; mobile app with its own version line, not the Moodle LMS",hand,0
 MediaWiki,Wikimedia Foundation,1.39.6,mediawiki,1.39,curated; vmap=yes; bare title,hand,0
 Nextcloud Server,Nextcloud GmbH,28.0.1,nextcloud,28,curated; vmap=yes; server edition,hand,0
 Mattermost Server,"Mattermost, Inc.",9.3.0,mattermost,9.3,curated; vmap=yes; server edition,hand,0

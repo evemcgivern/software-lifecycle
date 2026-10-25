@@ -116,6 +116,14 @@ exclusions, aliases or rules. The test reports them separately.
     `Ansible 7.7.0|Red Hat|7.7.0`, `Red Hat Ansible|Red Hat|7.7.0`,
     `Ansible (x64)|Red Hat|14.5.0`, `Ansible 21.0.0|Red Hat|21.0.0` and
     `Ansible 14.5.0|Red Hat|2.9.27` (generated).
+  - 2026-10-25, excluding Moodle by name and publisher. The Moodle mobile
+    app and the Moodle LMS share the name `Moodle` and the publisher
+    `Moodle Pty Ltd`, so LMS rows could be the app. `hand_catalog_correct_min`
+    418 to 417 and `generated_correct_min` 718 to 713. Rows lost (now
+    missed): `Moodle|Moodle Pty Ltd|4.1.7` (hand), `Moodle|Moodle Pty Ltd|5.3.0`,
+    `Moodle 4.2.11|Moodle Pty Ltd|4.2.11`, `Moodle|Moodle Pty Ltd|2.0.1`,
+    `Moodle 12.0.0|Moodle Pty Ltd|12.0.0` and
+    `Moodle 5.3.0|Moodle Pty Ltd|3.8.9` (generated).
 - Every product id and cycle exists in `data/eol/`. No two rows share an
   item id (names are normalized as the tool does). Rows in `unsure.csv` are
   not in gold.

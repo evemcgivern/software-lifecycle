@@ -116,8 +116,8 @@ which one found the product.
      words such as Inc, Ltd, GmbH, Foundation, Project, Team or The. So
      `Prometheus Group Inc.` does not confirm Prometheus, and `Grafana Labs`
      confirms Grafana only through its curated publisher alias. Known limit: a different
-     product from a same-name vendor (the Moodle app from Moodle Pty Ltd)
-     still confirms.
+     product from a same-name vendor still confirms unless an exclusion
+     stops it (the Moodle app from Moodle Pty Ltd is excluded).
    - Products whose catalog category is `device`, and products on
      `generated_off`, are never matched by title.
    - An exclusion stops one product for a name: it applies when its name
@@ -149,8 +149,8 @@ so; it does not hide them.
 - A curated alias matches by name, whatever the publisher, unless it has a
   `publisher` list. Only some aliases have one (`node.js`, `ubuntu`).
 - Two products with the same name from the same vendor cannot be told
-  apart. The Moodle mobile app and the Moodle LMS are an example: both read
-  as the LMS.
+  apart. The Moodle mobile app and the Moodle LMS are an example: both are
+  left unmatched, by an exclusion.
 - A Jenkins weekly build whose number equals a long-term-support baseline
   (for example `2.426`) maps to that baseline's cycle. A weekly build that
   is not a baseline maps to cycle `2`.
