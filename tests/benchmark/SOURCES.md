@@ -38,6 +38,8 @@
 - https://support.microsoft.com/en-us/servicing/sql/kb321185-download-and-install-latest-updates (the same SQL Server build page as above)
 - https://www.graalvm.org/release-calendar/ (GraalVM calendar-year and JDK-based version numbers)
 - https://marketplace.visualstudio.com/items?itemName=redhat.ansible (the Red Hat VS Code extension named Ansible; its versions read from the Marketplace gallery API)
+- https://pypi.org/project/podman/5.4.0/ (the PyPI podman package, Python bindings for the Podman API)
+- https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml (winget gives Podman's publisher as Red Hat)
 - endoflife.date product pages: https://endoflife.date/android,
   https://endoflife.date/centos-stream, https://endoflife.date/cockroachdb,
   https://endoflife.date/commvault, https://endoflife.date/django,

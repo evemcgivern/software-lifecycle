@@ -147,6 +147,16 @@ class BundledCurationRows(unittest.TestCase):
             with self.subTest(pub=pub, ver=ver):
                 self.assertIsNone(self.product("Ansible", pub, ver))
 
+    def test_podman_needs_a_podman_publisher(self):
+        # podman on PyPI (no publisher) is the API bindings, not Podman.
+        for ver in ("5.4.0", "4.9.0"):
+            with self.subTest(ver=ver):
+                self.assertIsNone(self.product("podman", "", ver))
+        for pub in ("Red Hat", "Podman Project"):
+            with self.subTest(pub=pub):
+                self.assertEqual(self.product("Podman", pub, "6.1.4"),
+                                 "podman")
+
 
 class BundledSmokeTest(unittest.TestCase):
     def test_check_with_real_products(self):

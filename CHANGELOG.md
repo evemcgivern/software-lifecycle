@@ -5,7 +5,7 @@
 - Data format 2: the data folder gains `products.json` (a product catalog
   generated from the endoflife.date product files: id, title, category,
   vendor and owner names) and `curation.json` (hand-kept maintainer
-  decisions: publisher aliases for 41 products, 14 one-word allowlist
+  decisions: publisher aliases for 42 products, 13 one-word allowlist
   entries, 2 exclusions, 2 products left out of title matching and older
   version numbering for 2 products). A format 1 folder still loads, with a warning
   that generated matching is off. The weekly job regenerates and

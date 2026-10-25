@@ -161,8 +161,10 @@ so; it does not hide them.
 - Ansible rows from Red Hat stay unmatched. The catalog vendor is
   `redhat`, one word, and the Red Hat VS Code extension named Ansible
   shares the name and publisher, so no publisher alias adds Red Hat.
-- The PyPI `podman` package and the Homebrew `podman` formula look the same
-  to the matcher, so the package can be read as the Podman product.
+- A bare `podman` row with no publisher stays unmatched: the PyPI `podman`
+  package (the API bindings) and the Homebrew `podman` formula look the
+  same to the matcher. Podman matches when the publisher is Red Hat or the
+  Podman project.
 - The VS Code extensions for Julia and Deno share vendor words with the
   Julia and Deno products, so an extension row can be read as the product.
 

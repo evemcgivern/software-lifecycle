@@ -65,10 +65,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 366 | 32 | 391 | 789 |
+| hand | 366 | 32 | 392 | 790 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1422 | 305 | 468 | 2195 |
+| all | 1422 | 305 | 469 | 2196 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.

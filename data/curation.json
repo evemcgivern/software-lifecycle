@@ -263,6 +263,13 @@
       "reason": "Debian's phpmyadmin source package names the maintainer \"phpMyAdmin Packaging Team\".",
       "source": "https://sources.debian.org/data/main/p/phpmyadmin/4:5.2.1+dfsg-1+deb12u1/debian/control"
     },
+    "podman": {
+      "phrases": [
+        "red hat"
+      ],
+      "reason": "Red Hat publishes the Podman installer: its winget manifest gives the publisher as Red Hat, and the Podman gold row has that publisher. The catalog vendor is podman_project, which never contains the words Red Hat.",
+      "source": "https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml"
+    },
     "postgresql": {
       "phrases": [
         "debian postgresql maintainers",
@@ -417,12 +424,6 @@
       "product": "opentofu",
       "reason": "OpenTofu is a coined product name, not an ordinary word and not another catalog product.",
       "source": "https://endoflife.date/opentofu"
-    },
-    {
-      "gold": "Podman|Red Hat|6.1.4",
-      "product": "podman",
-      "reason": "Podman is a coined product name, not an ordinary word and not another catalog product.",
-      "source": "https://endoflife.date/podman"
     },
     {
       "gold": "RabbitMQ|Broadcom Inc.|4.3.7",
