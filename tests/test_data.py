@@ -192,7 +192,7 @@ class ManifestTests(DataCase):
                          (skill / "VERSION").read_text().strip())
 
     def test_unsupported_data_format(self):
-        for value in (3, 0, True, "2", None):
+        for value in (3, 0, True, False, "2", None, 2.0, 1.0, [2]):
             with self.subTest(value=value):
                 d = make_data_dir(tempfile.mkdtemp(dir=self.tmp),
                                   days_ago(1), days_ago(1))
@@ -604,10 +604,59 @@ class ProductsSchemaTests(DataCase):
 
     def test_catalog_is_read_from_the_verified_bytes(self):
         d = self.make()
-        replace_file(d, "products.json", products_obj(
-            record("examplesql", title="Changed")))
+        obj = json.loads(json.dumps(make_fixtures.PRODUCTS))
+        for rec in obj["products"]:
+            if rec["id"] == "examplesql":
+                rec["title"] = "Changed"
+        replace_file(d, "products.json", obj)
         self.assertEqual(
             load_data(d, AS_OF).catalog["examplesql"]["title"], "Changed")
+
+    def test_text_fields_refuse_control_and_direction_characters(self):
+        for bad in ("a\nb", "a\x1b[31mb", "a\u202eb", "a\u200bb",
+                    "a\u2028b", "x" * 201, "", " "):
+            for key in ("title", "category"):
+                with self.subTest(key=key, bad=bad):
+                    with self.assertRaises(DataError) as ctx:
+                        validate_products(products_obj(record(**{key: bad})))
+                    self.assertNotIn("\x1b", str(ctx.exception))
+        validate_products(products_obj(record(title="x" * 200)))
+        validate_products(products_obj(record(title="C++ Builder (2nd)")))
+
+    def test_vendor_and_namespace_character_rules(self):
+        validate_products(products_obj(record(
+            vendors=["c++", "clam_anti-virus", "pivotal_software",
+                     "ruby-lang"],
+            namespaces=["a_b-c.d", "angular", "org.apache.tomcat"])))
+        for key, bad in (("vendors", "Upper"), ("vendors", "a b"),
+                         ("vendors", "a\nb"), ("vendors", "a/b"),
+                         ("vendors", "-a"), ("vendors", "a\u202eb"),
+                         ("namespaces", "a/b"), ("namespaces", "a b"),
+                         ("namespaces", "a\nb"), ("namespaces", "a\u202eb"),
+                         ("namespaces", "@angular"), ("namespaces", "a+b"),
+                         ("namespaces", "-a")):
+            with self.subTest(key=key, bad=bad):
+                with self.assertRaises(DataError):
+                    validate_products(products_obj(record(**{key: [bad]})))
+
+    def test_catalog_must_match_the_eol_files(self):
+        obj = json.loads(json.dumps(make_fixtures.PRODUCTS))
+        extra = dict(obj["products"][0], id="zzz-no-eol-file")
+        d = self.make()
+        replace_file(d, "products.json",
+                     dict(obj, products=obj["products"] + [extra]))
+        with self.assertRaises(DataError) as ctx:
+            load_data(d, AS_OF)
+        self.assertNotIn("zzz", str(ctx.exception))
+        self.assertTrue(str(ctx.exception).startswith("products.json: "))
+        self.assertEqual(verify_data_quiet(d), 4)
+        d = make_data_dir(tempfile.mkdtemp(dir=self.tmp),
+                          days_ago(1), days_ago(1))
+        replace_file(d, "products.json",
+                     dict(obj, products=obj["products"][1:]))
+        with self.assertRaises(DataError):
+            load_data(d, AS_OF)
+        self.assertEqual(verify_data_quiet(d), 4)
 
 
 class CurationSchemaTests(DataCase):
@@ -708,6 +757,33 @@ class CurationSchemaTests(DataCase):
             load_data(d, AS_OF)
         self.assertTrue(str(ctx.exception).startswith("curation.json: "))
         self.assertEqual(verify_data_quiet(d), 4)
+
+    def test_https_urls_need_a_host_and_no_user_name(self):
+        for url in ("https:///", "https://@", "https://@host/x",
+                    "https://user@host/x", "https://user:pw@host/", "https://",
+                    "https:///path", "https://-a.com", "https://a b.com",
+                    "https://a.com/a b", "https://a.com\n", "http://a.com",
+                    "https://a.com:99999999/", "https://.com"):
+            with self.subTest(url=url):
+                with self.assertRaises(DataError):
+                    validate_curation(curation_obj(single_word_allowlist=[
+                        dict(GOOD_ALLOW, source=url)]))
+        for url in ("https://example.com", "https://example.com/a?b=c#d",
+                    "https://example.com:8443/x", "https://a-b.example.org/"):
+            with self.subTest(url=url):
+                validate_curation(curation_obj(single_word_allowlist=[
+                    dict(GOOD_ALLOW, source=url)]))
+
+    def test_load_checks_curation_against_the_catalog(self):
+        d = self.make()
+        replace_file(d, "curation.json", curation_obj(generated_off=["gone"]))
+        with self.assertRaises(DataError) as ctx:
+            load_data(d, AS_OF)
+        self.assertTrue(str(ctx.exception).startswith("curation.json: "))
+        self.assertNotIn("gone", str(ctx.exception))
+        self.assertEqual(verify_data_quiet(d), 4)
+        replace_file(d, "curation.json", curation_obj(generated_off=["demoos"]))
+        load_data(d, AS_OF)
 
     def test_curation_is_read_from_the_verified_bytes(self):
         d = self.make()

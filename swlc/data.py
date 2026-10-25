@@ -5,6 +5,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -26,6 +27,11 @@ _NAME_RE_V2 = re.compile(
     r"(?:aliases|profiles|kev|products|curation)\.json"
     r"|eol/[a-z0-9][a-z0-9_.-]*\.json")
 _ID_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
+_VENDOR_RE = re.compile(r"[a-z0-9][a-z0-9_.+-]*")
+_NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9_.-]*")
+_URL_RE = re.compile(
+    r"https://[A-Za-z0-9][A-Za-z0-9.-]*(?::[0-9]{1,5})?(?:[/?#][!-~]*)?")
+MAX_LABEL = 200
 NO_CATALOG_WARNING = ("This data release has no product catalog; "
                       "generated matching is off.")
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
@@ -185,8 +191,21 @@ def _is_format_one(value) -> bool:
         and value == 1
 
 
-def _str_list(value, where: str, lower: bool = False) -> list:
-    """A strictly sorted list of non-empty strings (so no duplicates)."""
+def _label(value, where: str) -> str:
+    """Display text: at most MAX_LABEL characters, none of them a control,
+    format (zero-width, bidi override) or line or paragraph separator."""
+    if not isinstance(value, str) or not value.strip() \
+            or len(value) > MAX_LABEL or any(
+                unicodedata.category(c) in ("Cc", "Cf", "Zl", "Zp")
+                for c in value):
+        raise DataError("%s: expected plain text of at most %d characters"
+                        % (where, MAX_LABEL))
+    return value
+
+
+def _str_list(value, where: str, lower: bool = False, pattern=None) -> list:
+    """A strictly sorted list of non-empty strings (so no duplicates).
+    With pattern, every string must match it whole."""
     if not isinstance(value, list):
         raise DataError("%s: expected a list" % where)
     for item in value:
@@ -194,6 +213,9 @@ def _str_list(value, where: str, lower: bool = False) -> list:
                 or item != item.strip() or (lower and item != item.lower()):
             raise DataError("%s: expected plain non-empty %sstrings"
                             % (where, "lowercase " if lower else ""))
+        if pattern is not None and not pattern.fullmatch(item):
+            raise DataError("%s: a value has characters that are not allowed"
+                            % where)
     if any(a >= b for a, b in zip(value, value[1:])):
         raise DataError("%s: must be sorted with no duplicates" % where)
     return value
@@ -217,20 +239,20 @@ def validate_products(obj) -> dict:
             raise DataError("%s: ids must be sorted with no duplicates"
                             % where)
         last = pid
-        _text(item["title"], where + ".title")
-        _text(item["category"], where + ".category")
-        _str_list(item["vendors"], where + ".vendors")
-        _str_list(item["namespaces"], where + ".namespaces", lower=True)
+        _label(item["title"], where + ".title")
+        _label(item["category"], where + ".category")
+        _str_list(item["vendors"], where + ".vendors", pattern=_VENDOR_RE)
+        _str_list(item["namespaces"], where + ".namespaces",
+                  pattern=_NAMESPACE_RE)
         out[pid] = item
     return out
 
 
 def _https(value, where: str) -> str:
-    if (not isinstance(value, str) or not value.startswith("https://")
-            or len(value) <= len("https://") or len(value) > 500
-            or any(c.isspace() or ord(c) < 33 or ord(c) > 126
-                   for c in value)):
-        raise DataError("%s: expected an https URL" % where)
+    if (not isinstance(value, str) or len(value) > 500
+            or not _URL_RE.fullmatch(value)):
+        raise DataError("%s: expected an https URL with a host and no "
+                        "user name" % where)
     return value
 
 
@@ -338,8 +360,9 @@ def _read_manifest(data_dir: str) -> dict:
     def check(m):
         if not isinstance(m, dict):
             raise DataError("top level must be an object")
-        if m.get("data_format") not in SUPPORTED_DATA_FORMATS or isinstance(
-                m.get("data_format"), bool):
+        fmt_value = m.get("data_format")
+        if type(fmt_value) is not int or \
+                fmt_value not in SUPPORTED_DATA_FORMATS:
             raise DataError("data format is not supported by this tool")
         fmt = m["data_format"]
         _text(m.get("release_id"), "release_id")
@@ -442,8 +465,13 @@ def _parse_all(blobs: dict) -> tuple:
     if "products.json" in blobs:
         catalog = _wrap("products.json", validate_products,
                         _parse(blobs["products.json"], "products.json"))
+        if set(catalog) != set(products):
+            raise DataError(
+                "products.json: the product records and the eol/ files "
+                "do not list the same products")
         curation = _wrap("curation.json", validate_curation,
-                         _parse(blobs["curation.json"], "curation.json"))
+                         _parse(blobs["curation.json"], "curation.json"),
+                         set(catalog))
     return aliases, kev, products, profiles, catalog, curation
 
 
