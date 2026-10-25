@@ -141,6 +141,24 @@ A name that fits two products, by alias, by title or one of each, is
 `AMBIGUOUS` and stays unmatched. A data folder without `products.json`
 (format 1) matches by alias only.
 
+## Known limits of matching
+
+These are known and not fixed. The tool leaves the row unmatched or says
+so; it does not hide them.
+
+- A curated alias matches by name, whatever the publisher, unless it has a
+  `publisher` list. Only some aliases have one (`node.js`, `ubuntu`).
+- Two products with the same name from the same vendor cannot be told
+  apart. The Moodle mobile app and the Moodle LMS are an example: both read
+  as the LMS.
+- A Jenkins weekly build whose number equals a long-term-support baseline
+  (for example `2.426`) maps to that baseline's cycle. A weekly build that
+  is not a baseline maps to cycle `2`.
+- A cycle is left open (`NO_CYCLE`, product known) when a version's extra
+  part looks like a build number, for example `.NET Framework` `4.6.01590`.
+- Software with no lifecycle policy (git, curl, vim) is not in the data and
+  never matches.
+
 ## How KEV is checked
 
 KEV is checked only for matched items that are past end of life or end
@@ -190,7 +208,9 @@ an object of `phrases`, a sorted list of lowercase vendor phrases, `reason`
 and `source`), `single_word_allowlist` (a list of `product`, `reason`,
 `source` and `gold`, the gold benchmark row it was checked on, as
 `name|publisher|version`), where each `source` is an https URL,
-`exclusions` (a list of `product`, `name`, `publisher`, `reason` and `gold`)
+`exclusions` (a list of `product`, `name`, `publisher`, `reason` and `gold`;
+`publisher` is one lowercase word, or empty to apply whatever the
+publisher)
 and `generated_off` (a sorted list of product ids). The tool refuses a file
 with an unknown key, a wrong type, a duplicate or an unsorted list where
 sorting is promised.
@@ -211,8 +231,9 @@ file and echoes no value.
 
 ## Extending the alias table
 
-The bundled `data/aliases.json` covers few products (see the README). To
-add one, edit a copy of the data folder. Do not edit `data/` in place.
+Most products match by their endoflife.date title (see the README). Use
+an alias for a name the title does not cover. To add one, edit a copy of
+the data folder. Do not edit `data/` in place.
 
 1. Copy the folder: `cp -R data ../my-data`.
 2. Add an entry to the `aliases` list in `../my-data/aliases.json`. This one
@@ -251,6 +272,27 @@ Golden sources do not apply to unmatched items. Add the alias first, and
 then a golden source if you need one. If you want the bundled table to
 cover a product, open the "Product the tool could not match" issue form
 with names only.
+
+## Extending the curation file
+
+`curation.json` holds the maintainer's decisions about generated matching.
+Edit it in a copy of the data folder, like the alias table, and rebuild the
+manifest (steps 3 to 5 above). The tool refuses a file that breaks the
+rules in "The data folder".
+
+- A publisher alias adds vendor names for one product, so a one-word or
+  short title can be confirmed by the row's publisher. Give `phrases`
+  (lowercase), a `reason` and an https `source`.
+- A one-word allowlist entry lets a one-word title match with no vendor.
+  Give the `product`, a `reason`, a `source` and a `gold` row
+  (`name|publisher|version`) that shows it is right.
+- An exclusion stops one product for one name, optionally for one
+  publisher word. Give the `product`, `name`, `publisher`, `reason` and a
+  `gold` row.
+- `generated_off` lists products that never match by title.
+
+For the bundled file, the rules in `CONTRIBUTING.md` also apply: every
+entry cites its evidence and the benchmark must not get worse.
 
 ## Counts-only mode
 
