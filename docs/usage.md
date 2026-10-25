@@ -311,6 +311,44 @@ rules in "The data folder".
 For the bundled file, the rules in `CONTRIBUTING.md` also apply: every
 entry cites its evidence and the benchmark must not get worse.
 
+## What kind of item this is
+
+Planned, not built yet.
+
+An inventory row can be an application someone owns, a piece of something
+else, or a member of a bundle. Each row gets one of four classes. These are
+policy lines. ISO/IEC 19770-1 requires an inventory and lifecycle control but
+does not define "component", "bundle" or "governable". ISO/IEC 19770-2 (SWID)
+has parent and child links; its clause references are Unverified until
+checked.
+
+- `governable`: a standalone application, server, database, OS, browser,
+  security agent or directly used developer tool, plus standalone runtimes
+  (JDK, .NET, Node.js, Python).
+- `component`: a library, redistributable, driver, language pack, OS patch,
+  font, codec, extension, plugin, `lib*` or `-dev` package, with no known
+  parent.
+- `bundle_member`: a part with a named parent (a suite member, a runtime
+  inside an app, a driver pack, an OS patch of the OS item).
+- `unknown`: the tool cannot tell. This is a valid answer and the default.
+  Never default to governable.
+
+The first confident hit wins, and all the evidence is recorded. The order of
+evidence is:
+
+1. a curated row override (a maintainer decision);
+2. bundle: an inventory parent column, a curated parent link, or a vendor
+   suite pattern whose version fits one cycle of the parent;
+3. component: a strong name pattern or a catalog category of library,
+   runtime or driver;
+4. governable: the row matches an endoflife.date product whose category is
+   app, server, OS, database or similar, and no component or bundle signal
+   fired;
+5. otherwise `unknown`. Products in the `device` category are `unknown`.
+
+Component outranks governable when both fire. Publisher alone never decides.
+Version shape only ever breaks a tie toward `unknown`.
+
 ## Counts-only mode
 
     python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out

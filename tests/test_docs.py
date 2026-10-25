@@ -324,6 +324,28 @@ class UsageTests(unittest.TestCase):
             self.assertIn("## " + name, body)
 
 
+def usage_section(heading: str) -> str:
+    body = text(DOCS / "usage.md")
+    start = body.find("## " + heading + "\n")
+    if start < 0:
+        return ""
+    end = body.find("\n## ", start + 1)
+    return body[start:] if end < 0 else body[start:end]
+
+
+class ClassDefinitionsDocTests(unittest.TestCase):
+    def test_usage_defines_each_class(self):
+        section = usage_section("What kind of item this is")
+        self.assertTrue(section, "usage.md has no classification section")
+        flat = " ".join(section.split())
+        for name in ("governable", "component", "bundle_member", "unknown"):
+            self.assertIn("`%s`" % name, flat)
+        self.assertIn("Never default to governable.", flat)
+        for sent in re.split(r"(?<=[.!?])\s+", flat):
+            if "ISO/IEC 19770-2 clause" in sent:
+                self.assertIn("Unverified", sent)
+
+
 def code_constants() -> set:
     out = set()
     for mod in (assess, matching):
