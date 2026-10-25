@@ -56,8 +56,10 @@ No install step. Run from the repo root.
   a source URL, a positive corpus row and a negative corpus row. Edition
   words come only from the vendor's own edition list. See "Ground rules" in
   `CONTRIBUTING.md`.
-- Ratchet for `tests/benchmark/floor.json`: never lower it. Raise it by
-  hand in the commit that earns it. Held-out gold rows are never used to
+- Ratchet for `tests/benchmark/floor.json`: never lower it. It holds two
+  correct-row minimums, `hand_catalog_correct_min` and
+  `generated_correct_min`. Raise either by hand in the commit that earns
+  it. Held-out gold rows are never used to
   choose an entry. Every one-word allowlist entry and every exclusion cites
   a gold row. Every curated entry has a source or a reason.
 - Add a publisher alias or an exclusion in four steps: 1. find the public

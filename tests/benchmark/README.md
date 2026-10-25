@@ -91,6 +91,9 @@ exclusions, aliases or rules. The test reports them separately.
 - The count of `correct` rows in `hand` plus `catalog` must be at least
   `hand_catalog_correct_min` in `floor.json`. Raise it by hand in the commit
   that earns the gain. Never lower it.
+- The count of `correct` rows in `generated` must be at least
+  `generated_correct_min` in `floor.json`. The same rule: raise it by hand
+  in the commit that earns the gain, never lower it.
 - Every product id and cycle exists in `data/eol/`. No two rows share an
   item id (names are normalized as the tool does). Rows in `unsure.csv` are
   not in gold.

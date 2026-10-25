@@ -7,9 +7,9 @@ back to its gold row by item id. Rules:
 * hard wrong (a wrong cycle) must be zero except the listed KNOWN_WRONG rows
   (each stores the exact wrong answer; any change makes its test fail);
   soft wrong (a wrong product, no cycle) may not exceed soft_wrong_max;
-* correct hand + catalog rows must not fall below tests/benchmark/floor.json.
-  Raising the floor is a deliberate hand edit in the commit that earns it.
-  Never lower it.
+* correct hand + catalog rows, and correct generated rows, must not fall
+  below tests/benchmark/floor.json. Raising the floor is a deliberate hand
+  edit in the commit that earns it. Never lower it.
 
 Print the numbers with `SWLC_BENCH_REPORT=1` or `-v`.
 """
@@ -208,6 +208,19 @@ class BenchmarkRunTests(unittest.TestCase):
             "hand+catalog correct fell below the floor; fix the rule, "
             "never lower floor.json")
 
+    # Generated rows are built from the catalog, which the weekly job
+    # changes (the gate simulation retitles and removes products), so this
+    # floor is checked on the committed data, not inside the simulation.
+    @unittest.skipIf(os.environ.get("SWLC_GATE_SIM"),
+                     "the weekly gate simulation changes the catalog")
+    def test_generated_correct_not_below_floor(self):
+        floor = json.loads(FLOOR.read_text(encoding="utf-8"))
+        got = self.table["generated"]["correct"]
+        self.assertGreaterEqual(
+            got, floor["generated_correct_min"],
+            "generated correct fell below the floor; fix the rule, "
+            "never lower floor.json")
+
 
 def _known_wrong_test(key, cause, stored):
     @unittest.expectedFailure
@@ -249,8 +262,11 @@ class GoldFileTests(unittest.TestCase):
 
     def test_floor_file_shape(self):
         floor = json.loads(FLOOR.read_text(encoding="utf-8"))
-        self.assertEqual(sorted(floor), ["hand_catalog_correct_min", "note",
+        self.assertEqual(sorted(floor), ["generated_correct_min",
+                                         "hand_catalog_correct_min", "note",
                                          "soft_wrong_max"])
+        self.assertIsInstance(floor["generated_correct_min"], int)
+        self.assertGreater(floor["generated_correct_min"], 0)
         self.assertIsInstance(floor["soft_wrong_max"], int)
         self.assertIn("none", {r["expected_cycle"] for r in self.rows})
         self.assertIsInstance(floor["hand_catalog_correct_min"], int)
