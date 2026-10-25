@@ -1,0 +1,197 @@
+{
+  "aliases": [
+    {
+      "build_map": {
+        "14.0": "14.0",
+        "15.0": "15.0",
+        "16.0": "16.0",
+        "17.0": "17.0",
+        "2017": "14.0",
+        "2019": "15.0",
+        "2022": "16.0",
+        "2025": "17.0"
+      },
+      "key": "microsoft sql server",
+      "match": "exact",
+      "product": "mssqlserver",
+      "source": "https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "14.0": "14.0",
+        "15.0": "15.0",
+        "16.0": "16.0",
+        "17.0": "17.0",
+        "2017": "14.0",
+        "2019": "15.0",
+        "2022": "16.0",
+        "2025": "17.0"
+      },
+      "key": "sql server",
+      "match": "exact",
+      "product": "mssqlserver",
+      "source": "https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "2017": "14.0",
+        "2019": "15.0",
+        "2022": "16.0",
+        "2025": "17.0"
+      },
+      "key": "microsoft sql server",
+      "match": "prefix",
+      "product": "mssqlserver",
+      "source": "https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2012": "2012",
+        "2012 r2": "2012-r2",
+        "2016": "2016",
+        "2019": "2019",
+        "2022": "2022",
+        "2025": "2025"
+      },
+      "key": "microsoft windows server",
+      "match": "prefix",
+      "product": "windows-server",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2012": "2012",
+        "2012 r2": "2012-r2",
+        "2016": "2016",
+        "2019": "2019",
+        "2022": "2022",
+        "2025": "2025"
+      },
+      "key": "windows server",
+      "match": "prefix",
+      "product": "windows-server",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "10.0.19045": "10-22h2"
+      },
+      "key": "microsoft windows 10",
+      "match": "prefix",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.19045": "10-22h2"
+      },
+      "key": "windows 10",
+      "match": "prefix",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "14.0": "2010",
+        "15.0": "2013",
+        "16.0": [
+          "2016",
+          "2019",
+          "2021"
+        ]
+      },
+      "key": "microsoft office",
+      "match": "exact",
+      "product": "office",
+      "source": "https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "2013": "2013",
+        "2016": "2016",
+        "2019": "2019",
+        "2021": "2021"
+      },
+      "key": "microsoft office professional plus",
+      "match": "prefix",
+      "product": "office",
+      "source": "https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2013": "2013",
+        "2016": "2016",
+        "2019": "2019",
+        "2021": "2021"
+      },
+      "key": "microsoft office standard",
+      "match": "prefix",
+      "product": "office",
+      "source": "https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer",
+      "version_from": "name"
+    },
+    {
+      "key": "python",
+      "match": "prefix",
+      "product": "python",
+      "source": "https://devguide.python.org/versions/",
+      "version_from": "name"
+    },
+    {
+      "key": "node.js",
+      "match": "exact",
+      "product": "nodejs",
+      "source": "https://nodejs.org/en/about/previous-releases",
+      "version_from": "version"
+    },
+    {
+      "key": "ubuntu",
+      "match": "exact",
+      "product": "ubuntu",
+      "source": "https://ubuntu.com/about/release-cycle",
+      "version_from": "version"
+    },
+    {
+      "key": "ubuntu",
+      "match": "prefix",
+      "product": "ubuntu",
+      "source": "https://ubuntu.com/about/release-cycle",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "1.8": "8",
+        "8": "8"
+      },
+      "key": "java 8 update",
+      "match": "prefix",
+      "product": "oracle-jdk",
+      "source": "https://www.java.com/en/download/help/version_manual.html",
+      "version_from": "version"
+    },
+    {
+      "key": "eclipse temurin jdk with hotspot",
+      "match": "prefix",
+      "product": "eclipse-temurin",
+      "source": "https://github.com/adoptium/installer/blob/master/wix/Lang/OpenJDK.hotspot.en-us.wxl.template",
+      "version_from": "version"
+    },
+    {
+      "key": "eclipse temurin jre with hotspot",
+      "match": "prefix",
+      "product": "eclipse-temurin",
+      "source": "https://github.com/adoptium/installer/blob/master/wix/Lang/OpenJDK.hotspot.en-us.wxl.template",
+      "version_from": "version"
+    }
+  ],
+  "format": 1
+}

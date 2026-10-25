@@ -1,0 +1,54 @@
+name,version,expected_product,expected_cycle,source
+Microsoft SQL Server,17.0.5035.5,mssqlserver,17.0,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server,16.0.4135.4,mssqlserver,16.0,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/find-my-sql-version
+Microsoft SQL Server,16.0.1210.3,mssqlserver,16.0,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server,15.0.4430.1,mssqlserver,15.0,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server,14.0.3456.2,mssqlserver,14.0,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+SQL Server,2022,mssqlserver,16.0,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server 2019 Standard Edition (64-bit),15.0.2200.2,mssqlserver,15.0,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server,13.0.5026.0,,NONE,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server,13.0.6300.2,,NONE,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server,13.0.7000.253,,NONE,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server 2016 Standard Edition (64-bit),13.0.5026.0,,NONE,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server,2016,,NONE,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft SQL Server Management Studio - 19.0,19.0,,NONE,https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates
+Microsoft Windows Server 2019 Datacenter,10.0.17763.9376,windows-server,2019,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+Microsoft Windows Server 2022 Standard,10.0.20348.5761,windows-server,2022,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+Windows Server 2012 R2 Standard,,windows-server,2012-r2,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+Microsoft Windows Server 2016 Standard,10.0.14393,windows-server,2016,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+Microsoft Windows Server 2008 R2 Enterprise,,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+Microsoft Windows Server 2003 Standard Edition,,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+"Windows Server Datacenter, version 1809",10.0.17763,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+Microsoft Windows 10 Enterprise,10.0.19045.7807,windows,10-22h2,https://learn.microsoft.com/en-us/windows/release-health/release-information
+Windows 10 Pro,10.0.19045,windows,10-22h2,https://learn.microsoft.com/en-us/windows/release-health/release-information
+Microsoft Windows 10 Enterprise LTSC 2021,10.0.19044,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information
+Microsoft Windows 10 Enterprise,10.0.19044,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information
+Microsoft Windows 10 Enterprise LTSC 2019,10.0.17763,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information
+Microsoft Office,16.0,,NONE,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft Office,15.0,office,2013,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft Office,14.0,office,2010,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft Office Professional Plus 2016,16.0,office,2016,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft Office Professional Plus 2019 - en-us,16.0,office,2019,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft Office Standard 2021,16.0,office,2021,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft Office Professional Plus 2024,16.0,,NONE,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Microsoft 365 Apps for enterprise - en-us,16.0,,NONE,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer
+Python 3.10.11 (64-bit),3.10.11,python,3.10,https://www.python.org/ftp/python/
+Python 3.1.5,3.1.5,python,3.1,https://www.python.org/ftp/python/
+Python 3.11.4 (64-bit),3.11.4,python,3.11,https://www.python.org/ftp/python/
+Python 2.7.18,2.7.18,python,2.7,https://www.python.org/ftp/python/
+Python Launcher,3.11.4,,NONE,https://www.python.org/ftp/python/
+Python 3 (64-bit),3.0,,NONE,https://www.python.org/ftp/python/
+Node.js,18.17.0,nodejs,18,https://nodejs.org/dist/index.json
+Node.js,v20.10.0,nodejs,20,https://nodejs.org/dist/index.json
+Node.js,11.15.0,nodejs,11,https://nodejs.org/dist/index.json
+Node.js,0.12.18,,NONE,https://nodejs.org/dist/index.json
+Ubuntu 22.04.5 LTS,,ubuntu,22.04,https://releases.ubuntu.com/jammy/
+Ubuntu,20.04,ubuntu,20.04,https://ubuntu.com/about/release-cycle
+Ubuntu,22.4,,NONE,https://ubuntu.com/about/release-cycle
+Ubuntu Pro,24.04,,NONE,https://ubuntu.com/about/release-cycle
+Java 8 Update 391,1.8.0_391,oracle-jdk,8,https://www.oracle.com/java/technologies/javase/8u391-relnotes.html
+Java 8 Update 391,1.7.0_80,,NONE,https://www.java.com/en/download/help/version_manual.html
+Eclipse Temurin JDK with Hotspot 17.0.9+9 (x64),17.0.9.9,eclipse-temurin,17,https://github.com/adoptium/installer/blob/master/wix/Build.OpenJDK_generic.cmd
+Eclipse Temurin JDK with Hotspot 8u392-b08 (x64),8.0.392.8,eclipse-temurin,8,https://github.com/adoptium/installer/blob/master/wix/Build.OpenJDK_generic.cmd
+Eclipse Temurin JRE with Hotspot 11.0.21+9 (x64),11.0.21.9,eclipse-temurin,11,https://github.com/adoptium/installer/blob/master/wix/Build.OpenJDK_generic.cmd
+Eclipse Temurin JDK with Hotspot 8u392-b08 (x64),1.8.0_392,,NONE,https://api.adoptium.net/v3/assets/version/%5B8.0.392%2C8.0.393%29?image_type=jdk&os=windows&architecture=x64&release_type=ga

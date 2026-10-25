@@ -30,7 +30,7 @@ GENERIC_ALIASES: dict[str, list[str]] = {
                    "end of life date", "end of life eol"],
     "export_support": ["export support", "end of support", "eos",
                        "end of support date", "support end date",
-                       "end of extended support", "support end"],
+                       "support end"],
 }
 
 _HEADER_JUNK = re.compile(r"[^0-9a-z]+")

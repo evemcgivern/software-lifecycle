@@ -1,0 +1,73 @@
+{
+  "format": 1,
+  "profiles": {
+    "flexera": {
+      "columns": {
+        "count": [
+          "Installed",
+          "Installations"
+        ],
+        "export_eol": [
+          "End of life"
+        ],
+        "export_support": [
+          "End of support"
+        ],
+        "name": [
+          "Application name",
+          "Application"
+        ],
+        "publisher": [
+          "Publisher"
+        ],
+        "version": [
+          "Version"
+        ]
+      },
+      "source": [
+        "https://docs.flexera.com/flexera-one/it-assets/reports-introduction/reports-ootb/application-and-license-installations-report",
+        "https://docs.flexera.com/flexera-one/it-assets/app-applications/app-application-publisher/app-publisher-properties/installed-applications-page"
+      ],
+      "status": "Unverified"
+    },
+    "rapid7": {
+      "columns": {
+        "name": [
+          "name"
+        ],
+        "publisher": [
+          "vendor"
+        ],
+        "version": [
+          "version"
+        ]
+      },
+      "source": [
+        "https://docs.rapid7.com/insightvm/understanding-the-reporting-data-model-dimensions/"
+      ],
+      "status": "Unverified"
+    },
+    "servicenow-mbs": {
+      "columns": {
+        "name": [
+          "Display name",
+          "display_name"
+        ],
+        "publisher": [
+          "Publisher",
+          "publisher"
+        ],
+        "version": [
+          "Version",
+          "version"
+        ]
+      },
+      "source": [
+        "https://www.servicenow.com/docs/r/w3Hg5id41C9xrkzqBsUMhA/IuFu7WtUjVe4xjLvvDqDXA",
+        "https://docs.flexera.com/ServiceNowFlexeraIntegrationApp/ITVisibility/v507/helplibrary/ExportFromSNTables.htm"
+      ],
+      "status": "Unverified"
+    }
+  },
+  "unverified": true
+}
