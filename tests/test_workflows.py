@@ -242,13 +242,16 @@ PROPOSE_STEP = "Push a branch and open the pull request"
 PROCEED = "Opening a pull request from"
 
 
-def _propose(text, gh_exit=0, gh_out="", ls_exit=2):
+def _propose(text, gh_exit=0, gh_out="", ls_exit=2, omit=None):
     def setup(runner):
         update = runner / "update"
         (update / "eol").mkdir(parents=True)
         (update / "eol" / "demo.json").write_text("[]\n")
-        (update / "manifest.json").write_text("{}\n")
-        (update / "pr-body.md").write_text("body\n")
+        for name, body in (("manifest.json", "{}\n"),
+                           ("products.json", "{}\n"),
+                           ("pr-body.md", "body\n")):
+            if name != omit:
+                (update / name).write_text(body)
     stubs = {
         "gh": 'echo "gh $*" >> "$STUB_LOG"\n'
               'if [ "$1 $2" = "pr list" ]; then printf "%s" "$STUB_GH_OUT";'
@@ -279,6 +282,11 @@ def weekly_guards(text):
     code, out, files = _propose(text, ls_exit=0)
     if code == 0 or " push " in files["stub.log"]:
         problems.append("an existing branch did not stop the job")
+    for name in ("manifest.json", "products.json", "pr-body.md"):
+        code, out, files = _propose(text, omit=name)
+        if code == 0 or " push " in files["stub.log"]:
+            problems.append("an update without %s did not stop the job"
+                            % name)
     code, out, files = _propose(text)
     if code != 0 or PROCEED not in out or " push " not in files["stub.log"]:
         problems.append("the normal path did not push: %s" % out[-300:])
@@ -486,6 +494,17 @@ class KevDailyTests(unittest.TestCase):
         self.assertIn("--allow-bulk", self.text)
         self.assertIn("Override reason", self.text)
 
+    def test_data_zip_ships_the_catalog_and_curation_files(self):
+        script = step_script(
+            self.text, "Assemble, verify and zip the data folder")
+        copies = [l for l in script.split("\n")
+                  if l.startswith("cp data/aliases.json")]
+        self.assertEqual(len(copies), 1)
+        for name in ("aliases.json", "profiles.json", "products.json",
+                     "curation.json"):
+            self.assertIn("data/" + name, copies[0])
+        self.assertIn('"$out/"', copies[0])
+
     def test_zip_is_reproducible(self):
         self.assertIn("refresh_data.py zip --dir", self.text)
         # No shell zip command: it records file times and directory order.
@@ -545,6 +564,30 @@ class EolWeeklyTests(unittest.TestCase):
     def test_weekly_schedule(self):
         self.assertRegex(self.text, r'- cron: "\d+ \d+ \* \* [0-6]"')
         self.assertIn("workflow_dispatch:", self.text)
+
+    def test_catalog_is_regenerated_summarised_and_committed(self):
+        for needle in ('--products-out "$RUNNER_TEMP/products.json"',
+                       '--new-products "$RUNNER_TEMP/products.json"',
+                       "--old-products data/products.json",
+                       'cp "$RUNNER_TEMP/products.json" data/products.json',
+                       'cp data/products.json "$update/products.json"',
+                       'cp "$update/products.json" data/products.json',
+                       "git add data/eol data/products.json "
+                       "data/manifest.json"):
+            self.assertIn(needle, self.text, needle)
+        # A change to products.json alone also opens a pull request.
+        self.assertIn('cmp -s "$RUNNER_TEMP/products.json" '
+                      "data/products.json", self.text)
+
+    def test_pr_body_says_a_failing_curation_test_blocks_the_pr(self):
+        script = step_script(
+            self.text, "Update data/eol and the manifest, then run the checks")
+        for needle in ("curation checks and the benchmark",
+                       "no pull request until the maintainer edits "
+                       "data/curation.json"):
+            self.assertIn(needle, " ".join(script.split()), needle)
+        self.assertIn("python3 -B -m unittest discover -s tests || {",
+                      script)
 
     def test_steps(self):
         for needle in ("refresh_data.py eol --upstream-commit",
@@ -618,6 +661,8 @@ class WeeklyManifestTests(unittest.TestCase):
 
             def setup(runner):
                 shutil.copytree(repo / "data" / "eol", runner / "eol")
+                shutil.copy(repo / "data" / "products.json",
+                            runner / "products.json")
 
             env = {"UPSTREAM_SHA": "0123456789abcdef0123456789abcdef01234567",
                    "UPSTREAM_DAY": "2026-11-02", "_SETUP": setup}
@@ -627,6 +672,8 @@ class WeeklyManifestTests(unittest.TestCase):
             self.assertEqual(code, 0, out)
             manifest = (repo / "data" / "manifest.json").read_text("utf-8")
             self.assertIn('"release_id": "main-eol-2026-11-02"', manifest)
+            self.assertIn('"products.json"', manifest)
+            self.assertIn('"curation.json"', manifest)
             test_env = dict(os.environ,
                             SWLC_DATA_DIR=str(repo / "data"))
             proc = subprocess.run(

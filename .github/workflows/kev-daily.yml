@@ -3,7 +3,8 @@ name: KEV daily data release
 # Pulls the CISA KEV catalog every day and, when every check passes,
 # publishes a data release data-YYYY.MM.DD.N with a checksum manifest and a
 # GitHub artifact attestation. The release also carries the endoflife.date
-# files from main, so a merged weekly pull request goes out on the next run.
+# files and products.json from main, plus the hand-kept aliases, profiles and
+# curation files, so a merged weekly pull request goes out on the next run.
 # If any check fails, nothing is published and one issue labelled
 # data-gate-failed is opened or updated.
 #
@@ -178,7 +179,7 @@ jobs:
         run: |
           out="$RUNNER_TEMP/release/data"
           mkdir -p "$out/eol"
-          cp data/aliases.json data/profiles.json "$out/"
+          cp data/aliases.json data/profiles.json data/products.json data/curation.json "$out/"
           cp data/eol/*.json "$out/eol/"
           cp "$RUNNER_TEMP/new/kev.json" "$out/kev.json"
 

@@ -43,7 +43,11 @@ def simulate(eol_days, kev_days=0, suite=True):
         mpath.write_text(json.dumps(copy), encoding="utf-8")
 
         def setup(runner):
+            # The weekly build step's outputs: the eol folder and a
+            # regenerated products.json.
             shutil.copytree(repo / "data" / "eol", runner / "eol")
+            shutil.copy(repo / "data" / "products.json",
+                        runner / "products.json")
 
         env = {"UPSTREAM_SHA": "0123456789abcdef0123456789abcdef01234567",
                "UPSTREAM_DAY": eol_day, "_SETUP": setup}

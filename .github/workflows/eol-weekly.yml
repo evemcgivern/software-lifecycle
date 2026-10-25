@@ -1,8 +1,11 @@
 name: endoflife.date weekly pull request
 
 # Builds the endoflife.date snapshot at the upstream default branch's
-# current commit and opens a pull request with the changed data/eol files.
-# A person reviews and merges it. Nothing here pushes to main or publishes
+# current commit and opens a pull request with the changed data/eol files and
+# the regenerated data/products.json. A person reviews and merges it. The job
+# runs the full test suite, curation checks and benchmark included, before it
+# pushes: when a data change makes one of them fail, no pull request is opened
+# until the maintainer edits data/curation.json. Nothing here pushes to main or publishes
 # a release: after a merge, the next "KEV daily data release" run (or a
 # manual run of it with dry_run set to false) publishes the new dates.
 #
@@ -67,9 +70,11 @@ jobs:
         env:
           UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
         run: |
-          python3 -B refresh_data.py eol --upstream-commit "$UPSTREAM_SHA" --out "$RUNNER_TEMP/eol"
+          python3 -B refresh_data.py eol --upstream-commit "$UPSTREAM_SHA" --out "$RUNNER_TEMP/eol" \
+            --products-out "$RUNNER_TEMP/products.json"
           status=0
           python3 -B refresh_data.py eol-summary --new "$RUNNER_TEMP/eol" --old data/eol \
+            --new-products "$RUNNER_TEMP/products.json" --old-products data/products.json \
             > "$RUNNER_TEMP/summary.md" || status=$?
           # 0 means not flagged, 1 means flagged; anything else, or no
           # summary at all, means the summary itself failed.
@@ -80,9 +85,10 @@ jobs:
           if [ "$status" -eq 1 ]; then flagged=true; else flagged=false; fi
           echo "flagged=$flagged" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"
-          if diff -r -q "$RUNNER_TEMP/eol" data/eol > /dev/null; then
+          if diff -r -q "$RUNNER_TEMP/eol" data/eol > /dev/null \
+            && cmp -s "$RUNNER_TEMP/products.json" data/products.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No end-of-life dates changed; no pull request needed." >> "$GITHUB_STEP_SUMMARY"
+            echo "No end-of-life dates or products changed; no pull request needed." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
@@ -95,6 +101,7 @@ jobs:
         run: |
           rm -f data/eol/*.json
           cp "$RUNNER_TEMP/eol/"*.json data/eol/
+          cp "$RUNNER_TEMP/products.json" data/products.json
           field() {
             python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))[sys.argv[2]])' "$1" "$2"
           }
@@ -107,11 +114,15 @@ jobs:
           python3 -B software_lifecycle.py verify-data --data data
           # A pull request opened with the job token does not start the CI
           # workflow, so the full test suite runs here before the push.
-          python3 -B -m unittest discover -s tests
+          python3 -B -m unittest discover -s tests || {
+            echo "A test failed after the data change. If a curation or benchmark test failed, no pull request was opened: the maintainer edits data/curation.json, then the next weekly run opens it." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          }
 
           update="$RUNNER_TEMP/update"
           mkdir -p "$update/eol"
           cp data/eol/*.json "$update/eol/"
+          cp data/products.json "$update/products.json"
           cp data/manifest.json "$update/manifest.json"
           {
             echo "Upstream: endoflife-date/endoflife.date at commit $UPSTREAM_SHA."
@@ -120,8 +131,16 @@ jobs:
             echo
             echo "Review the changed dates in data/eol before merging. A wrong"
             echo "end-of-life date is the failure this review exists to catch."
+            echo "Also read the product catalog summary: data/products.json feeds"
+            echo "generated matching."
+            echo
+            echo "The full test suite, with the curation checks and the benchmark,"
+            echo "passed before this pull request was opened. When a data change"
+            echo "makes a curation or benchmark test fail, the job stops and opens"
+            echo "no pull request until the maintainer edits data/curation.json."
+            echo
             echo "After the merge, the next KEV daily data release publishes"
-            echo "these dates."
+            echo "these files."
           } > "$update/pr-body.md"
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -176,7 +195,7 @@ jobs:
               exit 1
             fi
           done
-          if [ ! -f "$update/manifest.json" ] || [ ! -f "$update/pr-body.md" ]; then
+          if [ ! -f "$update/manifest.json" ] || [ ! -f "$update/products.json" ] || [ ! -f "$update/pr-body.md" ]; then
             echo "The update is incomplete."
             exit 1
           fi
@@ -195,11 +214,12 @@ jobs:
           echo "Opening a pull request from $branch."
           rm -f data/eol/*.json
           cp "$update"/eol/*.json data/eol/
+          cp "$update/products.json" data/products.json
           cp "$update/manifest.json" data/manifest.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
-          git add data/eol data/manifest.json
+          git add data/eol data/products.json data/manifest.json
           git commit -q -m "chore(data): update endoflife.date snapshot" \
             -m "Upstream commit: $UPSTREAM_SHA"
           # The credential exists only for this one push command.
