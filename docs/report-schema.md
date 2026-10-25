@@ -87,7 +87,8 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `name`, `version`, `publisher` | As in the inventory. |
 | `owners` | Sorted list of distinct owners. |
 | `rows` | How many inventory rows made this item. |
-| `product` | The endoflife.date product. `null` only when no alias matched (`NO_ALIAS`, or `AMBIGUOUS` across products). Set when the product is known but no cycle matched (`NO_VERSION`, `NO_CYCLE`, or `AMBIGUOUS` between cycles). |
+| `product` | The endoflife.date product. `null` only when no product matched (`NO_ALIAS`, or `AMBIGUOUS` across products). Set when the product is known but no cycle matched (`NO_VERSION`, `NO_CYCLE`, or `AMBIGUOUS` between cycles). |
+| `match_source` | How the product was found: `curated` (an alias in `aliases.json`), `generated` (the name equals the product's title in `products.json`, under the rules in `docs/usage.md`), or `null` when `product` is `null`. Set also when the product is known but no cycle matched. |
 | `cycle` | The matched cycle label, or `null`. |
 | `state` | One of the states below. |
 | `state_endoflife` | The state using only the endoflife.date date. `null` if unmatched. |
@@ -137,10 +138,10 @@ mean your version is affected. The tool never says "vulnerable".
 
 | Code | Meaning |
 |---|---|
-| `NO_ALIAS` | No alias entry for this name, or the name has extra words after the product name that the strict tail-word rule rejects. |
-| `NO_CYCLE` | The product is known, but no cycle matches this version. |
+| `NO_ALIAS` | No alias entry and no product title fits this name, or the name has extra words after an alias that the strict tail-word rule rejects. |
+| `NO_CYCLE` | The product is known, but no cycle matches this version, or the version in the name and the version column disagree (they would pick different cycles), so the row is not decided. |
 | `NO_VERSION` | No version was given. |
-| `AMBIGUOUS` | The name matches aliases for more than one product, or more than one cycle fits this version. |
+| `AMBIGUOUS` | The name matches more than one product (aliases, product titles, or an alias and a title), or more than one cycle fits this version. |
 
 ### dates_disagree codes
 

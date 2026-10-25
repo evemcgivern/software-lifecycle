@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
+from .catalog_match import build_index
 from .errors import DataError
 from .matching import _check as _check_alias
 from .normalize import normalize_name
@@ -60,6 +61,18 @@ class Data:
     # curation.json. Both are None for a format 1 data folder.
     catalog: dict | None = None
     curation: dict | None = None
+    _index: object = field(default=None, init=False, repr=False,
+                           compare=False)
+
+    def matching_index(self):
+        """The generated-matching index (swlc.catalog_match), built on first
+        use and then reused for the whole run. None without a catalog (data
+        format 1): generated matching is off."""
+        if self.catalog is None:
+            return None
+        if self._index is None:
+            self._index = build_index(self.catalog, self.curation)
+        return self._index
 
 
 def tool_version() -> str:

@@ -135,8 +135,11 @@ class RuleTests(unittest.TestCase):
     def test_version_from_name_ignores_version_column(self):
         a = [alias("python", "python", match="prefix", version_from="name")]
         products = {"python": cycles("3.11")}
+        # "launcher" is not a version, so it is a tail word the strict
+        # prefix rule rejects: no product (it was python, NO_CYCLE, before
+        # the gold benchmark showed it as a wrong product).
         r = match_product("Python Launcher", "3.11.4150.0", a, products)
-        self.assertEqual((r.product, r.reason), ("python", NO_CYCLE))
+        self.assertEqual((r.product, r.reason), (None, NO_ALIAS))
         r = match_product("Python", "3.11.4", a, products)
         self.assertEqual(r.reason, NO_VERSION)
 
@@ -234,7 +237,11 @@ class RuleTests(unittest.TestCase):
         products = {"ubuntu": cycles("20.04", "22.04")}
         r = match_product("Ubuntu", "22.04.3 LTS", a, products)
         self.assertEqual(r.cycle, {"cycle": "22.04"})
+        # The name says 20.04, the version column 22.04: not decided.
         r = match_product("Ubuntu 20.04.6 LTS", "22.04", a, products)
+        self.assertEqual((r.product, r.cycle, r.reason),
+                         ("ubuntu", None, NO_CYCLE))
+        r = match_product("Ubuntu 20.04.6 LTS", "20.04.6", a, products)
         self.assertEqual(r.cycle, {"cycle": "20.04"})
 
     def test_longest_key_wins_for_same_product(self):

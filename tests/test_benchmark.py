@@ -19,6 +19,7 @@ import csv
 import hashlib
 import json
 import os
+import random
 import re
 import sys
 import tempfile
@@ -51,16 +52,7 @@ OUTCOMES = ("correct", "hard-wrong", "soft-wrong", "missed", "right-none")
 # or changes its answer to anything else, its test reports an unexpected
 # success: update or delete the entry in that commit.
 # Key: (name, publisher, version). Value: (cause, (product, cycle) it gives).
-KNOWN_WRONG = {
-    ("Python 3.11.7 (64-bit)", "Python Software Foundation", "3.12.1150.0"):
-        ("alias 'python' (prefix, version from name) ignores a version "
-         "column that disagrees with the name; gold is python, no cycle",
-         ("python", "3.11")),
-    ("Python 3.15.1", "Python Software Foundation", "2.6.9"):
-        ("alias 'python' (prefix, version from name) ignores a version "
-         "column that disagrees with the name; gold is python, no cycle",
-         ("python", "3.15")),
-}
+KNOWN_WRONG: dict = {}
 
 
 def read_gold() -> list:
@@ -362,6 +354,29 @@ class GoldFileTests(unittest.TestCase):
         self.assertGreaterEqual(
             sum(1 for r in self.rows if r["expected_product"] == "jenkins"),
             5)
+
+
+class ShuffleTests(unittest.TestCase):
+    def test_results_do_not_depend_on_row_order(self):
+        rows = read_gold()
+        base = {it["id"]: it for _r, _o, it in results()}
+        shuffled = list(rows)
+        random.Random(20261025).shuffle(shuffled)
+        again = {it["id"]: it for _r, _o, it in run_gold(shuffled)}
+        self.assertEqual(again, base)
+
+
+class CurationCitesGoldTests(unittest.TestCase):
+    def test_each_exclusion_cites_a_gold_row_that_is_not_held_out(self):
+        curation = json.loads((ROOT / "data" / "curation.json").read_text(
+            encoding="utf-8"))
+        rows = {"%s|%s|%s" % row_key(r): r for r in read_gold()}
+        for item in curation["exclusions"]:
+            with self.subTest(gold=item["gold"]):
+                row = rows.get(item["gold"])
+                self.assertIsNotNone(row, "exclusion cites no gold row")
+                self.assertEqual(row["heldout"], "0")
+                self.assertEqual(row["expected_product"], "NONE")
 
 
 def benchmark_files() -> list:

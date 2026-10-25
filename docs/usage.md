@@ -64,11 +64,42 @@ On success it prints "Data check passed" with the release and file count.
 | 10 | Findings are present in a list named by `--fail-on`. Only returned with `--fail-on`. |
 | 70 | Unexpected error. The tool prints only the error type. |
 
+## How names are matched
+
+Each item's name is matched in two steps. `match_source` in the report says
+which one found the product.
+
+1. **Curated aliases** (`aliases.json`). An alias that hits the name decides
+   the item, even when it then finds no cycle or its strict tail-word rule
+   rejects the name. When an alias reads the version from the name and the
+   version column is not empty, the two must pick the same cycle; if they
+   do not, the item is not decided (`NO_CYCLE`, product known).
+2. **Product titles** (`products.json`), only when no alias hits. The name
+   must equal a product's title after normalizing. Before comparing, the
+   tool drops architecture and locale groups such as `(x64 en-US)` or
+   `[x64]`, drops a leading vendor word when the publisher carries that
+   vendor (`Mozilla Firefox` with publisher Mozilla), and splits a trailing
+   version number off the name (`Foo 2.1`). A whole title wins over a split
+   one. The version column is used; when it is empty, the version from the
+   name is used; when both exist and pick different cycles, the item is not
+   decided. A one-word title matches only when the publisher names the
+   product's vendor as whole words (`Red Hat` confirms the vendor
+   `red_hat`; `RedHat` or `Red Gate` does not), or when the product is on
+   the one-word allowlist in `curation.json`. Products on `generated_off`
+   are never matched by title, and an exclusion stops one name (and, when
+   given, one publisher word) from matching one product by title. No slugs,
+   fragments or fuzzy scores are used.
+
+A name that fits two products, by alias, by title or one of each, is
+`AMBIGUOUS` and stays unmatched. A data folder without `products.json`
+(format 1) matches by alias only.
+
 ## How KEV is checked
 
 KEV is checked only for matched items that are past end of life or end
 within the window. The check uses the alias table's vendor and product pair
-for the matched product. If the alias has no pair, the tool compares the
+for the matched product. If the alias has no pair, or the product was
+matched by title, the tool compares the
 publisher and the full inventory name (version included) with KEV, exactly.
 `kev: false` therefore means "no match under those rules", not "known
 safe". The `windows-server` and Windows 10 client aliases use the broad
