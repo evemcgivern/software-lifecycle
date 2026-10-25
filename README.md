@@ -136,8 +136,8 @@ goes beyond it.
   [docs/sop.md](docs/sop.md).
 - The tool prints roles (asset owner, risk owner, approver, ITAM lead). It
   never assigns people.
-- Details of the supply chain are in [SECURITY.md](SECURITY.md). Report
-  problems there, privately.
+- Details of the supply chain are in [SECURITY.md](SECURITY.md). See it for
+  how to report a security problem.
 
 CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01. It is a reference only. It binds federal civilian agencies only. This tool does not implement it or its deadlines. Details are not reviewed here (Unverified).
 
@@ -167,8 +167,11 @@ directory that holds a verified data release to use one.
 The tool checks a SHA-256 manifest every time it loads data
 (`verify-data` runs only that check). That catches a damaged data folder.
 It does not prove who made the files. The tool never claims to verify
-attestations offline. Each data release carries a GitHub artifact
-attestation. Check it online before you use a release:
+attestations offline. The first data release was attested on 2026-10-25,
+while the repository was public. The daily release workflow is disabled
+while the repository is private, and GitHub attestations on a private
+repository need GitHub Enterprise Cloud. When a release carries a GitHub
+artifact attestation, check it online before you use the release:
 
     gh attestation verify data.zip --repo evemcgivern/software-lifecycle --signer-workflow evemcgivern/software-lifecycle/.github/workflows/kev-daily.yml --source-ref refs/heads/main
 
@@ -231,8 +234,9 @@ Already set up (as of 2026-10-25):
 
 The repository is currently private. When it goes public again:
 
-- Turn private vulnerability reporting back on. SECURITY.md and the
-  issue-template link send reporters there, and no email address is given.
+- Turn private vulnerability reporting on again (it was on while the
+  repository was public on 2026-10-25). SECURITY.md and the issue-template
+  link send reporters there, and no email address is given.
 - Re-enable the daily KEV and weekly end-of-life workflows.
 - Check that "Allow GitHub Actions to create and approve pull requests" is
   on in the Actions settings. The weekly end-of-life job opens its pull
@@ -246,7 +250,7 @@ Run the tests from the repo root:
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full rules, and
-[SECURITY.md](SECURITY.md) to report a security problem privately. Agents
+[SECURITY.md](SECURITY.md) for how to report a security problem. Agents
 read [AGENTS.md](AGENTS.md).
 
 If a product lands in "couldn't match", open the "Product the tool could not

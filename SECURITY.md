@@ -12,7 +12,8 @@ turned on. Open the repository's **Security** tab and choose **Report a
 vulnerability**. Do not open a public issue for a security problem. Do not
 include real inventory data in a report.
 
-While the repository is private, GitHub does not offer it. Contact the repository owner on GitHub instead.
+While the repository is private, GitHub does not offer it. Contact the
+repository owner on GitHub instead.
 
 This project is maintained as time allows. Support is best effort, with no
 service level. There is no promised response time. A report is read and
