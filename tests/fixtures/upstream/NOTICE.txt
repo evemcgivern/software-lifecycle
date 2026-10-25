@@ -1,0 +1,16 @@
+These four files are trimmed copies of real product files from the
+endoflife.date repository (https://github.com/endoflife-date/endoflife.date),
+taken from commit 7cfb122846893f10ee819ab47b615eff261945d0 on 2026-10-24:
+
+  products/mssqlserver.md        first 4 releases kept
+  products/checkmk.md            first 2 releases kept
+  products/rhel.md               first 3 releases kept
+  products/openai-api-models.md  first 2 releases kept
+
+Only the front matter is kept, cut to the releases listed above. The page
+text after the closing "---" was replaced by one placeholder line, so no
+product description is stored here. The tests use these files to prove that
+refresh_data.py reads the real file layout.
+
+The endoflife.date repository is MIT licensed. Its copyright notice and
+licence text are in THIRD-PARTY.md at the root of this repository.

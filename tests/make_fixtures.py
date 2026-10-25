@@ -5,12 +5,19 @@ committed copy under fixtures/data/.
 """
 from __future__ import annotations
 
-import hashlib
 import json
+import sys
 from datetime import date
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))
+
+# One copy of the canonical JSON and manifest code, shared with the refresh
+# script, so fixtures and real data releases are written the same way.
+from refresh_data import canonical  # noqa: E402
+from refresh_data import manifest_bytes as _manifest_bytes  # noqa: E402
+
 COMMITTED = HERE / "fixtures" / "data"
 COMMITTED_KEV_DATE = "2026-10-22"
 COMMITTED_EOL_DATE = "2026-10-20"
@@ -125,11 +132,6 @@ EOL = {
 }
 
 
-def canonical(obj) -> bytes:
-    text = json.dumps(obj, sort_keys=True, indent=2, ensure_ascii=True)
-    return (text + "\n").encode("ascii")
-
-
 def _iso(value) -> str:
     return value.isoformat() if isinstance(value, date) else str(value)
 
@@ -158,21 +160,10 @@ def data_files(kev_date, eol_date) -> dict:
 
 
 def manifest_bytes(files: dict, kev_date, eol_date) -> bytes:
-    listing = {
-        name: {"sha256": hashlib.sha256(data).hexdigest(), "size": len(data)}
-        for name, data in files.items()
-    }
-    manifest = {
-        "data_format": 1,
-        "release_id": "fixture-1",
-        "min_tool_version": "0.1.0",
-        "upstream_commit": "0" * 40,
-        "kev_catalog_version": "2026.10.22",
-        "kev_date": _iso(kev_date),
-        "eol_date": _iso(eol_date),
-        "files": listing,
-    }
-    return canonical(manifest)
+    return _manifest_bytes(files, _iso(kev_date), _iso(eol_date),
+                           upstream_commit="0" * 40,
+                           kev_catalog_version="2026.10.22",
+                           release_id="fixture-1")
 
 
 def build(dest, kev_date=COMMITTED_KEV_DATE,
