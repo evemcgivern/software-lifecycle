@@ -532,13 +532,30 @@ class FixRoundTests(unittest.TestCase):
         # A child cycle with no children of its own keeps today's rule.
         self.assertEqual(m("Weekly Builder", "2.426.3"),
                          ("weekly", "2.426", None, GENERATED))
+        # 450 is a plain release number, not a build: cycle 2.
         self.assertEqual(m("Weekly Builder", "2.450"),
-                         ("weekly", None, NO_CYCLE, GENERATED))
+                         ("weekly", "2", None, GENERATED))
         self.assertEqual(m("Weekly Builder", "2"),
                          ("weekly", "2", None, GENERATED))
         # Childless cycles are unchanged.
         self.assertEqual(m("Foo Tool", "2.1.1150.0"),
                          ("foo-tool", "2.1", None, GENERATED))
+
+    def test_guard_refuses_only_build_shaped_extra_parts(self):
+        def m(ver):
+            return got(gen("Frame Work", ver))[1:3]
+        # Build-shaped: zero-padded (more than one character), more than
+        # three digits, or not all digits.
+        for ver in ("4.6.01590", "4.6.00079", "4.6.01", "4.8.4084.0",
+                    "4.8.03761", "4.6.3a", "4.6.1590", "4.6.x"):
+            with self.subTest(ver=ver):
+                self.assertEqual(m(ver), (None, NO_CYCLE))
+        # A plain number of three digits or fewer, no leading zero.
+        for ver, cyc in (("4.6.0", "4.6"), ("4.6.3", "4.6"),
+                         ("4.6.999", "4.6"), ("4.8.0.1", "4.8"),
+                         ("4.6.2", "4.6.2"), ("4.6.1.7", "4.6.1")):
+            with self.subTest(ver=ver):
+                self.assertEqual(m(ver), (cyc, None))
 
     def test_mixed_granularity_guard_for_curated_aliases(self):
         a = [alias("frame work", "frame-work")]
@@ -735,6 +752,42 @@ class BundledSpeedTests(unittest.TestCase):
         first = run()
         self.assertEqual(first, run())
         self.assertTrue(any(r.source == GENERATED for r in first))
+
+    def test_finer_cycle_guard_on_real_rows(self):
+        data = self.data
+        index = data.matching_index()
+        cases = (
+            ("Apache Log4j", "The Apache Software Foundation", "2.17.1", "2"),
+            ("Apache Log4j", "The Apache Software Foundation", "2.17.2", "2"),
+            ("Apache Log4j", "The Apache Software Foundation", "2.20.0", "2"),
+            ("Apache Log4j", "The Apache Software Foundation", "2.23.1", "2"),
+            ("Apache Log4j", "The Apache Software Foundation", "2.12.4",
+             "2.12"),
+            ("Amazon RDS for MySQL", "Amazon Web Services", "8.0.35", "8.0"),
+            ("Internet Explorer", "Microsoft Corporation",
+             "11.0.9600.20000", "11"),
+            ("Mule Runtime", "MuleSoft", "4.9.0", "4.9"),
+            ("Android OS", "Google", "12.0.0", "12"),
+            ("Jenkins", "Jenkins project", "2.587", "2"),
+            ("Jenkins", "Jenkins project", "2.430", "2"),
+            ("Jenkins", "Jenkins project", "2.440.3", "2.440"),
+        )
+        for name, pub, ver, want in cases:
+            with self.subTest(name=name, ver=ver):
+                r = match_product(name, ver, data.aliases, data.products,
+                                  catalog_index=index, publisher=pub)
+                self.assertEqual((r.product is not None, r.cycle and
+                                  r.cycle["cycle"]), (True, want))
+        for ver in ("4.6.01590", "4.7.03062", "4.8.09032", "4.5.51209",
+                    "4.7.02558", "4.6.01055", "4.8.03761", "4.8.4084.0",
+                    "4.6.00079", "4.6.01"):
+            with self.subTest(ver=ver):
+                r = match_product("Microsoft .NET Framework", ver,
+                                  data.aliases, data.products,
+                                  catalog_index=index,
+                                  publisher="Microsoft Corporation")
+                self.assertEqual((r.product, r.cycle, r.reason),
+                                 ("dotnetfx", None, NO_CYCLE))
 
     def test_device_rows_do_not_match(self):
         data = self.data

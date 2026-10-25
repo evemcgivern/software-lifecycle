@@ -171,11 +171,15 @@ def _generated(name: str, version: str, publisher: str, index,
 def _finer_cycle_missed(parts: list[str], best: str,
                         labels: list[str]) -> bool:
     """Mixed-granularity guard. When the chosen cycle has child cycles in
-    the same product (4.6 has 4.6.1 and 4.6.2; 2 has 2.426) and the version
+    the same product (4.6 has 4.6.1 and 4.6.2; 2 has 2.426), the version
     has another part after the cycle's depth that is the next part of none
-    of them (4.6.01590), the version may belong to a child the data cannot
-    name: the cycle is not decided. A cycle with no children is unchanged
-    (Python 3.12.1150.0 is 3.12)."""
+    of them, and that part is shaped like a build (not all digits, more
+    than three digits, or zero-padded: 4.6.01590, 4.8.4084), the version
+    may belong to a child the data cannot name: the cycle is not decided.
+    A plain number of three digits or fewer with no leading zero is a
+    patch or minor release of the cycle itself (Log4j 2.17.1 is 2, Jenkins
+    2.587 is 2). A cycle with no children is unchanged (Python 3.12.1150.0
+    is 3.12)."""
     base = split_version(best)
     depth = len(base)
     if len(parts) <= depth:
@@ -185,7 +189,12 @@ def _finer_cycle_missed(parts: list[str], best: str,
         lp = split_version(label)
         if len(lp) > depth and lp[:depth] == base:
             nexts.add(lp[depth])
-    return bool(nexts) and parts[depth] not in nexts
+    extra = parts[depth]
+    if not nexts or extra in nexts:
+        return False
+    plain = extra.isdigit() and len(extra) <= 3 \
+        and not (len(extra) > 1 and extra[0] == "0")
+    return not plain
 
 
 def _picks(parts: list[str], labels: list[str]) -> set:

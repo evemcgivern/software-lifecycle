@@ -110,11 +110,15 @@ which one found the product.
    - No slugs, fragments or fuzzy scores are used.
 
 When a version has more parts than the chosen cycle and that cycle has finer
-cycles in the same product (4.6 has 4.6.1 and 4.6.2), the next part must be
-one of them; otherwise the item is not decided (`NO_CYCLE`). So
-`.NET Framework` with the registry build `4.6.01590` gets no cycle rather
-than the wrong one. A cycle with no finer cycles is unchanged
-(`3.12.1150.0` is Python 3.12).
+cycles in the same product (4.6 has 4.6.1 and 4.6.2), the next part is
+checked. If it names one of the finer cycles, that cycle is used. If it
+names none and is shaped like a build (not all digits, more than three
+digits, or a zero-padded number such as `01`), the item is not decided
+(`NO_CYCLE`). So `.NET Framework` with the registry build `4.6.01590` gets
+no cycle rather than the wrong one. A plain number of three digits or fewer
+with no leading zero is read as a patch of the chosen cycle: Log4j `2.17.1`
+is cycle 2 and Jenkins `2.587` is cycle 2. A cycle with no finer cycles is
+unchanged (`3.12.1150.0` is Python 3.12).
 
 A name that fits two products, by alias, by title or one of each, is
 `AMBIGUOUS` and stays unmatched. A data folder without `products.json`
