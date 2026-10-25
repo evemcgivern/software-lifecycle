@@ -92,7 +92,8 @@ class LoadTests(DataCase):
         build_dir = Path(self.tmp) / "regen"
         make_fixtures.build(build_dir)
         old = sorted(p.relative_to(COMMITTED).as_posix()
-                     for p in COMMITTED.rglob("*") if p.is_file())
+                     for p in COMMITTED.rglob("*")
+                     if p.is_file() and p.name not in data._IGNORED_NAMES)
         new = sorted(p.relative_to(build_dir).as_posix()
                      for p in build_dir.rglob("*") if p.is_file())
         self.assertEqual(old, new)
@@ -327,6 +328,115 @@ class StalenessTests(DataCase):
         self.assertEqual(len(d.warnings), 1)
         self.assertIn("31", d.warnings[0])
         self.assertTrue(d.kev_current)
+
+
+class FutureDateTests(DataCase):
+    def test_minus_one_day_tolerated(self):
+        d = load_data(self.make(kev_days=-1, eol_days=-1), AS_OF)
+        self.assertTrue(d.kev_current)
+        self.assertEqual(d.warnings, [])
+
+    def test_minus_two_and_thirty_not_current(self):
+        for n in (-2, -30):
+            with self.subTest(n=n):
+                d = load_data(self.make_in(n, n), AS_OF)
+                self.assertFalse(d.kev_current)
+                self.assertTrue(any("KEV" in w and "future" in w
+                                    for w in d.warnings))
+                self.assertTrue(any("End-of-life" in w and "future" in w
+                                    for w in d.warnings))
+
+    def make_in(self, kev_days, eol_days):
+        return make_data_dir(tempfile.mkdtemp(dir=self.tmp),
+                             days_ago(kev_days), days_ago(eol_days))
+
+
+class ParseLimitTests(DataCase):
+    def test_huge_min_tool_version_is_data_error(self):
+        d = self.make()
+        m = self.manifest(d)
+        m["min_tool_version"] = "9" * 5000
+        self.write_manifest(d, m)
+        with self.assertRaises(DataError):
+            load_data(d, AS_OF)
+
+    def test_deeply_nested_manifest_is_data_error(self):
+        d = self.make()
+        (Path(d) / "manifest.json").write_bytes(b"[" * 200000)
+        with self.assertRaises(DataError) as ctx:
+            load_data(d, AS_OF)
+        self.assertIn("manifest.json", str(ctx.exception))
+
+    def test_deeply_nested_data_file_is_data_error(self):
+        d = self.make()
+        replace_file(d, "eol/demoos.json", b"[" * 200000)
+        with self.assertRaises(DataError) as ctx:
+            load_data(d, AS_OF)
+        self.assertIn("demoos.json", str(ctx.exception))
+
+
+class StrayFileTests(DataCase):
+    def test_os_junk_files_ignored(self):
+        d = self.make()
+        for rel in (".DS_Store", "eol/.DS_Store", "Thumbs.db",
+                    "eol/desktop.ini"):
+            (Path(d) / rel).write_bytes(b"\x00junk")
+        self.assertEqual(load_data(d, AS_OF).release_id, "fixture-1")
+        self.assertEqual(verify_data_quiet(d), 0)
+
+    def test_other_stray_file_still_fails(self):
+        d = self.make()
+        (Path(d) / ".DS_Store").write_bytes(b"x")
+        (Path(d) / "notes.txt").write_bytes(b"x")
+        with self.assertRaises(DataError):
+            load_data(d, AS_OF)
+
+
+class ProfilesAndAliasShapeTests(DataCase):
+    def test_profiles_loaded_from_verified_bytes(self):
+        d = load_data(self.make(), AS_OF)
+        self.assertEqual(d.profiles["demo"]["columns"]["name"], ["Product"])
+
+    def test_absent_profiles_key_is_empty(self):
+        d = self.make()
+        replace_file(d, "profiles.json", {"format": 1})
+        self.assertEqual(load_data(d, AS_OF).profiles, {})
+
+    def test_bad_profile_shapes(self):
+        for obj in ([], {"profiles": []}, {"profiles": {"a": 1}},
+                    {"profiles": {"a": {}}},
+                    {"profiles": {"a": {"columns": {"name": "x"}}}},
+                    {"profiles": {"a": {"columns": {"name": [1]}}}}):
+            with self.subTest(obj=obj):
+                d = make_data_dir(tempfile.mkdtemp(dir=self.tmp),
+                                  days_ago(1), days_ago(1))
+                replace_file(d, "profiles.json", obj)
+                with self.assertRaises(DataError) as ctx:
+                    load_data(d, AS_OF)
+                self.assertIn("profiles.json", str(ctx.exception))
+
+    def test_real_profiles_and_aliases_pass(self):
+        real = Path(__file__).resolve().parents[2] / "data"
+        d = self.make()
+        for name in ("aliases.json", "profiles.json"):
+            replace_file(d, name, (real / name).read_bytes())
+        self.assertTrue(load_data(d, AS_OF).profiles)
+
+    def test_malformed_alias_entry_fails_load_and_verify(self):
+        d = self.make()
+        replace_file(d, "aliases.json", {"aliases": [{"key": "x"}]})
+        with self.assertRaises(DataError) as ctx:
+            load_data(d, AS_OF)
+        self.assertIn("aliases.json", str(ctx.exception))
+        self.assertEqual(verify_data_quiet(d), 4)
+
+
+def verify_data_quiet(d):
+    import contextlib
+    import io
+    with contextlib.redirect_stdout(io.StringIO()), \
+            contextlib.redirect_stderr(io.StringIO()):
+        return verify_data(d)
 
 
 class SchemaTests(DataCase):

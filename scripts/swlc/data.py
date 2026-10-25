@@ -10,6 +10,7 @@ from datetime import date
 from pathlib import Path
 
 from .errors import DataError
+from .matching import _check as _check_alias
 from .normalize import normalize_name
 
 SUPPORTED_DATA_FORMATS = (1,)
@@ -21,7 +22,9 @@ _REQUIRED = ("aliases.json", "profiles.json", "kev.json")
 _NAME_RE = re.compile(r"(?:aliases|profiles|kev)\.json|eol/[a-z0-9][a-z0-9_.-]*\.json")
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 _SHA_RE = re.compile(r"[0-9a-f]{64}")
-_VERSION_RE = re.compile(r"\d+(?:\.\d+){0,2}")
+_VERSION_RE = re.compile(r"\d{1,6}(?:\.\d{1,6}){0,2}")
+_IGNORED_NAMES = frozenset((".DS_Store", "Thumbs.db", "desktop.ini"))
+FUTURE_TOLERANCE_DAYS = 1
 _MANIFEST = "manifest.json"
 
 
@@ -37,6 +40,7 @@ class Data:
     eol_age_days: int
     kev_current: bool = True
     warnings: list = field(default_factory=list)
+    profiles: dict = field(default_factory=dict)
 
 
 def tool_version() -> str:
@@ -126,7 +130,26 @@ def validate_eol(obj) -> list:
 def _validate_aliases(obj) -> list:
     if not isinstance(obj, dict) or not isinstance(obj.get("aliases"), list):
         raise DataError("expected an object with an 'aliases' list")
+    for pos, entry in enumerate(obj["aliases"], 1):
+        _check_alias(entry, pos)
     return obj["aliases"]
+
+
+def _validate_profiles(obj) -> dict:
+    if not isinstance(obj, dict):
+        raise DataError("top level must be an object")
+    profiles = obj.get("profiles", {})
+    if not isinstance(profiles, dict):
+        raise DataError("'profiles' must be an object")
+    for pname, prof in profiles.items():
+        cols = prof.get("columns") if isinstance(prof, dict) else None
+        if not isinstance(cols, dict) or not all(
+                isinstance(k, str) and isinstance(v, list)
+                and all(isinstance(i, str) for i in v)
+                for k, v in cols.items()):
+            raise DataError(
+                "a profile's 'columns' must map names to lists of strings")
+    return profiles
 
 
 # --- manifest and file verification ---------------------------------------
@@ -134,7 +157,7 @@ def _validate_aliases(obj) -> list:
 def _parse(raw: bytes, name: str):
     try:
         return json.loads(raw.decode("utf-8"))
-    except (UnicodeDecodeError, ValueError):
+    except (ValueError, RecursionError, MemoryError):
         raise DataError("%s: not valid UTF-8 JSON" % name)
 
 
@@ -203,6 +226,8 @@ def _listing(data_dir: str) -> set:
             if os.path.islink(os.path.join(root, d)):
                 raise DataError("%s: symbolic links are not allowed" % d)
         for f in files:
+            if f in _IGNORED_NAMES:
+                continue
             full = os.path.join(root, f)
             rel = os.path.relpath(full, data_dir).replace(os.sep, "/")
             if os.path.islink(full):
@@ -245,7 +270,8 @@ def _verify(data_dir: str) -> tuple:
 def _parse_all(blobs: dict) -> tuple:
     aliases = _wrap("aliases.json", _validate_aliases,
                     _parse(blobs["aliases.json"], "aliases.json"))
-    _parse(blobs["profiles.json"], "profiles.json")
+    profiles = _wrap("profiles.json", _validate_profiles,
+                     _parse(blobs["profiles.json"], "profiles.json"))
     kev = _wrap("kev.json", validate_kev,
                 _parse(blobs["kev.json"], "kev.json"))
     products = {}
@@ -253,22 +279,28 @@ def _parse_all(blobs: dict) -> tuple:
         if name.startswith("eol/"):
             products[name[4:-5]] = _wrap(
                 name, validate_eol, _parse(blobs[name], name))
-    return aliases, kev, products
+    return aliases, kev, products, profiles
 
 
 def load_data(data_dir: str, as_of: date) -> Data:
     """Verify the manifest and files first, then parse. Raises DataError."""
     manifest, blobs = _verify(data_dir)
-    aliases, kev, products = _parse_all(blobs)
+    aliases, kev, products, profiles = _parse_all(blobs)
     kev_age = (as_of - date.fromisoformat(manifest["kev_date"])).days
     eol_age = (as_of - date.fromisoformat(manifest["eol_date"])).days
     warnings = []
-    if kev_age > KEV_STALE_DAYS:
+    future = -FUTURE_TOLERANCE_DAYS
+    if kev_age < future:
+        warnings.append("KEV snapshot date is in the future; "
+                        "it is not current")
+    elif kev_age > KEV_STALE_DAYS:
         warnings.append(
             "KEV snapshot is %d days old; it is not current" % kev_age)
     elif kev_age > KEV_WARN_DAYS:
         warnings.append("KEV snapshot is %d days old" % kev_age)
-    if eol_age > EOL_WARN_DAYS:
+    if eol_age < future:
+        warnings.append("End-of-life snapshot date is in the future")
+    elif eol_age > EOL_WARN_DAYS:
         warnings.append("End-of-life snapshot is %d days old" % eol_age)
     return Data(
         release_id=manifest["release_id"],
@@ -276,7 +308,8 @@ def load_data(data_dir: str, as_of: date) -> Data:
         aliases=aliases, products=products, kev=kev,
         kev_catalog_version=manifest["kev_catalog_version"],
         kev_age_days=kev_age, eol_age_days=eol_age,
-        kev_current=kev_age <= KEV_STALE_DAYS, warnings=warnings)
+        kev_current=future <= kev_age <= KEV_STALE_DAYS,
+        warnings=warnings, profiles=profiles)
 
 
 def kev_match(kev: list, vendor: str, product: str) -> bool:
