@@ -41,10 +41,18 @@
         "2022": "16.0",
         "2025": "17.0"
       },
+      "edition_words": [
+        "developer",
+        "edition",
+        "enterprise",
+        "express",
+        "standard",
+        "web"
+      ],
       "key": "microsoft sql server",
       "match": "prefix",
       "product": "mssqlserver",
-      "source": "https://learn.microsoft.com/en-us/troubleshoot/sql/releases/download-and-install-latest-updates",
+      "source": "https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-2022",
       "version_from": "name"
     },
     {
@@ -56,6 +64,10 @@
         "2022": "2022",
         "2025": "2025"
       },
+      "edition_words": [
+        "datacenter",
+        "standard"
+      ],
       "key": "microsoft windows server",
       "match": "prefix",
       "product": "windows-server",
@@ -71,6 +83,10 @@
         "2022": "2022",
         "2025": "2025"
       },
+      "edition_words": [
+        "datacenter",
+        "standard"
+      ],
       "key": "windows server",
       "match": "prefix",
       "product": "windows-server",
@@ -81,6 +97,12 @@
       "build_map": {
         "10.0.19045": "10-22h2"
       },
+      "edition_words": [
+        "education",
+        "enterprise",
+        "home",
+        "pro"
+      ],
       "key": "microsoft windows 10",
       "match": "prefix",
       "product": "windows",
@@ -91,6 +113,12 @@
       "build_map": {
         "10.0.19045": "10-22h2"
       },
+      "edition_words": [
+        "education",
+        "enterprise",
+        "home",
+        "pro"
+      ],
       "key": "windows 10",
       "match": "prefix",
       "product": "windows",
@@ -161,6 +189,9 @@
       "version_from": "version"
     },
     {
+      "edition_words": [
+        "lts"
+      ],
       "key": "ubuntu",
       "match": "prefix",
       "product": "ubuntu",
@@ -168,29 +199,28 @@
       "version_from": "name"
     },
     {
-      "build_map": {
-        "1.8": "8",
-        "8": "8"
-      },
-      "key": "java 8 update",
-      "match": "prefix",
-      "product": "oracle-jdk",
-      "source": "https://www.java.com/en/download/help/version_manual.html",
-      "version_from": "version"
-    },
-    {
+      "edition_words": [
+        "(arm64)",
+        "(x64)",
+        "(x86)"
+      ],
       "key": "eclipse temurin jdk with hotspot",
       "match": "prefix",
       "product": "eclipse-temurin",
-      "source": "https://github.com/adoptium/installer/blob/master/wix/Lang/OpenJDK.hotspot.en-us.wxl.template",
-      "version_from": "version"
+      "source": "https://github.com/adoptium/installer/blob/master/wix/Includes/OpenJDK.Variables.wxi.template",
+      "version_from": "name"
     },
     {
+      "edition_words": [
+        "(arm64)",
+        "(x64)",
+        "(x86)"
+      ],
       "key": "eclipse temurin jre with hotspot",
       "match": "prefix",
       "product": "eclipse-temurin",
-      "source": "https://github.com/adoptium/installer/blob/master/wix/Lang/OpenJDK.hotspot.en-us.wxl.template",
-      "version_from": "version"
+      "source": "https://github.com/adoptium/installer/blob/master/wix/Includes/OpenJDK.Variables.wxi.template",
+      "version_from": "name"
     }
   ],
   "format": 1

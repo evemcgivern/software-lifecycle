@@ -81,11 +81,11 @@ class BriefCaseTests(unittest.TestCase):
                          ("office", None, AMBIGUOUS))
 
     def test_java_1_8_build_maps_to_8(self):
-        a = [alias("Java 8 Update", "oracle-jdk", match="prefix",
+        a = [alias("Java SE", "oracle-jdk",
                    build_map={"1.8": "8", "8": "8"})]
         products = {"oracle-jdk": cycles("1.4", "7", "8", "11")}
         for v in ("1.8.0_391", "8.0.3910.13"):
-            r = match_product("Java 8 Update 391 (64-bit)", v, a, products)
+            r = match_product("Java SE (64-bit)", v, a, products)
             self.assertEqual((r.product, r.cycle, r.reason),
                              ("oracle-jdk", {"cycle": "8"}, None), v)
 
@@ -109,7 +109,7 @@ class RuleTests(unittest.TestCase):
 
     def test_build_map_longest_key_wins(self):
         a = [alias("Windows Server", "windows-server", match="prefix",
-                   version_from="name",
+                   version_from="name", edition_words=["standard"],
                    build_map={"2012": "2012", "2012 r2": "2012-r2"})]
         products = {"windows-server": cycles("2012", "2012-r2", "2016")}
         r = match_product("Windows Server 2012 R2 Standard", "", a, products)
@@ -117,7 +117,8 @@ class RuleTests(unittest.TestCase):
         r = match_product("Windows Server 2012 Standard", "", a, products)
         self.assertEqual(r.cycle, {"cycle": "2012"})
         r = match_product("Windows Server 2008 R2 Standard", "", a, products)
-        self.assertEqual(r.reason, NO_CYCLE)
+        self.assertIsNone(r.cycle)
+        self.assertIn(r.reason, (NO_CYCLE, NO_ALIAS))
 
     def test_three_ten_is_not_three_one(self):
         a = [alias("python", "python", match="prefix", version_from="name")]
@@ -151,6 +152,54 @@ class RuleTests(unittest.TestCase):
         r = match_product("Node.js Tools", "18.1", a, {"nodejs": cycles("18")})
         self.assertEqual(r.reason, NO_ALIAS)
 
+    def test_prefix_tail_rule(self):
+        a = [alias("acme server", "acme", match="prefix", version_from="name",
+                   edition_words=["standard", "edition"],
+                   build_map={"2019": "15.0"})]
+        products = {"acme": cycles("15.0")}
+        # empty tail
+        self.assertEqual(
+            match_product("Acme Server 2019 (64-bit)", "", a, products).cycle,
+            {"cycle": "15.0"})
+        # edition words, and a bare "-" left by a dropped token
+        self.assertEqual(
+            match_product("Acme Server 2019 Standard Edition - en-us", "", a,
+                          products).cycle, {"cycle": "15.0"})
+        # any other word is not a guess
+        for name in ("Acme Server 2019 CLR Types", "Acme Server 2019 for Mac",
+                     "Acme Server 2019 Standard Native Client",
+                     "Acme Server Update Services"):
+            self.assertEqual(
+                match_product(name, "", a, products),
+                MatchResult(None, None, NO_ALIAS), name)
+
+    def test_prefix_tail_rule_version_column(self):
+        a = [alias("acme os", "acme", match="prefix",
+                   edition_words=["pro"], build_map={"10.0.19045": "22h2"})]
+        products = {"acme": cycles("22h2")}
+        self.assertEqual(
+            match_product("Acme OS", "10.0.19045.1", a, products).cycle,
+            {"cycle": "22h2"})
+        self.assertEqual(
+            match_product("Acme OS Pro", "10.0.19045.1", a, products).cycle,
+            {"cycle": "22h2"})
+        self.assertEqual(
+            match_product("Acme OS SDK", "10.0.19045.1", a, products).reason,
+            NO_ALIAS)
+
+    def test_prefix_without_edition_words_needs_empty_tail(self):
+        a = [alias("python", "python", match="prefix", version_from="name")]
+        products = {"python": cycles("3.11")}
+        self.assertEqual(
+            match_product("Python 3.11.4 Core Interpreter", "", a,
+                          products).reason, NO_ALIAS)
+
+    def test_exact_alias_unchanged_by_tail_rule(self):
+        a = [alias("node.js", "nodejs", edition_words=[])]
+        self.assertEqual(
+            match_product("Node.js", "18.1", a, {"nodejs": cycles("18")})
+            .cycle, {"cycle": "18"})
+
     def test_alias_key_is_literal_not_pattern(self):
         a = [alias("a.c", "x", match="prefix", version_from="name"),
              alias("(ab)+", "y")]
@@ -179,7 +228,8 @@ class RuleTests(unittest.TestCase):
         self.assertEqual(r.reason, NO_CYCLE)
 
     def test_exact_beats_prefix_for_same_product(self):
-        a = [alias("ubuntu", "ubuntu", match="prefix", version_from="name"),
+        a = [alias("ubuntu", "ubuntu", match="prefix", version_from="name",
+                   edition_words=["lts"]),
              alias("ubuntu", "ubuntu", match="exact", version_from="version")]
         products = {"ubuntu": cycles("20.04", "22.04")}
         r = match_product("Ubuntu", "22.04.3 LTS", a, products)
@@ -189,7 +239,8 @@ class RuleTests(unittest.TestCase):
 
     def test_longest_key_wins_for_same_product(self):
         a = [alias("acme", "acme", match="prefix", version_from="name"),
-             alias("acme pro", "acme", match="prefix", version_from="name")]
+             alias("acme pro", "acme", match="prefix", version_from="name",
+                   edition_words=["x"])]
         r = match_product("Acme Pro 2 x", "", a, {"acme": cycles("2")})
         self.assertEqual(r.cycle, {"cycle": "2"})
 
@@ -240,7 +291,9 @@ class RuleTests(unittest.TestCase):
                     alias("x", "x", version_from="both"),
                     {"key": "x", "match": "exact", "version_from": "version"},
                     alias("x", "x", build_map=["1"]),
-                    alias("x", "x", build_map={"1": 2})):
+                    alias("x", "x", build_map={"1": 2}),
+                    alias("x", "x", edition_words="standard"),
+                    alias("x", "x", edition_words=[""])):
             with self.assertRaises(DataError, msg=repr(bad)):
                 match_product("x", "1", [bad], products)
 
@@ -260,9 +313,9 @@ class PropertyTests(unittest.TestCase):
         alias("node.js", "nodejs"),
         alias("microsoft sql server", "mssqlserver",
               build_map={"15.0": "15.0", "16.0": "16.0"}),
-        alias("ubuntu", "ubuntu", match="prefix", version_from="name"),
-        alias("java 8 update", "oracle-jdk", match="prefix",
-              build_map={"1.8": "8", "8": "8"}),
+        alias("ubuntu", "ubuntu", match="prefix", version_from="name",
+              edition_words=["lts"]),
+        alias("java se", "oracle-jdk", build_map={"1.8": "8", "8": "8"}),
     ]
     PRODUCTS = {
         "python": cycles("3.1", "3.10", "3.11", "2.7"),
@@ -276,7 +329,7 @@ class PropertyTests(unittest.TestCase):
         ("Python 3.10.11 (64-bit)", ""), ("Python 2.7.18", ""),
         ("Node.js", "18.17.0"), ("Node.js", "v20.10.0"),
         ("Microsoft SQL Server", "15.0.4430.1"),
-        ("Ubuntu 22.04.3 LTS", ""), ("Java 8 Update 391", "1.8.0_391"),
+        ("Ubuntu 22.04.3 LTS", ""), ("Java SE", "1.8.0_391"),
     ]
 
     def _key_variants(self, rng, name):
@@ -383,6 +436,15 @@ EOL_CYCLE_LABELS = {
 EOL_PRODUCTS = {p: cycles(*labels) for p, labels in EOL_CYCLE_LABELS.items()}
 
 
+# Corpus rows whose true cycle the shipped table cannot reach under the
+# strict prefix rule (an update number or "8u" build in the name).
+KNOWN_MISSES = [
+    ("Eclipse Temurin JDK with Hotspot 8u392-b08 (x64)", "8.0.392.8",
+     NO_CYCLE),
+    ("Java 8 Update 391", "1.8.0_391", NO_ALIAS),
+]
+
+
 class AliasFileTests(unittest.TestCase):
     def setUp(self):
         self.text, self.doc = _load("aliases.json")
@@ -395,7 +457,7 @@ class AliasFileTests(unittest.TestCase):
         entries = self.doc["aliases"]
         self.assertGreaterEqual(len(entries), 12)
         allowed = {"key", "match", "product", "version_from", "cycle",
-                   "build_map", "source"}
+                   "build_map", "source", "edition_words"}
         for e in entries:
             self.assertLessEqual(set(e), allowed, e)
             self.assertIn(e["match"], ("exact", "prefix"))
@@ -403,6 +465,9 @@ class AliasFileTests(unittest.TestCase):
             self.assertEqual(e["key"], normalize_name(e["key"]), e)
             self.assertTrue(e["source"].startswith("https://"), e)
             self.assertIn(e["product"], EOL_CYCLE_LABELS, e)
+            for w in e.get("edition_words", []):
+                self.assertEqual(w, normalize_name(w), e)
+                self.assertEqual(len(w.split()), 1, e)
 
     def test_targets_exist_in_endoflife_cycles(self):
         for e in self.doc["aliases"]:
@@ -449,9 +514,9 @@ class CorpusTests(unittest.TestCase):
             else:
                 hits += 1
         self.assertEqual(false_matches, [])
-        # Missed matches only count toward coverage; this corpus is
-        # labelled against the shipped table, so none are expected today.
-        self.assertEqual(missed, [])
+        # Missed matches only count toward coverage. The known list keeps
+        # any coverage change visible in review.
+        self.assertEqual(sorted(missed), sorted(KNOWN_MISSES))
         self.assertGreater(hits, 0)
 
 

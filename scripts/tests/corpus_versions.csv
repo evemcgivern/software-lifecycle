@@ -52,3 +52,10 @@ Eclipse Temurin JDK with Hotspot 17.0.9+9 (x64),17.0.9.9,eclipse-temurin,17,http
 Eclipse Temurin JDK with Hotspot 8u392-b08 (x64),8.0.392.8,eclipse-temurin,8,https://github.com/adoptium/installer/blob/master/wix/Build.OpenJDK_generic.cmd
 Eclipse Temurin JRE with Hotspot 11.0.21+9 (x64),11.0.21.9,eclipse-temurin,11,https://github.com/adoptium/installer/blob/master/wix/Build.OpenJDK_generic.cmd
 Eclipse Temurin JDK with Hotspot 8u392-b08 (x64),1.8.0_392,,NONE,https://api.adoptium.net/v3/assets/version/%5B8.0.392%2C8.0.393%29?image_type=jdk&os=windows&architecture=x64&release_type=ga
+Microsoft Office Standard 2016 for Mac,16.0,,NONE,https://learn.microsoft.com/en-us/lifecycle/products/office-2016-for-mac
+Microsoft Office Standard 2019 for Mac,16.0,,NONE,https://learn.microsoft.com/en-us/lifecycle/products/office-2019-for-mac
+Microsoft SQL Server 2019 CLR Types,15.0.2000.5,,NONE,https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-2022
+Microsoft SQL Server 2019 T-SQL Language Service,15.0.2000.5,,NONE,https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-2022
+Microsoft SQL Server 2019 Native Client,15.0.2000.5,,NONE,https://learn.microsoft.com/en-us/sql/relational-databases/native-client/sql-server-native-client
+Windows Server Update Services,10.0.17763,,NONE,https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus
+Windows 10 SDK,10.0.19045.1,,NONE,https://learn.microsoft.com/en-us/windows/apps/windows-sdk/downloads

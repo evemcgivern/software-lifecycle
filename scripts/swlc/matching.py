@@ -47,6 +47,11 @@ def _check(entry: dict, pos: int) -> None:
             if not values or not all(isinstance(v, str) and v.strip()
                                      for v in values):
                 raise bad("'build_map' values must be cycle strings")
+    if "edition_words" in entry:
+        words = entry["edition_words"]
+        if not isinstance(words, list) or not all(
+                isinstance(w, str) and w.strip() for w in words):
+            raise bad("'edition_words' must be a list of words")
 
 
 def _hits(name: str, key: str, mode: str) -> bool:
@@ -65,7 +70,8 @@ def _rule(entry: dict) -> tuple:
         frozen = tuple(sorted(
             (k, tuple(v) if isinstance(v, list) else (v,))
             for k, v in bmap.items()))
-    return (entry["version_from"], entry.get("cycle"), frozen)
+    words = tuple(sorted(entry.get("edition_words") or []))
+    return (entry["version_from"], entry.get("cycle"), frozen, words)
 
 
 def _distinct_by_parts(labels: list[str]) -> list[tuple[str, ...]]:
@@ -108,37 +114,67 @@ def match_product(name: str, version: str, aliases: list[dict],
         return MatchResult(product, None, AMBIGUOUS)
 
     labels = [c.get("cycle", "") for c in products.get(product) or []]
+    rest = norm[len(key):].split()
+    from_name = entry["version_from"] == "name"
+
+    def finish(result: MatchResult, used_parts: int) -> MatchResult:
+        # Prefix aliases are strict: words left after the key (and after
+        # the version text read from the name) must be edition words.
+        if entry["match"] == "prefix":
+            skip = _words_for_parts(rest, used_parts) if from_name else 0
+            if not _tail_ok(rest[skip:], entry.get("edition_words") or []):
+                return MatchResult(None, None, NO_ALIAS)
+        return result
 
     if "cycle" in entry:
-        return _exact_cycle(product, [entry["cycle"]], products, labels)
+        return finish(
+            _exact_cycle(product, [entry["cycle"]], products, labels), 0)
 
-    if entry["version_from"] == "name":
-        text = norm[len(key):]
-    else:
-        text = version or ""
+    text = " ".join(rest) if from_name else (version or "")
     parts = split_version(text)
     if not parts:
-        return MatchResult(product, None, NO_VERSION)
+        return finish(MatchResult(product, None, NO_VERSION), 0)
 
+    # When no version matched, treat the first name word as the version.
+    first = len(split_version(rest[0])) if rest else 0
     bmap = entry.get("build_map")
     if bmap is not None:
         # Strict: a version outside the map never falls back to direct
         # matching, so a service-pack build cannot land on an RTM cycle.
         best_key, tied_keys = best_cycle(parts, list(bmap))
         if best_key is None:
-            return MatchResult(product, None, NO_CYCLE)
+            return finish(MatchResult(product, None, NO_CYCLE), first)
         targets: list[str] = []
         for k in tied_keys:
             value = bmap[k]
             targets.extend(value if isinstance(value, list) else [value])
-        return _exact_cycle(product, targets, products, labels)
+        return finish(_exact_cycle(product, targets, products, labels),
+                      len(split_version(best_key)))
 
     best, tied = best_cycle(parts, labels)
     if best is None:
-        return MatchResult(product, None, NO_CYCLE)
+        return finish(MatchResult(product, None, NO_CYCLE), first)
     if len(_distinct_by_parts(tied)) > 1:
-        return MatchResult(product, None, AMBIGUOUS)
-    return MatchResult(product, _cycle_dict(products[product], best), None)
+        return finish(MatchResult(product, None, AMBIGUOUS),
+                      len(split_version(best)))
+    return finish(MatchResult(product, _cycle_dict(products[product], best),
+                              None), len(split_version(best)))
+
+
+def _words_for_parts(words: list[str], used_parts: int) -> int:
+    """Fewest leading whole words whose version parts cover used_parts."""
+    if used_parts <= 0:
+        return 0
+    for count in range(1, len(words) + 1):
+        if len(split_version(" ".join(words[:count]))) >= used_parts:
+            return count
+    return len(words)
+
+
+def _tail_ok(words: list[str], edition_words: list[str]) -> bool:
+    """Every tail word is an edition word or bare punctuation ("-")."""
+    allowed = {normalize_name(w) for w in edition_words}
+    return all(not w.strip(".-_") or w in allowed for w in words)
 
 
 def _exact_cycle(product: str, targets: list[str],
