@@ -1,0 +1,31 @@
+{
+  "data_format": 1,
+  "eol_date": "2026-10-20",
+  "files": {
+    "aliases.json": {
+      "sha256": "514e672b0ab1a9282ced2f67aa77b4bad6271ec7d39094e15031d638e84474aa",
+      "size": 283
+    },
+    "eol/demoos.json": {
+      "sha256": "db2b2d0df9f15dfe88cf5955ddcba026a4921e133ee965cfd8c01024b0712e7d",
+      "size": 167
+    },
+    "eol/examplesql.json": {
+      "sha256": "6fa054f983ef7b93cfa91489787a725d3100591d0745a6d556a7bda99abe63fc",
+      "size": 253
+    },
+    "kev.json": {
+      "sha256": "0c71ad5c573d7175b2435eb788936ef06b486e44142b5b581078d42b0c2bc97d",
+      "size": 262
+    },
+    "profiles.json": {
+      "sha256": "d4570242ac5a6218454a078251397b756bd877ed9f6bcb056626f45333e28544",
+      "size": 216
+    }
+  },
+  "kev_catalog_version": "2026.10.22",
+  "kev_date": "2026-10-22",
+  "min_tool_version": "0.1.0",
+  "release_id": "fixture-1",
+  "upstream_commit": "0000000000000000000000000000000000000000"
+}

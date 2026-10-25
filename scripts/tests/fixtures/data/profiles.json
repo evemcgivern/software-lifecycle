@@ -1,0 +1,16 @@
+{
+  "format": 1,
+  "profiles": {
+    "demo": {
+      "columns": {
+        "name": [
+          "Product"
+        ],
+        "version": [
+          "Version"
+        ]
+      },
+      "status": "Unverified"
+    }
+  }
+}

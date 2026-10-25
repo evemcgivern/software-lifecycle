@@ -1,0 +1,17 @@
+{
+  "aliases": [
+    {
+      "key": "example sql",
+      "match": "exact",
+      "product": "examplesql",
+      "version_from": "version"
+    },
+    {
+      "key": "demo os",
+      "match": "prefix",
+      "product": "demoos",
+      "version_from": "name"
+    }
+  ],
+  "format": 1
+}
