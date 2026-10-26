@@ -129,7 +129,7 @@ which one found the product.
      product from a same-name vendor still confirms unless an exclusion
      stops it (the Moodle app from Moodle Pty Ltd is excluded).
    - Version-in-name rule: a row with no publisher whose name is a
-     one-word title followed by a version (`nginx 1.24.0`, `Kibana 8.15.3`)
+     one-word title followed by a version (`Kibana 8.15.3`)
      matches when the version decides exactly one cycle (and agrees with
      the version column when both are given) and the title is on a
      hand-reviewed list of coined titles (`VERSION_NAME_TITLES` in
@@ -197,9 +197,7 @@ so; it does not hide them.
   openssl and others) are left off its list, so `redis 5.0.1` with no
   publisher stays unmatched. The check was made once (2026-10-26): a
   package published later under a listed title would be read as the
-  product. nginx, CKEditor, JHipster, jQuery, Magento, Matomo, Mautic,
-  Oniguruma and PrivateBin are still on the list although such a package
-  exists, so `nginx 1.0.2` with no publisher is read as nginx.
+  product.
 - Titles on the one-word allowlist (GStreamer, Liquibase and others) match
   with any publisher or none, so a same-named package such as the npm
   `liquibase` wrapper is read as the product.
