@@ -182,8 +182,12 @@ class CandidateOrderTests(unittest.TestCase):
             with self.subTest(tail=tail):
                 self.assertIsNone(split_tail("foo " + tail))
         # Digit-led distro parts and the named tags still split.
-        for tail in ("4.0r9", "2.6.8-i001", "20.10.0-1nodesource1",
-                     "3.1-1ubuntu1"):
+        # Architecture names are not installer build tags.
+        for tail in ("1.0-i686", "1.0-i386", "2.4.1.i586", "1.0-i486"):
+            with self.subTest(tail=tail):
+                self.assertIsNone(split_tail("foo " + tail))
+        for tail in ("4.0r9", "2.6.8-i001", "2.5.9-i601",
+                     "20.10.0-1nodesource1", "3.1-1ubuntu1"):
             with self.subTest(tail=tail):
                 self.assertEqual(split_tail("foo " + tail), ("foo", tail))
         for word in ("8u392", "v", "patch20", "2.1-", "+8", "2.1_3"):

@@ -154,10 +154,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 450 | 32 | 866 | 1348 |
+| hand | 450 | 32 | 874 | 1356 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1506 | 305 | 943 | 2754 |
+| all | 1506 | 305 | 951 | 2762 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -238,6 +238,17 @@ exclusions, aliases or rules. The test reports them separately.
     `jQuery 2.2.4||2.2.4`, `Magento 2.1.18||2.1.18`,
     `Matomo 3.14.1||3.14.1`, `Mautic 4.2.2||4.2.2`,
     `Oniguruma 5.9.6||5.9.6` and `PrivateBin 1.4.0||1.4.0` (generated).
+  - 2026-10-26, issue #11 second review, with the owner's approval.
+    ESLint, MySQL, PostgreSQL, Quarkus, Knative, Vuetify, Deno, AngularJS
+    and YouTrack left the version-in-name list, because a VS Code or
+    JetBrains extension with the same name has versions that fit a cycle
+    (`ESLint 3.0.34` is the VS Code ESLint extension). Kubernetes no
+    longer takes a `-gke.` or `-eks-` build (no gold row changed).
+    `generated_correct_min` 857 to 851; `hand_catalog_correct_min`
+    unchanged. Rows lost (now missed, all generated):
+    `AngularJS 1.4.14||1.4.14`, `ESLint 5.16.0||5.16.0`,
+    `Knative 1.4.0||1.4.0`, `Quarkus 3.10.2||3.10.2`,
+    `Vuetify 2.7.2||2.7.2` and `YouTrack 2022.2.65377||2022.2.65377`.
 - Every product id and cycle exists in `data/eol/`. No two rows share an
   item id (names are normalized as the tool does). Rows in `unsure.csv` are
   not in gold.

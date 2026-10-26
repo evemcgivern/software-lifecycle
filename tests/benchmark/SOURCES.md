@@ -64,6 +64,13 @@
 - https://www.npmjs.com/package/sqlite (the npm sqlite package (a Node.js client) has a 3.0.6 release)
 - https://www.npmjs.com/package/wireshark (the npm wireshark package has a 1.0.2 release)
 - https://pypi.org/project/wordpress/ (the PyPI wordpress package (a REST API client) has a 1.2 release)
+- https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint (the VS Code ESLint extension; release 3.0.34)
+- https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-mysql-client2 (a VS Code extension named MySQL; release 9.0.2)
+- https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-postgresql-client2 (a VS Code extension named PostgreSQL; release 9.0.2)
+- https://marketplace.visualstudio.com/items?itemName=redhat.vscode-quarkus (the VS Code Quarkus extension; release 1.24.2026082508)
+- https://marketplace.visualstudio.com/items?itemName=redhat.vscode-knative (the VS Code Knative extension; release 1.5.0)
+- https://marketplace.visualstudio.com/items?itemName=vuetifyjs.vuetify-vscode (the VS Code Vuetify extension; release 1.0.2)
+- https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno (the VS Code Deno extension; 1.x to 3.x releases)
 - https://pypi.org/project/podman/5.4.0/ (the PyPI podman package, Python bindings for the Podman API)
 - https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml (winget gives Podman's publisher as Red Hat)
 - endoflife.date product pages: https://endoflife.date/android,

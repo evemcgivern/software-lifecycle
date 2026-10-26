@@ -85,8 +85,10 @@ _TOKEN_RE = re.compile(r"[^\W_]+")
 # ".", "-" or "+", or a glued "patchN". A suffix part is digit-led (a
 # build or distro number such as "01", "8", "0r9", "1nodesource1") or one
 # of a few named build tags: "hf" (hotfix), "eks" and "gke" (managed
-# Kubernetes builds), "iN" (an installer build, OpenVPN "I001") and "vN"
-# (a dated build, Jetty ".v20211001"). Any other word ends the token, so
+# Kubernetes builds, see _MANAGED_TAGS), "iN" (an installer build number,
+# OpenVPN "I001"; the architecture names i386, i486, i586 and i686 are
+# not build tags) and "vN" (a dated build, Jetty ".v20211001"). Any other
+# word ends the token, so
 # "8.0-router" or "1.24.0-plus" is not split. A pre-release or milestone
 # marker is never part of a token, even glued to digits ("1.0rc1",
 # "3.0.0.CR1", "11.0.0-M1", "8.0-milestone-1"), so such a name is not
@@ -95,7 +97,13 @@ _PRE_RELEASE = ("alpha|beta|rc|cr|ea|m|milestone|pre|preview|dev|devel|"
                 "snapshot|nightly|canary|a|b")
 _DIGIT_PART = (r"\d+(?:(?!(?:" + _PRE_RELEASE + r")\d*(?![a-z]))"
                r"[a-z]+\d*)?")
-_BUILD_TAG = r"(?:(?:hf|eks|gke)(?![a-z])|[iv]\d+(?![a-z]))"
+_BUILD_TAG = (r"(?:(?:hf|eks|gke)(?![a-z])|i(?![3-6]86(?![0-9a-z]))\d+"
+              r"(?![a-z])|v\d+(?![a-z]))")
+# Build tags of a managed service, per upstream product: a Kubernetes
+# version with a "-gke." or "-eks-" build is a Google or Amazon managed
+# build with its own support dates, not upstream Kubernetes. The managed
+# products (google-kubernetes-engine, amazon-eks) still take these tags.
+_MANAGED_TAGS = {"kubernetes": re.compile(r"[.+\-](?:gke|eks)(?![a-z])")}
 _TAIL_RE = re.compile(
     r"v?\d+(?:\.\d+)*[a-z]?"
     r"(?:[.+\-](?:" + _DIGIT_PART + "|" + _BUILD_TAG + r")|patch\d+)*")
@@ -155,29 +163,31 @@ CORPORATE_WORDS = frozenset((
 # npm or RubyGems from someone else (a client, binding or wrapper) whose
 # versions fit a cycle of the product, such as redis, elasticsearch,
 # podman, sqlite, openssl or nginx, and pgadmin ("pgAdmin 4" names a
-# generation, not a version). A package that is the product itself
-# (eslint, numpy, nuxt on npm or PyPI) does not count. A product added to
+# generation, not a version), and titles with a same-named VS Code or
+# JetBrains extension whose versions fit a cycle (eslint, mysql,
+# postgresql, quarkus-framework, knative, vuetify, deno, angularjs,
+# youtrack). A package that is the product itself
+# (numpy, nuxt, pnpm on PyPI or npm) does not count. A product added to
 # the catalog later is not in this list, so it gets the rule only after a
 # review.
 VERSION_NAME_TITLES = frozenset((
-    "adonisjs angularjs ansible-core arangodb artifactory authentik "
-    "bazel behat big-ip bigbluebutton cakephp centreon ceph "
-    "cert-manager cfengine checkmk clamav clickhouse cnspec "
-    "commvault contao controlm debian deno dependency-track devuan "
-    "dropwizard drush eslint etcd eurolinux exim external-dns "
-    "firefox forgejo fortios freebsd goaccess grafana grumphp "
-    "haproxy icinga istio joomla jreleaser jruby karpenter keda "
-    "keycloak kiali kibana knative kubernetes kyverno laravel "
-    "libreoffice lineageos logstash mageia mariadb mediawiki "
-    "meilisearch metabase metallb mysql netbsd nextjs nixos nodejs "
-    "notepad-plus-plus numpy nuxt openbao openbsd opensuse opentofu "
-    "openvpn openwrt openzfs opnsense otobo ovirt perl phpbb "
-    "phpmyadmin plesk plone pnpm pop-os postgresql postmarketos "
-    "proftpd quarkus-framework rabbitmq redmine routeros rtpengine "
-    "sapmachine shopware sourcegraph splunk statamic strapi sylius "
-    "symfony tarantool tarteaucitron thumbor traefik truenas typo3 "
-    "ubuntu unrealircd valkey virtualbox vitess vuetify weakforced "
-    "weechat xcp-ng youtrack zabbix zentyal"
+    "adonisjs ansible-core arangodb artifactory authentik bazel "
+    "behat big-ip bigbluebutton cakephp centreon ceph cert-manager "
+    "cfengine checkmk clamav clickhouse cnspec commvault contao "
+    "controlm debian dependency-track devuan dropwizard drush etcd "
+    "eurolinux exim external-dns firefox forgejo fortios freebsd "
+    "goaccess grafana grumphp haproxy icinga istio joomla jreleaser "
+    "jruby karpenter keda keycloak kiali kibana kubernetes kyverno "
+    "laravel libreoffice lineageos logstash mageia mariadb "
+    "mediawiki meilisearch metabase metallb netbsd nextjs nixos "
+    "nodejs notepad-plus-plus numpy nuxt openbao openbsd opensuse "
+    "opentofu openvpn openwrt openzfs opnsense otobo ovirt perl "
+    "phpbb phpmyadmin plesk plone pnpm pop-os postmarketos proftpd "
+    "rabbitmq redmine routeros rtpengine sapmachine shopware "
+    "sourcegraph splunk statamic strapi sylius symfony tarantool "
+    "tarteaucitron thumbor traefik truenas typo3 ubuntu unrealircd "
+    "valkey virtualbox vitess weakforced weechat xcp-ng zabbix "
+    "zentyal"
 ).split())
 # Names with more words than this are never matched by title: no product
 # title is that long, and it bounds the work on a hostile row.
@@ -324,6 +334,9 @@ class CatalogIndex:
         def take(cand, tail, only=None):
             for pid in self.titles.get(cand, ()):
                 if only is not None and pid not in only:
+                    continue
+                managed = _MANAGED_TAGS.get(pid)
+                if managed is not None and tail and managed.search(tail):
                     continue
                 if pid not in found and allowed(pid, only is not None,
                                                 tail):

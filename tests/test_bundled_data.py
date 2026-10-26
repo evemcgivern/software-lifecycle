@@ -159,9 +159,31 @@ class BundledCatalogTests(unittest.TestCase):
                     "liquibase", "memcached", "openssl", "sqlite",
                     "wireshark", "wordpress", "nginx", "ckeditor",
                     "jhipster", "jquery", "magento", "matomo", "mautic",
-                    "oniguruma", "privatebin"):
+                    "oniguruma", "privatebin",
+                    # A same-named VS Code or JetBrains extension whose
+                    # versions fit a cycle (for example
+                    # dbaeumer.vscode-eslint 3.0.34, redhat.vscode-quarkus,
+                    # cweijan.vscode-mysql-client2 9.0.2).
+                    "eslint", "mysql", "postgresql", "quarkus-framework",
+                    "knative", "vuetify", "deno", "angularjs", "youtrack"):
             with self.subTest(pid=pid):
                 self.assertNotIn(pid, VERSION_NAME_TITLES)
+
+    def test_managed_kubernetes_builds_are_not_upstream(self):
+        # A -gke. or -eks- build is the managed service, not upstream
+        # Kubernetes; the managed products still match their builds.
+        data = self.data
+        for name, want in (
+                ("Kubernetes 1.30.5-gke.1014001", None),
+                ("Kubernetes 1.27-eks-53", None),
+                ("Kubernetes 1.30.5", "kubernetes"),
+                ("Google Kubernetes Engine 1.30.5-gke.1014001",
+                 "google-kubernetes-engine"),
+                ("Amazon EKS 1.27-eks-53", "amazon-eks")):
+            with self.subTest(name=name):
+                got = match_product(name, "", data.aliases, data.products,
+                                    catalog_index=data.matching_index())
+                self.assertEqual(got.product, want)
 
 
 def gold_rows():
