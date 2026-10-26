@@ -2728,3 +2728,5 @@ Gradle 8.0-milestone-1,,8.0-milestone-1,NONE,,"hand-added: trap=prerelease; a mi
 MySQL 8.0-router,,8.0-router,NONE,,"hand-added: trap=component; router is a component word, not a build tag, so 8.0-router is not a MySQL server version",hand,0,,
 Grafana 10.4.1-agent,,10.4.1-agent,NONE,,"hand-added: trap=component; the Grafana agent is not Grafana, and agent is not a build tag",hand,0,,
 nginx 1.24.0-plus,,1.24.0-plus,NONE,,"hand-added: trap=lookalike; NGINX Plus is a separate commercial product, and plus is not a build tag",hand,0,,
+Google Go,Google LLC,,NONE,,"hand-added: trap=lookalike; Google Go is Google's lightweight search app, not the Go language; the vendor word google must not be dropped to leave go",hand,0,,
+Google Go,Google LLC,3.85.1,NONE,,"hand-added: trap=lookalike; Google Go is Google's lightweight search app (version 3.x), not the Go language",hand,1,,
