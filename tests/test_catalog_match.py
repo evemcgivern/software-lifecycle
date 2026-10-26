@@ -152,6 +152,37 @@ class CandidateOrderTests(unittest.TestCase):
         self.assertIsNone(split_tail("foo 2.1-beta"))
         self.assertIsNone(split_tail("2.1"))
 
+    def test_split_tail_wider_version_shapes(self):
+        # Build, distro and hotfix suffixes after ".", "-" or "+", and a
+        # glued "patchN", stay part of the version token.
+        for tail in ("9.3.30.v20211001", "1.27-eks-53", "7.7.2-hf",
+                     "2018.3.2patch20", "17.0.20.0.21+8", "20.0.2+9",
+                     "1.26.15-gke.1469001", "3.62.0-01", "11.0.25.0.9-3"):
+            with self.subTest(tail=tail):
+                self.assertEqual(split_tail("foo " + tail), ("foo", tail))
+        # A pre-release suffix stops the token: the name is not split.
+        for tail in ("2.1-beta", "2.1-beta2", "2.0-rc1", "2.0.rc", "1.0-dev",
+                     "1.0-devel", "3.1-alpha", "4.0-preview",
+                     "1.2+snapshot", "5.0-nightly", "6.0-canary", "1.0-pre"):
+            with self.subTest(tail=tail):
+                self.assertIsNone(split_tail("foo " + tail))
+        for word in ("8u392", "v", "patch20", "2.1-", "+8", "2.1_3"):
+            with self.subTest(word=word):
+                self.assertIsNone(split_tail("foo " + word))
+
+    def test_d_wider_version_token_matches_an_exact_title(self):
+        self.assertEqual(got(gen("Foo Tool 2.1.4-hf")),
+                         ("foo-tool", "2.1", None, GENERATED))
+        self.assertEqual(got(gen("Foo Tool 3.0.2+8", "3.0.2+8")),
+                         ("foo-tool", "3.0", None, GENERATED))
+        self.assertEqual(got(gen("Foo Tool 2.2.0.v20211001")),
+                         ("foo-tool", "2.2", None, GENERATED))
+        # The head must still equal a title exactly.
+        self.assertEqual(got(gen("Foo Tools 2.1.4-hf")),
+                         (None, None, NO_ALIAS, None))
+        self.assertEqual(got(gen("Foo Tool 2.1-beta")),
+                         (None, None, NO_ALIAS, None))
+
     def test_c_leading_vendor_word_dropped_only_when_publisher_has_it(self):
         self.assertEqual(got(gen("Mozilla Firefox", "128.0", "Mozilla")),
                          ("firefox", "128", None, GENERATED))

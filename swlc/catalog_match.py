@@ -17,8 +17,11 @@ Candidate order (the row's raw name is first normalized by normalize_name):
         a phrase that confirms that product and also    publisher Mozilla
         appears in the row's publisher                  -> "firefox"
   d     a, b and each c form with a trailing version    "foo 2.1" -> "foo" + 2.1
-        token split off (v?N(.N)*[a-z]?; "8u392" is
-        not split)
+        token split off: v?N(.N)*[a-z]? plus any        "jetty 9.3.30.v20211001"
+        suffix parts after ".", "-" or "+" (a build,    -> "jetty" + 9.3.30...
+        a distro tag, "+8") or a glued "patchN";
+        "8u392" and a pre-release suffix ("2.1-beta",
+        "-rc1") are not split
 
   Level 1 is a then b: the first of them that equals a title decides, even
   when that product is then refused (a one-word title the publisher does not
@@ -60,7 +63,14 @@ from types import MappingProxyType
 from .normalize import normalize_name, split_version
 
 _TOKEN_RE = re.compile(r"[^\W_]+")
-_TAIL_RE = re.compile(r"v?\d+(?:\.\d+)*[a-z]?")
+# A version token: v?N(.N)*, an optional letter, then suffix parts after
+# ".", "-" or "+" (builds, distro tags, "+8") or a glued "patchN". A
+# suffix part that is a pre-release word (beta, rc1, ...) stops the token,
+# so such a name is not split.
+_PRE_RELEASE = "alpha|beta|rc|pre|preview|dev|devel|snapshot|nightly|canary"
+_TAIL_RE = re.compile(
+    r"v?\d+(?:\.\d+)*[a-z]?"
+    r"(?:[.+\-](?!(?:" + _PRE_RELEASE + r")(?![a-z]))[0-9a-z]+|patch\d+)*")
 _ARCH_WORDS = frozenset(("x64", "x86", "amd64", "arm64", "aarch64",
                          "32-bit", "64-bit"))
 # A locale is a language-region tag (with "-" or "_"): an ISO 639-1
