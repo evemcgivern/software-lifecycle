@@ -102,13 +102,17 @@ which one found the product.
    `[x64]` (a locale is any ISO language-region pair, such as `es-AR`; a word
    like `go-to` is not one), drops a leading vendor word when the publisher carries that
    vendor (`Mozilla Firefox` with publisher Mozilla), and splits a trailing
-   version number off the name (`Foo 2.1`). The split version may carry a
-   build, distro or hotfix suffix after `.`, `-` or `+`, or a glued
-   `patchN` (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
-   `Eclipse Temurin 20.0.2+9`, `7.7.2-HF`); the rest of the name must still
-   equal a title exactly. A pre-release suffix (`2.1-beta`, `2.0-rc1`,
-   `1.0-dev`) and an update number (`8u392`) are not split, so such a name
-   is not matched. A whole title wins over a split one. The version column is used; when it is empty, the version from the
+   version number off the name (`Foo 2.1`). The split version may carry
+   suffix parts after `.`, `-` or `+` that start with a digit (a build or
+   distro number: `3.62.0-01`, `20.0.2+9`, `4.0r9`), one of a few named
+   build tags (`hf`, `eks`, `gke`, an installer build such as `I001`, a
+   dated build such as `.v20211001`), or a glued `patchN`
+   (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
+   `7.7.2-HF`); the rest of the name must still equal a title exactly. Any
+   other word after the version (`MySQL 8.0-router`, `nginx 1.24.0-plus`),
+   a pre-release or milestone suffix (`2.1-beta`, `2.0-rc1`, `1.0rc1`,
+   `11.0.0-M1`, `3.0.0.CR1`, `8.0-milestone-1`, `-ea`) and an update number
+   (`8u392`) stop the split, so such a name is not matched. A whole title wins over a split one. The version column is used; when it is empty, the version from the
    name is used; when both exist and pick different cycles, the item is not
    decided. A name of more than 64 words is never matched by title.
    - A one-word title matches only when the publisher names the product's

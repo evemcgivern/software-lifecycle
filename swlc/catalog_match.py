@@ -17,11 +17,13 @@ Candidate order (the row's raw name is first normalized by normalize_name):
         a phrase that confirms that product and also    publisher Mozilla
         appears in the row's publisher                  -> "firefox"
   d     a, b and each c form with a trailing version    "foo 2.1" -> "foo" + 2.1
-        token split off: v?N(.N)*[a-z]? plus any        "foo 9.3.30.v2021"
-        suffix parts after ".", "-" or "+" (a build,    -> "foo" + 9.3.30.v2021
-        a distro tag, "+8") or a glued "patchN";
-        "8u392" and a pre-release suffix ("2.1-beta",
-        "-rc1") are not split
+        token split off: v?N(.N)*[a-z]? plus suffix     "foo 9.3.30.v2021"
+        parts after ".", "-" or "+" that are digit-led  -> "foo" + 9.3.30.v2021
+        or a named build tag (hf, eks, gke, iN, vN),
+        or a glued "patchN"; "8u392", any other word
+        ("8.0-router") and a pre-release or milestone
+        suffix ("2.1-beta", "-rc1", "-M1", ".CR1") are
+        not split (see _TAIL_RE)
 
   Level 1 is a then b: the first of them that equals a title decides, even
   when that product is then refused (a one-word title the publisher does not
@@ -80,13 +82,23 @@ from .normalize import normalize_name, split_version
 
 _TOKEN_RE = re.compile(r"[^\W_]+")
 # A version token: v?N(.N)*, an optional letter, then suffix parts after
-# ".", "-" or "+" (builds, distro tags, "+8") or a glued "patchN". A
-# suffix part that is a pre-release word (beta, rc1, ...) stops the token,
-# so such a name is not split.
-_PRE_RELEASE = "alpha|beta|rc|pre|preview|dev|devel|snapshot|nightly|canary"
+# ".", "-" or "+", or a glued "patchN". A suffix part is digit-led (a
+# build or distro number such as "01", "8", "0r9", "1nodesource1") or one
+# of a few named build tags: "hf" (hotfix), "eks" and "gke" (managed
+# Kubernetes builds), "iN" (an installer build, OpenVPN "I001") and "vN"
+# (a dated build, Jetty ".v20211001"). Any other word ends the token, so
+# "8.0-router" or "1.24.0-plus" is not split. A pre-release or milestone
+# marker is never part of a token, even glued to digits ("1.0rc1",
+# "3.0.0.CR1", "11.0.0-M1", "8.0-milestone-1"), so such a name is not
+# split.
+_PRE_RELEASE = ("alpha|beta|rc|cr|ea|m|milestone|pre|preview|dev|devel|"
+                "snapshot|nightly|canary|a|b")
+_DIGIT_PART = (r"\d+(?:(?!(?:" + _PRE_RELEASE + r")\d*(?![a-z]))"
+               r"[a-z]+\d*)?")
+_BUILD_TAG = r"(?:(?:hf|eks|gke)(?![a-z])|[iv]\d+(?![a-z]))"
 _TAIL_RE = re.compile(
     r"v?\d+(?:\.\d+)*[a-z]?"
-    r"(?:[.+\-](?!(?:" + _PRE_RELEASE + r")(?![a-z]))[0-9a-z]+|patch\d+)*")
+    r"(?:[.+\-](?:" + _DIGIT_PART + "|" + _BUILD_TAG + r")|patch\d+)*")
 _ARCH_WORDS = frozenset(("x64", "x86", "amd64", "arm64", "aarch64",
                          "32-bit", "64-bit"))
 # A locale is a language-region tag (with "-" or "_"): an ISO 639-1

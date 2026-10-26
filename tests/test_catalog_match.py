@@ -168,6 +168,24 @@ class CandidateOrderTests(unittest.TestCase):
                      "1.2+snapshot", "5.0-nightly", "6.0-canary", "1.0-pre"):
             with self.subTest(tail=tail):
                 self.assertIsNone(split_tail("foo " + tail))
+        # Milestone and candidate markers, glued or not.
+        for tail in ("11.0.0-m1", "2.1.0.m2", "3.0.0.cr1", "3.0.0-cr",
+                     "8.0-milestone-1", "17.0.1-ea", "1.0-b1", "1.0rc1",
+                     "1.0-alpha1", "2.0.0.rc2"):
+            with self.subTest(tail=tail):
+                self.assertIsNone(split_tail("foo " + tail))
+        # A word after "-" or "." that is not a named build tag ends the
+        # token: a component or edition word is never read as a build.
+        for tail in ("8.0-router", "10.4.1-agent", "1.24.0-plus",
+                     "8.15-plugin", "128.0.3-esr", "2.0-release",
+                     "1.2-server", "3.1.0.final"):
+            with self.subTest(tail=tail):
+                self.assertIsNone(split_tail("foo " + tail))
+        # Digit-led distro parts and the named tags still split.
+        for tail in ("4.0r9", "2.6.8-i001", "20.10.0-1nodesource1",
+                     "3.1-1ubuntu1"):
+            with self.subTest(tail=tail):
+                self.assertEqual(split_tail("foo " + tail), ("foo", tail))
         for word in ("8u392", "v", "patch20", "2.1-", "+8", "2.1_3"):
             with self.subTest(word=word):
                 self.assertIsNone(split_tail("foo " + word))

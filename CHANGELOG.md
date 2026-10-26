@@ -2,11 +2,13 @@
 
 ## Unreleased
 
-- Matching by product title splits a wider version token off a name: a
-  build, distro or hotfix suffix after `.`, `-` or `+`, or a glued
-  `patchN` (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
-  `Eclipse Temurin 20.0.2+9`). A pre-release suffix (`2.1-beta`, `-rc1`)
-  is still not split.
+- Matching by product title splits a wider version token off a name:
+  digit-led build or distro parts after `.`, `-` or `+`, a few named build
+  tags (`hf`, `eks`, `gke`, `I001`, `.v20211001`) and a glued `patchN`
+  (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
+  `Eclipse Temurin 20.0.2+9`). Other words (`8.0-router`) and pre-release
+  or milestone suffixes (`2.1-beta`, `-rc1`, `-M1`, `.CR1`, `-ea`) are not
+  split.
 - Version-in-name rule: a row with no publisher whose name is a coined
   one-word title plus a version (`nginx 1.24.0`) matches when the version
   decides exactly one cycle. Ordinary words, common names and names
