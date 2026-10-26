@@ -167,11 +167,11 @@ class ManifestTests(DataCase):
     def test_min_tool_version_above_current(self):
         d = self.make()
         m = self.manifest(d)
-        m["min_tool_version"] = "0.3.0"
+        m["min_tool_version"] = "0.4.0"
         self.write_manifest(d, m)
         with self.assertRaises(DataError) as ctx:
             load_data(d, AS_OF)
-        self.assertIn("0.3.0", str(ctx.exception))
+        self.assertIn("0.4.0", str(ctx.exception))
 
     def test_min_tool_version_compare_is_numeric(self):
         d = self.make()

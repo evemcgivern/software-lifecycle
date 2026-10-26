@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 - 2026-10-26
 
 - Matching by product title splits a wider version token off a name:
   digit-led build or distro parts after `.`, `-` or `+`, a few named build

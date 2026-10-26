@@ -92,7 +92,7 @@ class BundledCatalogTests(unittest.TestCase):
 
     def test_manifest_is_format_2_and_lists_the_new_files(self):
         self.assertEqual(MANIFEST["data_format"], 2)
-        self.assertEqual(MANIFEST["min_tool_version"], "0.2.0")
+        self.assertEqual(MANIFEST["min_tool_version"], "0.3.0")
         self.assertIn("products.json", MANIFEST["files"])
         self.assertIn("curation.json", MANIFEST["files"])
         self.assertNotIn(
