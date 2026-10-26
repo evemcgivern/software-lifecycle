@@ -682,5 +682,76 @@ class WithFixtureData(unittest.TestCase):
         self.assertEqual(by["Demo OS 2.0"]["state"], "supported")
 
 
+ROOT = Path(__file__).resolve().parents[1]
+EXAMPLES = ROOT / "examples"
+FIXTURE_DATA = ROOT / "tests" / "fixtures" / "data"
+
+
+def demo_and_parent_reports():
+    from swlc import cli
+    out = [cli.build(
+        str(EXAMPLES / "software-inventory.csv"), as_of=AS_OF,
+        data=str(FIXTURE_DATA),
+        golden=str(EXAMPLES / "golden-sources.csv"),
+        exceptions=str(EXAMPLES / "exceptions.csv"),
+        tracking=str(EXAMPLES / "tracking.csv"))[0]]
+    for path in sorted((ROOT / "tests" / "benchmark" / "parents").glob(
+            "*.csv")):
+        exp = json.loads(path.with_suffix(".expected.json").read_text())
+        out.append(cli.build(str(path), as_of=date.fromisoformat(
+            exp["as_of"]))[0])
+    return out
+
+
+class ClassCounts(unittest.TestCase):
+    def test_breakdown_sums_to_unmatched(self):
+        reports = demo_and_parent_reports()
+        self.assertGreater(len(reports), 10)
+        seen = set()
+        for result in reports:
+            counts = result["counts"]
+            parts = counts["unmatched_breakdown"]
+            self.assertEqual(set(parts), {"needs_review", "parts_with_parent",
+                                          "parts_parent_absent"})
+            self.assertEqual(sum(parts.values()), counts["lists"]["unmatched"])
+            seen.update(k for k, v in parts.items() if v)
+        self.assertEqual(seen, {"needs_review", "parts_with_parent",
+                                "parts_parent_absent"})
+
+    def test_breakdown_rules(self):
+        result = demo_and_parent_reports()[0]
+        by_id = {it["id"]: it for it in result["items"]}
+        want = {"needs_review": 0, "parts_with_parent": 0,
+                "parts_parent_absent": 0}
+        for gid in result["lists"]["unmatched"]:
+            it = by_id[gid]
+            if it["classification"] in ("unknown", "governable"):
+                want["needs_review"] += 1
+            elif it["classification"] == "bundle_member" \
+                    and it["inherited_from"]:
+                want["parts_with_parent"] += 1
+            else:
+                want["parts_parent_absent"] += 1
+        self.assertEqual(result["counts"]["unmatched_breakdown"], want)
+        self.assertEqual(sum(1 for v in want.values() if v), 3)
+
+    def test_classification_counts(self):
+        for result in demo_and_parent_reports():
+            counts = result["counts"]["classification"]
+            self.assertEqual(list(counts), ["governable", "component",
+                                            "bundle_member", "unknown"])
+            self.assertEqual(sum(counts.values()), result["counts"]["items"])
+            for name, n in counts.items():
+                self.assertEqual(n, sum(1 for it in result["items"]
+                                        if it["classification"] == name))
+        from swlc import cli
+        result = cli.build(str(ROOT / "tests" / "benchmark" / "parents"
+                               / "one-os.csv"), as_of=AS_OF)[0]
+        counts = result["counts"]["classification"]
+        self.assertEqual(counts["governable"], 1)
+        self.assertEqual(counts["bundle_member"], 2)
+        self.assertEqual(counts["component"] + counts["unknown"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

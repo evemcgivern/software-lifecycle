@@ -324,6 +324,28 @@ class UsageTests(unittest.TestCase):
             self.assertIn("## " + name, body)
 
 
+def usage_section(heading: str) -> str:
+    body = text(DOCS / "usage.md")
+    start = body.find("## " + heading + "\n")
+    if start < 0:
+        return ""
+    end = body.find("\n## ", start + 1)
+    return body[start:] if end < 0 else body[start:end]
+
+
+class ClassDefinitionsDocTests(unittest.TestCase):
+    def test_usage_defines_each_class(self):
+        section = usage_section("What kind of item this is")
+        self.assertTrue(section, "usage.md has no classification section")
+        flat = " ".join(section.split())
+        for name in ("governable", "component", "bundle_member", "unknown"):
+            self.assertIn("`%s`" % name, flat)
+        self.assertIn("Never default to governable.", flat)
+        for sent in re.split(r"(?<=[.!?])\s+", flat):
+            if "ISO/IEC 19770-2 clause" in sent:
+                self.assertIn("Unverified", sent)
+
+
 def code_constants() -> set:
     out = set()
     for mod in (assess, matching):
@@ -362,6 +384,9 @@ class SchemaTests(unittest.TestCase):
             "Top-level keys": set(r),
             "data_release": set(r["data_release"]),
             "counts": set(r["counts"]),
+            "counts.classification": set(r["counts"]["classification"]),
+            "counts.unmatched_breakdown": set(
+                r["counts"]["unmatched_breakdown"]),
             "meta": set(r["meta"]),
             "meta.data_release": set(r["meta"]["data_release"]),
             "meta.override_hashes": set(r["meta"]["override_hashes"]),
@@ -569,6 +594,41 @@ class DataFolderDocsTests(unittest.TestCase):
         from swlc.data import NO_CATALOG_WARNING
         flat = " ".join(self.section().split())
         self.assertIn(NO_CATALOG_WARNING, flat)
+
+    def test_fixed_classification_text_is_quoted(self):
+        from swlc.assess import PARENTS_ABSENT
+        from swlc.report import HIDDEN_LINE, INHERITED_HEADING
+        flat = " ".join((text(DOCS / "report-schema.md") + " " +
+                         text(DOCS / "usage.md")).split())
+        self.assertIn(PARENTS_ABSENT.replace("%d ", ""), flat)
+        self.assertIn(HIDDEN_LINE.replace("%d ", "").split(":")[0], flat)
+        self.assertIn(INHERITED_HEADING, flat)
+
+    def test_agents_and_contributing_agree_on_floor_keys(self):
+        floor = json.loads(text(ROOT / "tests" / "benchmark" / "floor.json"))
+        for name in ("AGENTS.md", "CONTRIBUTING.md"):
+            flat = " ".join(text(ROOT / name).split())
+            for key in floor:
+                if key != "note":
+                    self.assertIn("`%s`" % key, flat, (name, key))
+
+    def test_changelog_mentions_classification(self):
+        body = text(ROOT / "CHANGELOG.md")
+        start = body.index("## Unreleased")
+        end = body.find("\n## ", start + 5)
+        sec = " ".join(body[start:end if end > 0 else None].split())
+        self.assertIn("classification", sec)
+        self.assertIn("`--governable-only`", sec)
+        self.assertIn("parent column", sec)
+        self.assertIn("`--fail-on` is unchanged", sec)
+
+    def test_agents_layout_lists_every_swlc_module(self):
+        body = text(ROOT / "AGENTS.md")
+        start = body.index("## Layout")
+        layout = body[start:body.index("\n## ", start + 5)]
+        for path in sorted((ROOT / "swlc").glob("*.py")):
+            if path.name != "__init__.py":
+                self.assertIn("`swlc/%s`" % path.name, layout, path.name)
 
     def test_hand_kept_and_generated_files_match_the_agents_rule(self):
         sec = self.section()

@@ -1,0 +1,31 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft Access database engine 2016 (English)|Microsoft Corporation|16.0.4366.1000": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Office Professional Plus 2019|Microsoft Corporation|16.0.10399",
+      "inherited_state": "past_eol",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Microsoft Office Professional Plus 2019|Microsoft Corporation|16.0.10399"
+      }
+    },
+    "Microsoft Access database engine 2016 Language Pack (French)|Microsoft Corporation|16.0.4366.1000": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Access database engine 2016 (English)|Microsoft Corporation|16.0.4366.1000",
+      "inherited_state": "unmatched",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Microsoft Access database engine 2016 (English)|Microsoft Corporation|16.0.4366.1000"
+      }
+    },
+    "Microsoft Office Professional Plus 2019|Microsoft Corporation|16.0.10399": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

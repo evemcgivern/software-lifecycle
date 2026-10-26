@@ -77,6 +77,11 @@ guesses.
 | count | count, install count, installs, installations, installed count, number of installs, quantity, qty, instances, device count |
 | export_eol | export eol, end of life, eol, eol date, end of life date, end of life eol |
 | export_support | export support, end of support, eos, end of support date, support end date, support end |
+| parent | parent, parent software, suite, bundle |
+
+The `parent` column is optional. It names the row's parent software, such
+as the suite a part belongs to. A blank or placeholder cell (`n/a`, `none`)
+means no parent. See "The Parent column" in [docs/usage.md](docs/usage.md).
 
 The `count` and `export_support` headings are accepted but not used in
 this version: the tool reads them and does nothing with them. `rows` in the

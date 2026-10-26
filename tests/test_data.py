@@ -546,6 +546,16 @@ GOOD_ALLOW = {"product": "alpha", "reason": "vendor says so",
               "source": "https://example.com/a", "gold": "a|b|c"}
 
 
+GOOD_CLASS_ROW = {"name": "alpha tool", "publisher": "alpha",
+                  "class": "governable", "reason": "standalone app",
+                  "source": "https://example.com/c", "gold": "a|b|c"}
+GOOD_CLASS_PROD = {"class": "governable", "reason": "standalone runtime",
+                   "source": "https://example.com/r"}
+GOOD_PARENT = {"name_prefix": "alpha writer", "publisher": "alpha",
+               "parent": "alpha", "reason": "sold in the suite",
+               "source": "https://example.com/s", "gold": "a|b|c"}
+
+
 def pa(*phrases, **over):
     """A publisher_aliases entry."""
     entry = {"phrases": list(phrases), "reason": "the vendor's own name",
@@ -783,6 +793,92 @@ class CurationSchemaTests(DataCase):
         with self.assertRaises(DataError):
             validate_curation(curation_obj(no_cycle_versions={"gone": good}),
                               ["alpha"])
+
+    def test_curation_new_keys_optional(self):
+        validate_curation(curation_obj())
+        self.assertIs(validate_curation(make_fixtures.CURATION),
+                      make_fixtures.CURATION)
+        obj = curation_obj(classification_rows=[GOOD_CLASS_ROW],
+                           classification_products={"alpha": GOOD_CLASS_PROD},
+                           bundle_parents=[GOOD_PARENT])
+        self.assertIs(validate_curation(obj, ["alpha"]), obj)
+        validate_curation(curation_obj(classification_rows=[],
+                                       classification_products={},
+                                       bundle_parents=[]))
+
+    def test_curation_rejects_bad_class(self):
+        bad = [
+            curation_obj(classification_rows=[dict(GOOD_CLASS_ROW,
+                                                   **{"class": "app"})]),
+            curation_obj(classification_rows=[dict(
+                GOOD_CLASS_ROW, **{"class": "bundle_member"})]),
+            curation_obj(classification_products={"alpha": dict(
+                GOOD_CLASS_PROD, **{"class": "bundle_member"})}),
+            curation_obj(classification_products={"alpha": dict(
+                GOOD_CLASS_PROD, **{"class": None})}),
+            curation_obj(classification_rows={}),
+            curation_obj(classification_rows=[dict(GOOD_CLASS_ROW, extra=1)]),
+            curation_obj(classification_rows=[dict(GOOD_CLASS_ROW,
+                                                   name="Alpha  Tool")]),
+            curation_obj(classification_rows=[dict(GOOD_CLASS_ROW,
+                                                   publisher="a b")]),
+            curation_obj(classification_rows=[dict(GOOD_CLASS_ROW,
+                                                   source="http://x.org")]),
+            curation_obj(classification_rows=[dict(GOOD_CLASS_ROW,
+                                                   gold="a|b")]),
+            curation_obj(classification_rows=[GOOD_CLASS_ROW,
+                                              dict(GOOD_CLASS_ROW)]),
+            curation_obj(classification_rows=[
+                dict(GOOD_CLASS_ROW, name="zeta"), GOOD_CLASS_ROW]),
+            curation_obj(classification_products=[]),
+            curation_obj(classification_products={"alpha": dict(
+                GOOD_CLASS_PROD, reason="")}),
+            curation_obj(classification_products={"Alpha": GOOD_CLASS_PROD}),
+        ]
+        for obj in bad:
+            with self.subTest(obj=obj):
+                with self.assertRaises(DataError):
+                    validate_curation(obj)
+
+    def test_class_product_error_names_the_product(self):
+        with self.assertRaises(DataError) as ctx:
+            validate_curation(curation_obj(classification_products={
+                "alpha": dict(GOOD_CLASS_PROD, **{"class": "bad"})}))
+        self.assertIn("alpha", str(ctx.exception))
+
+    def test_curation_rejects_bundle_parent_without_gold(self):
+        bad = [
+            {k: v for k, v in GOOD_PARENT.items() if k != "gold"},
+            dict(GOOD_PARENT, gold=""), dict(GOOD_PARENT, gold="a|b"),
+            dict(GOOD_PARENT, extra=1), dict(GOOD_PARENT, publisher=""),
+            dict(GOOD_PARENT, publisher="Alpha"),
+            dict(GOOD_PARENT, publisher="alpha corp"),
+            dict(GOOD_PARENT, name_prefix=""),
+            dict(GOOD_PARENT, name_prefix="Alpha Tool"),
+            dict(GOOD_PARENT, name_prefix="alpha  tool"),
+            dict(GOOD_PARENT, parent="Alpha"),
+            dict(GOOD_PARENT, source="ftp://example.com"),
+            dict(GOOD_PARENT, reason=""),
+        ]
+        for entry in bad:
+            with self.subTest(entry=entry):
+                with self.assertRaises(DataError):
+                    validate_curation(curation_obj(bundle_parents=[entry]))
+        for value in ({}, [GOOD_PARENT, dict(GOOD_PARENT)],
+                      [dict(GOOD_PARENT, name_prefix="zeta"), GOOD_PARENT]):
+            with self.assertRaises(DataError):
+                validate_curation(curation_obj(bundle_parents=value))
+
+    def test_curation_named_parents_must_exist(self):
+        for obj in (
+                curation_obj(bundle_parents=[dict(GOOD_PARENT,
+                                                  parent="gone")]),
+                curation_obj(classification_products={
+                    "gone": GOOD_CLASS_PROD})):
+            with self.subTest(obj=obj):
+                validate_curation(obj)              # fine without ids
+                with self.assertRaises(DataError):
+                    validate_curation(obj, ["alpha"])
 
     def test_every_named_product_must_exist_when_ids_are_given(self):
         known = ["alpha"]

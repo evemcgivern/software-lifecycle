@@ -1,0 +1,672 @@
+"""What kind of item a row is: governable, component, bundle_member, unknown.
+
+``classify`` is pure and per item: a name, a version, the matched product
+and the loaded data in, one Classification out. The first confident hit
+wins and every signal that fired is recorded in ``basis``. Publisher only
+confirms a curated entry; it never decides a class by itself.
+
+``resolve_parents`` then uses the whole inventory: the Parent column, the
+one OS item an OS part belongs to, and the parent's dates shown against a
+part. It never changes a part's own state or date fields.
+"""
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+
+from .catalog_match import CORPORATE_WORDS, strip_arch, tokens
+from .matching import NO_CYCLE, match_product
+from .normalize import best_cycle, normalize_name, split_version
+
+CLASSES = ("governable", "component", "bundle_member", "unknown")
+GOVERNABLE_CATEGORIES = frozenset({"server-app", "app", "os", "database",
+                                   "lang", "service"})
+# Classes a curated row or product entry may set. bundle_member needs a
+# parent, so it comes only from bundle_parents.
+CURATED_CLASSES = ("governable", "component", "unknown")
+
+# Signal codes (classification_basis)
+ROW_OVERRIDE = "row_override"
+PRODUCT_OVERRIDE = "product_override"
+CURATED_PARENT = "curated_parent"
+SUITE_NO_FIT = "suite_no_fit"
+NAME_PART = "name_part"
+NAME_OS_PART = "name_os_part"
+CATEGORY = "category_governable"
+STANDALONE = "standalone_by_default"
+DEVICE = "device_category"
+UNCATEGORIZED = "category_unknown"
+NO_SIGNAL = "no_signal"
+VERSION_SHAPE = "version_shape"
+# Parent signal codes (resolve_parents)
+PARENT_COLUMN = "parent_column"
+OS_PARENT = "os_parent"
+PARENT_AMBIGUOUS = "parent_ambiguous"
+PARENT_NOT_FOUND = "parent_not_found"
+PARENT_IS_PART = "parent_is_part"
+PARENT_ABSENT = "parent_absent"
+PARENT_NO_DATE = "parent_no_date"
+PARENT_IS_SELF = "parent_is_self"
+PARENT_CYCLE = "parent_cycle"
+
+INHERITED_LABEL = "inherited from parent"
+# Parent states that count toward counts.inherited_attention.
+inherited_states = ("past_eol", "ends_soon", "mainstream_ended")
+PART_CLASSES = ("component", "bundle_member")
+
+_VERSION_TOKEN = re.compile(r"v?\d+(?:\.\d+)*[a-z]?")
+_YEAR_OR_VERSION = re.compile(r"\d+(?:\.\d+)*(?:[a-z]+\d*)?")
+_TRAILING_GROUPS = re.compile(r"(?:\s*[(\[][^()\[\]]*[)\]])+\Z")
+_TRAILING_SEP = re.compile(r"[\s\-:,;]+\Z")
+
+# os_part: KB numbers anywhere; "update for" leading; "hotfix" leading or
+# last; "language pack" as the last words; "driver" as the last word, or
+# "driver [version] for ...", after at least one other word.
+_KB = re.compile(r"\bkb\d{6,8}\b")
+_UPDATE_FOR = re.compile(r"\A(?:security )?update for\b")
+_HOTFIX = re.compile(r"\Ahotfix\b|\bhotfix\Z")
+_LANGUAGE_PACK = re.compile(r"\blanguage pack\Z")
+_DRIVER = re.compile(r"\S \bdriver(?:\Z| (?:\d+(?:\.\d+)* )?for \S)")
+# part: a C++ runtime year anywhere; "redistributable" last; font, codec,
+# extension, plugin, add-in (or plural) last after another word, or
+# "add-in for ...". A trailing "Runtime" or "SDK" is not a part word.
+_VCPP = re.compile(r"\bvisual c\+\+ 20\d\d\b")
+_REDIST = re.compile(r"\bredistributable\Z")
+_LAST_PART = re.compile(
+    r"\S \b(?:font|codec|extension|plugin|plug-in|add-in)s?\Z"
+    r"|\S \badd-in for \S")
+# One lowercase package token: lib*, *-dev, or a font package (font-*,
+# fonts-*, ttf-*). A lib* name that is a catalog title is skipped. A *-dev
+# name counts only when a segment starts with "lib" or the name holds a
+# digit (libssl-dev, zlib1g-dev, python3-dev, linux-libc-dev; not azure-dev).
+# A lib* name ending in a tool word is an app, not a library
+# (librespeed-cli, libpostal-rest).
+_LIB = re.compile(r"\Alib\S+\Z")
+_DEV = re.compile(r"\A(?:\S*\d\S*|(?:\S+-)?lib\S*)-dev\Z")
+_LIB_TOOL = re.compile(
+    r"-(?:cli|server|daemon|rest|tools|viewer|manager|gui)\Z")
+_FONT_PACKAGE = re.compile(r"\A(?:fonts?|ttf)-\S+\Z")
+
+
+@dataclass(frozen=True)
+class Classification:
+    cls: str
+    basis: tuple
+    parent_ref: dict | None = None
+
+
+def _base(name: str) -> str:
+    """Normalized name without architecture or locale groups, a trailing
+    version token, or trailing separators."""
+    words = strip_arch(normalize_name(name or "")).split()
+    if len(words) > 1 and _VERSION_TOKEN.fullmatch(words[-1]):
+        words.pop()
+    return _TRAILING_SEP.sub("", " ".join(words))
+
+
+def _part(name: str):
+    """(kind, is_lib, last word) for the first pattern that fires, or
+    (None, False, None)."""
+    base = _base(name)
+    bare = _TRAILING_SEP.sub("", _TRAILING_GROUPS.sub("", base))
+    last = bare.rsplit(" ", 1)[-1] if bare else None
+    if _KB.search(base) or _UPDATE_FOR.search(bare) or _HOTFIX.search(bare) \
+            or _LANGUAGE_PACK.search(bare) or _DRIVER.search(bare):
+        return "os_part", False, last
+    if _VCPP.search(bare) or _REDIST.search(bare) \
+            or _LAST_PART.search(bare):
+        return "part", False, last
+    raw = (name or "").strip()
+    if raw == raw.lower() and " " not in bare:
+        if _DEV.fullmatch(bare) or (_LIB.fullmatch(bare)
+                                    and not _LIB_TOOL.search(bare)):
+            return "part", True, last
+        if _FONT_PACKAGE.fullmatch(bare):
+            return "part", False, last
+    return None, False, last
+
+
+def part_kind(name: str) -> str | None:
+    """None, "part" or "os_part", from the name alone."""
+    return _part(name)[0]
+
+
+# The catalog's ids and normalized titles, built once per catalog object:
+# (catalog, frozenset). One entry only, so a run never holds two catalogs.
+_LEADS: list = [None, frozenset()]
+
+
+def _catalog_names(catalog: dict) -> frozenset:
+    if _LEADS[0] is not catalog:
+        names = set(catalog)
+        names.update(normalize_name(rec.get("title") or "")
+                     for rec in catalog.values())
+        _LEADS[0], _LEADS[1] = catalog, frozenset(names)
+    return _LEADS[1]
+
+
+def _catalog_lead(base: str, catalog: dict) -> bool:
+    """True when a one-word name is a catalog product's id or title, or
+    starts with one followed by "-" (libreoffice, libreoffice-writer)."""
+    names = _catalog_names(catalog)
+    return base in names or base.split("-", 1)[0] in names
+
+
+def _publisher_has(word: str, publisher: str) -> bool:
+    return not word or word in tokens(publisher)
+
+
+def _row_hit(rows, name: str, publisher: str):
+    forms = {normalize_name(name or ""), _base(name)}
+    for row in rows:
+        if row["name"] in forms and _publisher_has(row["publisher"],
+                                                   publisher):
+            return row
+    return None
+
+
+def _leading(base: str, prefix: str):
+    """The words after prefix when prefix is the base's leading whole
+    words, else None."""
+    words, want = base.split(), prefix.split()
+    if words[:len(want)] != want:
+        return None
+    return words[len(want):]
+
+
+def _parent_hit(parents, base: str, publisher: str):
+    """The entry with the longest matching prefix, and the words after it."""
+    best, best_tail = None, None
+    for entry in parents:
+        tail = _leading(base, entry["name_prefix"])
+        if tail is not None and _publisher_has(entry["publisher"],
+                                               publisher) \
+                and (best is None or len(entry["name_prefix"].split())
+                     > len(best["name_prefix"].split())):
+            best, best_tail = entry, tail
+    return best, best_tail
+
+
+# Words a suite tail may hold besides year and version words: separators,
+# the word "version", a KB number in brackets, a three-letter language code
+# in brackets ("(deu)"), and the language word on Office proofing tools.
+_TAIL_WORDS = frozenset(("-", "version", "english"))
+_TAIL_GROUP = re.compile(r"\((?:kb\d{6,8}|[a-z]{3})\)")
+# "for x64-based systems" on Windows update names.
+_FOR_SYSTEMS = re.compile(r"(?:x64|x86|arm64)-based")
+
+
+def _tail_words(tail: list):
+    """The year and version words of a suite tail, or None when the tail
+    holds any other word."""
+    words = list(tail)
+    if len(words) >= 3 and words[-1] == "systems" \
+            and _FOR_SYSTEMS.fullmatch(words[-2]) and words[-3] == "for":
+        words = words[:-3]
+    out = []
+    for word in words:
+        if _YEAR_OR_VERSION.fullmatch(word):
+            out.append(word)
+        elif word not in _TAIL_WORDS and not _TAIL_GROUP.fullmatch(word):
+            return None
+    return out
+
+
+def _suite_cycles(tail: list, version: str, cycles: list) -> set:
+    """Cycles of the parent that fit. The tail after the prefix may hold
+    only year and version words (and the few words above); they are read in
+    order as one version ("10 version 22h2" gives 10, 22h2). With no such
+    word the version column is used. Any other word: no fit."""
+    found = _tail_words(tail[:-1] if tail and _TAIL_GROUP.fullmatch(tail[-1])
+                        else tail)
+    if found is None:
+        return set()
+    parts = []
+    for word in found:
+        parts.extend(split_version(word))
+    if not parts:
+        parts = split_version(version)
+    return set(best_cycle(parts, cycles)[1]) if parts else set()
+
+
+def _has_version(item: dict) -> bool:
+    if (item.get("version") or "").strip():
+        return True
+    words = strip_arch(normalize_name(item.get("name") or "")).split()
+    return any(_VERSION_TOKEN.fullmatch(w) and any(c.isdigit() for c in w)
+               for w in words)
+
+
+def classify(item: dict, publisher: str, data) -> Classification:
+    """Classify one item (the dict assess builds) from its own evidence."""
+    curation = data.curation or {}
+    catalog = data.catalog or {}
+    name, version = item.get("name") or "", item.get("version") or ""
+    product = item.get("product")
+    category = (catalog.get(product) or {}).get("category") if product \
+        else None
+    prod_entry = (curation.get("classification_products") or {}).get(
+        product) if product else None
+    basis = []
+    decided = None
+    parent_ref = None
+
+    # 1. curated row
+    row = _row_hit(curation.get("classification_rows") or [], name,
+                   publisher)
+    if row is not None:
+        basis.append(ROW_OVERRIDE)
+        decided = row["class"]
+
+    # 2. curated suite parent
+    base = _base(name)
+    entry, tail = _parent_hit(curation.get("bundle_parents") or [],
+                              strip_arch(normalize_name(name)), publisher)
+    if entry is not None:
+        labels = [c["cycle"] for c in data.products.get(entry["parent"], [])]
+        fits = _suite_cycles(tail, version, labels)
+        if len(fits) == 1:
+            basis.append(CURATED_PARENT)
+            if decided is None:
+                decided = "bundle_member"
+                parent_ref = {"kind": "product",
+                              "value": "%s/%s" % (entry["parent"],
+                                                  fits.pop()),
+                              "basis": CURATED_PARENT}
+        else:
+            basis.append(SUITE_NO_FIT)
+            decided = decided or "unknown"
+
+    # 3. name pattern. A trailing "Runtime" or "SDK" is not a part signal
+    # (ruling 2026-10-25): such names fall through to the rules below.
+    standalone = category == "lang" or (
+        prod_entry is not None and prod_entry["class"] == "governable")
+    kind, is_lib, _last = _part(name)
+    if kind is not None and is_lib and _catalog_lead(base, catalog):
+        kind = None
+    if kind is not None:
+        basis.append(NAME_OS_PART if kind == "os_part" else NAME_PART)
+        decided = decided or "component"
+
+    # 4. curated product class, 5. catalog category
+    governable = False
+    if prod_entry is not None:
+        basis.append(PRODUCT_OVERRIDE)
+        governable = prod_entry["class"] == "governable"
+        if decided is None and not governable:
+            decided = prod_entry["class"]
+    elif category in GOVERNABLE_CATEGORIES:
+        basis.append(CATEGORY)
+        governable = True
+    if governable and standalone:
+        basis.append(STANDALONE)
+    if governable and decided is None:
+        if _has_version(item):
+            decided = "governable"
+        else:
+            basis.append(VERSION_SHAPE)
+            decided = "unknown"
+
+    # 6. nothing confident
+    if decided is None:
+        if category == "device":
+            basis.append(DEVICE)
+        elif category is not None:
+            basis.append(UNCATEGORIZED)
+        else:
+            basis.append(NO_SIGNAL)
+        decided = "unknown"
+    return Classification(decided, tuple(basis), parent_ref)
+
+
+def apply_classification(items: list, groups: dict, data) -> None:
+    """Set the classification keys on every item, in place."""
+    for it in items:
+        result = classify(it, it.get("publisher") or "", data)
+        it["classification"] = result.cls
+        it["classification_basis"] = list(result.basis)
+        it["parent_ref"] = result.parent_ref
+        it["inherited_from"] = None
+        it["inherited_lifecycle"] = None
+    resolve_parents(items, groups, data)
+
+
+_GROUPS = re.compile(r"[(\[][^()\[\]]*[)\]]")
+
+
+def _os_token(name: str):
+    """The first year or version word in the name, outside brackets (so not
+    a KB number), as version parts; None when the name has none."""
+    words = _GROUPS.sub(" ", strip_arch(normalize_name(name or ""))).split()
+    for word in words:
+        if _YEAR_OR_VERSION.fullmatch(word):
+            return split_version(word)
+    return None
+
+
+def _agrees(token, cycle) -> bool:
+    if token is None:
+        return True
+    parts = split_version(cycle or "")
+    n = min(len(token), len(parts))
+    return n > 0 and token[:n] == parts[:n]
+
+
+def _locked(it: dict) -> bool:
+    """A curated row that makes the item a component or unknown: no parent
+    signal changes it. A curated governable row does not lock it."""
+    return ROW_OVERRIDE in it["classification_basis"] \
+        and it["classification"] in ("component", "unknown")
+
+
+def _no_link(it: dict, code: str) -> None:
+    """No parent can be named: unknown, except a part that is already a
+    component by its own evidence (D2)."""
+    it["classification_basis"].append(code)
+    it["parent_ref"] = None
+    if it["classification"] != "component":
+        it["classification"] = "unknown"
+
+
+def _link(it: dict, kind: str, value: str, code: str) -> None:
+    it["classification_basis"].append(code)
+    it["classification"] = "bundle_member"
+    it["parent_ref"] = {"kind": kind, "value": value, "basis": code}
+    if kind != "product":
+        it["inherited_from"] = value
+
+
+# Parent cells that mean "no parent": treated as blank.
+_PLACEHOLDERS = frozenset(("n/a", "na", "none", "null", "nil", "unknown",
+                           "tbd", "-", "--", "n.a.", "n.a", "not applicable",
+                           "not available", "no parent"))
+
+
+def _parent_cells(group: dict) -> list:
+    """The group's Parent cells without placeholders; cells that differ
+    only in case or spacing count once (the first one is kept)."""
+    out, seen = [], set()
+    for p in group.get("parents") or []:
+        key = normalize_name(p)
+        if key in _PLACEHOLDERS or key in seen:
+            continue
+        seen.add(key)
+        out.append(p)
+    return out
+
+
+def _firm(publisher: str) -> set:
+    return set(tokens(publisher)) - CORPORATE_WORDS
+
+
+def _same_firm(a: str, b: str) -> bool:
+    """Publishers agree when either is empty (after corporate words) or they
+    share a word."""
+    fa, fb = _firm(a), _firm(b)
+    return not fa or not fb or bool(fa & fb)
+
+
+def _padded(name: str) -> str:
+    """The normalized name without bracket groups, with a space at each
+    end, so a phrase test with spaces is a whole-word test."""
+    words = _GROUPS.sub(" ", strip_arch(normalize_name(name or ""))).split()
+    return " %s " % " ".join(words)
+
+
+class _Inventory:
+    """Lookups built once per resolve_parents call."""
+
+    def __init__(self, items: list, data) -> None:
+        self.items = items
+        self.catalog = data.catalog or {}
+        self.index = data.matching_index()
+        self.by_id = {it["id"]: it for it in items}
+        self.by_name: dict = {}
+        self.by_product: dict = {}
+        self.by_cycle: dict = {}
+        self.os_items = []
+        self.padded = {}
+        # parts as classify left them, so the order of resolution does not
+        # change which rows count as a second OS fit
+        self.parts = {it["id"] for it in items
+                      if it["classification"] in PART_CLASSES}
+        for it in items:
+            self.by_name.setdefault(normalize_name(it.get("name") or ""),
+                                    []).append(it)
+            self.padded[it["id"]] = _padded(it.get("name"))
+            product = it.get("product")
+            if product:
+                self.by_product.setdefault(product, []).append(it)
+                self.by_cycle.setdefault((product, it.get("cycle")),
+                                         []).append(it)
+                if self.category(product) == "os":
+                    self.os_items.append(it)
+        self._forms: dict = {}
+        self._lookalike: dict = {}
+
+    def category(self, product: str):
+        return (self.catalog.get(product) or {}).get("category")
+
+    def forms(self, product: str) -> tuple:
+        """Phrases that name the OS: its normalized title, and the title
+        without leading vendor words ("microsoft windows", "windows")."""
+        if product not in self._forms:
+            rec = self.catalog.get(product) or {}
+            title = normalize_name(rec.get("title") or product).split()
+            vendor = set(rec.get("vendors") or [])
+            for phrase in self.index.phrases.get(product, ()):
+                vendor.update(phrase)
+            out = [" ".join(title)]
+            while len(title) > 1 and title[0] in vendor:
+                title = title[1:]
+                out.append(" ".join(title))
+            self._forms[product] = tuple(" %s " % f for f in out)
+        return self._forms[product]
+
+    def names(self, it: dict, product: str) -> bool:
+        padded = self.padded[it["id"]]
+        return any(form in padded for form in self.forms(product))
+
+    def confirms(self, product: str, publisher: str) -> bool:
+        return self.index.confirms(product, tokens(publisher or ""))
+
+    def has_lookalike(self, os_item: dict, token) -> bool:
+        """Whether another row, not a part, also looks like this OS: an OS
+        item, or an unmatched row, whose name holds the OS's title, whose
+        publisher the OS product confirms, and whose version can agree."""
+        key = (os_item["id"], tuple(token) if token else None)
+        if key not in self._lookalike:
+            product = os_item["product"]
+            found = False
+            for x in self.items:
+                if x is os_item or x["id"] in self.parts:
+                    continue
+                other = x.get("product")
+                if other and self.category(other) != "os":
+                    continue
+                if not self.names(x, product) \
+                        or not self.confirms(product, x.get("publisher")):
+                    continue
+                if other:
+                    fits = _agrees(token, x.get("cycle"))
+                else:
+                    mine = _os_token(x.get("name"))
+                    fits = token is None or mine is None or (
+                        token[:len(mine)] == mine[:len(token)])
+                if fits:
+                    found = True
+                    break
+            self._lookalike[key] = found
+        return self._lookalike[key]
+
+
+def _column(it: dict, value: str, inv: _Inventory, data) -> bool:
+    """Link from the Parent column. True when the cycle-less product link
+    came from a version that fits no cycle (so no item can be the parent)."""
+    hits = _name_hits(it, value, inv)
+    if len(hits) > 1:
+        _no_link(it, PARENT_AMBIGUOUS)
+        return False
+    if hits:
+        _link(it, "item", hits[0]["id"], PARENT_COLUMN)
+        return False
+    match = match_product(value, "", data.aliases, data.products,
+                          catalog_index=inv.index,
+                          publisher=it.get("publisher") or "")
+    if match.product is None:
+        _no_link(it, PARENT_NOT_FOUND)
+        return False
+    if match.product == it.get("product"):
+        # The column names the item's own product family ("Microsoft
+        # Office" on an Office row): the row is not a part of itself.
+        it["classification_basis"].append(PARENT_IS_SELF)
+        return False
+    cycle = match.cycle.get("cycle") if match.cycle else None
+    ref = it["parent_ref"]
+    if cycle is None and ref is not None and ref["kind"] == "product" \
+            and ref["value"].partition("/")[0] == match.product:
+        # A curated suite link already found the cycle; keep it.
+        it["classification_basis"].append(PARENT_COLUMN)
+        it["classification"] = "bundle_member"
+        return False
+    _link(it, "product", "%s/%s" % (match.product, cycle) if cycle
+          else match.product, PARENT_COLUMN)
+    return cycle is None and match.reason == NO_CYCLE
+
+
+def _name_hits(it: dict, value: str, inv: _Inventory) -> list:
+    """Other rows whose normalized name equals the value. Two or more stay
+    ambiguous whatever their publishers; a single row counts only when its
+    publisher agrees with the part's."""
+    hits = [o for o in inv.by_name.get(normalize_name(value), [])
+            if o is not it]
+    if len(hits) == 1 and not _same_firm(hits[0].get("publisher") or "",
+                                         it.get("publisher") or ""):
+        return []
+    return hits
+
+
+def _is_self(it: dict, value: str) -> bool:
+    norm = normalize_name(value)
+    return norm in (normalize_name(it.get("name") or ""),
+                    _base(it.get("name")))
+
+
+def _os_parent(it: dict, inv: _Inventory) -> None:
+    """Link an OS part to the one OS item its name names, that fits by
+    publisher and, when the part names one, by version. Otherwise the class
+    is left as it is. An OS product with no vendor phrase cannot refute the
+    publisher, so it still counts as a second fit; another row that looks
+    like the same OS also counts. Only a confirmed single fit is linked."""
+    if inv.index is None:
+        return
+    pub = it.get("publisher") or ""
+    token = _os_token(it.get("name"))
+    found = [o for o in inv.os_items if o is not it
+             and (inv.confirms(o["product"], pub)
+                  or not inv.index.phrases.get(o["product"]))
+             and _agrees(token, o.get("cycle"))
+             and inv.names(it, o["product"])]
+    if len(found) != 1 or not inv.confirms(found[0]["product"], pub) \
+            or inv.has_lookalike(found[0], token):
+        return
+    _link(it, "os", found[0]["id"], OS_PARENT)
+
+
+_YEAR = re.compile(r"(?:19|20)\d\d")
+
+
+def _name_year(name: str):
+    """The first year word in the name, outside brackets, or None."""
+    words = _GROUPS.sub(" ", strip_arch(normalize_name(name or ""))).split()
+    for word in words:
+        if _YEAR.fullmatch(word):
+            return word
+    return None
+
+
+def _year_cycle(cycle) -> bool:
+    """Whether a cycle is named by a year (2016, 2024-ltsc), so a year in
+    a part's name can be compared with it. Version cycles (15.0) cannot."""
+    parts = split_version(cycle or "")
+    return bool(parts) and bool(_YEAR.fullmatch(parts[0]))
+
+
+def _product_parent(it: dict, inv: _Inventory, unfit: bool) -> None:
+    """D4: a product parent passes on dates only when exactly one item has
+    that product (and cycle, when the link has one). With no cycle in the
+    link, a year in the part's name must agree with a parent cycle that is
+    a year, so a part never takes another version's dates."""
+    product, _sep, cycle = it["parent_ref"]["value"].partition("/")
+    pool = [] if unfit else (inv.by_cycle.get((product, cycle), [])
+                             if cycle else inv.by_product.get(product, []))
+    found = [o for o in pool if o is not it]
+    year = None if cycle else _name_year(it.get("name"))
+    if year is not None:
+        found = [o for o in found if not _year_cycle(o.get("cycle"))
+                 or _agrees([year], o.get("cycle"))]
+    if len(found) == 1:
+        it["inherited_from"] = found[0]["id"]
+    else:
+        it["classification_basis"].append(PARENT_ABSENT)
+
+
+def _inherit(it: dict, parent: dict) -> None:
+    """Fill the inherited block from the parent item; one hop only."""
+    if parent["classification"] in PART_CLASSES:
+        it["classification_basis"].append(PARENT_IS_PART)
+        return
+    if parent.get("cycle") is None or parent.get("state") == "unmatched":
+        it["classification_basis"].append(PARENT_NO_DATE)
+        return
+    it["inherited_lifecycle"] = {
+        "parent_id": parent["id"],
+        "product": parent.get("product"),
+        "cycle": parent.get("cycle"),
+        "eol": parent.get("eol_used"),
+        "support": parent.get("support"),
+        "extended_support": parent.get("extended_support"),
+        "state": parent.get("state"),
+        "label": INHERITED_LABEL,
+    }
+
+
+def resolve_parents(items: list, groups: dict, data) -> None:
+    """Name each part's parent from the inventory and show the parent's
+    dates against it, in place. Order: the Parent column, then the one OS
+    item for an OS part, then a product parent (column or curated) to the
+    one item with that product. The part's own state and dates never
+    change, and a part never takes a list from its parent."""
+    inv = _Inventory(items, data)
+    cells = {it["id"]: _parent_cells(groups.get(it["id"]) or {})
+             for it in items}
+    # One named row per item, for spotting two rows that name each other.
+    target = {}
+    for it in items:
+        mine = cells[it["id"]]
+        if len(mine) == 1 and not _is_self(it, mine[0]):
+            hits = _name_hits(it, mine[0], inv)
+            if len(hits) == 1:
+                target[it["id"]] = hits[0]["id"]
+    for it in items:
+        if _locked(it):
+            continue
+        parents = cells[it["id"]]
+        unfit = False
+        if len(parents) > 1:
+            _no_link(it, PARENT_AMBIGUOUS)
+        elif parents and _is_self(it, parents[0]):
+            it["classification_basis"].append(PARENT_IS_SELF)
+        elif parents and target.get(target.get(it["id"])) == it["id"]:
+            it["classification_basis"].append(PARENT_CYCLE)
+        elif parents:
+            unfit = _column(it, parents[0], inv, data)
+        elif it["parent_ref"] is None \
+                and NAME_OS_PART in it["classification_basis"]:
+            _os_parent(it, inv)
+        ref = it["parent_ref"]
+        if ref is not None and ref["kind"] == "product":
+            _product_parent(it, inv, unfit)
+    for it in items:
+        if it["inherited_from"] is not None:
+            _inherit(it, inv.by_id[it["inherited_from"]])

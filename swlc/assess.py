@@ -10,6 +10,8 @@ import calendar
 import re
 from datetime import date, datetime
 
+from .classify import (CLASSES, PARENT_ABSENT, apply_classification,
+                       inherited_states)
 from .data import Data, kev_match
 from .errors import InputError
 from .matching import match_product
@@ -38,6 +40,7 @@ KEV_NOT_CURRENT = ("KEV snapshot is not current; the KEV overlay may be "
 GOLDEN_CLASH = ("%d item(s) matched two golden-source rows; the product-id "
                 "row was used.")
 PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
+PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 
 # ISO date, optionally followed by a time ("2026-01-15 00:00:00",
 # "2026-01-15T00:00:00Z"). Day-first or month-first forms are never read.
@@ -296,6 +299,7 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     clashes: list = []
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
                    window_end, clashes) for gid in sorted(groups)]
+    apply_classification(items, groups, data)
     lists = _lists(items)
 
     warnings = list(data.warnings)
@@ -303,6 +307,10 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
         warnings.append(KEV_NOT_CURRENT)
     if clashes:
         warnings.append(GOLDEN_CLASH % len(clashes))
+    absent = sum(1 for it in items
+                 if PARENT_ABSENT in it["classification_basis"])
+    if absent:
+        warnings.append(PARENTS_ABSENT % absent)
     before = None
     if previous is not None:
         before = _previous_states(previous)
@@ -312,6 +320,17 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     states = {s: 0 for s in STATES}
     for it in items:
         states[it["state"]] += 1
+    by_id = {it["id"]: it for it in items}
+    breakdown = {"needs_review": 0, "parts_with_parent": 0,
+                 "parts_parent_absent": 0}
+    for gid in lists["unmatched"]:
+        it = by_id[gid]
+        if it["classification"] in ("unknown", "governable"):
+            breakdown["needs_review"] += 1
+        elif it["classification"] == "bundle_member" and it["inherited_from"]:
+            breakdown["parts_with_parent"] += 1
+        else:
+            breakdown["parts_parent_absent"] += 1
     return {
         "schema_version": SCHEMA_VERSION,
         "as_of": as_of.isoformat(),
@@ -332,6 +351,16 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             "rows": sum(it["rows"] for it in items),
             "states": states,
             "lists": {k: len(v) for k, v in lists.items()},
+            "classification": {c: sum(1 for it in items
+                                      if it["classification"] == c)
+                               for c in CLASSES},
+            # Splits the unmatched total; the three numbers add up to it.
+            "unmatched_breakdown": breakdown,
+            # Parts whose parent is past or near end of life. A count, not
+            # a list: a part never enters a list through its parent.
+            "inherited_attention": sum(
+                1 for it in items if it["inherited_lifecycle"]
+                and it["inherited_lifecycle"]["state"] in inherited_states),
         },
         "diff": _diff(items, before),
     }

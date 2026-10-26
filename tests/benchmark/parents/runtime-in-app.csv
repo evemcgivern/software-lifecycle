@@ -1,0 +1,4 @@
+Software Name,Publisher,Version,Parent
+Microsoft SQL Server 2019 (64-bit),Microsoft Corporation,15.0.2000.5,
+Microsoft .NET Runtime - 8.0.10 (x64),Microsoft Corporation,8.0.10.34104,Microsoft SQL Server 2019 (64-bit)
+Microsoft .NET Runtime - 6.0.25 (x64),Microsoft Corporation,6.0.25.33121,

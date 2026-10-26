@@ -1,0 +1,25 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Fabrikam Mail Connector|Fabrikam Inc|2.1.0": {
+      "classification": "unknown",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Professional Plus 2019|Microsoft Corporation|16.0.10399": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Professional Plus 2019|Microsoft Corporation|16.0.10730": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

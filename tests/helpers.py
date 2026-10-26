@@ -45,6 +45,22 @@ FIXTURE_NAMES = ("Example SQL", "Demo OS", "Mystery Tool", "Example Vendor",
                  "Tag Corp", "calc", "script")
 
 
+# The fixture inventory plus parts and their Parent column, for the
+# classification views. "Demo OS 1.0" is past end of life in the fixture data.
+PARENT_HEADER = FIXTURE_HEADER + ["Parent"]
+PARENT_ROWS = [r + [""] for r in FIXTURE_ROWS] + [
+    ["Security Update for Demo OS 1.0 (KB5000001)", "1", "Acme Software",
+     "gil", "", ""],
+    ["Demo Addon", "1", "Acme Software", "hal", "", "Demo OS 1.0"],
+    ["Lone Addon", "1", "Acme Software", "ida", "", "Nothing Here"],
+    [EVIL + " Suite", "1", "Acme Software", "jon", "", ""],
+    ["Evil Child", "1", "Acme Software", "kim", "", EVIL + " Suite"],
+    [SCRIPT + " Suite", "1", "Acme Software", "lee", "", ""],
+    ["Script Child", "1", "Acme Software", "max", "", SCRIPT + " Suite"],
+    ["Gone Child", "1", "Acme Software", "ned", "", "Demo OS 2.0"],
+]
+
+
 def write_inventory(path, rows=None, header=None) -> str:
     rows = FIXTURE_ROWS if rows is None else rows
     with open(path, "w", encoding="utf-8", newline="") as fh:

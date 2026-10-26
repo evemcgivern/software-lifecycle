@@ -128,6 +128,99 @@ class BundledCatalogTests(unittest.TestCase):
         validate_curation(read("curation.json"), set(self.data.products))
 
 
+def gold_rows():
+    import csv
+    path = ROOT / "tests" / "benchmark" / "gold.csv"
+    with open(path, encoding="utf-8", newline="") as fh:
+        return {"%s|%s|%s" % (r["name"], r["publisher"], r["version"]): r
+                for r in csv.DictReader(fh)}
+
+
+class BundledClassificationCuration(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.curation = read("curation.json")
+        cls.gold = gold_rows()
+
+    def test_bundle_parents_exist_in_eol(self):
+        parents = self.curation.get("bundle_parents", [])
+        self.assertTrue(parents)
+        for entry in parents:
+            with self.subTest(prefix=entry["name_prefix"]):
+                path = DATA / "eol" / ("%s.json" % entry["parent"])
+                self.assertTrue(path.is_file(), "parent not in data/eol")
+                row = self.gold.get(entry["gold"])
+                self.assertIsNotNone(row, "entry cites no gold row")
+                self.assertEqual(row["classification"], "bundle_member")
+                self.assertEqual(row["heldout"], "0")
+                m = re.fullmatch(r"product:([^/\s]+)/(\S+)",
+                                 row["expected_parent"])
+                self.assertIsNotNone(m, row["expected_parent"])
+                self.assertEqual(m.group(1), entry["parent"])
+                self.assertIn(m.group(2), cycle_labels(entry["parent"]))
+
+    def test_classification_rows_cite_gold(self):
+        for entry in self.curation.get("classification_rows", []):
+            with self.subTest(name=entry["name"]):
+                row = self.gold.get(entry["gold"])
+                self.assertIsNotNone(row, "entry cites no gold row")
+                self.assertEqual(row["classification"], entry["class"])
+                self.assertEqual(row["heldout"], "0")
+
+    def test_standalone_runtime_rows_are_governable(self):
+        from swlc.classify import classify
+        data = load_data(str(DATA), as_of=AS_OF)
+        for name, pub, version in (
+                ("Microsoft .NET Runtime - 8.0.7 (x64)",
+                 "Microsoft Corporation", "8.0.7.33814"),
+                ("Node.js runtime", "OpenJS Foundation", "20.15.1"),
+                ("Microsoft .NET Windows Desktop Runtime 8.0",
+                 "Microsoft Corporation", "8.0.10"),
+                ("Microsoft ASP.NET Core Runtime 8.0",
+                 "Microsoft Corporation", "8.0.11"),
+                ("Microsoft .NET Core SDK 3.1.426 (x64)",
+                 "Microsoft Corporation", "3.1.426"),
+                ("Microsoft .NET Core Runtime - 3.1.30 (x64)",
+                 "Microsoft Corporation", "3.1.30.31011"),
+                (".NET SDK", "", "8.0.404"), (".NET Runtime", "", "8.0.11"),
+                ("Microsoft .NET Framework Runtime 4.8.1",
+                 "Microsoft Corporation", "4.8.1"),
+                ("Git Extensions", "Git Extensions Team", "5.2.1")):
+            with self.subTest(name=name):
+                m = match_product(name, version, data.aliases, data.products,
+                                  catalog_index=data.matching_index(),
+                                  publisher=pub)
+                got = classify({"name": name, "version": version,
+                                "product": m.product, "publisher": pub},
+                               pub, data)
+                self.assertEqual(got.cls, "governable")
+                self.assertIn("%s|%s|%s" % (name, pub, version), self.gold)
+
+    def test_curated_runtime_parts_stay_components(self):
+        from swlc.classify import classify
+        data = load_data(str(DATA), as_of=AS_OF)
+        for name, version in (
+                ("Microsoft Edge WebView2 Runtime", "130.0.2849.80"),
+                ("Microsoft Report Viewer 2015 Runtime", "12.0.2402.20")):
+            with self.subTest(name=name):
+                pub = "Microsoft Corporation"
+                got = classify({"name": name, "version": version,
+                                "product": None, "publisher": pub}, pub, data)
+                self.assertEqual(got.cls, "component")
+                self.assertIn("%s|%s|%s" % (name, pub, version), self.gold)
+
+    def test_classification_sources_are_vendor_pages_we_could_read(self):
+        # The Report Viewer download page could not be fetched in review.
+        for entry in self.curation.get("classification_rows", []):
+            self.assertNotIn("details.aspx?id=45496", entry["source"])
+
+    def test_dotnet_and_nodejs_are_standalone_runtimes(self):
+        products = self.curation.get("classification_products", {})
+        for pid in ("dotnet", "nodejs"):
+            self.assertEqual(products.get(pid, {}).get("class"),
+                             "governable", pid)
+
+
 class BundledCurationRows(unittest.TestCase):
     """Rows the maintainer's curation decisions settle on the bundled data."""
     @classmethod

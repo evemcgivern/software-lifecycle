@@ -1,0 +1,37 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Livepatch Client|Canonical Ltd.|10.4.0": {
+      "classification": "bundle_member",
+      "inherited_from": "Ubuntu 20.04.6 LTS|Canonical Ltd.|20.04.6",
+      "inherited_state": "past_eol",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Ubuntu 20.04.6 LTS|Canonical Ltd.|20.04.6"
+      }
+    },
+    "Microsoft Office Professional Plus 2013|Microsoft Corporation|15.0.4569": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Office Proofing Tools 2013 - English|Microsoft Corporation|15.0.4569": {
+      "classification": "bundle_member",
+      "inherited_from": "Microsoft Office Professional Plus 2013|Microsoft Corporation|15.0.4569",
+      "inherited_state": "past_eol",
+      "parent_ref": {
+        "kind": "item",
+        "value": "Microsoft Office Professional Plus 2013|Microsoft Corporation|15.0.4569"
+      }
+    },
+    "Ubuntu 20.04.6 LTS|Canonical Ltd.|20.04.6": {
+      "classification": "governable",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

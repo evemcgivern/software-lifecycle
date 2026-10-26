@@ -27,6 +27,7 @@ screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 | `--previous REPORT.json` | An earlier `report.json`. The new report then shows what is new, gone or changed. | `--previous last-quarter/report.json` |
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
+| `--governable-only` | Leave components and bundle members out of `report.md` and `report.csv`. Prints "N items hidden: M components, K bundle members". `report.json` and `--fail-on` are unchanged, and `unknown` items are never hidden. Default off. | `--governable-only --out ../swlc-out` |
 | `--fail-on LIST` | Exit with code 10 if any named list has items. Names: `past_eol`, `ends_soon`, `review_urgently`, `dates_disagree`, `unmatched`. Comma separated. | `--fail-on past_eol,review_urgently` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
 | `-h`, `--help` | Show help. | `--help` |
@@ -222,7 +223,15 @@ and `source`), `single_word_allowlist` (a list of `product`, `reason`,
 publisher)
 `generated_off` (a sorted list of product ids) and, optionally,
 `no_cycle_versions` (a product id to an object of `prefixes`, a sorted list
-of version prefixes such as `21.3`, `reason` and `source`). The tool refuses a file
+of version prefixes such as `21.3`, `reason` and `source`). Three more keys
+are optional and set what kind of item a row is: `classification_rows` (a
+sorted list of `name`, a normalized name, `publisher`, one lowercase word or
+empty, `class`, `reason`, `source` and `gold`), `classification_products` (a
+product id to an object of `class`, `reason` and `source`) and
+`bundle_parents` (a sorted list of `name_prefix`, lowercase leading words,
+`publisher`, one lowercase word that must appear in the publisher, `parent`,
+a product id, `reason`, `source` and `gold`). A `class` here is
+`governable`, `component` or `unknown`. The tool refuses a file
 with an unknown key, a wrong type, a duplicate or an unsorted list where
 sorting is promised.
 
@@ -311,6 +320,114 @@ rules in "The data folder".
 For the bundled file, the rules in `CONTRIBUTING.md` also apply: every
 entry cites its evidence and the benchmark must not get worse.
 
+## What kind of item this is
+
+An inventory row can be an application someone owns, a piece of something
+else, or a member of a bundle. Each row gets one of four classes. These are
+policy lines. ISO/IEC 19770-1 requires an inventory and lifecycle control but
+does not define "component", "bundle" or "governable". ISO/IEC 19770-2 (SWID)
+has parent and child links; its clause references are Unverified until
+checked.
+
+- `governable`: a standalone application, server, database, OS, browser,
+  security agent or directly used developer tool, plus standalone runtimes
+  (JDK, .NET, Node.js, Python).
+- `component`: a library, redistributable, driver, language pack, OS patch,
+  font, codec, extension, plugin, `lib*` or `-dev` package, with no known
+  parent.
+- `bundle_member`: a part with a named parent (a suite member, a runtime
+  inside an app, a driver pack, an OS patch of the OS item).
+- `unknown`: the tool cannot tell. This is a valid answer and the default.
+  Never default to governable.
+
+The first confident hit wins, and all the evidence is recorded. The order of
+evidence is:
+
+1. a curated row override (a maintainer decision);
+2. bundle: an inventory parent column, a curated parent link, or a vendor
+   suite pattern whose version fits one cycle of the parent;
+3. component: a strong name pattern or a curated entry;
+4. governable: the row matches an endoflife.date product whose category is
+   app, server, OS, database or similar, and no component or bundle signal
+   fired;
+5. otherwise `unknown`. Products in the `device` category are `unknown`.
+
+Component outranks governable when both fire. Publisher alone never decides.
+Version shape only ever breaks a tie toward `unknown`.
+
+A curated parent links a row only when every word after the curated name is
+a year or version word, so "Microsoft Excel 2016" links to Office 2016 but
+"Microsoft Excel 2016 Viewer" does not. A row that matches a curated parent,
+including a curated OS-patch name, but fits no single cycle is `unknown`
+(`suite_no_fit`), not `component`. A last word Runtime or SDK is not a part
+signal by itself, because standalone runtimes and SDKs (.NET, Vulkan,
+Google Cloud) end that way. Such a name gets its class from the other rules:
+a curated row, the matched product's category, or `unknown`. Known parts
+named that way, such as the WebView2 Runtime, are curated as components.
+
+### The Parent column
+
+An inventory can name a row's parent in a `Parent` column (also `Parent
+Software`, `Suite` or `Bundle`). The column is optional. A blank cell, or a
+placeholder cell (`n/a`, `na`, `none`, `null`, `nil`, `unknown`, `tbd`, `-`,
+`--`, `n.a.`, `n.a`, `not applicable`, `not available`, `no parent`), counts
+as no parent. Cells are compared without regard to case or spacing, so
+"SQL Server" and "sql server" are one parent.
+
+- The column beats a `governable` result, including a governable curated row
+  override, because a runtime named in a Parent column is not standalone. It
+  never beats a curated row override of class `component` or `unknown`.
+- A name that matches one other row from the same publisher (when both rows
+  have one, they must share a publisher word) links to it (kind `item`). A
+  name that matches no row but matches a product links to that product
+  (kind `product`). A name that matches two rows, whatever their publishers,
+  or a row with two different Parent values, gives no link and the
+  class `unknown` (or `component`, when the row's own name says so).
+- A name that matches no row and no product gives no link
+  (`parent_not_found`). A row that names itself or its own product family
+  ("Microsoft Office" on an Office row, "Eclipse Temurin" on a Temurin row;
+  `parent_is_self`), or two rows that name each other (`parent_cycle`), keep
+  their class and get no link.
+- A parent that is itself a part is linked, but no dates are inherited
+  (one hop only).
+- A parent that is a product and cycle passes its dates on only when exactly
+  one inventory row has that product and cycle.
+- A Parent cell that names a product with no cycle keeps the cycle a curated
+  suite link already found ("Microsoft Excel 2016" stays with Office 2016).
+  Without one, a year in the part's name must agree with the parent row's
+  cycle when that cycle is a year (Office 2016); a part never takes another
+  version's dates. Cycles named by version numbers (SQL Server 15.0) are not
+  compared with a year.
+
+A linked part shows its parent's end-of-life date under the heading
+"Parent's date (inherited, not this item's own)". The date is the parent's.
+A part never enters `past_eol` or `ends_soon` through it, and `--fail-on`
+never reads it. `counts.inherited_attention` counts the parts whose parent
+needs attention. When a part's parent is not in the inventory, the report
+warns "N parts whose parent is not in this inventory".
+
+`--governable-only` is a view for `report.md` and `report.csv` only.
+`report.json` is the same with and without it, the closing findings block
+stays complete, and `unknown` items are never hidden.
+
+### Known limits
+
+- A runtime or SDK that ships inside an app, with no Parent column and no
+  curated entry, is `unknown` (or `governable` when its product's category
+  says so), not `component`.
+- A curated OS-patch prefix that fits no cycle of the OS gives `unknown`,
+  not a link.
+- A one-word daemon named `lib*`, such as libvirt, is treated as a component.
+  Other one-word lowercase `lib*` daemons and apps, such as libreswan and
+  librespot, are treated as components too.
+  A `lib*` name ending in a tool word (`-cli`, `-server`, `-daemon`, `-rest`,
+  `-tools`, `-viewer`, `-manager`, `-gui`) is not, and a `*-dev` name counts
+  only when a part of it starts with `lib` or it holds a digit.
+- The list of Parent placeholders is closed. A cell such as "Not Known" is
+  read as a parent name and gives `parent_not_found`.
+- The rates on a real estate are unknown. The benchmark measures
+  classification on a gold sample, not on any inventory.
+
 ## Counts-only mode
 
     python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out
@@ -319,6 +436,7 @@ It prints:
 
 - the checked-on date and whether the KEV data is current;
 - the number of items and rows, and the count in each state;
+- the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - each list with its count and the item IDs.
 
 It prints no names, versions, publishers or owners. In this mode an error

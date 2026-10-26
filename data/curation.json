@@ -1,4 +1,300 @@
 {
+  "bundle_parents": [
+    {
+      "gold": "Cumulative Update for Windows 10 Version 22H2 for x64-based Systems (KB5039211)|Microsoft Corporation|1",
+      "name_prefix": "cumulative update for windows",
+      "parent": "windows",
+      "publisher": "microsoft",
+      "reason": "A cumulative update names the Windows version and feature update it patches; it links only when those fit one cycle.",
+      "source": "https://support.microsoft.com/help/5018682"
+    },
+    {
+      "gold": "Hotfix for Microsoft .NET Framework 4.8 (KB4503575)|Microsoft Corporation|1",
+      "name_prefix": "hotfix for microsoft .net framework",
+      "parent": "dotnetfx",
+      "publisher": "microsoft",
+      "reason": "A .NET Framework hotfix names the .NET Framework version it patches.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/framework/release-notes/2024/10-08-october-security-and-quality-rollup"
+    },
+    {
+      "gold": "Microsoft .NET AppHost Pack - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33815",
+      "name_prefix": "microsoft .net apphost pack",
+      "parent": "dotnet",
+      "publisher": "microsoft",
+      "reason": "A .NET runtime or SDK bundle installs this MSI as one of its parts; the version in the name is the .NET release.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/additional-tools/dnim-net-installs"
+    },
+    {
+      "gold": "Microsoft .NET Framework 4.8 Language Pack (DEU)|Microsoft Corporation|4.8.09032",
+      "name_prefix": "microsoft .net framework 4.8 language pack",
+      "parent": "dotnetfx",
+      "publisher": "microsoft",
+      "reason": "Microsoft offers .NET Framework 4.8 language packs that add translated text to an existing .NET Framework 4.8 install.",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48"
+    },
+    {
+      "gold": "Microsoft .NET Host - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33815",
+      "name_prefix": "microsoft .net host",
+      "parent": "dotnet",
+      "publisher": "microsoft",
+      "reason": "A .NET runtime or SDK bundle installs this MSI as one of its parts; the version in the name is the .NET release.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/additional-tools/dnim-net-installs"
+    },
+    {
+      "gold": "Microsoft .NET Host FX Resolver - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33815",
+      "name_prefix": "microsoft .net host fx resolver",
+      "parent": "dotnet",
+      "publisher": "microsoft",
+      "reason": "The host FX resolver (hostfxr) is the .NET host's framework resolver, installed by a .NET runtime or SDK bundle; the version in the name is the .NET release.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/distribution-packaging"
+    },
+    {
+      "gold": "Microsoft .NET Targeting Pack - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33815",
+      "name_prefix": "microsoft .net targeting pack",
+      "parent": "dotnet",
+      "publisher": "microsoft",
+      "reason": "A .NET runtime or SDK bundle installs this MSI as one of its parts; the version in the name is the .NET release.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/additional-tools/dnim-net-installs"
+    },
+    {
+      "gold": "Microsoft Access 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft access",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Microsoft Excel 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft excel",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Microsoft Office Proofing Tools 2019 - English|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft office proofing tools",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office proofing tools ship with an Office release's language packs; the year in the name names the release.",
+      "source": "https://learn.microsoft.com/en-us/office/2016/language/plan-multilanguage-deployment"
+    },
+    {
+      "gold": "Microsoft OneNote 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft onenote",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Microsoft Outlook 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft outlook",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Microsoft PowerPoint 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft powerpoint",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Microsoft Publisher 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft publisher",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Microsoft Skype for Business 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft skype for business",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Microsoft Windows Desktop Targeting Pack - 6.0.33 (x64)|Microsoft Corporation|6.0.33.33208",
+      "name_prefix": "microsoft windows desktop targeting pack",
+      "parent": "dotnet",
+      "publisher": "microsoft",
+      "reason": "A .NET runtime or SDK bundle installs this MSI as one of its parts; the version in the name is the .NET release.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/additional-tools/dnim-net-installs"
+    },
+    {
+      "gold": "Microsoft Word 2019|Microsoft Corporation|16.0.10396.20017",
+      "name_prefix": "microsoft word",
+      "parent": "office",
+      "publisher": "microsoft",
+      "reason": "Office Professional Plus 2019 includes Access, Excel, OneNote, Outlook, PowerPoint, Publisher, Word and Skype for Business; the year in the name names the Office release.",
+      "source": "https://learn.microsoft.com/en-us/office/2019/overview"
+    },
+    {
+      "gold": "Security Update for Microsoft .NET Framework 4.8 (KB5039882)|Microsoft Corporation|1",
+      "name_prefix": "security update for microsoft .net framework",
+      "parent": "dotnetfx",
+      "publisher": "microsoft",
+      "reason": "A .NET Framework security update names the .NET Framework version it patches.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/framework/release-notes/2024/10-08-october-security-and-quality-rollup"
+    },
+    {
+      "gold": "Security Update for Windows Server 2019 (KB5040430)|Microsoft Corporation|1",
+      "name_prefix": "security update for windows server",
+      "parent": "windows-server",
+      "publisher": "microsoft",
+      "reason": "A security update for a named Windows Server release patches that release.",
+      "source": "https://support.microsoft.com/topic/windows-10-and-windows-server-2019-update-history-725fc2e1-4443-6831-a5ca-51ff5cbcb059"
+    }
+  ],
+  "classification_products": {
+    "dotnet": {
+      "class": "governable",
+      "reason": "A .NET runtime or SDK installed on its own is a standalone runtime (decision 1); the catalog lists it as a framework.",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/install/windows"
+    },
+    "nodejs": {
+      "class": "governable",
+      "reason": "Node.js is a JavaScript runtime installed on its own (decision 1); the catalog lists it as a framework.",
+      "source": "https://nodejs.org/en/about"
+    }
+  },
+  "classification_rows": [
+    {
+      "class": "governable",
+      "gold": ".NET Runtime||8.0.11",
+      "name": ".net runtime",
+      "publisher": "",
+      "reason": "The .NET Runtime is a separate download that runs apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": ".NET SDK||8.0.404",
+      "name": ".net sdk",
+      "publisher": "",
+      "reason": "The .NET SDK is a separate download used to build apps; a standalone .NET is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": "Git Extensions|Git Extensions Team|5.2.1",
+      "name": "git extensions",
+      "publisher": "",
+      "reason": "Git Extensions is a standalone UI tool for managing Git repositories, not an add-on; the last word Extensions would otherwise make it a part.",
+      "source": "https://gitextensions.github.io/"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Core Runtime - 3.1.30 (x64)|Microsoft Corporation|3.1.30.31011",
+      "name": "microsoft .net core runtime",
+      "publisher": "microsoft",
+      "reason": "The .NET Core Runtime is a separate download that runs apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/3.1"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Core SDK 3.1.426 (x64)|Microsoft Corporation|3.1.426",
+      "name": "microsoft .net core sdk",
+      "publisher": "microsoft",
+      "reason": "The .NET Core SDK is a separate download used to build apps; a standalone .NET is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/3.1"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Framework Runtime 4.8.1|Microsoft Corporation|4.8.1",
+      "name": "microsoft .net framework runtime",
+      "publisher": "microsoft",
+      "reason": "Microsoft offers the .NET Framework 4.8.1 Runtime as its own download to run apps; a standalone .NET is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Runtime - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33814",
+      "name": "microsoft .net runtime",
+      "publisher": "microsoft",
+      "reason": "The .NET Runtime is a separate download that runs apps; a standalone .NET runtime is governable (decision 1). A copy inside an app is a bundle member only through a parent signal.",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET SDK 8.0.303 (x64)|Microsoft Corporation|8.0.303.0",
+      "name": "microsoft .net sdk",
+      "publisher": "microsoft",
+      "reason": "The .NET SDK is downloaded and installed on its own to build apps; a standalone .NET is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft .NET Windows Desktop Runtime 8.0|Microsoft Corporation|8.0.10",
+      "name": "microsoft .net windows desktop runtime",
+      "publisher": "microsoft",
+      "reason": "The .NET Desktop Runtime is a separate download that runs desktop apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "component",
+      "gold": "Microsoft Access Database Engine 2016 Redistributable (English)|Microsoft Corporation|16.0.4351.1000",
+      "name": "microsoft access database engine 2016 redistributable (english)",
+      "publisher": "microsoft",
+      "reason": "A redistributable data engine for moving data between Office files and other apps; not the Access app sold in the suite.",
+      "source": "https://www.microsoft.com/en-us/download/details.aspx?id=54920"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft ASP.NET Core Runtime 8.0|Microsoft Corporation|8.0.11",
+      "name": "microsoft asp.net core runtime",
+      "publisher": "microsoft",
+      "reason": "The ASP.NET Core Runtime is a separate download that runs web apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "component",
+      "gold": "Microsoft Edge WebView2 Runtime|Microsoft Corporation|130.0.2849.80",
+      "name": "microsoft edge webview2 runtime",
+      "publisher": "microsoft",
+      "reason": "Apps use the WebView2 Runtime to embed web content; it is a part other apps need, not an app of its own.",
+      "source": "https://developer.microsoft.com/en-us/microsoft-edge/webview2/"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft Intune Management Extension|Microsoft Corporation|1.80.201.0",
+      "name": "microsoft intune management extension",
+      "publisher": "microsoft",
+      "reason": "The Intune Management Extension is an installer and management agent of its own, not an add-on to another app.",
+      "source": "https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows"
+    },
+    {
+      "class": "component",
+      "gold": "Microsoft Report Viewer 2015 Runtime|Microsoft Corporation|12.0.2402.20",
+      "name": "microsoft report viewer 2015 runtime",
+      "publisher": "microsoft",
+      "reason": "Report Viewer controls integrate report viewing into other applications; the runtime is a part those apps need, not an app of its own.",
+      "source": "https://learn.microsoft.com/en-us/sql/reporting-services/application-integration/integrating-reporting-services-using-reportviewer-controls"
+    },
+    {
+      "class": "governable",
+      "gold": "Microsoft Windows Desktop Runtime - 8.0.7 (x64)|Microsoft Corporation|8.0.7.33815",
+      "name": "microsoft windows desktop runtime",
+      "publisher": "microsoft",
+      "reason": "The .NET Desktop Runtime is a separate download that runs desktop apps; a standalone .NET runtime is governable (decision 1).",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet/8.0"
+    },
+    {
+      "class": "governable",
+      "gold": "Node.js runtime|OpenJS Foundation|20.15.1",
+      "name": "node.js runtime",
+      "publisher": "",
+      "reason": "Node.js runtime is the main feature of the Node.js installer; a standalone Node.js is governable (decision 1).",
+      "source": "https://github.com/nodejs/node/blob/main/tools/msvs/msi/nodemsi/i18n/en-us.wxl"
+    }
+  ],
   "exclusions": [
     {
       "gold": "Mattermost|Mattermost, Inc.|5.6.0",

@@ -1,0 +1,4 @@
+Software Name,Publisher,Version,Parent
+Ubuntu 22.04.3 LTS,Canonical Ltd.,22.04.3,
+Ubuntu Advantage Tools,Canonical Ltd.,27.14.4,Ubuntu 22.04
+Update Manager Core,Canonical Ltd.,1:22.04.18,Ubuntu 24.04 LTS

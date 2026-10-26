@@ -46,6 +46,34 @@ inventory, so keep it as private as the inventory.
 | `rows` | Number of inventory rows. |
 | `states` | Count of items in each state. |
 | `lists` | Count of item IDs in each list. |
+| `classification` | Count of items in each class. See `counts.classification`. |
+| `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
+| `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
+
+### counts.classification
+
+| Key | Meaning |
+|---|---|
+| `governable` | Items classed `governable`. |
+| `component` | Items classed `component`. |
+| `bundle_member` | Items classed `bundle_member`. A part's parent is counted once, under its own class (normally `governable`). |
+| `unknown` | Items classed `unknown`. |
+
+The four numbers add up to `counts.items`.
+
+### counts.unmatched_breakdown
+
+| Key | Meaning |
+|---|---|
+| `needs_review` | Unmatched items whose class is `unknown` or `governable`. |
+| `parts_with_parent` | Unmatched `bundle_member` items with `inherited_from` set. |
+| `parts_parent_absent` | Every other unmatched part: a `component`, or a `bundle_member` whose parent is not in this inventory. |
+
+The three numbers add up to `counts.lists.unmatched`. `lists.unmatched` itself
+is unchanged. `report.md` leads its "Couldn't match" section with the
+`needs_review` number and lists the other unmatched items in "Parts that could
+not be matched". The warning "N parts whose parent is not in this inventory"
+(`parent_absent` in `classification_basis`) appears in `warnings`.
 
 ### meta
 
@@ -115,6 +143,41 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `kev_stale` | `true` when KEV was checked (`kev` is not `null`) and the KEV data was not current. |
 | `change_ref` | From the tracking file, or `null`. |
 | `problem_ref` | From the tracking file, or `null`. |
+| `classification` | What kind of item this is: `governable`, `component`, `bundle_member` or `unknown`. See "What kind of item this is" in `docs/usage.md`. |
+| `classification_basis` | List of the signal codes that fired, in rule order. See the `classification_basis` codes below. |
+| `parent_ref` | The named parent of a `bundle_member`, or `null`. See `parent_ref` below. |
+| `inherited_from` | The parent item's ID when the parent is in the same inventory; otherwise `null`. |
+| `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's, or `null`. See `inherited_lifecycle` below. The item's own date fields never change. |
+
+### parent_ref
+
+| Key | Meaning |
+|---|---|
+| `kind` | `item` (another row named in the inventory's Parent column), `os` (the one OS item an OS part fits) or `product` (a product and cycle, from the Parent column or a curated parent). |
+| `value` | The parent item's ID for `item` and `os`; `<product>/<cycle>` (or `<product>` when no cycle is known) for `product`. |
+| `basis` | The signal code that named it: `parent_column`, `os_parent` or `curated_parent`. |
+
+A `product` parent passes its dates only when exactly one item in the
+inventory has that product and cycle. Otherwise the parent counts as not
+in the inventory: `inherited_from` is `null`, the basis lists
+`parent_absent`, and the report warns "N parts whose parent is not in this
+inventory".
+
+### inherited_lifecycle
+
+Present when `inherited_from` names a parent that has a cycle. One hop
+only: a part whose parent is itself a part gets none.
+
+| Key | Meaning |
+|---|---|
+| `parent_id` | The parent item's ID. |
+| `product` | The parent's product ID. |
+| `cycle` | The parent's cycle. |
+| `eol` | The parent's `eol_used`. |
+| `support` | The parent's `support`. |
+| `extended_support` | The parent's `extended_support`. |
+| `state` | The parent's `state`, in the item state words. |
+| `label` | Always "inherited from parent". |
 
 Date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
 `extended_support`) hold `YYYY-MM-DD` text, `null` for none, or `true` or
@@ -176,6 +239,35 @@ again, and the risk owner and an independent approver sign off.
 
 `DIFFERENT_DATE` appears in `dates_disagree` but not in `decision_needed`.
 The Markdown report still prints a "Decision needed" line for it.
+
+### classification_basis codes
+
+The first confident signal decides `classification`; every signal that fired
+is listed. Publisher only confirms a curated entry and never decides a class.
+
+| Code | When |
+|---|---|
+| `row_override` | A curated `classification_rows` entry names this row (a maintainer decision). |
+| `curated_parent` | A curated `bundle_parents` entry names the parent, and the name's year or version (else the version column) fits exactly one cycle of it. |
+| `suite_no_fit` | A curated `bundle_parents` entry matched, but the version fits no cycle or more than one; the item is `unknown`. |
+| `name_part` | The name ends like a part: Redistributable, Visual C++ 20xx, font, codec, extension, plugin or add-in, or a one-word lowercase `lib*` library (not one ending in a tool word such as `-cli`), a `*-dev` package with a `lib` part or a digit, or a font package. |
+| `name_os_part` | The name looks like an OS part: a KB number, a leading "Update for" or "Security Update for", Hotfix, Language Pack, or Driver after another word. |
+| `product_override` | A curated `classification_products` entry sets the class for the matched product. |
+| `category_governable` | The matched product's category is `server-app`, `app`, `os`, `database`, `lang` or `service`. |
+| `standalone_by_default` | The product is a standalone runtime (category `lang`, or curated as governable). A last word Runtime or SDK is never a part signal on its own. |
+| `device_category` | The matched product is a device; the item is `unknown`. |
+| `category_unknown` | The matched product's category is `framework` or `standard`; the item is `unknown`. |
+| `no_signal` | No product matched and no other signal fired; the item is `unknown`. |
+| `version_shape` | The item would be governable, but it has no version in the column or the name; the item is `unknown`. |
+| `parent_column` | The inventory's Parent column names the parent: one other row with the same normalized name (and, when both rows have a publisher, a publisher word in common), or else a product. A blank cell, or a placeholder such as N/A, None, null, unknown, TBD, -, Not Applicable, Not Available or No Parent (any case), is no parent signal. The item is a `bundle_member`. It overrides `governable`, also from a curated row, but never a curated row of class `component` or `unknown`. |
+| `os_parent` | An OS part (see `name_os_part`) names an OS in its own name (the OS title, or the title without its vendor word) and fits exactly one OS item in the inventory, by publisher and, when the name carries a version, by cycle. Another row that looks like the same OS (an OS item, or an unmatched row whose name holds the title, from a publisher the OS confirms) counts as a second fit. The item is a `bundle_member`. With none or two or more fits, no link and the class is unchanged. |
+| `parent_ambiguous` | The Parent column holds two different values for the item, or its value names two or more rows. No link; the item is `unknown`, or stays `component` when its own name says so. |
+| `parent_not_found` | The Parent column value names no row and no product. No link; the item is `unknown`, or stays `component` when its own name says so. |
+| `parent_is_self` | The Parent column names the row itself (its own name, or its name without a trailing version), or names the row's own product ("Microsoft Office" on an Office row). No link; the class is unchanged. |
+| `parent_cycle` | Two rows name each other in the Parent column. No link for either; the classes are unchanged. |
+| `parent_is_part` | The named parent is itself a `component` or `bundle_member`. The link and `inherited_from` stay; `inherited_lifecycle` is `null` (one hop only). |
+| `parent_absent` | The parent is a product, and not exactly one item in the inventory has that product and cycle. No dates are shown. |
+| `parent_no_date` | The parent item is unmatched or has no cycle. The link stays; `inherited_lifecycle` is `null` (the parent has no date). |
 
 ## Lists
 

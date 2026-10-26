@@ -1,0 +1,19 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14.38.33135|Microsoft Corporation|14.38.33135.0": {
+      "classification": "component",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Security Update for Microsoft Windows (KB5031356)|Microsoft Corporation|1": {
+      "classification": "component",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

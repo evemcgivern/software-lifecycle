@@ -1,0 +1,25 @@
+{
+  "as_of": "2026-10-24",
+  "data": "bundled",
+  "items": {
+    "Fabrikam Charting Helper|Fabrikam Inc|4.0.2": {
+      "classification": "unknown",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Fabrikam Charting Viewer|Fabrikam Inc|4.0.2": {
+      "classification": "unknown",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    },
+    "Microsoft Visual C++ 2015-2022 Redistributable (x86) - 14.40.33810|Microsoft Corporation|14.40.33810.0": {
+      "classification": "component",
+      "inherited_from": null,
+      "inherited_state": null,
+      "parent_ref": null
+    }
+  },
+  "warnings_contain": []
+}

@@ -94,6 +94,25 @@ class AnswerKeyTests(DemoBase):
                     sorted(n for n in LISTS
                            if gid in self.report["lists"][n]),
                     sorted(case["lists"]))
+                if "classification" in case:
+                    self.assertEqual(it["classification"],
+                                     case["classification"])
+                    src = it["inherited_from"]
+                    self.assertEqual(
+                        items[src]["state"] if src else None,
+                        case["inherited_state"])
+                    block = it["inherited_lifecycle"]
+                    self.assertEqual(block["state"] if block else None,
+                                     case["inherited_state"])
+
+    def test_parent_cases_planted(self):
+        names = {c["case"] for c in self.key["cases"].values()}
+        for need in ("part-parent-past-eol", "part-parent-absent",
+                     "os-patch-one-os"):
+            self.assertIn(need, names)
+        self.assertEqual(self.report["counts"]["inherited_attention"],
+                         self.key["counts"]["inherited_attention"])
+        self.assertGreater(self.key["counts"]["inherited_attention"], 0)
 
     def test_case_names_are_unique(self):
         names = [c["case"] for c in self.key["cases"].values()]

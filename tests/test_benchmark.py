@@ -31,7 +31,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from swlc import cli
+from swlc import assess, cli
 from swlc.inputs import item_id
 from swlc.normalize import normalize_name
 from test_docs import BANNED, BANNED_DIGESTS, hashed_terms
@@ -41,7 +41,19 @@ GOLD = BENCH / "gold.csv"
 FLOOR = BENCH / "floor.json"
 EOL_DIR = ROOT / "data" / "eol"
 HEADER = ["name", "publisher", "version", "expected_product",
-          "expected_cycle", "notes", "stratum", "heldout"]
+          "expected_cycle", "notes", "stratum", "heldout", "classification",
+          "expected_parent"]
+CLASSES = ("governable", "component", "bundle_member", "unknown")
+PARENTS = BENCH / "parents"
+SILVER_SAMPLE = BENCH / "silver-sample.csv"
+SILVER_HEADER = ["source", "name", "publisher", "version", "label",
+                 "label_b", "agreed", "heldout", "notes"]
+# Rows present before the classification columns were added: the first
+# ORIGINAL_ROWS rows of gold.csv, identified by a digest of their keys. A
+# pinned digest, not `git show main:tests/benchmark/gold.csv`: once this work
+# merges, main itself holds the new rows, and a git call may be missing in CI.
+ORIGINAL_ROWS = 2197
+ORIGINAL_KEYS_SHA256 = "9681fc48293f431b94805cf30bf82a03704016b9cef4bf463a8660840d237245"
 STRATA = ("hand", "catalog", "generated")
 OUTCOMES = ("correct", "hard-wrong", "soft-wrong", "missed", "right-none")
 
@@ -62,6 +74,19 @@ def read_gold() -> list:
 
 def row_key(row: dict) -> tuple:
     return (row["name"], row["publisher"], row["version"])
+
+
+def read_parent_cases() -> list:
+    """[(inventory csv path, expected dict)] for every parent case.
+
+    A case is <case>.csv (headings Software Name, Publisher, Version, Parent)
+    plus <case>.expected.json, in tests/benchmark/parents/.
+    """
+    cases = []
+    for path in sorted(PARENTS.glob("*.csv")):
+        expected = path.with_name(path.stem + ".expected.json")
+        cases.append((path, json.loads(expected.read_text(encoding="utf-8"))))
+    return cases
 
 
 def outcome(row: dict, item: dict) -> str:
@@ -152,6 +177,69 @@ def report_table(results: list) -> str:
     for r in soft:
         lines.append("  %s | %s | %s" % (r["name"], r["publisher"],
                                          r["version"]))
+    lines.append(classification_table(results))
+    return "\n".join(lines)
+
+
+# --- classification scoring -------------------------------------------------
+# Only gold rows with a non-empty classification are scored. Held-out rows
+# are scored too, and reported apart.
+
+def parent_text(item: dict):
+    """The predicted parent as gold writes it ("product:office/2019")."""
+    ref = item.get("parent_ref")
+    return None if ref is None else "%s:%s" % (ref["kind"], ref["value"])
+
+
+def classified(results: list) -> list:
+    return [(r, it) for r, _res, it in results if r["classification"]]
+
+
+def class_correct(row: dict, item: dict) -> bool:
+    if item["classification"] != row["classification"]:
+        return False
+    want = row["expected_parent"]
+    if want and want != "none":
+        return parent_text(item) == want
+    return True
+
+
+def wrong_parent(row: dict, item: dict) -> bool:
+    got, want = parent_text(item), row["expected_parent"]
+    if want == "none":
+        return got is not None
+    return bool(want) and got is not None and got != want
+
+
+def precision(pairs: list, cls: str):
+    """(right, predicted) for one predicted class."""
+    predicted = [(r, it) for r, it in pairs if it["classification"] == cls]
+    right = sum(1 for r, it in predicted if r["classification"] == cls)
+    return right, len(predicted)
+
+
+def classification_table(results: list) -> str:
+    lines = ["classification (gold rows with a class):",
+             "%-13s %6s %8s %s" % ("group", "rows", "correct",
+                                   "precision by predicted class")]
+    pairs = classified(results)
+    for group, keep in (("tuning", "0"), ("heldout", "1"), ("all", None)):
+        sub = [(r, it) for r, it in pairs
+               if keep is None or r["heldout"] == keep]
+        prec = []
+        for cls in CLASSES:
+            right, n = precision(sub, cls)
+            prec.append("%s %d/%d" % (cls, right, n))
+        lines.append("%-13s %6d %8d %s" % (
+            group, len(sub), sum(class_correct(r, it) for r, it in sub),
+            ", ".join(prec)))
+    wrong = [(r, it) for r, it in pairs if not class_correct(r, it)]
+    lines.append("classification disagreements (%d):" % len(wrong))
+    for r, it in wrong:
+        lines.append("  %s | %s | %s: gold %s %s, got %s %s %s" % (
+            r["name"], r["publisher"], r["version"], r["classification"],
+            r["expected_parent"] or "-", it["classification"],
+            parent_text(it) or "-", ",".join(it["classification_basis"])))
     return "\n".join(lines)
 
 
@@ -225,6 +313,122 @@ class BenchmarkRunTests(unittest.TestCase):
             "never lower floor.json")
 
 
+def run_parent_case(path: Path, exp: dict) -> dict:
+    """{row key: what the tool gave, in the expected file's shape} for one
+    parent case, run on the bundled data on the case's own date. Item ids
+    in parent_ref (kinds item and os) and inherited_from become row keys
+    ("name|publisher|version"); inherited_state is the parent row's state."""
+    result, _meta = cli.build(str(path), as_of=date.fromisoformat(
+        exp["as_of"]))
+    keys = {it["id"]: "%s|%s|%s" % (it["name"], it["publisher"],
+                                    it["version"])
+            for it in result["items"]}
+    states = {it["id"]: it["state"] for it in result["items"]}
+    got = {}
+    for it in result["items"]:
+        ref = it["parent_ref"]
+        if ref is not None:
+            value = ref["value"] if ref["kind"] == "product" \
+                else keys.get(ref["value"], ref["value"])
+            ref = {"kind": ref["kind"], "value": value}
+        src = it["inherited_from"]
+        got[keys[it["id"]]] = {
+            "classification": it["classification"],
+            "parent_ref": ref,
+            "inherited_from": keys.get(src, src) if src else None,
+            "inherited_state": states.get(src) if src else None,
+        }
+    got["__warnings__"] = result["warnings"]
+    return got
+
+
+def parent_case_results() -> list:
+    """[(case name, row key, expected, got)] for every item of every case,
+    plus the warnings check of each case as one more entry."""
+    out = []
+    for path, exp in read_parent_cases():
+        got = run_parent_case(path, exp)
+        for key, want in sorted(exp["items"].items()):
+            out.append((path.stem, key, want, got.get(key)))
+        missing = [w for w in exp["warnings_contain"]
+                   if not any(w in line for line in got["__warnings__"])]
+        out.append((path.stem, "warnings", [], missing))
+    return out
+
+
+class ParentCaseTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.results = parent_case_results()
+        cls.floor = json.loads(FLOOR.read_text(encoding="utf-8"))
+
+    def test_each_case_matches_expected(self):
+        for case, key, want, got in self.results:
+            with self.subTest(case=case, item=key):
+                self.assertEqual(got, want)
+
+    def test_parent_cases_correct_not_below_floor(self):
+        right = sum(1 for _c, key, want, got in self.results
+                    if key != "warnings" and got == want)
+        if wants_report():
+            print("\nparent case items correct: %d of %d" % (
+                right, sum(1 for r in self.results if r[1] != "warnings")))
+        self.assertGreaterEqual(right, self.floor["parent_cases_correct_min"])
+
+
+class ClassificationBenchmarkTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.pairs = classified(results())
+        cls.floor = json.loads(FLOOR.read_text(encoding="utf-8"))
+
+    def test_rows_are_scored(self):
+        self.assertGreaterEqual(len(self.pairs), 160)
+
+    def test_no_governable_scored_as_part(self):
+        bad = ["%s | %s | %s -> %s" % (r["name"], r["publisher"],
+                                       r["version"], it["classification"])
+               for r, it in self.pairs if r["classification"] == "governable"
+               and it["classification"] in ("component", "bundle_member")]
+        self.assertLessEqual(len(bad), self.floor["governable_as_part_max"],
+                             "\n".join(bad))
+
+    def test_no_wrong_parent(self):
+        bad = ["%s | %s | %s -> %s (want %s)" % (
+            r["name"], r["publisher"], r["version"], parent_text(it),
+            r["expected_parent"]) for r, it in self.pairs
+            if wrong_parent(r, it)]
+        self.assertLessEqual(len(bad), self.floor["wrong_parent_max"],
+                             "\n".join(bad))
+
+    def test_part_precision_on_gold(self):
+        for cls in ("component", "bundle_member"):
+            with self.subTest(cls=cls):
+                right, n = precision(self.pairs, cls)
+                self.assertGreater(n, 0)
+                self.assertGreaterEqual(right / n, 0.98,
+                                        "%s precision %d/%d" % (cls, right, n))
+
+    def test_classification_correct_not_below_floor(self):
+        got = sum(class_correct(r, it) for r, it in self.pairs)
+        self.assertGreaterEqual(
+            got, self.floor["classification_correct_min"],
+            "classification correct fell below the floor; fix the rule, "
+            "never lower floor.json")
+
+    def test_wrong_parent_scoring(self):
+        item = {"parent_ref": {"kind": "product", "value": "office/2019",
+                               "basis": "curated_parent"}}
+        row = {"expected_parent": "product:office/2019"}
+        self.assertFalse(wrong_parent(row, item))
+        self.assertTrue(wrong_parent(dict(row, expected_parent=
+                                          "product:office/2016"), item))
+        self.assertTrue(wrong_parent(dict(row, expected_parent="none"),
+                                     item))
+        self.assertFalse(wrong_parent(dict(row, expected_parent=""), item))
+        self.assertFalse(wrong_parent(row, {"parent_ref": None}))
+
+
 def _known_wrong_test(key, cause, stored):
     @unittest.expectedFailure
     def test(self):
@@ -263,17 +467,103 @@ class GoldFileTests(unittest.TestCase):
         with open(GOLD, encoding="utf-8", newline="") as fh:
             self.assertEqual(next(csv.reader(fh)), HEADER)
 
+    def test_classification_values(self):
+        for r in self.rows:
+            self.assertIn(r["classification"], ("",) + CLASSES, r["name"])
+
+    def test_at_least_40_rows_per_class(self):
+        counts = Counter(r["classification"] for r in self.rows)
+        for cls in CLASSES:
+            with self.subTest(cls=cls):
+                self.assertGreaterEqual(counts[cls], 40, cls)
+
+    def test_expected_parent_shape(self):
+        for r in self.rows:
+            value = r["expected_parent"]
+            if not value:
+                continue
+            self.assertIn(r["classification"], ("bundle_member",)
+                          if value != "none" else CLASSES, r["name"])
+            if value == "none":
+                continue
+            match = re.fullmatch(r"product:([^/\s]+)/(\S+)", value)
+            self.assertIsNotNone(match, "%s: %s" % (r["name"], value))
+            cycles = eol_cycles(match.group(1))
+            self.assertIsNotNone(cycles, "%s: %s" % (r["name"], value))
+            self.assertIn(match.group(2), cycles, "%s: %s"
+                          % (r["name"], value))
+
+    def test_existing_rows_unchanged(self):
+        old = self.rows[:ORIGINAL_ROWS]
+        keys = "\n".join("%s|%s|%s" % row_key(r) for r in old)
+        self.assertEqual(hashlib.sha256(keys.encode("utf-8")).hexdigest(),
+                         ORIGINAL_KEYS_SHA256)
+        for r in old:
+            self.assertEqual(r["classification"], "", r["name"])
+            self.assertEqual(r["expected_parent"], "", r["name"])
+
+    def test_required_traps_present(self):
+        def rows_named(name):
+            return [r for r in self.rows
+                    if r["name"] == name and r["classification"]]
+
+        def has(name, ok, **extra):
+            hits = [r for r in rows_named(name) if ok(r)
+                    and all(r[k] == v for k, v in extra.items())]
+            self.assertTrue(hits, "no row %r passing" % name)
+        has("Runtime", lambda r: r["classification"] == "unknown")
+        has("Android SDK Manager",
+            lambda r: r["classification"] != "component")
+        has("Driver Booster", lambda r: r["classification"] != "component")
+        has("libreoffice", lambda r: r["classification"] == "governable")
+        has("Microsoft Outlook 2019",
+            lambda r: r["classification"] == "bundle_member"
+            and r["expected_parent"] == "product:office/2019")
+        has("Microsoft Outlook",
+            lambda r: r["classification"] == "unknown"
+            and r["version"].startswith("16.0."))
+        temurin = [r for r in self.rows if "Temurin" in r["name"]
+                   and r["classification"] == "governable"]
+        self.assertTrue(temurin, "no standalone Temurin JDK row")
+        vcpp = [r for r in self.rows if "Visual C++ 2015-2022 Redistributable"
+                in r["name"] and r["classification"] == "component"]
+        self.assertTrue(vcpp, "no VC++ redistributable component row")
+        intel = [r for r in self.rows if r["name"].startswith("Intel")
+                 and "Graphics" in r["name"]
+                 and r["classification"] == "component"]
+        self.assertTrue(intel, "no Intel graphics driver component row")
+        kb = [r for r in self.rows if re.search(r"\(KB\d+\)", r["name"])
+              and r["classification"] == "component"]
+        self.assertTrue(kb, "no KB update component row")
+
+    def test_silver_sample_header(self):
+        with open(SILVER_SAMPLE, encoding="utf-8", newline="") as fh:
+            self.assertEqual(next(csv.reader(fh)), SILVER_HEADER)
+
     def test_floor_file_shape(self):
         floor = json.loads(FLOOR.read_text(encoding="utf-8"))
-        self.assertEqual(sorted(floor), ["generated_correct_min",
+        self.assertEqual(sorted(floor), ["classification_correct_min",
+                                         "generated_correct_min",
+                                         "governable_as_part_max",
                                          "hand_catalog_correct_min", "note",
-                                         "soft_wrong_max"])
+                                         "parent_cases_correct_min",
+                                         "silver_correct_min",
+                                         "soft_wrong_max",
+                                         "wrong_parent_max"])
+        self.assertIsInstance(floor["silver_correct_min"], int)
+        self.assertGreater(floor["silver_correct_min"], 0)
+        self.assertEqual(floor["governable_as_part_max"], 0)
+        self.assertEqual(floor["wrong_parent_max"], 0)
         self.assertIsInstance(floor["generated_correct_min"], int)
         self.assertGreater(floor["generated_correct_min"], 0)
         self.assertIsInstance(floor["soft_wrong_max"], int)
         self.assertIn("none", {r["expected_cycle"] for r in self.rows})
         self.assertIsInstance(floor["hand_catalog_correct_min"], int)
         self.assertGreater(floor["hand_catalog_correct_min"], 0)
+        self.assertIsInstance(floor["classification_correct_min"], int)
+        self.assertGreater(floor["classification_correct_min"], 0)
+        self.assertIsInstance(floor["parent_cases_correct_min"], int)
+        self.assertGreater(floor["parent_cases_correct_min"], 0)
 
     def test_strata_and_heldout_values(self):
         for r in self.rows:
@@ -386,6 +676,196 @@ class GoldFileTests(unittest.TestCase):
             5)
 
 
+# --- silver sample ----------------------------------------------------------
+# Public catalog rows labelled by two independent model labellers. Rates are
+# per source and never pooled. A rate is claimed only where at least
+# SILVER_MIN_N rows the tool labels component stand behind it.
+
+SILVER_SOURCES = ("winget", "homebrew", "debian", "ubuntu")
+SILVER_MIN_N = 600
+PARTS = ("component", "bundle_member")
+
+
+def read_silver() -> list:
+    with open(SILVER_SAMPLE, encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def silver_outcome(row: dict, cls: str) -> str:
+    """correct: agreed and the tool gives the label. governable_as_part: the
+    tool gives a part class and either labeller says governable (the worst
+    error). part_wrong_class: another part error on an agreed row.
+    unknown_ok: the tool says unknown. other: anything else."""
+    labels = (row["label"], row["label_b"])
+    if cls in PARTS and "governable" in labels:
+        return "governable_as_part"
+    if row["agreed"] == "1" and cls == row["label"]:
+        return "correct"
+    if cls in PARTS and row["agreed"] == "1":
+        return "part_wrong_class"
+    if cls == "unknown":
+        return "unknown_ok"
+    return "other"
+
+
+def score_silver(rows: list) -> dict:
+    """{source: Counter}. One inventory per source, run through the same
+    function the command line uses. Besides the outcomes, each Counter holds
+    pred_<class>, pred_component_agreed, component_right (agreed component
+    rows the tool calls component), worst_heldout and pred_component_heldout.
+    """
+    manifest = json.loads((ROOT / "data" / "manifest.json").read_text(
+        encoding="utf-8"))
+    as_of = date.fromisoformat(manifest["eol_date"])
+    out = {}
+    for source in SILVER_SOURCES:
+        part = [r for r in rows if r["source"] == source]
+        tally_ = Counter()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / ("%s.csv" % source)
+            with open(path, "w", encoding="utf-8", newline="") as fh:
+                writer = csv.writer(fh)
+                writer.writerow(["Software Name", "Publisher", "Version"])
+                for r in part:
+                    writer.writerow([r["name"], r["publisher"], r["version"]])
+            result, _meta = cli.build(str(path), as_of=as_of)
+        items = {it["id"]: it for it in result["items"]}
+        for r in part:
+            cls = items[item_id(r["publisher"], r["name"],
+                                r["version"])]["classification"]
+            res = silver_outcome(r, cls)
+            tally_[res] += 1
+            if cls in PARTS and r["label"] == r["label_b"] == "governable":
+                tally_["governable_as_part_both"] += 1
+            tally_["pred_" + cls] += 1
+            if cls == "component":
+                if r["heldout"] == "1":
+                    tally_["pred_component_heldout"] += 1
+                    if res == "governable_as_part":
+                        tally_["worst_heldout"] += 1
+                if r["agreed"] == "1":
+                    tally_["pred_component_agreed"] += 1
+                    if r["label"] == "component":
+                        tally_["component_right"] += 1
+        out[source] = tally_
+    return out
+
+
+def silver_rates(c: Counter) -> tuple:
+    """(n, worst-error rate, component precision) for one source."""
+    n = c["pred_component"]
+    worst = c["governable_as_part"]
+    rate = worst / n if n else 0.0
+    agreed = c["pred_component_agreed"]
+    prec = c["component_right"] / agreed if agreed else 0.0
+    return n, rate, prec
+
+
+def silver_table(scores: dict) -> str:
+    lines = ["silver sample (per source, never pooled):",
+             "%-9s %5s %6s %6s %9s %9s %8s %s" % (
+                 "source", "rows", "n_comp", "worst", "rate", "precision",
+                 "correct", "held-out worst/n")]
+    for source in SILVER_SOURCES:
+        c = scores[source]
+        n, rate, prec = silver_rates(c)
+        lines.append("%-9s %5d %6d %6d %9.4f %9.4f %8d %d/%d" % (
+            source, sum(c[k] for k in ("correct", "governable_as_part",
+                                        "part_wrong_class", "unknown_ok",
+                                        "other")),
+            n, c["governable_as_part"], rate, prec, c["correct"],
+            c["worst_heldout"], c["pred_component_heldout"]))
+    return "\n".join(lines)
+
+
+_SILVER: dict = {}
+
+
+def silver_scores() -> dict:
+    if "s" not in _SILVER:
+        _SILVER["s"] = score_silver(read_silver())
+    return _SILVER["s"]
+
+
+def readme_rates_table() -> list:
+    """Rows of the README table under "### Silver sample rates"."""
+    body = (BENCH / "README.md").read_text("utf-8")
+    start = body.index("### Silver sample rates")
+    rows = []
+    for line in body[start:].split("\n")[1:]:
+        if line.startswith("|"):
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if cells[0] in ("source",) or set(cells[0]) <= set("-: "):
+                continue
+            rows.append(cells)
+        elif rows:
+            break
+    return rows
+
+
+class SilverSampleTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.rows = read_silver()
+        cls.scores = silver_scores()
+        cls.floor = json.loads(FLOOR.read_text(encoding="utf-8"))
+        if wants_report():
+            print("\n" + silver_table(cls.scores), file=sys.stderr)
+
+    def claimed(self):
+        return [s for s in SILVER_SOURCES
+                if self.scores[s]["pred_component"] >= SILVER_MIN_N]
+
+    def test_sample_values(self):
+        self.assertTrue(self.rows)
+        for r in self.rows:
+            self.assertIn(r["source"], SILVER_SOURCES, r["name"])
+            self.assertIn(r["agreed"], ("0", "1"), r["name"])
+            if r["agreed"] == "1":
+                self.assertIn(r["label"], CLASSES, r["name"])
+                self.assertEqual(r["label"], r["label_b"], r["name"])
+            key = "%s|%s|%s" % (r["name"], r["publisher"], r["version"])
+            digit = int(hashlib.sha256(key.encode("utf-8")).hexdigest(),
+                        16) % 10
+            self.assertEqual(r["heldout"], "1" if digit == 0 else "0", key)
+
+    def test_rows_per_claimed_rate(self):
+        table = {cells[0]: cells for cells in readme_rates_table()}
+        self.assertEqual(sorted(table), sorted(SILVER_SOURCES))
+        for source in SILVER_SOURCES:
+            n = self.scores[source]["pred_component"]
+            claimed = "not claimed" not in " ".join(table[source])
+            self.assertEqual(claimed, n >= SILVER_MIN_N, source)
+
+    def test_governable_as_component_under_half_percent(self):
+        for source in self.claimed():
+            with self.subTest(source=source):
+                n, rate, _p = silver_rates(self.scores[source])
+                self.assertLess(rate, 0.005, "%s: %d of %d" % (
+                    source, self.scores[source]["governable_as_part"], n))
+
+    def test_part_precision_per_source(self):
+        for source in self.claimed():
+            with self.subTest(source=source):
+                _n, _r, prec = silver_rates(self.scores[source])
+                self.assertGreaterEqual(prec, 0.98, source)
+
+    def test_both_labellers_governable_never_part(self):
+        self.assertEqual(sum(self.scores[s]["governable_as_part_both"]
+                             for s in SILVER_SOURCES), 0)
+
+    def test_rates_never_pooled(self):
+        sources = [cells[0] for cells in readme_rates_table()]
+        self.assertEqual(sorted(sources), sorted(SILVER_SOURCES))
+        self.assertNotIn("all", [s.lower() for s in sources])
+
+    def test_silver_correct_not_below_floor(self):
+        got = sum(self.scores[s]["correct"] for s in SILVER_SOURCES)
+        self.assertGreaterEqual(got, self.floor["silver_correct_min"],
+                                "silver correct fell below the floor; fix "
+                                "the rule, never lower floor.json")
+
+
 class ShuffleTests(unittest.TestCase):
     def test_results_do_not_depend_on_row_order(self):
         rows = read_gold()
@@ -420,8 +900,69 @@ class CurationCitesGoldTests(unittest.TestCase):
                 self.assertEqual(row["expected_product"], item["product"])
 
 
+class ParentCaseFileTests(unittest.TestCase):
+    NEEDED = ("one-os", "two-os", "no-os", "column-item", "column-product",
+              "column-absent", "column-duplicate-name",
+              "column-names-a-part", "group-two-parents", "runtime-in-app",
+              "parent-past-eol", "parent-no-cycle")
+    HEADINGS = ["Software Name", "Publisher", "Version", "Parent"]
+
+    def test_cases_present(self):
+        have = {p.stem for p, _e in read_parent_cases()}
+        for name in self.NEEDED:
+            self.assertIn(name, have)
+
+    def test_every_csv_has_an_expected_file(self):
+        for path in PARENTS.glob("*.csv"):
+            self.assertTrue(path.with_name(path.stem + ".expected.json")
+                            .is_file(), path.name)
+        for path in PARENTS.glob("*.expected.json"):
+            self.assertTrue(path.with_name(
+                path.name[:-len(".expected.json")] + ".csv").is_file(),
+                path.name)
+
+    def test_expected_files_parse(self):
+        manifest = json.loads((ROOT / "data" / "manifest.json").read_text(
+            encoding="utf-8"))
+        for path, exp in read_parent_cases():
+            with self.subTest(case=path.stem):
+                with open(path, encoding="utf-8", newline="") as fh:
+                    reader = csv.DictReader(fh)
+                    self.assertEqual(reader.fieldnames, self.HEADINGS)
+                    keys = {"%s|%s|%s" % (r["Software Name"], r["Publisher"],
+                                          r["Version"]) for r in reader}
+                self.assertEqual(sorted(exp), ["as_of", "data", "items",
+                                               "warnings_contain"])
+                # The weekly job and its simulation change the data date;
+                # the cases then keep the date they were written for.
+                if not (os.environ.get("SWLC_WEEKLY_JOB")
+                        or os.environ.get("SWLC_GATE_SIM")):
+                    self.assertEqual(exp["as_of"], manifest["eol_date"])
+                date.fromisoformat(exp["as_of"])
+                self.assertEqual(exp["data"], "bundled")
+                self.assertIsInstance(exp["warnings_contain"], list)
+                self.assertEqual(set(exp["items"]), keys)
+                for key, want in exp["items"].items():
+                    self.assertEqual(sorted(want), [
+                        "classification", "inherited_from",
+                        "inherited_state", "parent_ref"], key)
+                    self.assertIn(want["classification"], CLASSES, key)
+                    ref = want["parent_ref"]
+                    if ref is not None:
+                        self.assertEqual(sorted(ref), ["kind", "value"], key)
+                        self.assertIn(ref["kind"], ("item", "product", "os"))
+                    src = want["inherited_from"]
+                    if src is not None:
+                        self.assertIn(src, keys, key)
+                        self.assertIsNotNone(ref, key)
+                        self.assertIn(want["inherited_state"],
+                                      assess.STATES, key)
+                    else:
+                        self.assertIsNone(want["inherited_state"], key)
+
+
 def benchmark_files() -> list:
-    return sorted(p for p in BENCH.iterdir() if p.is_file()
+    return sorted(p for p in BENCH.rglob("*") if p.is_file()
                   and p.suffix in (".csv", ".md", ".json"))
 
 

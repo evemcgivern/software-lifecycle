@@ -17,6 +17,95 @@ No row comes from a real inventory. Never add one.
 | `notes` | why the row is here; every row has one |
 | `stratum` | `hand`, `catalog` or `generated` (below) |
 | `heldout` | `1` or `0` (below) |
+| `classification` | empty (the row is not scored for classification), or `governable`, `component`, `bundle_member` or `unknown`, as defined in `docs/usage.md` |
+| `expected_parent` | empty (no link is expected), `product:<id>/<cycle>` (the parent product and cycle, on `bundle_member` rows only), or `none` (no parent link may exist) |
+
+### Classification columns
+
+Rows that were in the file before the classification columns existed have both
+columns empty and are not scored for classification. New rows carry a
+`classification`. Each label is kept only where two independent reviewers who
+did not see each other's labels agree; rows they disagree on go to
+`unsure.csv` with a note. A person spot-checks a tenth of the kept rows. The
+rows are public names only (winget, Homebrew, Debian and Ubuntu package names
+and vendor product pages, cited in `SOURCES.md`). `expected_parent` is
+`product:<id>/<cycle>` only where the name and version fit one cycle of one
+product by themselves, for example `Microsoft Outlook 2019` is
+`product:office/2019`. A row with a parent signal missing from its own name
+(a runtime that might ship inside an app) is `unknown` or `governable`, not
+`bundle_member`.
+
+### Parent cases
+
+`parents/` holds small inventories for the parent link, one pair of files per
+case: `<case>.csv` (headings `Software Name,Publisher,Version,Parent`) and
+`<case>.expected.json`. The JSON has `as_of` (the bundled `eol_date`),
+`data` (`bundled`), `items` and `warnings_contain`. `items` maps
+`name|publisher|version` to the expected `classification`, `parent_ref`
+(`{"kind", "value"}` or null; `value` is the parent row key for `item` and
+`os`, and `<product>/<cycle>` for `product`), `inherited_from` (the parent row
+key, or null) and `inherited_state` (the parent row's state, or null).
+`warnings_contain` lists text that must appear in the report warnings. The
+cases are hand-designed tests of the parent rules, not gold rows.
+
+### Silver sample
+
+`silver-sample.csv` holds 2,391 public rows from the silver catalog (winget,
+Homebrew, Debian, Ubuntu; 172,522 rows, built outside the repository and not
+committed) with two independent labels, to measure classification rates per
+source. Columns: `source`, `name`, `publisher`, `version`, `label` and
+`label_b` (a class from each labeller), `agreed` (`1` if the labels match,
+else `0`), `heldout` (the gold rule) and `notes`. `tests/sample_silver.py`
+holds the held-out rule and a plain draw; the suite never imports it.
+
+How the sample was made, plainly:
+
+- It was drawn after the rule change that stopped a trailing Runtime or SDK
+  from marking a component. Rows the tool labelled `component` were drawn
+  per source (600 each for Debian and Ubuntu, all of them for Homebrew and
+  winget), plus rows the tool labelled `governable`.
+- The labellers are two AI models, not people: Sonnet wrote `label` and
+  Haiku wrote `label_b`, each reading the rows itself, blind to the other
+  and to the tool's answer. An earlier attempt that labelled rows with a
+  script was thrown away. 59 rows have `agreed` = `0`; the person running
+  the work read that list. The labels are left as the models gave them.
+- 13 Homebrew rows were dropped because their names hold an at sign
+  (versioned formulae), which no benchmark file may contain. No row hit the
+  banned-term scan.
+- A spot-check read 117 agreed rows (5%, a seeded shuffle) and found none
+  plainly wrong; two (`liblouis-bin`, `libpurple-bin`, tool packages of a
+  library) are arguable.
+- After the sample was drawn, the `-dev` and `lib*` tool rules changed (a
+  `*-dev` name needs a `lib` part or a digit; `lib*-cli`, `-tools` and the
+  like are not libraries). Debian and Ubuntu Go and tool packages that the
+  tool labelled `component` at drawing time are now `unknown`, so those two
+  sources have fewer than 600 `component` rows and no rate is claimed for
+  them.
+
+The rates below hold for this catalog sample only. They say nothing about
+any real estate, where the mix of rows is unknown. They are not coverage
+figures.
+
+### Silver sample rates
+
+One row per source; rates are never pooled. The worst error is a row the
+tool labels `component` while either labeller says `governable`, over all
+rows the tool labels `component` (agreed or not, held-out rows included).
+Precision is agreed `component` labels over agreed rows the tool labels
+`component`. A rate is claimed only where at least 600 rows the tool labels
+`component` stand behind it; the claim is a worst-error rate under 0.5% and
+a precision of at least 98%. `bundle_member` is counted only: the sample has
+almost none.
+
+| source | tool says component | worst errors | worst-error rate | component precision | held-out worst / n |
+| --- | --- | --- | --- | --- | --- |
+| winget | 187 | 2 | not claimed (n under 600) | not claimed (178 of 180 agreed) | 0 / 19 |
+| homebrew | 629 | 0 | 0.00% (0 of 629) | 100% (623 of 623) | 0 / 68 |
+| debian | 557 | 1 | not claimed (n under 600) | not claimed (554 of 554 agreed) | 0 / 64 |
+| ubuntu | 556 | 0 | not claimed (n under 600) | not claimed (553 of 553 agreed) | 0 / 71 |
+
+`silver_correct_min` in `floor.json` is the count of agreed rows where the
+tool's class equals the label.
 
 ### Product, no cycle
 
@@ -65,10 +154,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 366 | 32 | 392 | 790 |
+| hand | 437 | 32 | 804 | 1273 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1422 | 305 | 469 | 2196 |
+| all | 1493 | 305 | 881 | 2679 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -77,7 +166,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 111 rows. Do not use held-out rows when writing
+are always `0`. That is 159 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks
@@ -106,6 +195,17 @@ exclusions, aliases or rules. The test reports them separately.
   pull request and local run. The weekly data job sets `SWLC_WEEKLY_JOB`
   and only reports it, because an upstream rename changes generated rows
   (see "Maintainer: when the weekly data job fails" in `docs/sop.md`).
+- Classification scoring. A gold row with a `classification` is correct when
+  the predicted class matches and, for a named parent, the parent product and
+  cycle match. The count must be at least `classification_correct_min`.
+  `governable_as_part_max` caps rows whose gold class is `governable` but
+  that the tool calls `component` or `bundle_member` (target 0). Component
+  and bundle member precision on the gold rows must stay at 0.98 or above.
+  `wrong_parent_max` caps rows that get a parent link the gold row does not
+  expect, including any link where `expected_parent` is `none` (target 0).
+- Parent cases. Every item in `parents/` must match its expected file; the
+  count must be at least `parent_cases_correct_min`. These are
+  hand-designed tests of the parent rules, not a rate for any real estate.
 - Floor lowerings: the floor is lowered only by a decision the maintainer
   records here, with the rows it loses.
   - 2026-10-25, removing the `red hat` publisher alias for `ansible`. The
