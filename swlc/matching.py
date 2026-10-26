@@ -144,43 +144,70 @@ def match_product(name: str, version: str, aliases: list[dict],
     AMBIGUOUS. Generated matching runs only when no alias hits. Without
     catalog_index, generated matching is off and only aliases are used.
     """
+    return _match(name, version, aliases, products, catalog_index,
+                  publisher, False)[0]
+
+
+def match_noted(name: str, version: str, aliases: list[dict],
+                products: dict[str, list[dict]], catalog_index=None,
+                publisher: str = "") -> tuple:
+    """(MatchResult, review code or None). The MatchResult is always the
+    one match_product gives. The code (TITLE_NEEDS_PUBLISHER or
+    TITLE_NOT_ON_LIST, see swlc/catalog_match.py) is set only when no
+    curated alias hit, generated matching found no product, and the
+    catalog lookup refused the row on purpose. A product whose curated
+    alias was blocked by its publisher guard gives no code."""
+    return _match(name, version, aliases, products, catalog_index,
+                  publisher, True)
+
+
+def _match(name, version, aliases, products, catalog_index, publisher,
+           noted: bool) -> tuple:
     hit, result, blocked = _curated(name, version, aliases, products,
                                     publisher)
     if result.product is not None:
         result = replace(result, source=CURATED)
     if catalog_index is None:
-        return result
+        return result, None
     if hit:
         if result.product is None:
-            return result
+            return result, None
         others, _tails = catalog_index.lookup(
             name, publisher, _fits(version, catalog_index, products))
         if any(pid != result.product for pid in others):
-            return MatchResult(None, None, AMBIGUOUS)
-        return result
+            return MatchResult(None, None, AMBIGUOUS), None
+        return result, None
     return _generated(name, version, publisher, catalog_index, products,
-                      blocked)
+                      blocked, noted)
 
 
 def _generated(name: str, version: str, publisher: str, index,
                products: dict[str, list[dict]],
-               blocked: frozenset = frozenset()) -> MatchResult:
-    """Generated matching (rule C). Products in blocked (their alias hit
+               blocked: frozenset = frozenset(),
+               noted: bool = False) -> tuple:
+    """Generated matching (rule C): (MatchResult, review code or None).
+    Products in blocked (their alias hit
     the name but its publisher guard failed) are never matched here. The version column is used; when it is
     empty, a version token split off the name is used instead. When both
     exist and disagree, the row is not decided: NO_CYCLE, product known.
     So is a version starting with a curated no_cycle_versions prefix."""
-    pids, tails = index.lookup(name, publisher,
-                               _fits(version, index, products))
+    fits = _fits(version, index, products)
+    if noted:
+        pids, tails, note = index.lookup_noted(name, publisher, fits)
+    else:
+        (pids, tails), note = index.lookup(name, publisher, fits), None
     pids = tuple(p for p in pids if p not in blocked)
     if not pids:
-        return MatchResult(None, None, NO_ALIAS)
+        code = None
+        if note is not None and not blocked.intersection(note[1]):
+            code = note[0]
+        return MatchResult(None, None, NO_ALIAS), code
     if len(pids) > 1:
-        return MatchResult(None, None, AMBIGUOUS)
+        return MatchResult(None, None, AMBIGUOUS), None
     product = pids[0]
     cycle, reason = _generated_cycle(product, tails[product], version,
                                      index, products)
-    return MatchResult(product, cycle, reason, source=GENERATED)
+    return MatchResult(product, cycle, reason, source=GENERATED), None
 
 
 def _fits(version: str, index, products: dict[str, list[dict]]):
