@@ -7,6 +7,7 @@ Matching results never change: match_noted always returns the MatchResult
 match_product gives.
 """
 import copy
+import json
 import sys
 import time
 import unittest
@@ -335,6 +336,138 @@ class GoldUnchangedTests(unittest.TestCase):
             b.pop("ambiguity")
             self.assertEqual(a, b, a["name"])
         self.assertGreater(flagged, 0)
+
+
+# --- the views: report.md, report.csv, --counts-only, --fail-on ------------
+
+# Bundled data: Redmine with no publisher, and Caddy and Bun (titles not on
+# the version-in-name list) with a version in the name.
+VIEW_ROWS = (
+    ("Redmine", "", "5.1.2"),         # title_needs_publisher
+    ("Caddy 2.7.6", "", ""),          # title_not_on_list
+    ("Bun 1.1.0", "", ""),            # title_not_on_list
+    ("Synthetic Thing", "", "1.0"),   # no title hit
+)
+VIEW_DATE = "2026-10-24"
+
+
+class ViewTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import csv
+        import io
+        import tempfile
+        from contextlib import redirect_stderr, redirect_stdout
+        from swlc import cli
+        cls.cli = cli
+        cls.tmp = tempfile.TemporaryDirectory()
+        tmp = Path(cls.tmp.name)
+        cls.inv = tmp / "inventory.csv"
+        with open(cls.inv, "w", encoding="utf-8", newline="") as fh:
+            writer = csv.writer(fh)
+            writer.writerow(["Software Name", "Publisher", "Version",
+                             "Owner"])
+            for name, pub, ver in VIEW_ROWS:
+                writer.writerow([name, pub, ver, "ops"])
+
+        def run(*flags, out="out"):
+            buf, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(buf), redirect_stderr(err):
+                code = cli.main(["check", str(cls.inv), "--as-of", VIEW_DATE,
+                                 "--out", str(tmp / out), *flags])
+            return code, buf.getvalue(), tmp / out
+
+        cls.check = staticmethod(run)
+        _code, _text, out = run()
+        cls.report = json.loads((out / "report.json").read_text("utf-8"))
+        cls.md = (out / "report.md").read_text("utf-8")
+        cls.csv = list(csv.DictReader(io.StringIO(
+            (out / "report.csv").read_text("utf-8"))))
+        cls.amb = [it for it in cls.report["items"] if it["ambiguity"]]
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def section(self, md, heading):
+        start = md.index("\n## %s (" % heading)
+        end = md.index("\n## ", start + 1)
+        return md[start:end]
+
+    def test_bundled_rows_get_the_codes(self):
+        codes = {it["name"]: (it["ambiguity"] or {}).get("code")
+                 for it in self.report["items"]}
+        self.assertEqual(codes, {
+            "Redmine": TITLE_NEEDS_PUBLISHER, "Caddy 2.7.6": TITLE_NOT_ON_LIST,
+            "Bun 1.1.0": TITLE_NOT_ON_LIST, "Synthetic Thing": None})
+        self.assertEqual(self.report["counts"]["ambiguous_review"], 3)
+
+    def test_markdown_section_lists_them_without_claims(self):
+        sec = self.section(self.md, "Names to review")
+        self.assertIn("## Names to review (3)", sec)
+        self.assertIn("not a finding", sec)
+        for it in self.amb:
+            self.assertIn("(id `%s`)" % it["id"], sec)
+            self.assertIn("Review: " + it["ambiguity"]["reason"], sec)
+        self.assertNotIn("Synthetic Thing", sec)
+        for claim in ("State:", "End of life", "Mainstream support",
+                      "Product matched", "past end of life", "redmine/",
+                      "Classification:", VIEW_DATE):
+            self.assertNotIn(claim, sec)
+
+    def test_markdown_pointer_and_summary_count(self):
+        unmatched = self.section(self.md, "Couldn't match")
+        self.assertIn("Names to review: 3 of these were left unmatched on "
+                      "purpose", unmatched)
+        summary = [line for line in self.md.split("\n")
+                   if line.startswith("Items: ")]
+        self.assertEqual(len(summary), 1)
+        self.assertIn("couldn't match 4;", summary[0])
+        self.assertTrue(summary[0].endswith("names to review 3."))
+
+    def test_findings_block_unchanged(self):
+        block = self.md.split("```findings\n", 1)[1].split("```", 1)[0]
+        types = {f["type"] for f in json.loads(block)}
+        self.assertEqual(types, {"unmatched"})
+
+    def test_csv_column(self):
+        reasons = {row["name"]: row["Review reason"] for row in self.csv}
+        self.assertEqual(reasons["Synthetic Thing"], "")
+        for it in self.amb:
+            self.assertEqual(reasons[it["name"]], it["ambiguity"]["reason"])
+        self.assertEqual(list(self.csv[0])[-1], "Review reason")
+
+    def test_counts_only_line_has_no_names(self):
+        code, text, _out = self.check("--counts-only", out="counts")
+        self.assertEqual(code, 0)
+        lines = text.split("\n")
+        self.assertIn("ambiguous_review 3", lines)
+        at = lines.index("ambiguous_review 3")
+        self.assertTrue(lines[at - 1].startswith("classification "))
+        for name, pub, _ver in VIEW_ROWS:
+            self.assertNotIn(name.split()[0], text)
+
+    def test_governable_only_keeps_them(self):
+        _code, _text, out = self.check("--governable-only", out="gov")
+        md = (out / "report.md").read_text("utf-8")
+        sec = self.section(md, "Names to review")
+        csv_text = (out / "report.csv").read_text("utf-8")
+        for it in self.amb:
+            self.assertEqual(it["classification"], "unknown")
+            self.assertIn("(id `%s`)" % it["id"], sec)
+            self.assertIn(it["id"], csv_text)
+
+    def test_fail_on_is_unaffected(self):
+        code, _text, _out = self.check(
+            "--fail-on", "past_eol,ends_soon,review_urgently,dates_disagree",
+            out="fail1")
+        self.assertEqual(code, 0)
+        # They are still unmatched rows, so the unmatched list fires.
+        code, _text, _out = self.check("--fail-on", "unmatched", out="fail2")
+        self.assertEqual(code, self.cli.EXIT_FINDINGS)
+        for name in ("past_eol", "ends_soon", "review_urgently",
+                     "dates_disagree"):
+            self.assertEqual(self.report["lists"][name], [])
 
 
 if __name__ == "__main__":

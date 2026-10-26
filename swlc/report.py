@@ -90,6 +90,16 @@ NO_PARENT_DATE = "parent has no date"
 NEEDS_REVIEW_LEAD = ("Needs review: %d. Parts with a parent are listed in "
                      "their own section.")
 PARTS = ("component", "bundle_member")
+REVIEW_HEADING = "Names to review"
+REVIEW_COLUMN = "Review reason"
+REVIEW_POINTER = ("Names to review: %d of these were left unmatched on "
+                  "purpose; see \"%s\" below.")
+REVIEW_LEAD = ("Unmatched on purpose, not a finding. Each name looks like a "
+               "catalog product, but there is not enough evidence to match "
+               "it, so no product, cycle, date or state is claimed. A "
+               "person adds a publisher to the inventory or asks for a "
+               "curated alias. These items are also counted under "
+               "\"Couldn't match\".")
 CSV_COLUMNS = (
     "id", "name", "version", "publisher", "owners", "rows", "state",
     "reason", "product", "cycle", "eol_used", "eol_source", "eol_endoflife",
@@ -97,7 +107,7 @@ CSV_COLUMNS = (
     "golden_applied", "golden_expired", "dates_disagree", "accepted_risk",
     "exception_expired", "decision_needed", "kev", "kev_stale",
     "change_ref", "problem_ref", "lists", "match_source",
-    "classification", "parent_ref", INHERITED_HEADING)
+    "classification", "parent_ref", INHERITED_HEADING, REVIEW_COLUMN)
 
 _MD_SPECIAL = "\\`*_[]()#|~!"
 
@@ -323,6 +333,16 @@ def _item_block(it: dict, eol_snap: str, by_id: dict) -> list:
     return out
 
 
+def _review_block(it: dict) -> list:
+    """An ambiguous item: name, version, publisher and the fixed reason.
+    No product, cycle, date or state."""
+    head = "- **%s** %s" % (_name(it["name"]), _disp(it["version"]))
+    if it["publisher"]:
+        head += ", publisher %s" % _disp(it["publisher"])
+    return [head + " (id `%s`)" % it["id"],
+            "  - Review: %s" % it["ambiguity"]["reason"]]
+
+
 def _kev_age_text(result: dict) -> str:
     age = result["data_release"]["kev_age_days"]
     if age < 0:
@@ -364,10 +384,12 @@ def render_markdown(result: dict, meta: dict,
         out += ["", "KEV overlay is not current. %s." % _kev_age_text(result)]
     for warning in result["warnings"]:
         out += ["", "Warning: %s" % _disp(warning)]
-    out += ["", "Items: %d (rows: %d). %s." % (
+    ambiguous = [it["id"] for it in result["items"] if it["ambiguity"]]
+    out += ["", "Items: %d (rows: %d). %s; %s %d." % (
         result["counts"]["items"], result["counts"]["rows"],
         "; ".join("%s %d" % (h.lower(), counts[name])
-                  for name, h, _ in SECTIONS))]
+                  for name, h, _ in SECTIONS),
+        REVIEW_HEADING.lower(), len(ambiguous))]
     out += ["", MATCH_CAVEAT]
     if governable_only:
         out += ["", hidden_line(result)]
@@ -397,7 +419,15 @@ def render_markdown(result: dict, meta: dict,
         ids = result["lists"][name]
         if name == "unmatched":
             emit(heading, len(ids), review,
-                 [NEEDS_REVIEW_LEAD % len(review), ""])
+                 [NEEDS_REVIEW_LEAD % len(review),
+                  REVIEW_POINTER % (len(ambiguous), REVIEW_HEADING), ""])
+            # Never hidden: an ambiguous item is never a part.
+            out.extend(["", "## %s (%d)" % (REVIEW_HEADING, len(ambiguous)),
+                        "", REVIEW_LEAD, ""])
+            if not ambiguous:
+                out.append("None.")
+            for gid in ambiguous:
+                out.extend(_review_block(items[gid]))
             emit("Parts that could not be matched", len(parts), parts)
             emit("Parts of a parent past or near end of life",
                  len(attention), attention)
@@ -483,6 +513,7 @@ def render_csv(result: dict, governable_only: bool = False) -> str:
         row = dict(it)
         row["parent_ref"] = _parent_cell(it, by_id)
         row[INHERITED_HEADING] = _inherited_cell(it)
+        row[REVIEW_COLUMN] = (it["ambiguity"] or {}).get("reason")
         row["owners"] = "; ".join(it["owners"])
         row["decision_needed"] = "; ".join(it["decision_needed"])
         row["lists"] = "; ".join(sorted(member.get(it["id"], [])))
