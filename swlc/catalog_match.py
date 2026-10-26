@@ -151,32 +151,34 @@ CORPORATE_WORDS = frozenset((
 # or by reading), titles of three letters or fewer, titles that also name
 # another well-known product (Rocket.Chat: its desktop app has its own
 # version line), standards, devices, and products named by an exclusion.
-# A product added to the catalog later is not in this list, so it gets
-# the rule only after a review.
+# Also left out (2026-10-26): titles with a same-named package on PyPI,
+# npm or RubyGems from someone else (a client, binding or wrapper) whose
+# versions fit a cycle of the product, such as redis, elasticsearch,
+# podman, sqlite or openssl, and pgadmin ("pgAdmin 4" names a
+# generation, not a version). A package that is the product itself
+# (eslint, numpy, nuxt on npm or PyPI) does not count. A product added to
+# the catalog later is not in this list, so it gets the rule only after a
+# review.
 VERSION_NAME_TITLES = frozenset((
     "adonisjs angularjs ansible-core arangodb artifactory authentik "
-    "bazel behat big-ip bigbluebutton bitbucket cakephp centreon "
-    "ceph cert-manager cfengine checkmk ckeditor clamav clickhouse "
-    "cnspec cockroachdb commvault containerd contao controlm dapr "
-    "debian deno dependency-track devuan dropwizard drush duckdb "
-    "elasticsearch eslint etcd eurolinux exim external-dns ffmpeg "
-    "firefox forgejo fortios foundationdb freebsd gitlab goaccess "
-    "gradle grafana graylog grumphp gstreamer haproxy icinga "
-    "influxdb istio jhipster joomla jquery jreleaser jruby "
-    "karpenter keda keycloak kiali kibana knative kubernetes "
-    "kyverno laravel libreoffice lineageos liquibase logstash "
-    "mageia magento mariadb matomo mautic mediawiki meilisearch "
-    "memcached metabase metallb mysql neo4j netbsd nextjs nginx "
-    "nixos nodejs notepad-plus-plus numpy nuxt oniguruma openbao "
-    "openbsd opensearch openssl opensuse opentofu openvpn openwrt "
-    "openzfs opnsense otobo ovirt perl pgadmin phpbb phpmyadmin "
-    "plesk plone pnpm podman pop-os postgresql postmarketos "
-    "privatebin proftpd quarkus-framework rabbitmq redis redmine "
-    "routeros rtpengine sapmachine shopware sourcegraph splunk "
-    "sqlite statamic strapi sylius symfony tarantool tarteaucitron "
-    "thumbor traefik truenas typo3 ubuntu unrealircd valkey "
-    "virtualbox vitess vuetify weakforced weechat wireshark "
-    "wordpress xcp-ng youtrack zabbix zentyal"
+    "bazel behat big-ip bigbluebutton cakephp centreon ceph "
+    "cert-manager cfengine checkmk ckeditor clamav clickhouse "
+    "cnspec commvault contao controlm debian deno dependency-track "
+    "devuan dropwizard drush eslint etcd eurolinux exim "
+    "external-dns firefox forgejo fortios freebsd goaccess grafana "
+    "grumphp haproxy icinga istio jhipster joomla jquery jreleaser "
+    "jruby karpenter keda keycloak kiali kibana knative kubernetes "
+    "kyverno laravel libreoffice lineageos logstash mageia magento "
+    "mariadb matomo mautic mediawiki meilisearch metabase metallb "
+    "mysql netbsd nextjs nginx nixos nodejs notepad-plus-plus numpy "
+    "nuxt oniguruma openbao openbsd opensuse opentofu openvpn "
+    "openwrt openzfs opnsense otobo ovirt perl phpbb phpmyadmin "
+    "plesk plone pnpm pop-os postgresql postmarketos privatebin "
+    "proftpd quarkus-framework rabbitmq redmine routeros rtpengine "
+    "sapmachine shopware sourcegraph splunk statamic strapi sylius "
+    "symfony tarantool tarteaucitron thumbor traefik truenas typo3 "
+    "ubuntu unrealircd valkey virtualbox vitess vuetify weakforced "
+    "weechat xcp-ng youtrack zabbix zentyal"
 ).split())
 # Names with more words than this are never matched by title: no product
 # title is that long, and it bounds the work on a hostile row.

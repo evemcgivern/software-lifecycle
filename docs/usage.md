@@ -191,10 +191,18 @@ so; it does not hide them.
   Podman project.
 - The VS Code extensions for Julia and Deno share vendor words with the
   Julia and Deno products, so an extension row can be read as the product.
-- The version-in-name rule trusts a coined title with no publisher. A
-  client library or package with the same name and its version in the
-  name (for example a language package named `redis` shown as
-  `redis 4.0.6`) is read as the product.
+- The version-in-name rule trusts a coined title with no publisher.
+  Titles with a same-named PyPI, npm or RubyGems package from someone else
+  whose versions fit a cycle (redis, elasticsearch, podman, sqlite,
+  openssl and others) are left off its list, so `redis 5.0.1` with no
+  publisher stays unmatched. The check was made once (2026-10-26): a
+  package published later under a listed title would be read as the
+  product. nginx, CKEditor, JHipster, jQuery, Magento, Matomo, Mautic,
+  Oniguruma and PrivateBin are still on the list although such a package
+  exists, so `nginx 1.0.2` with no publisher is read as nginx.
+- Titles on the one-word allowlist (GStreamer, Liquibase and others) match
+  with any publisher or none, so a same-named package such as the npm
+  `liquibase` wrapper is read as the product.
 
 ## How KEV is checked
 

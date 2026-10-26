@@ -149,7 +149,15 @@ class BundledCatalogTests(unittest.TestCase):
         # product stay out (the gold trap rows depend on it).
         for pid in ("go", "flux", "salt", "puppet", "nomad", "teleport",
                     "quasar", "harbor", "express", "rocket-chat", "python",
-                    "ruby", "rust", "unity", "jenkins", "django", "ansible"):
+                    "ruby", "rust", "unity", "jenkins", "django", "ansible",
+                    # Same-named client libraries or packages on PyPI,
+                    # npm or RubyGems whose versions fit a cycle.
+                    "podman", "redis", "elasticsearch", "neo4j", "dapr",
+                    "opensearch", "pgadmin", "bitbucket", "cockroachdb",
+                    "containerd", "duckdb", "ffmpeg", "foundationdb",
+                    "gitlab", "gradle", "graylog", "gstreamer", "influxdb",
+                    "liquibase", "memcached", "openssl", "sqlite",
+                    "wireshark", "wordpress"):
             with self.subTest(pid=pid):
                 self.assertNotIn(pid, VERSION_NAME_TITLES)
 
