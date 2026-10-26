@@ -48,6 +48,7 @@ inventory, so keep it as private as the inventory.
 | `lists` | Count of item IDs in each list. |
 | `classification` | Count of items in each class. See `counts.classification`. |
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
+| `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 
 ### counts.classification
@@ -148,6 +149,7 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `parent_ref` | The named parent of a `bundle_member`, or `null`. See `parent_ref` below. |
 | `inherited_from` | The parent item's ID when the parent is in the same inventory; otherwise `null`. |
 | `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's, or `null`. See `inherited_lifecycle` below. The item's own date fields never change. |
+| `ambiguity` | `null`, or an object with `code` and `reason` when the matcher refused this unmatched row on purpose: the name looks like a catalog product, but there is not enough evidence. See `ambiguity` below. Never set on a matched item or on a part (`component` or `bundle_member`). |
 
 ### parent_ref
 
@@ -178,6 +180,35 @@ only: a part whose parent is itself a part gets none.
 | `extended_support` | The parent's `extended_support`. |
 | `state` | The parent's `state`, in the item state words. |
 | `label` | Always "inherited from parent". |
+
+### ambiguity
+
+Set only on an unmatched item with no product, whose class is `unknown`
+or `governable`. It changes nothing else: the item keeps `state`
+`unmatched`, its `reason` (`NO_ALIAS`), `product` `null` and no date. It
+never puts the item on another list, and `--fail-on` never reads it.
+Unmatched on purpose, not a finding. A person adds a publisher to the
+inventory or asks the maintainer for a curated alias; the tool never
+promotes such a row to a match.
+
+| Key | Meaning |
+|---|---|
+| `code` | One of the `ambiguity` codes below. |
+| `reason` | A fixed one-line English text for the code. It holds no text from the inventory. |
+
+### ambiguity codes
+
+| Code | When |
+|---|---|
+| `title_needs_publisher` | The cleaned name is exactly a one-word product title, and the match was refused only because no publisher confirms the product (the publisher is empty, or names no confirming vendor). Reason: "The name is a product title, but no publisher confirms the product." |
+| `title_not_on_list` | The name is a one-word product title followed by a version, the publisher is empty, the version would decide one cycle, and the product is not on the reviewed list for rows with no publisher (the version-in-name rule in "How names are matched", `docs/usage.md`). Reason: "The name is a product title and a version, but that title is not on the reviewed list for rows with no publisher." |
+
+No code is set for a row refused by a curated exclusion (or for any
+product an exclusion names), a device or `generated_off` product, a
+version or cycle that does not fit, a name that hits no product title, or
+a row a curated alias decided. A row gets at most one code: the
+title check runs before the version split, so if both could apply,
+`title_needs_publisher` is used.
 
 Date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
 `extended_support`) hold `YYYY-MM-DD` text, `null` for none, or `true` or

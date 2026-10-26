@@ -6,18 +6,25 @@ The fixtures are the fictional products of tests/test_catalog_match.py.
 Matching results never change: match_noted always returns the MatchResult
 match_product gives.
 """
+import copy
 import sys
 import time
 import unittest
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from swlc import assess as assess_mod  # noqa: E402
+from swlc.assess import AMBIGUITY_REASONS, assess  # noqa: E402
 from swlc.catalog_match import (  # noqa: E402
     TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST, build_index)
-from swlc.matching import match_noted, match_product  # noqa: E402
+from swlc.data import Data  # noqa: E402
+from swlc.inputs import group_rows  # noqa: E402
+from swlc.matching import NO_ALIAS, match_noted, match_product  # noqa: E402
+from swlc.overrides import Exceptions, Golden  # noqa: E402
 from test_catalog_match import (  # noqa: E402
-    CATALOG, CURATION, INDEX, MAX_SECONDS_100K, PRODUCTS, alias,
+    CATALOG, CURATION, CYCLES, INDEX, MAX_SECONDS_100K, PRODUCTS, alias,
     synthetic_rows)
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -176,6 +183,158 @@ class NotedSpeedTests(unittest.TestCase):
                             catalog_index=index, publisher=pub)[0],
                 match_product(name, ver, data.aliases, data.products,
                               catalog_index=index, publisher=pub), name)
+
+
+# --- the report: item key and count ----------------------------------------
+
+AS_OF = date(2026, 10, 24)
+COLMAP = {"name": "name", "version": "version", "publisher": "publisher",
+          "owner": "owner", "parent": "parent"}
+# (name, version, publisher, parent) -> expected ambiguity code
+ROWS = {
+    ("Plainword", "1", "", ""): TITLE_NEEDS_PUBLISHER,
+    ("Lexicon 1.0", "", "", ""): TITLE_NOT_ON_LIST,
+    ("Chatter", "9.3", "Chatter Inc.", ""): None,       # exclusion
+    ("Tabby Tablet", "8", "", ""): None,                # device
+    ("Lexicon 9.9", "", "", ""): None,                  # no such cycle
+    ("Foo Tool", "2.1.4", "", ""): None,                # matched, past EOL
+    ("Plainword", "1", "Acme", "Foo Tool"): None,       # a bundle part
+    ("Nothing", "1", "", ""): None,                     # no title hit
+}
+
+
+def report_data():
+    """Every fixture product, every cycle past end of life."""
+    products = {pid: [{"cycle": c, "eol": date(2020, 1, 1),
+                       "support": False, "extended": None}
+                      for c in labels] for pid, labels in CYCLES.items()}
+    return Data(release_id="r", file_hashes={}, aliases=[],
+                products=products, kev=[], kev_catalog_version="1",
+                kev_age_days=1, eol_age_days=1,
+                catalog=copy.deepcopy(CATALOG),
+                curation=copy.deepcopy(CURATION))
+
+
+def run_rows(rows=ROWS, data=None):
+    dicts = [{"name": n, "version": v, "publisher": p, "owner": "ops",
+              "parent": parent} for n, v, p, parent in rows]
+    return assess(group_rows(dicts, COLMAP), data or report_data(),
+                  Golden(), Exceptions(), {}, AS_OF)
+
+
+def by_row(out):
+    return {(it["name"], it["version"], it["publisher"]): it
+            for it in out["items"]}
+
+
+class ReportKeyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.out = run_rows()
+        cls.items = by_row(cls.out)
+
+    def test_key_on_every_item(self):
+        self.assertEqual(len(self.out["items"]), len(ROWS))
+        for it in self.out["items"]:
+            self.assertIn("ambiguity", it)
+
+    def test_codes_per_row(self):
+        for (name, version, pub, _parent), code in ROWS.items():
+            with self.subTest(name=name, pub=pub):
+                got = self.items[(name, version, pub)]["ambiguity"]
+                if code is None:
+                    self.assertIsNone(got)
+                else:
+                    self.assertEqual(got, {"code": code,
+                                           "reason": AMBIGUITY_REASONS[code]})
+
+    def test_part_is_never_ambiguous(self):
+        part = self.items[("Plainword", "1", "Acme")]
+        self.assertEqual(part["classification"], "bundle_member")
+        self.assertIsNone(part["ambiguity"])
+        # The same row with no parent is reviewed.
+        alone = by_row(run_rows([("Plainword", "1", "Acme", "")]))
+        self.assertEqual(alone[("Plainword", "1", "Acme")]["ambiguity"][
+            "code"], TITLE_NEEDS_PUBLISHER)
+
+    def test_ambiguous_items_claim_nothing(self):
+        for it in self.out["items"]:
+            if not it["ambiguity"]:
+                continue
+            self.assertIn(it["classification"], ("unknown", "governable"))
+            self.assertEqual(it["state"], "unmatched")
+            self.assertEqual(it["reason"], NO_ALIAS)
+            for key in ("product", "cycle", "match_source", "eol_used",
+                        "eol_endoflife", "support", "extended_support",
+                        "state_endoflife", "kev"):
+                self.assertIsNone(it[key], key)
+
+    def test_reason_is_fixed_text(self):
+        for code, text in AMBIGUITY_REASONS.items():
+            self.assertNotIn("\n", text)
+            for name, _v, _p, _parent in ROWS:
+                self.assertNotIn(name, text)
+        self.assertEqual(set(AMBIGUITY_REASONS),
+                         {TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST})
+
+    def test_count_and_breakdown(self):
+        counts = self.out["counts"]
+        self.assertEqual(counts["ambiguous_review"], 2)
+        self.assertEqual(sum(counts["unmatched_breakdown"].values()),
+                         counts["lists"]["unmatched"])
+        ambiguous = {it["id"] for it in self.out["items"]
+                     if it["ambiguity"]}
+        self.assertLessEqual(ambiguous, set(self.out["lists"]["unmatched"]))
+
+    def test_never_on_a_finding_list(self):
+        ambiguous = {it["id"] for it in self.out["items"]
+                     if it["ambiguity"]}
+        self.assertTrue(self.out["lists"]["past_eol"])
+        for name, ids in self.out["lists"].items():
+            if name in ("unmatched", "ownerless"):
+                continue
+            with self.subTest(name=name):
+                self.assertFalse(ambiguous & set(ids))
+        self.assertEqual(set(self.out["lists"]), set(assess_mod.LISTS))
+
+    def test_no_new_state_list_or_schema(self):
+        self.assertEqual(self.out["schema_version"], 1)
+        self.assertEqual(set(self.out["counts"]["states"]),
+                         set(assess_mod.STATES))
+
+
+class GoldUnchangedTests(unittest.TestCase):
+    """The whole gold benchmark gives the same items with the review hook
+    as with the hook ignored (match_product), apart from the new key."""
+
+    def test_gold_items_unchanged(self):
+        import test_benchmark
+        rows = test_benchmark.read_gold()
+        noted = test_benchmark.results()
+        original = assess_mod.match_noted
+
+        def ignored(*args, **kwargs):
+            return match_product(*args, **kwargs), None
+
+        assess_mod.match_noted = ignored
+        try:
+            plain = test_benchmark.run_gold(rows)
+        finally:
+            assess_mod.match_noted = original
+        self.assertEqual(len(noted), len(plain))
+        flagged = 0
+        for (_r, res_a, a), (_r2, res_b, b) in zip(noted, plain):
+            self.assertEqual(res_a, res_b)
+            self.assertIsNone(b["ambiguity"])
+            flagged += bool(a["ambiguity"])
+            if a["ambiguity"]:
+                self.assertEqual(a["state"], "unmatched")
+                self.assertIsNone(a["product"])
+            a, b = dict(a), dict(b)
+            a.pop("ambiguity")
+            b.pop("ambiguity")
+            self.assertEqual(a, b, a["name"])
+        self.assertGreater(flagged, 0)
 
 
 if __name__ == "__main__":
