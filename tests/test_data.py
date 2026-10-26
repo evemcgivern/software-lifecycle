@@ -689,7 +689,8 @@ class ProductsSchemaTests(DataCase):
 class CurationSchemaTests(DataCase):
     def test_valid_curation_is_returned(self):
         obj = curation_obj(
-            publisher_aliases={"alpha": pa("acme", "acme software")},
+            publisher_aliases={"alpha": pa("acme", "acme software"),
+                               "beta": pa("b", gold="Beta|B Inc|1.0")},
             single_word_allowlist=[GOOD_ALLOW],
             exclusions=[GOOD_EXCLUSION, dict(GOOD_EXCLUSION, publisher="p")],
             generated_off=["alpha", "beta"])
@@ -719,6 +720,9 @@ class CurationSchemaTests(DataCase):
             curation_obj(publisher_aliases={"alpha": pa(
                 "a", source="http://example.com/p")}),
             curation_obj(publisher_aliases={"alpha": pa("a", extra=1)}),
+            curation_obj(publisher_aliases={"alpha": pa("a", gold="a|b")}),
+            curation_obj(publisher_aliases={"alpha": pa("a", gold="")}),
+            curation_obj(publisher_aliases={"alpha": pa("a", gold=5)}),
             curation_obj(publisher_aliases={"alpha": {
                 "phrases": ["a"], "reason": "r"}}),
             curation_obj(publisher_aliases={"alpha": {
