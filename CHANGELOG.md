@@ -14,7 +14,9 @@
   decides exactly one cycle. Ordinary words, common names, names another
   product shares (Go, Flux, Salt, Quasar, Rocket.Chat) and titles shared
   with a same-named PyPI, npm or RubyGems client (redis, podman,
-  elasticsearch) are left out, a row with a publisher still needs the
+  elasticsearch) or VS Code or JetBrains extension (ESLint, MySQL,
+  PostgreSQL) are left out; a Kubernetes `-gke.` or `-eks-` build is not
+  upstream Kubernetes; a row with a publisher still needs the
   vendor check, and exclusions still win. See "How names are matched" in
   `docs/usage.md`.
 - `curation.json` gains publisher names for 31 one-word titles (30 new
@@ -22,10 +24,10 @@
   keeps Google's Google Go app from matching Go. A `publisher_aliases`
   entry may carry an optional `gold` key naming the benchmark row it
   protects; the data format is unchanged.
-- The benchmark gains 75 hand rows for these rules: 62 traps that must
+- The benchmark gains 83 hand rows for these rules: 70 traps that must
   stay unmatched and 13 positives. Correct rows rise from 1,163 (of 1,798
-  rows that should match) to 1,339 (of 1,811): hand and catalog 450 to
-  482, generated 713 to 857. Wrong matches: none found on the benchmark;
+  rows that should match) to 1,333 (of 1,811): hand and catalog 450 to
+  482, generated 713 to 851. Wrong matches: none found on the benchmark;
   unknown in general. The rate on a real estate is unknown.
 
 ## 0.2.0 - 2026-10-25

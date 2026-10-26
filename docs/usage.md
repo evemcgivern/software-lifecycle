@@ -135,8 +135,11 @@ which one found the product.
      hand-reviewed list of coined titles (`VERSION_NAME_TITLES` in
      `swlc/catalog_match.py`). Titles that are ordinary words, common names
      or a name another product shares (Go, Flux, Salt, Puppet, Teleport,
-     Quasar, Rocket.Chat) are not on the list, so `Go 1.21.5` with no
-     publisher stays unmatched. A row with a publisher still needs the
+     Quasar, Rocket.Chat), and titles a same-named package or editor
+     extension shares, are not on the list, so `Go 1.21.5` with no
+     publisher stays unmatched. A Kubernetes version with a `-gke.` or
+     `-eks-` build is the managed service, not upstream Kubernetes, so it is
+     not matched to `kubernetes`. A row with a publisher still needs the
      vendor check. A bare one-word name with no version is not touched,
      and a product named by an exclusion never gets this rule. A product
      added to the catalog later gets the rule only after it is reviewed
@@ -191,13 +194,30 @@ so; it does not hide them.
   Podman project.
 - The VS Code extensions for Julia and Deno share vendor words with the
   Julia and Deno products, so an extension row can be read as the product.
-- The version-in-name rule trusts a coined title with no publisher.
+- The version-in-name rule trusts a coined title with no publisher, so a
+  match it makes is lower confidence than one the publisher confirms.
   Titles with a same-named PyPI, npm or RubyGems package from someone else
   whose versions fit a cycle (redis, elasticsearch, podman, sqlite,
   openssl and others) are left off its list, so `redis 5.0.1` with no
-  publisher stays unmatched. The check was made once (2026-10-26): a
-  package published later under a listed title would be read as the
-  product.
+  publisher stays unmatched. So are titles with a same-named VS Code or
+  JetBrains extension whose versions fit a cycle:
+  - ESLint: the VS Code ESLint extension (`ESLint 3.0.34`).
+  - MySQL: a VS Code extension named MySQL (9.0.2).
+  - PostgreSQL: a VS Code extension named PostgreSQL (9.0.2).
+  - Quarkus: the VS Code Quarkus extension (1.x).
+  - Knative: the VS Code Knative extension (1.x).
+  - Vuetify: the VS Code Vuetify extension (1.0.x).
+  - Deno: the VS Code Deno extension (1.x to 3.x).
+  - AngularJS: JetBrains plugins named AngularJS (1.1 to 1.11).
+  - YouTrack: a JetBrains plugin named YouTrack (year versions).
+
+  Chrome and other browser extensions were not checked. The review was
+  made once, on 2026-10-26: a package or extension published later under
+  a listed title is not caught and would be read as the product. Issue
+  #12 tracks ambiguous names and a review of the list.
+- A version that ends in a bare letter splits with the letter
+  (`Firefox 129.0b` is read as Firefox 129), because OpenSSL-style
+  versions such as `1.1.1b` use the same shape.
 - Titles on the one-word allowlist (GStreamer, Liquibase and others) match
   with any publisher or none, so a same-named package such as the npm
   `liquibase` wrapper is read as the product.
