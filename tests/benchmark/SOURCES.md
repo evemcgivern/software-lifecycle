@@ -39,6 +39,10 @@
 - https://www.graalvm.org/release-calendar/ (GraalVM calendar-year and JDK-based version numbers)
 - https://marketplace.visualstudio.com/items?itemName=redhat.ansible (the Red Hat VS Code extension named Ansible; its versions read from the Marketplace gallery API)
 - https://github.com/quasar/Quasar/releases/tag/v1.4.1 (Quasar 1.4.1, a remote administration tool that shares the Quasar framework's name)
+- https://github.com/adoptium/temurin21-binaries/releases/tag/jdk-21.0.5%2B11 (Temurin 21.0.5+11 release)
+- https://github.com/jetty/jetty.project/releases/tag/jetty-9.4.56.v20240826 (Jetty 9.4.56.v20240826 release)
+- https://cloud.google.com/kubernetes-engine/docs/release-notes (GKE version strings such as 1.30.5-gke.1014001)
+- https://github.com/ibmruntimes/semeru21-binaries/releases/tag/jdk-21.0.5%2B11_openj9-0.48.0 (IBM Semeru Runtime 21.0.5+11 release)
 - https://pypi.org/project/podman/5.4.0/ (the PyPI podman package, Python bindings for the Podman API)
 - https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml (winget gives Podman's publisher as Red Hat)
 - endoflife.date product pages: https://endoflife.date/android,

@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased
+
+- Matching by product title splits a wider version token off a name: a
+  build, distro or hotfix suffix after `.`, `-` or `+`, or a glued
+  `patchN` (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
+  `Eclipse Temurin 20.0.2+9`). A pre-release suffix (`2.1-beta`, `-rc1`)
+  is still not split.
+- Version-in-name rule: a row with no publisher whose name is a coined
+  one-word title plus a version (`nginx 1.24.0`) matches when the version
+  decides exactly one cycle. Ordinary words, common names and names
+  another product shares (Go, Flux, Salt, Quasar, Rocket.Chat) are left
+  out, a row with a publisher still needs the vendor check, and
+  exclusions still win. See "How names are matched" in `docs/usage.md`.
+- `curation.json` gains publisher names for 32 one-word titles (31 new
+  entries and one added phrase), each with a source. A `publisher_aliases`
+  entry may carry an optional `gold` key naming the benchmark row it
+  protects; the data format is unchanged.
+- The benchmark gains 44 hand rows for these rules: 31 traps that must
+  stay unmatched and 13 positives. Correct rows rise from 1,163 (of 1,798
+  rows that should match) to 1,351 (of 1,811): hand and catalog 450 to
+  484, generated 713 to 867, with no wrong match. That is the benchmark
+  only; the rate on a real estate is unknown.
+
 ## 0.2.0 - 2026-10-25
 
 - Item classification: every item gets a `classification` (`governable`,

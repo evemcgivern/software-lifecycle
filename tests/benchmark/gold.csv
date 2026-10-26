@@ -2718,3 +2718,7 @@ Grafana 11.3.0,,11.3.0,grafana,11.3,"hand-added: version-in-name rule (issue #11
 Valkey 8.0.1,,8.0.1,valkey,8.0,"hand-added: version-in-name rule (issue #11); coined one-word title plus a version, no publisher",hand,0,,
 OPNsense 24.7.8,,24.7.8,opnsense,24.7,"hand-added: version-in-name rule (issue #11); coined one-word title plus a version, no publisher",hand,0,,
 Redmine 5.1.4,,5.1.4,redmine,5.1,"hand-added: version-in-name rule (issue #11); coined one-word title plus a version, no publisher",hand,0,,
+Eclipse Temurin 21.0.5+11,Eclipse Adoptium,21.0.5+11,eclipse-temurin,21,hand-added: wider version token (issue #11); a +N build suffix stays part of the version; https://github.com/adoptium/temurin21-binaries/releases/tag/jdk-21.0.5%2B11,hand,0,,
+Eclipse Jetty 9.4.56.v20240826,,9.4.56.v20240826,eclipse-jetty,9.4,hand-added: wider version token (issue #11); a .vYYYYMMDD build suffix stays part of the version; https://github.com/jetty/jetty.project/releases/tag/jetty-9.4.56.v20240826,hand,0,,
+Google Kubernetes Engine 1.30.5-gke.1014001,,1.30.5-gke.1014001,google-kubernetes-engine,1.30,hand-added: wider version token (issue #11); a -gke.N suffix stays part of the version; https://cloud.google.com/kubernetes-engine/docs/release-notes,hand,1,,
+IBM Semeru Runtime 21.0.5+11,IBM,21.0.5+11,ibm-semeru-runtime,21,hand-added: wider version token (issue #11); a +N build suffix stays part of the version; https://github.com/ibmruntimes/semeru21-binaries/releases/tag/jdk-21.0.5%2B11_openj9-0.48.0,hand,0,,
