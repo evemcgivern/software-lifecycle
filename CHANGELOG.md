@@ -10,20 +10,23 @@
   or milestone suffixes (`2.1-beta`, `-rc1`, `-M1`, `.CR1`, `-ea`) are not
   split.
 - Version-in-name rule: a row with no publisher whose name is a coined
-  one-word title plus a version (`nginx 1.24.0`) matches when the version
-  decides exactly one cycle. Ordinary words, common names and names
-  another product shares (Go, Flux, Salt, Quasar, Rocket.Chat) are left
-  out, a row with a publisher still needs the vendor check, and
-  exclusions still win. See "How names are matched" in `docs/usage.md`.
+  one-word title plus a version (`Kibana 8.15.3`) matches when the version
+  decides exactly one cycle. Ordinary words, common names, names another
+  product shares (Go, Flux, Salt, Quasar, Rocket.Chat) and titles shared
+  with a same-named PyPI, npm or RubyGems client (redis, podman,
+  elasticsearch) are left out, a row with a publisher still needs the
+  vendor check, and exclusions still win. See "How names are matched" in
+  `docs/usage.md`.
 - `curation.json` gains publisher names for 32 one-word titles (31 new
-  entries and one added phrase), each with a source. A `publisher_aliases`
+  entries and one added phrase), each with a source, and an exclusion that
+  keeps Google's Google Go app from matching Go. A `publisher_aliases`
   entry may carry an optional `gold` key naming the benchmark row it
   protects; the data format is unchanged.
-- The benchmark gains 44 hand rows for these rules: 31 traps that must
+- The benchmark gains 74 hand rows for these rules: 61 traps that must
   stay unmatched and 13 positives. Correct rows rise from 1,163 (of 1,798
   rows that should match) to 1,351 (of 1,811): hand and catalog 450 to
-  484, generated 713 to 867, with no wrong match. That is the benchmark
-  only; the rate on a real estate is unknown.
+  484, generated 713 to 867. Wrong matches: none found on the benchmark;
+  unknown in general. The rate on a real estate is unknown.
 
 ## 0.2.0 - 2026-10-25
 

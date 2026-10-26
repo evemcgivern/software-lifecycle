@@ -187,7 +187,7 @@ artifact attestation, check it online before you use the release:
 ## How it can be wrong
 
 - Coverage is partial. In the data release bundled when this was written
-  (the weekly job can change the counts), the tool can match 454 of the 485
+  (the weekly job can change the counts), the tool can match 453 of the 485
   products in `data/eol/`. Most are matched by the product's title from endoflife.date
   (`data/products.json`). `data/aliases.json` adds 19 aliases for
   11 products (mssqlserver, windows-server, windows, office,
@@ -195,15 +195,15 @@ artifact attestation, check it online before you use the release:
   bellsoft-liberica). `data/curation.json` adds hand-kept vendor names for
   73 products and a short list of one-word product names. A further list
   of coined one-word titles matches a row with no publisher when the name
-  carries a version that decides the cycle (`nginx 1.24.0`). The other 31
+  carries a version that decides the cycle (`nginx 1.24.0`). The other 32
   products are devices, products left out on purpose, or one-word titles
   with no vendor to check, and never match.
 - That is a count of products, not a hit rate. On the project's own
-  benchmark (the 1,673 hand-written and catalog rows in
+  benchmark (the 1,703 hand-written and catalog rows in
   `tests/benchmark/gold.csv`), 790 rows should match a product. 484 of them
   are scored correct: 384 with the right cycle, and 100 rightly with the
-  product and no cycle. Of the 676 rows that need a cycle, 384 get one. The other 883 rows are
-  traps that should stay unmatched, and all 883 do. It is a benchmark, not a
+  product and no cycle. Of the 676 rows that need a cycle, 384 get one. The other 913 rows are
+  traps that should stay unmatched, and all 913 do. It is a benchmark, not a
   real estate. The rate on a real estate is unknown.
 - No wrong lifecycle claim was found on the benchmark. That is not proof for
   other inventories: unknown in general.
