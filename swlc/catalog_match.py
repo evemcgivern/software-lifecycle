@@ -50,7 +50,7 @@ step c drop did, which needs the same confirmation), the product is on
 single_word_allowlist, or the version-in-name rule below applies.
 
 Version-in-name rule: a row with no publisher whose name is exactly a
-one-word title followed by a version token ("nginx 1.24.0", step d on a
+one-word title followed by a version token ("kibana 8.15.3", step d on a
 or b) matches when the product is in VERSION_NAME_TITLES and the version
 decides one cycle (the caller's fits check: the version column, or the
 name's version when the column is empty, picks exactly one cycle, and the
@@ -154,7 +154,7 @@ CORPORATE_WORDS = frozenset((
 # Also left out (2026-10-26): titles with a same-named package on PyPI,
 # npm or RubyGems from someone else (a client, binding or wrapper) whose
 # versions fit a cycle of the product, such as redis, elasticsearch,
-# podman, sqlite or openssl, and pgadmin ("pgAdmin 4" names a
+# podman, sqlite, openssl or nginx, and pgadmin ("pgAdmin 4" names a
 # generation, not a version). A package that is the product itself
 # (eslint, numpy, nuxt on npm or PyPI) does not count. A product added to
 # the catalog later is not in this list, so it gets the rule only after a
@@ -162,18 +162,17 @@ CORPORATE_WORDS = frozenset((
 VERSION_NAME_TITLES = frozenset((
     "adonisjs angularjs ansible-core arangodb artifactory authentik "
     "bazel behat big-ip bigbluebutton cakephp centreon ceph "
-    "cert-manager cfengine checkmk ckeditor clamav clickhouse "
-    "cnspec commvault contao controlm debian deno dependency-track "
-    "devuan dropwizard drush eslint etcd eurolinux exim "
-    "external-dns firefox forgejo fortios freebsd goaccess grafana "
-    "grumphp haproxy icinga istio jhipster joomla jquery jreleaser "
-    "jruby karpenter keda keycloak kiali kibana knative kubernetes "
-    "kyverno laravel libreoffice lineageos logstash mageia magento "
-    "mariadb matomo mautic mediawiki meilisearch metabase metallb "
-    "mysql netbsd nextjs nginx nixos nodejs notepad-plus-plus numpy "
-    "nuxt oniguruma openbao openbsd opensuse opentofu openvpn "
-    "openwrt openzfs opnsense otobo ovirt perl phpbb phpmyadmin "
-    "plesk plone pnpm pop-os postgresql postmarketos privatebin "
+    "cert-manager cfengine checkmk clamav clickhouse cnspec "
+    "commvault contao controlm debian deno dependency-track devuan "
+    "dropwizard drush eslint etcd eurolinux exim external-dns "
+    "firefox forgejo fortios freebsd goaccess grafana grumphp "
+    "haproxy icinga istio joomla jreleaser jruby karpenter keda "
+    "keycloak kiali kibana knative kubernetes kyverno laravel "
+    "libreoffice lineageos logstash mageia mariadb mediawiki "
+    "meilisearch metabase metallb mysql netbsd nextjs nixos nodejs "
+    "notepad-plus-plus numpy nuxt openbao openbsd opensuse opentofu "
+    "openvpn openwrt openzfs opnsense otobo ovirt perl phpbb "
+    "phpmyadmin plesk plone pnpm pop-os postgresql postmarketos "
     "proftpd quarkus-framework rabbitmq redmine routeros rtpengine "
     "sapmachine shopware sourcegraph splunk statamic strapi sylius "
     "symfony tarantool tarteaucitron thumbor traefik truenas typo3 "

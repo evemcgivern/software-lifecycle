@@ -650,14 +650,6 @@
       "reason": "The winget manifest for MariaDB Server gives the publisher \"MariaDB Corporation Ab\".",
       "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/m/MariaDB/Server/13.0.2.0/MariaDB.Server.locale.en-US.yaml"
     },
-    "mastodon": {
-      "gold": "Mastodon 3.5.19|Mastodon gGmbH|3.5.19",
-      "phrases": [
-        "mastodon ggmbh"
-      ],
-      "reason": "The Mastodon about page says the project was incorporated as a gGmbH in 2021.",
-      "source": "https://joinmastodon.org/about"
-    },
     "mediawiki": {
       "gold": "MediaWiki|Wikimedia Foundation|1.39.6",
       "phrases": [

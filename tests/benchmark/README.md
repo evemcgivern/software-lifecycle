@@ -154,10 +154,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 450 | 32 | 865 | 1347 |
+| hand | 450 | 32 | 866 | 1348 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1506 | 305 | 942 | 2753 |
+| all | 1506 | 305 | 943 | 2754 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -224,6 +224,20 @@ exclusions, aliases or rules. The test reports them separately.
     `Moodle 4.2.11|Moodle Pty Ltd|4.2.11`, `Moodle|Moodle Pty Ltd|2.0.1`,
     `Moodle 12.0.0|Moodle Pty Ltd|12.0.0` and
     `Moodle 5.3.0|Moodle Pty Ltd|3.8.9` (generated).
+  - 2026-10-26, issue #11 review, with the owner's approval. The
+    `mastodon ggmbh` publisher alias was dropped, because Mastodon gGmbH
+    also publishes the Mastodon mobile app, whose 2.x versions fit a
+    server cycle. nginx, CKEditor, JHipster, jQuery, Magento, Matomo,
+    Mautic, Oniguruma and PrivateBin left the version-in-name list,
+    because a same-named PyPI, npm or RubyGems package from someone else
+    has versions that fit a cycle. `hand_catalog_correct_min` 484 to 482
+    and `generated_correct_min` 867 to 857. Rows lost (now missed):
+    `nginx 1.24.0||1.24.0` and `Matomo 5.1.2||5.1.2` (hand),
+    `Mastodon|Mastodon gGmbH|4.7.3`, `Mastodon 3.5.19|Mastodon gGmbH|3.5.19`,
+    `CKEditor 4.25.2||4.25.2`, `JHipster 4.14.5||4.14.5`,
+    `jQuery 2.2.4||2.2.4`, `Magento 2.1.18||2.1.18`,
+    `Matomo 3.14.1||3.14.1`, `Mautic 4.2.2||4.2.2`,
+    `Oniguruma 5.9.6||5.9.6` and `PrivateBin 1.4.0||1.4.0` (generated).
 - Every product id and cycle exists in `data/eol/`. No two rows share an
   item id (names are normalized as the tool does). Rows in `unsure.csv` are
   not in gold.

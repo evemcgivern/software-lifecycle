@@ -157,7 +157,9 @@ class BundledCatalogTests(unittest.TestCase):
                     "containerd", "duckdb", "ffmpeg", "foundationdb",
                     "gitlab", "gradle", "graylog", "gstreamer", "influxdb",
                     "liquibase", "memcached", "openssl", "sqlite",
-                    "wireshark", "wordpress"):
+                    "wireshark", "wordpress", "nginx", "ckeditor",
+                    "jhipster", "jquery", "magento", "matomo", "mautic",
+                    "oniguruma", "privatebin"):
             with self.subTest(pid=pid):
                 self.assertNotIn(pid, VERSION_NAME_TITLES)
 
