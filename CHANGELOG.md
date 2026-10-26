@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-10-25
 
 - Item classification: every item gets a `classification` (`governable`,
   `component`, `bundle_member` or `unknown`) with `classification_basis`,

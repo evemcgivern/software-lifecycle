@@ -614,7 +614,7 @@ class DataFolderDocsTests(unittest.TestCase):
 
     def test_changelog_mentions_classification(self):
         body = text(ROOT / "CHANGELOG.md")
-        start = body.index("## Unreleased")
+        start = body.index("## 0.2.0")
         end = body.find("\n## ", start + 5)
         sec = " ".join(body[start:end if end > 0 else None].split())
         self.assertIn("classification", sec)
