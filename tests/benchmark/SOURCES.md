@@ -38,6 +38,7 @@
 - https://support.microsoft.com/en-us/servicing/sql/kb321185-download-and-install-latest-updates (the same SQL Server build page as above)
 - https://www.graalvm.org/release-calendar/ (GraalVM calendar-year and JDK-based version numbers)
 - https://marketplace.visualstudio.com/items?itemName=redhat.ansible (the Red Hat VS Code extension named Ansible; its versions read from the Marketplace gallery API)
+- https://github.com/quasar/Quasar/releases/tag/v1.4.1 (Quasar 1.4.1, a remote administration tool that shares the Quasar framework's name)
 - https://pypi.org/project/podman/5.4.0/ (the PyPI podman package, Python bindings for the Podman API)
 - https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml (winget gives Podman's publisher as Red Hat)
 - endoflife.date product pages: https://endoflife.date/android,

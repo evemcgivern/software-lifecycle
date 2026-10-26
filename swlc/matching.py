@@ -153,7 +153,8 @@ def match_product(name: str, version: str, aliases: list[dict],
     if hit:
         if result.product is None:
             return result
-        others, _tails = catalog_index.lookup(name, publisher)
+        others, _tails = catalog_index.lookup(
+            name, publisher, _fits(version, catalog_index, products))
         if any(pid != result.product for pid in others):
             return MatchResult(None, None, AMBIGUOUS)
         return result
@@ -169,37 +170,52 @@ def _generated(name: str, version: str, publisher: str, index,
     empty, a version token split off the name is used instead. When both
     exist and disagree, the row is not decided: NO_CYCLE, product known.
     So is a version starting with a curated no_cycle_versions prefix."""
-    pids, tails = index.lookup(name, publisher)
+    pids, tails = index.lookup(name, publisher,
+                               _fits(version, index, products))
     pids = tuple(p for p in pids if p not in blocked)
     if not pids:
         return MatchResult(None, None, NO_ALIAS)
     if len(pids) > 1:
         return MatchResult(None, None, AMBIGUOUS)
     product = pids[0]
-    tail = tails[product]
+    cycle, reason = _generated_cycle(product, tails[product], version,
+                                     index, products)
+    return MatchResult(product, cycle, reason, source=GENERATED)
 
-    def result(cycle, reason):
-        return MatchResult(product, cycle, reason, source=GENERATED)
 
+def _fits(version: str, index, products: dict[str, list[dict]]):
+    """The check the version-in-name rule needs (see
+    swlc/catalog_match.py): whether this row's version decides one cycle
+    of a product, given the version token split off the name."""
+    def fits(product: str, tail: str) -> bool:
+        cycle, _reason = _generated_cycle(product, tail, version, index,
+                                          products)
+        return cycle is not None
+    return fits
+
+
+def _generated_cycle(product: str, tail, version: str, index,
+                     products: dict[str, list[dict]]) -> tuple:
+    """(cycle dict or None, reason code) for a generated match."""
     column = split_version(version or "")
     parts = column or split_version(tail or "")
     if not parts:
-        return result(None, NO_VERSION)
+        return None, NO_VERSION
     if _old_numbering(index.no_cycle.get(product, ()),
                       (parts, split_version(tail or ""))):
         # A version in a numbering the cycles do not use (curated).
-        return result(None, NO_CYCLE)
+        return None, NO_CYCLE
     labels = [c.get("cycle", "") for c in products.get(product) or []]
     best, tied = best_cycle(parts, labels)
     if best is None:
-        return result(None, NO_CYCLE)
+        return None, NO_CYCLE
     if len(_distinct_by_parts(tied)) > 1:
-        return result(None, AMBIGUOUS)
+        return None, AMBIGUOUS
     if _finer_cycle_missed(parts, best, labels):
-        return result(None, NO_CYCLE)
+        return None, NO_CYCLE
     if column and tail and _disagree(split_version(tail), column, labels):
-        return result(None, NO_CYCLE)
-    return result(_cycle_dict(products[product], best), None)
+        return None, NO_CYCLE
+    return _cycle_dict(products[product], best), None
 
 
 def _old_numbering(prefixes: tuple, versions: tuple) -> bool:

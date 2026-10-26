@@ -127,6 +127,32 @@ class BundledCatalogTests(unittest.TestCase):
         validate_curation(self.data.curation, set(self.data.catalog))
         validate_curation(read("curation.json"), set(self.data.products))
 
+    def test_version_name_titles_are_coined_one_word_titles(self):
+        # The version-in-name rule's list (swlc/catalog_match.py). Ids that
+        # a weekly update removed are skipped; the others must still be
+        # one-word, non-device titles that no exclusion names.
+        from swlc.catalog_match import VERSION_NAME_TITLES
+        from swlc.normalize import normalize_name
+        cur = self.data.curation
+        excluded = {e["product"] for e in cur["exclusions"]}
+        present = [p for p in sorted(VERSION_NAME_TITLES)
+                   if p in self.data.catalog]
+        self.assertGreater(len(present), 100)
+        for pid in present:
+            with self.subTest(pid=pid):
+                rec = self.data.catalog[pid]
+                self.assertNotIn(" ", normalize_name(rec["title"]))
+                self.assertNotIn(rec["category"], ("device", "standard"))
+                self.assertNotIn(pid, excluded)
+                self.assertNotIn(pid, cur["generated_off"])
+        # Ordinary words, common names and names shared with another
+        # product stay out (the gold trap rows depend on it).
+        for pid in ("go", "flux", "salt", "puppet", "nomad", "teleport",
+                    "quasar", "harbor", "express", "rocket-chat", "python",
+                    "ruby", "rust", "unity", "jenkins", "django", "ansible"):
+            with self.subTest(pid=pid):
+                self.assertNotIn(pid, VERSION_NAME_TITLES)
+
 
 def gold_rows():
     import csv

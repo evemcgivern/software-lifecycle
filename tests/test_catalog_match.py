@@ -91,7 +91,9 @@ CYCLES = {
     "weekly": ["2", "2.426", "2.440"], "lexicon": ["1"],
 }
 PRODUCTS = {p: [{"cycle": c} for c in labels] for p, labels in CYCLES.items()}
-INDEX = build_index(CATALOG, CURATION)
+# The version-in-name rule is off here (no ids); VersionInNameTests turns
+# it on for fixture products.
+INDEX = build_index(CATALOG, CURATION, version_names=())
 
 
 def gen(name, version="", publisher="", aliases=()):
@@ -372,6 +374,75 @@ class OneWordAndCurationTests(unittest.TestCase):
         a = [alias("chatter", "chatter")]
         self.assertEqual(got(gen("Chatter", "9.3.0", "Chatter", a)),
                          ("chatter", "9.3", None, CURATED))
+
+
+class VersionInNameTests(unittest.TestCase):
+    """A one-word title plus a version token, on a row with no publisher
+    (swlc/catalog_match.py, "Version-in-name rule")."""
+    INDEX = build_index(CATALOG, CURATION, version_names=(
+        "plainword", "chatter", "gizmo", "foo-tool", "sunny"))
+
+    def m(self, name, version="", publisher=""):
+        return got(match_product(name, version, [], PRODUCTS,
+                                 catalog_index=self.INDEX,
+                                 publisher=publisher))
+
+    def test_listed_title_with_a_version_that_fits_matches(self):
+        want = ("plainword", "1", None, GENERATED)
+        self.assertEqual(self.m("Plainword 1.2"), want)
+        self.assertEqual(self.m("Plainword 1.2", "1.2.3"), want)
+        self.assertEqual(self.m("Plainword 1.2 (x64)", "1.2"), want)
+        self.assertEqual(self.m("PLAINWORD v1.2"), want)
+        self.assertEqual(self.m("Plainword 1.2.0-hf"), want)
+
+    def test_the_version_must_decide_one_cycle(self):
+        for name, version in (("Plainword 9.9", ""), ("Plainword 9.9", "9.9"),
+                              ("Plainword 1.2", "2.0"),
+                              ("Plainword 2.0", "1.2")):
+            with self.subTest(name=name, version=version):
+                self.assertEqual(self.m(name, version),
+                                 (None, None, NO_ALIAS, None))
+
+    def test_a_publisher_still_needs_the_vendor_check(self):
+        for pub in ("Acme", "Plainword Inc"):
+            with self.subTest(pub=pub):
+                self.assertEqual(self.m("Plainword 1.2", "1.2", pub),
+                                 (None, None, NO_ALIAS, None))
+        # A confirming publisher matches as before, without the rule.
+        self.assertEqual(self.m("Sunny 1.0", "1.0", "Sun Microsystems"),
+                         ("sunny", "1", None, GENERATED))
+
+    def test_bare_name_and_other_words_are_not_touched(self):
+        for name in ("Plainword", "Plainword Pro 1.2", "Plainword 1.2 Pro",
+                     "Plainword 1.2-beta", "Plainword 8u1"):
+            with self.subTest(name=name):
+                self.assertEqual(self.m(name, "1.2"),
+                                 (None, None, NO_ALIAS, None))
+
+    def test_unlisted_title_is_not_matched(self):
+        self.assertEqual(self.m("Lexicon 1.0", "1.0"),
+                         (None, None, NO_ALIAS, None))
+        self.assertEqual(got(gen("Plainword 1.2")),
+                         (None, None, NO_ALIAS, None))
+
+    def test_exclusions_devices_and_generated_off_keep_winning(self):
+        self.assertNotIn("chatter", self.INDEX.version_names)
+        self.assertNotIn("gizmo", self.INDEX.version_names)
+        self.assertEqual(self.m("Chatter 9.3.0", "9.3.0"),
+                         (None, None, NO_ALIAS, None))
+        self.assertEqual(self.m("Chatter 9.3"),
+                         (None, None, NO_ALIAS, None))
+
+    def test_only_one_word_titles_are_listed(self):
+        # foo-tool is a two-word title: it needs no rule and is dropped.
+        self.assertEqual(self.INDEX.version_names,
+                         frozenset(("plainword", "sunny")))
+
+    def test_lookup_without_fits_leaves_the_rule_off(self):
+        self.assertEqual(self.INDEX.lookup("Plainword 1.2"), ((), {}))
+        self.assertEqual(
+            self.INDEX.lookup("Plainword 1.2", "", lambda p, t: True),
+            (("plainword",), {"plainword": "1.2"}))
 
 
 class PrecedenceTests(unittest.TestCase):
