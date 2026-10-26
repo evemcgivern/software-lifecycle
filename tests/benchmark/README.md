@@ -154,10 +154,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 437 | 32 | 804 | 1273 |
+| hand | 450 | 32 | 874 | 1356 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1493 | 305 | 881 | 2679 |
+| all | 1506 | 305 | 951 | 2762 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -166,7 +166,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 159 rows. Do not use held-out rows when writing
+are always `0`. That is 164 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks
@@ -224,6 +224,31 @@ exclusions, aliases or rules. The test reports them separately.
     `Moodle 4.2.11|Moodle Pty Ltd|4.2.11`, `Moodle|Moodle Pty Ltd|2.0.1`,
     `Moodle 12.0.0|Moodle Pty Ltd|12.0.0` and
     `Moodle 5.3.0|Moodle Pty Ltd|3.8.9` (generated).
+  - 2026-10-26, issue #11 review, with the owner's approval. The
+    `mastodon ggmbh` publisher alias was dropped, because Mastodon gGmbH
+    also publishes the Mastodon mobile app, whose 2.x versions fit a
+    server cycle. nginx, CKEditor, JHipster, jQuery, Magento, Matomo,
+    Mautic, Oniguruma and PrivateBin left the version-in-name list,
+    because a same-named PyPI, npm or RubyGems package from someone else
+    has versions that fit a cycle. `hand_catalog_correct_min` 484 to 482
+    and `generated_correct_min` 867 to 857. Rows lost (now missed):
+    `nginx 1.24.0||1.24.0` and `Matomo 5.1.2||5.1.2` (hand),
+    `Mastodon|Mastodon gGmbH|4.7.3`, `Mastodon 3.5.19|Mastodon gGmbH|3.5.19`,
+    `CKEditor 4.25.2||4.25.2`, `JHipster 4.14.5||4.14.5`,
+    `jQuery 2.2.4||2.2.4`, `Magento 2.1.18||2.1.18`,
+    `Matomo 3.14.1||3.14.1`, `Mautic 4.2.2||4.2.2`,
+    `Oniguruma 5.9.6||5.9.6` and `PrivateBin 1.4.0||1.4.0` (generated).
+  - 2026-10-26, issue #11 second review, with the owner's approval.
+    ESLint, MySQL, PostgreSQL, Quarkus, Knative, Vuetify, Deno, AngularJS
+    and YouTrack left the version-in-name list, because a VS Code or
+    JetBrains extension with the same name has versions that fit a cycle
+    (`ESLint 3.0.34` is the VS Code ESLint extension). Kubernetes no
+    longer takes a `-gke.` or `-eks-` build (no gold row changed).
+    `generated_correct_min` 857 to 851; `hand_catalog_correct_min`
+    unchanged. Rows lost (now missed, all generated):
+    `AngularJS 1.4.14||1.4.14`, `ESLint 5.16.0||5.16.0`,
+    `Knative 1.4.0||1.4.0`, `Quarkus 3.10.2||3.10.2`,
+    `Vuetify 2.7.2||2.7.2` and `YouTrack 2022.2.65377||2022.2.65377`.
 - Every product id and cycle exists in `data/eol/`. No two rows share an
   item id (names are normalized as the tool does). Rows in `unsure.csv` are
   not in gold.
@@ -249,7 +274,13 @@ See the numbers with `SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tes
 ## Judgment calls built into gold
 
 - A bare common word with no publisher (Salt, Go, Harbor, Express) is not a
-  match. With the vendor's publisher it is.
+  match. With the vendor's publisher it is. The same holds with a version in
+  the name (`Go 1.21.5`, `Salt 3006.5` with no publisher): the
+  version-in-name rule matches only coined one-word titles (`Kibana
+  8.15.3`), never ordinary words, common names or names another product
+  shares (`Quasar 1.4.1` is also a remote administration tool, Rocket.Chat
+  has a desktop app). Exclusions still win (`Moodle 4.4.0` with no
+  publisher is `NONE`).
 - Clients, drivers, SDKs, add-ins and language packs are not the product.
   An agent or command-line row counts as the product only if it ships with
   the server at the same version and support dates (istioctl, Puppet Agent,

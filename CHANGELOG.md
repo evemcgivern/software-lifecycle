@@ -1,5 +1,35 @@
 # Changelog
 
+## Unreleased
+
+- Matching by product title splits a wider version token off a name:
+  digit-led build or distro parts after `.`, `-` or `+`, a few named build
+  tags (`hf`, `eks`, `gke`, `I001`, `.v20211001`) and a glued `patchN`
+  (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
+  `Eclipse Temurin 20.0.2+9`). Other words (`8.0-router`) and pre-release
+  or milestone suffixes (`2.1-beta`, `-rc1`, `-M1`, `.CR1`, `-ea`) are not
+  split.
+- Version-in-name rule: a row with no publisher whose name is a coined
+  one-word title plus a version (`Kibana 8.15.3`) matches when the version
+  decides exactly one cycle. Ordinary words, common names, names another
+  product shares (Go, Flux, Salt, Quasar, Rocket.Chat) and titles shared
+  with a same-named PyPI, npm or RubyGems client (redis, podman,
+  elasticsearch) or VS Code or JetBrains extension (ESLint, MySQL,
+  PostgreSQL) are left out; a Kubernetes `-gke.` or `-eks-` build is not
+  upstream Kubernetes; a row with a publisher still needs the
+  vendor check, and exclusions still win. See "How names are matched" in
+  `docs/usage.md`.
+- `curation.json` gains publisher names for 31 one-word titles (30 new
+  entries and one added phrase), each with a source, and an exclusion that
+  keeps Google's Google Go app from matching Go. A `publisher_aliases`
+  entry may carry an optional `gold` key naming the benchmark row it
+  protects; the data format is unchanged.
+- The benchmark gains 83 hand rows for these rules: 70 traps that must
+  stay unmatched and 13 positives. Correct rows rise from 1,163 (of 1,798
+  rows that should match) to 1,333 (of 1,811): hand and catalog 450 to
+  482, generated 713 to 851. Wrong matches: none found on the benchmark;
+  unknown in general. The rate on a real estate is unknown.
+
 ## 0.2.0 - 2026-10-25
 
 - Item classification: every item gets a `classification` (`governable`,

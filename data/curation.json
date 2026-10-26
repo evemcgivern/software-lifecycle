@@ -316,6 +316,13 @@
       "product": "moodle",
       "publisher": "moodle",
       "reason": "The Moodle mobile app is published as \"Moodle\" by Moodle Pty Ltd, the same name and publisher as the LMS, with its own version line. Accepted cost: LMS rows with that exact name and publisher are not matched by product title either."
+    },
+    {
+      "gold": "Google Go|Google LLC|",
+      "name": "google go",
+      "product": "go",
+      "publisher": "google",
+      "reason": "Google Go is Google's lightweight search app (Play Store id com.google.android.apps.searchlite), not the Go language. With the publisher Google, the leading word google is read as Go's vendor and dropped, which leaves the title go. Go rows named Go keep matching."
     }
   ],
   "format": 1,
@@ -364,12 +371,52 @@
     }
   },
   "publisher_aliases": {
+    "angular": {
+      "gold": "Angular 15.2.10|Google|15.2.10",
+      "phrases": [
+        "google"
+      ],
+      "reason": "The Angular site's footer says it is super-powered by Google.",
+      "source": "https://angular.dev/"
+    },
+    "ansible-core": {
+      "gold": "ansible-core|Red Hat|2.16.2",
+      "phrases": [
+        "red hat"
+      ],
+      "reason": "The ansible/ansible repository (ansible-core) says Ansible is sponsored by Red Hat, Inc. Only ansible-core: the Ansible / Red Hat pair stays out because the Red Hat VS Code extension is named Ansible.",
+      "source": "https://github.com/ansible/ansible"
+    },
+    "big-ip": {
+      "gold": "BIG-IP 11.6.5|F5, Inc.|11.6.5",
+      "phrases": [
+        "f5"
+      ],
+      "reason": "The endoflife.date page says BIG-IP is a family of products from F5 Networks.",
+      "source": "https://endoflife.date/big-ip"
+    },
+    "calico": {
+      "gold": "Calico 3.29.7|Tigera|3.29.7",
+      "phrases": [
+        "tigera"
+      ],
+      "reason": "Tigera's Project Calico page presents Calico as a Tigera project.",
+      "source": "https://www.tigera.io/project-calico/"
+    },
     "ceph": {
       "phrases": [
         "ceph packaging team"
       ],
       "reason": "Debian's ceph source package names the maintainer \"Ceph Packaging Team\".",
       "source": "https://sources.debian.org/data/main/c/ceph/16.2.15+ds-0+deb12u2/debian/control"
+    },
+    "cockroachdb": {
+      "gold": "CockroachDB|Cockroach Labs|23.1.14",
+      "phrases": [
+        "cockroach labs"
+      ],
+      "reason": "The Cockroach Labs site presents CockroachDB and says Cockroach Labs provides its technical support.",
+      "source": "https://www.cockroachlabs.com/"
     },
     "coder": {
       "phrases": [
@@ -384,6 +431,30 @@
       ],
       "reason": "Commvault's legal page names the company Commvault Systems, Inc.",
       "source": "https://www.commvault.com/legal"
+    },
+    "composer": {
+      "gold": "Composer|Nils Adermann, Jordi Boggiano|2.6.6",
+      "phrases": [
+        "nils adermann"
+      ],
+      "reason": "The Composer site names its authors: Nils Adermann, Jordi Boggiano and community contributors.",
+      "source": "https://getcomposer.org/"
+    },
+    "containerd": {
+      "gold": "containerd|CNCF|2.4.2",
+      "phrases": [
+        "cncf"
+      ],
+      "reason": "The containerd site says containerd is a graduated CNCF project.",
+      "source": "https://containerd.io/"
+    },
+    "contour": {
+      "gold": "Contour|Project Contour|1.33.7",
+      "phrases": [
+        "project contour"
+      ],
+      "reason": "The Contour site's copyright line is Project Contour, a Series of LF Projects, LLC.",
+      "source": "https://projectcontour.io/"
     },
     "deno": {
       "phrases": [
@@ -427,6 +498,14 @@
       "reason": "The Elixir site says the Elixir Team steers the language.",
       "source": "https://elixir-lang.org/"
     },
+    "envoy": {
+      "gold": "Envoy 1.20.7|Envoy Proxy|1.20.7",
+      "phrases": [
+        "envoy proxy"
+      ],
+      "reason": "The Envoy site calls the project Envoy proxy.",
+      "source": "https://www.envoyproxy.io/"
+    },
     "erlang": {
       "phrases": [
         "debian erlang packagers",
@@ -435,12 +514,44 @@
       "reason": "The winget manifest for Erlang OTP gives the publisher \"Ericsson AB\". Debian's erlang source package names the maintainer \"Debian Erlang Packagers\" (https://sources.debian.org/data/main/e/erlang/1:25.2.3+dfsg-1+deb12u4/debian/control).",
       "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/e/Erlang/ErlangOTP/29.1.2/Erlang.ErlangOTP.locale.en-US.yaml"
     },
+    "express": {
+      "gold": "Express 3.21.2|OpenJS Foundation|3.21.2",
+      "phrases": [
+        "openjs foundation"
+      ],
+      "reason": "The Express site's copyright line is OpenJS Foundation and Express.js contributors.",
+      "source": "https://expressjs.com/"
+    },
     "flux": {
       "phrases": [
         "flux project"
       ],
       "reason": "The Flux site calls the project the Flux project.",
       "source": "https://fluxcd.io/"
+    },
+    "foreman": {
+      "gold": "Foreman|The Foreman|5.0.1",
+      "phrases": [
+        "the foreman"
+      ],
+      "reason": "The Foreman project's GitHub organization is named The Foreman.",
+      "source": "https://github.com/theforeman"
+    },
+    "gatekeeper": {
+      "gold": "Gatekeeper 3.17.2|Open Policy Agent|3.17.2",
+      "phrases": [
+        "open policy agent"
+      ],
+      "reason": "The Gatekeeper site says Gatekeeper is powered by the Open Policy Agent (OPA) project.",
+      "source": "https://open-policy-agent.github.io/gatekeeper/website/"
+    },
+    "go": {
+      "gold": "Go|Google LLC|1.27.3",
+      "phrases": [
+        "google"
+      ],
+      "reason": "The Go site says Go is an open-source programming language supported by Google.",
+      "source": "https://go.dev/"
     },
     "grafana": {
       "phrases": [
@@ -486,6 +597,22 @@
       "reason": "The winget manifest for Julia gives the publisher \"Julia Language\".",
       "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/j/Julialang/Julia/1.9.4/Julialang.Julia.locale.en-US.yaml"
     },
+    "karpenter": {
+      "gold": "Karpenter 1.7.2|AWS|1.7.2",
+      "phrases": [
+        "aws"
+      ],
+      "reason": "The Karpenter site says it is built at AWS.",
+      "source": "https://karpenter.sh/"
+    },
+    "keycloak": {
+      "gold": "Red Hat Keycloak|Red Hat|21.0.2",
+      "phrases": [
+        "red hat"
+      ],
+      "reason": "Red Hat ships Keycloak as the Red Hat build of Keycloak.",
+      "source": "https://access.redhat.com/products/red-hat-build-of-keycloak"
+    },
     "kotlin": {
       "phrases": [
         "jetbrains"
@@ -499,6 +626,14 @@
       ],
       "reason": "The Kubernetes site footer reads \"The Kubernetes Authors\", the copyright holder used in the project's files.",
       "source": "https://kubernetes.io/"
+    },
+    "kuma": {
+      "gold": "Kuma 2.4.10|Kong Inc.|2.4.10",
+      "phrases": [
+        "kong"
+      ],
+      "reason": "The Kuma site says Kuma was originally created by Kong, Inc.",
+      "source": "https://kuma.io/"
     },
     "libreoffice": {
       "phrases": [
@@ -516,11 +651,21 @@
       "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/m/MariaDB/Server/13.0.2.0/MariaDB.Server.locale.en-US.yaml"
     },
     "mediawiki": {
+      "gold": "MediaWiki|Wikimedia Foundation|1.39.6",
       "phrases": [
-        "mediawiki packaging team"
+        "mediawiki packaging team",
+        "wikimedia foundation"
       ],
-      "reason": "Debian's mediawiki source package names the maintainer \"MediaWiki packaging team\".",
+      "reason": "Debian's mediawiki source package names the maintainer \"MediaWiki packaging team\". MediaWiki.org says MediaWiki is developed for the Wikimedia projects, which the Wikimedia Foundation runs (https://www.mediawiki.org/wiki/Wikimedia_Foundation).",
       "source": "https://sources.debian.org/data/main/m/mediawiki/1:1.39.17-1+deb12u2/debian/control"
+    },
+    "memcached": {
+      "gold": "Memcached|Danga Interactive|1.6.45",
+      "phrases": [
+        "danga interactive"
+      ],
+      "reason": "The memcached LICENSE names the copyright holder Danga Interactive, Inc.",
+      "source": "https://raw.githubusercontent.com/memcached/memcached/master/LICENSE"
     },
     "nginx": {
       "phrases": [
@@ -529,6 +674,22 @@
       ],
       "reason": "Debian's nginx source package names the maintainer \"Debian Nginx Maintainers\". The nginx.org Ubuntu package index (https://nginx.org/packages/ubuntu/dists/jammy/nginx/binary-amd64/Packages) names \"NGINX Packaging\".",
       "source": "https://sources.debian.org/data/main/n/nginx/1.26.3-3+deb13u10/debian/control"
+    },
+    "nix": {
+      "gold": "nix 2.17.2|NixOS Foundation|2.17.2",
+      "phrases": [
+        "nixos foundation"
+      ],
+      "reason": "The NixOS organization on GitHub is the home of the NixOS Foundation, which stewards Nix.",
+      "source": "https://github.com/NixOS/foundation"
+    },
+    "opensearch": {
+      "gold": "OpenSearch|OpenSearch Project|3.9.0",
+      "phrases": [
+        "opensearch project"
+      ],
+      "reason": "The OpenSearch site calls the project the OpenSearch Project.",
+      "source": "https://opensearch.org/"
     },
     "openssl": {
       "phrases": [
@@ -543,6 +704,14 @@
       ],
       "reason": "Debian's openvpn source package (unstable) names the maintainer \"OpenVPN Maintainers\".",
       "source": "https://sources.debian.org/data/main/o/openvpn/2.7.8-1/debian/control"
+    },
+    "opnsense": {
+      "gold": "OPNsense 20.7.8|Deciso B.V.|20.7.8",
+      "phrases": [
+        "deciso"
+      ],
+      "reason": "Deciso's site says Deciso develops the OPNsense firewall platform.",
+      "source": "https://www.deciso.com/"
     },
     "pgadmin": {
       "phrases": [
@@ -573,6 +742,14 @@
       "reason": "Red Hat publishes the Podman installer: its winget manifest gives the publisher as Red Hat, and the Podman gold row has that publisher. The catalog vendor is podman_project, which never contains the words Red Hat.",
       "source": "https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml"
     },
+    "postfix": {
+      "gold": "Postfix 3.2.22|Wietse Venema|3.2.22",
+      "phrases": [
+        "wietse venema"
+      ],
+      "reason": "The Postfix site says Postfix is Wietse Venema's mail server.",
+      "source": "https://www.postfix.org/start.html"
+    },
     "postgresql": {
       "phrases": [
         "debian postgresql maintainers",
@@ -596,6 +773,38 @@
       "reason": "Debian's puppet-agent copyright file names the copyright holder \"Puppet Labs Inc\", the company's earlier name. Its control file (https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/control) names the maintainer \"Puppet Package Maintainers\".",
       "source": "https://sources.debian.org/data/main/p/puppet-agent/7.23.0-1/debian/copyright"
     },
+    "quasar": {
+      "gold": "Quasar 1.22.10|Quasar Framework|1.22.10",
+      "phrases": [
+        "quasar framework"
+      ],
+      "reason": "The Quasar site calls the project Quasar Framework.",
+      "source": "https://quasar.dev/"
+    },
+    "react": {
+      "gold": "react|Meta|18.2.0",
+      "phrases": [
+        "meta"
+      ],
+      "reason": "The React site's copyright line is Meta Platforms, Inc.",
+      "source": "https://react.dev/"
+    },
+    "ruby": {
+      "gold": "Ruby|Ruby Association|4.0.9",
+      "phrases": [
+        "ruby association"
+      ],
+      "reason": "The Ruby site lists the Ruby Association among Ruby's organizations.",
+      "source": "https://www.ruby-lang.org/en/community/"
+    },
+    "rust": {
+      "gold": "Rust|The Rust Project Developers|1.99.1",
+      "phrases": [
+        "rust project developers"
+      ],
+      "reason": "The Rust site calls the project the Rust project, supported through the Rust Foundation.",
+      "source": "https://www.rust-lang.org/"
+    },
     "salt": {
       "phrases": [
         "salt project"
@@ -609,6 +818,14 @@
       ],
       "reason": "The Samba site names the Samba Team.",
       "source": "https://www.samba.org/"
+    },
+    "sapmachine": {
+      "gold": "SapMachine 18.0.2.1|SAP SE|18.0.2.1",
+      "phrases": [
+        "sap"
+      ],
+      "reason": "The SapMachine site says SapMachine is a distribution of the OpenJDK maintained by SAP.",
+      "source": "https://sapmachine.io/"
     },
     "scala": {
       "phrases": [
@@ -631,6 +848,14 @@
       "reason": "The Squid site calls the project the Squid project.",
       "source": "https://www.squid-cache.org/"
     },
+    "symfony": {
+      "gold": "Symfony 5.1.11|Symfony SAS|5.1.11",
+      "phrases": [
+        "symfony sas"
+      ],
+      "reason": "The Symfony site says Symfony is a trademark of Symfony SAS.",
+      "source": "https://symfony.com/"
+    },
     "telegraf": {
       "phrases": [
         "influxdata"
@@ -644,6 +869,30 @@
       ],
       "reason": "Traefik Labs is the company behind Traefik and is named on its site.",
       "source": "https://traefik.io/"
+    },
+    "truenas": {
+      "gold": "TrueNAS 24.10.2.4|iXsystems|24.10.2.4",
+      "phrases": [
+        "ixsystems"
+      ],
+      "reason": "The TrueNAS site's copyright line is iXsystems, Inc. dba TrueNAS.",
+      "source": "https://www.truenas.com/"
+    },
+    "twig": {
+      "gold": "Twig 2.16.1|Symfony SAS|2.16.1",
+      "phrases": [
+        "symfony sas"
+      ],
+      "reason": "The Twig site's copyright line names Symfony; Symfony SAS is the company behind Symfony.",
+      "source": "https://twig.symfony.com/"
+    },
+    "vue": {
+      "gold": "Vue 2.6.14|Vue.js|2.6.14",
+      "phrases": [
+        "vue.js"
+      ],
+      "reason": "The Vue site names the project Vue.js.",
+      "source": "https://vuejs.org/"
     },
     "wireshark": {
       "phrases": [

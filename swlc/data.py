@@ -381,7 +381,11 @@ def validate_curation(obj, product_ids=None) -> dict:
     for pid, entry in aliases.items():
         where = "publisher_aliases entry"
         _ident(pid, where)
-        _keys(entry, ("phrases", "reason", "source"), where)
+        # "gold" is optional: the gold row an entry protects (entries
+        # added before it existed have none).
+        _keys(entry, ("phrases", "reason", "source", "gold")
+              if isinstance(entry, dict) and "gold" in entry
+              else ("phrases", "reason", "source"), where)
         phrases = entry["phrases"]
         if not isinstance(phrases, list) or not phrases:
             raise DataError("%s: expected a non-empty list" % where)
@@ -390,6 +394,8 @@ def validate_curation(obj, product_ids=None) -> dict:
             raise DataError("%s: a phrase has no words" % where)
         _text(entry["reason"], where + ".reason")
         _https(entry["source"], where + ".source")
+        if "gold" in entry:
+            _gold_key(entry["gold"], where + ".gold")
         named.append(pid)
 
     allow = obj["single_word_allowlist"]

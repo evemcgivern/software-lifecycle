@@ -17,8 +17,13 @@ Candidate order (the row's raw name is first normalized by normalize_name):
         a phrase that confirms that product and also    publisher Mozilla
         appears in the row's publisher                  -> "firefox"
   d     a, b and each c form with a trailing version    "foo 2.1" -> "foo" + 2.1
-        token split off (v?N(.N)*[a-z]?; "8u392" is
-        not split)
+        token split off: v?N(.N)*[a-z]? plus suffix     "foo 9.3.30.v2021"
+        parts after ".", "-" or "+" that are digit-led  -> "foo" + 9.3.30.v2021
+        or a named build tag (hf, eks, gke, iN, vN),
+        or a glued "patchN"; "8u392", any other word
+        ("8.0-router") and a pre-release or milestone
+        suffix ("2.1-beta", "-rc1", "-M1", ".CR1") are
+        not split (see _TAIL_RE)
 
   Level 1 is a then b: the first of them that equals a title decides, even
   when that product is then refused (a one-word title the publisher does not
@@ -41,8 +46,24 @@ phrase, so "Prometheus Group Inc." does not confirm Prometheus. Known limit:
 a same-name vendor ("Moodle Pty Ltd" for Moodle) still confirms.
 
 A one-word title matches only when the publisher confirms the product (or a
-step c drop did, which needs the same confirmation) or the product is on
-single_word_allowlist. Products on generated_off and products whose catalog
+step c drop did, which needs the same confirmation), the product is on
+single_word_allowlist, or the version-in-name rule below applies.
+
+Version-in-name rule: a row with no publisher whose name is exactly a
+one-word title followed by a version token ("kibana 8.15.3", step d on a
+or b) matches when the product is in VERSION_NAME_TITLES and the version
+decides one cycle (the caller's fits check: the version column, or the
+name's version when the column is empty, picks exactly one cycle, and the
+two agree when both are given). A row with a publisher still needs the
+vendor check: a publisher that names another vendor is evidence against
+the match. A bare one-word name with no version is not touched by this
+rule. VERSION_NAME_TITLES lists only coined titles: a title that is an
+ordinary word, a common name or another product's name (Go, Flux, Salt,
+Puppet, Teleport, Quasar, Rocket.Chat with its desktop app) is left out
+and still needs the vendor check or the allowlist. A product named by an
+exclusion never gets this rule.
+
+Products on generated_off and products whose catalog
 category is "device" never match here. An exclusion blocks one product when
 its cleaned name equals ANY candidate form of the row (whole, cleaned,
 vendor-dropped, version-split) and, when given, its publisher token is in
@@ -60,7 +81,32 @@ from types import MappingProxyType
 from .normalize import normalize_name, split_version
 
 _TOKEN_RE = re.compile(r"[^\W_]+")
-_TAIL_RE = re.compile(r"v?\d+(?:\.\d+)*[a-z]?")
+# A version token: v?N(.N)*, an optional letter, then suffix parts after
+# ".", "-" or "+", or a glued "patchN". A suffix part is digit-led (a
+# build or distro number such as "01", "8", "0r9", "1nodesource1") or one
+# of a few named build tags: "hf" (hotfix), "eks" and "gke" (managed
+# Kubernetes builds, see _MANAGED_TAGS), "iN" (an installer build number,
+# OpenVPN "I001"; the architecture names i386, i486, i586 and i686 are
+# not build tags) and "vN" (a dated build, Jetty ".v20211001"). Any other
+# word ends the token, so
+# "8.0-router" or "1.24.0-plus" is not split. A pre-release or milestone
+# marker is never part of a token, even glued to digits ("1.0rc1",
+# "3.0.0.CR1", "11.0.0-M1", "8.0-milestone-1"), so such a name is not
+# split.
+_PRE_RELEASE = ("alpha|beta|rc|cr|ea|m|milestone|pre|preview|dev|devel|"
+                "snapshot|nightly|canary|a|b")
+_DIGIT_PART = (r"\d+(?:(?!(?:" + _PRE_RELEASE + r")\d*(?![a-z]))"
+               r"[a-z]+\d*)?")
+_BUILD_TAG = (r"(?:(?:hf|eks|gke)(?![a-z])|i(?![3-6]86(?![0-9a-z]))\d+"
+              r"(?![a-z])|v\d+(?![a-z]))")
+# Build tags of a managed service, per upstream product: a Kubernetes
+# version with a "-gke." or "-eks-" build is a Google or Amazon managed
+# build with its own support dates, not upstream Kubernetes. The managed
+# products (google-kubernetes-engine, amazon-eks) still take these tags.
+_MANAGED_TAGS = {"kubernetes": re.compile(r"[.+\-](?:gke|eks)(?![a-z])")}
+_TAIL_RE = re.compile(
+    r"v?\d+(?:\.\d+)*[a-z]?"
+    r"(?:[.+\-](?:" + _DIGIT_PART + "|" + _BUILD_TAG + r")|patch\d+)*")
 _ARCH_WORDS = frozenset(("x64", "x86", "amd64", "arm64", "aarch64",
                          "32-bit", "64-bit"))
 # A locale is a language-region tag (with "-" or "_"): an ISO 639-1
@@ -106,6 +152,43 @@ CORPORATE_WORDS = frozenset((
     "corporation", "co", "company", "pty", "plc", "sa", "ag", "bv",
     "foundation", "project", "team", "org", "organization", "software",
     "the"))
+# One-word titles, by product id, that the version-in-name rule may match
+# on a row with no publisher. Reviewed by hand against the bundled
+# catalog's one-word titles (2026-10-26). Left out: titles that are an
+# ordinary English word or a common given name (in the system word lists,
+# or by reading), titles of three letters or fewer, titles that also name
+# another well-known product (Rocket.Chat: its desktop app has its own
+# version line), standards, devices, and products named by an exclusion.
+# Also left out (2026-10-26): titles with a same-named package on PyPI,
+# npm or RubyGems from someone else (a client, binding or wrapper) whose
+# versions fit a cycle of the product, such as redis, elasticsearch,
+# podman, sqlite, openssl or nginx, and pgadmin ("pgAdmin 4" names a
+# generation, not a version), and titles with a same-named VS Code or
+# JetBrains extension whose versions fit a cycle (eslint, mysql,
+# postgresql, quarkus-framework, knative, vuetify, deno, angularjs,
+# youtrack). A package that is the product itself
+# (numpy, nuxt, pnpm on PyPI or npm) does not count. A product added to
+# the catalog later is not in this list, so it gets the rule only after a
+# review.
+VERSION_NAME_TITLES = frozenset((
+    "adonisjs ansible-core arangodb artifactory authentik bazel "
+    "behat big-ip bigbluebutton cakephp centreon ceph cert-manager "
+    "cfengine checkmk clamav clickhouse cnspec commvault contao "
+    "controlm debian dependency-track devuan dropwizard drush etcd "
+    "eurolinux exim external-dns firefox forgejo fortios freebsd "
+    "goaccess grafana grumphp haproxy icinga istio joomla jreleaser "
+    "jruby karpenter keda keycloak kiali kibana kubernetes kyverno "
+    "laravel libreoffice lineageos logstash mageia mariadb "
+    "mediawiki meilisearch metabase metallb netbsd nextjs nixos "
+    "nodejs notepad-plus-plus numpy nuxt openbao openbsd opensuse "
+    "opentofu openvpn openwrt openzfs opnsense otobo ovirt perl "
+    "phpbb phpmyadmin plesk plone pnpm pop-os postmarketos proftpd "
+    "rabbitmq redmine routeros rtpengine sapmachine shopware "
+    "sourcegraph splunk statamic strapi sylius symfony tarantool "
+    "tarteaucitron thumbor traefik truenas typo3 ubuntu unrealircd "
+    "valkey virtualbox vitess weakforced weechat xcp-ng zabbix "
+    "zentyal"
+).split())
 # Names with more words than this are never matched by title: no product
 # title is that long, and it bounds the work on a hostile row.
 MAX_WORDS = 64
@@ -164,6 +247,8 @@ class CatalogIndex:
     exclusions: MappingProxyType  # cleaned name -> ((id, publisher), ...)
     no_cycle: MappingProxyType = field(  # id -> version prefixes
         default_factory=lambda: MappingProxyType({}))
+    version_names: frozenset = frozenset()  # ids the version-in-name
+    #                                         rule may match
 
     def phrase_ok(self, pid: str, phrase: tuple, pub: tuple) -> bool:
         """Whether this confirming phrase of pid is in the publisher. A
@@ -188,10 +273,13 @@ class CatalogIndex:
                     out.add(pid)
         return out
 
-    def lookup(self, name: str, publisher: str = "") -> tuple:
+    def lookup(self, name: str, publisher: str = "", fits=None) -> tuple:
         """(product ids, {id: version token or None}).
 
         No ids: no generated match. One id: that product. More: AMBIGUOUS.
+        fits(product id, version token) -> bool says whether the row's
+        version decides one cycle of that product; without it the
+        version-in-name rule is off.
         """
         norm = normalize_name(name or "")
         clean = strip_arch(norm)
@@ -220,11 +308,17 @@ class CatalogIndex:
                 forms.add(split[0])
         blocked = self._excluded(forms, pub)
 
-        def allowed(pid, confirmed):
+        def allowed(pid, confirmed, tail=None):
             if pid in self.off or pid in self.devices or pid in blocked:
                 return False
             if pid in self.one_word and pid not in self.allow:
-                return confirmed or self.confirms(pid, pub)
+                if confirmed or self.confirms(pid, pub):
+                    return True
+                # Version-in-name rule: no publisher, and the name is this
+                # one-word title plus a version token that decides one
+                # cycle.
+                return (not pub and tail is not None and fits is not None
+                        and pid in self.version_names and fits(pid, tail))
             return True
 
         # Level 1: the whole name, then the name without arch/locale groups.
@@ -241,7 +335,11 @@ class CatalogIndex:
             for pid in self.titles.get(cand, ()):
                 if only is not None and pid not in only:
                     continue
-                if pid not in found and allowed(pid, only is not None):
+                managed = _MANAGED_TAGS.get(pid)
+                if managed is not None and tail and managed.search(tail):
+                    continue
+                if pid not in found and allowed(pid, only is not None,
+                                                tail):
                     found[pid] = tail
 
         dropped = []
@@ -268,9 +366,12 @@ def _vendor_phrase(vendor: str) -> tuple:
     return tuple(t for t in _VENDOR_SPLIT_RE.split(vendor) if t)
 
 
-def build_index(catalog: dict, curation=None) -> CatalogIndex:
+def build_index(catalog: dict, curation=None,
+                version_names=VERSION_NAME_TITLES) -> CatalogIndex:
     """Build the read-only index. catalog: {id: products.json record};
-    curation: the validated curation.json, or None for an empty one."""
+    curation: the validated curation.json, or None for an empty one;
+    version_names: the ids the version-in-name rule may match (tests pass
+    their own)."""
     cur = curation or {}
     titles, one_word, self_titles, phrases, leads = {}, set(), {}, {}, {}
     devices = set()
@@ -296,6 +397,9 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
         for phrase in found:
             leads.setdefault(phrase, set()).add(pid)
     exclusions = {}
+    excluded = frozenset(item["product"]
+                         for item in cur.get("exclusions") or ())
+    off = frozenset(cur.get("generated_off") or ())
     for item in cur.get("exclusions") or ():
         name = strip_arch(normalize_name(item["name"]))
         exclusions.setdefault(name, set()).add(
@@ -309,10 +413,14 @@ def build_index(catalog: dict, curation=None) -> CatalogIndex:
         max_lead=max((len(k) for k in leads), default=0),
         allow=frozenset(i["product"]
                         for i in cur.get("single_word_allowlist") or ()),
-        off=frozenset(cur.get("generated_off") or ()),
+        off=off,
         devices=frozenset(devices),
         exclusions=MappingProxyType(
             {k: tuple(sorted(v)) for k, v in exclusions.items()}),
         no_cycle=MappingProxyType({
             pid: tuple(tuple(split_version(p)) for p in entry["prefixes"])
-            for pid, entry in (cur.get("no_cycle_versions") or {}).items()}))
+            for pid, entry in (cur.get("no_cycle_versions") or {}).items()}),
+        version_names=frozenset(
+            pid for pid in frozenset(version_names) & one_word
+            if pid not in excluded and pid not in off
+            and pid not in devices))

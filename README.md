@@ -187,21 +187,23 @@ artifact attestation, check it online before you use the release:
 ## How it can be wrong
 
 - Coverage is partial. In the data release bundled when this was written
-  (the weekly job can change the counts), the tool can match 432 of the 485
+  (the weekly job can change the counts), the tool can match 452 of the 485
   products in `data/eol/`. Most are matched by the product's title from endoflife.date
   (`data/products.json`). `data/aliases.json` adds 19 aliases for
   11 products (mssqlserver, windows-server, windows, office,
   python, nodejs, ubuntu, eclipse-temurin, windows-powershell, mysql,
   bellsoft-liberica). `data/curation.json` adds hand-kept vendor names for
-  42 products and a short list of one-word product names. The other 53
+  72 products and a short list of one-word product names. A further list
+  of coined one-word titles matches a row with no publisher when the name
+  carries a version that decides the cycle (`Kibana 8.15.3`). The other 33
   products are devices, products left out on purpose, or one-word titles
   with no vendor to check, and never match.
 - That is a count of products, not a hit rate. On the project's own
-  benchmark (the 1,147 hand-written and catalog rows in
-  `tests/benchmark/gold.csv`), 705 rows should match a product. 417 of them
-  are scored correct: 317 with the right cycle, and 100 rightly with the
-  product and no cycle. Of the 591 rows that need a cycle, 317 get one. The other 442 rows are
-  traps that should stay unmatched, and all 442 do. It is a benchmark, not a
+  benchmark (the 1,712 hand-written and catalog rows in
+  `tests/benchmark/gold.csv`), 790 rows should match a product. 482 of them
+  are scored correct: 382 with the right cycle, and 100 rightly with the
+  product and no cycle. Of the 676 rows that need a cycle, 382 get one. The other 922 rows are
+  traps that should stay unmatched, and all 922 do. It is a benchmark, not a
   real estate. The rate on a real estate is unknown.
 - No wrong lifecycle claim was found on the benchmark. That is not proof for
   other inventories: unknown in general.

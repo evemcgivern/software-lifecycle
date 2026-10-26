@@ -127,6 +127,64 @@ class BundledCatalogTests(unittest.TestCase):
         validate_curation(self.data.curation, set(self.data.catalog))
         validate_curation(read("curation.json"), set(self.data.products))
 
+    def test_version_name_titles_are_coined_one_word_titles(self):
+        # The version-in-name rule's list (swlc/catalog_match.py). Ids that
+        # a weekly update removed are skipped; the others must still be
+        # one-word, non-device titles that no exclusion names.
+        from swlc.catalog_match import VERSION_NAME_TITLES
+        from swlc.normalize import normalize_name
+        cur = self.data.curation
+        excluded = {e["product"] for e in cur["exclusions"]}
+        present = [p for p in sorted(VERSION_NAME_TITLES)
+                   if p in self.data.catalog]
+        self.assertGreater(len(present), 100)
+        for pid in present:
+            with self.subTest(pid=pid):
+                rec = self.data.catalog[pid]
+                self.assertNotIn(" ", normalize_name(rec["title"]))
+                self.assertNotIn(rec["category"], ("device", "standard"))
+                self.assertNotIn(pid, excluded)
+                self.assertNotIn(pid, cur["generated_off"])
+        # Ordinary words, common names and names shared with another
+        # product stay out (the gold trap rows depend on it).
+        for pid in ("go", "flux", "salt", "puppet", "nomad", "teleport",
+                    "quasar", "harbor", "express", "rocket-chat", "python",
+                    "ruby", "rust", "unity", "jenkins", "django", "ansible",
+                    # Same-named client libraries or packages on PyPI,
+                    # npm or RubyGems whose versions fit a cycle.
+                    "podman", "redis", "elasticsearch", "neo4j", "dapr",
+                    "opensearch", "pgadmin", "bitbucket", "cockroachdb",
+                    "containerd", "duckdb", "ffmpeg", "foundationdb",
+                    "gitlab", "gradle", "graylog", "gstreamer", "influxdb",
+                    "liquibase", "memcached", "openssl", "sqlite",
+                    "wireshark", "wordpress", "nginx", "ckeditor",
+                    "jhipster", "jquery", "magento", "matomo", "mautic",
+                    "oniguruma", "privatebin",
+                    # A same-named VS Code or JetBrains extension whose
+                    # versions fit a cycle (for example
+                    # dbaeumer.vscode-eslint 3.0.34, redhat.vscode-quarkus,
+                    # cweijan.vscode-mysql-client2 9.0.2).
+                    "eslint", "mysql", "postgresql", "quarkus-framework",
+                    "knative", "vuetify", "deno", "angularjs", "youtrack"):
+            with self.subTest(pid=pid):
+                self.assertNotIn(pid, VERSION_NAME_TITLES)
+
+    def test_managed_kubernetes_builds_are_not_upstream(self):
+        # A -gke. or -eks- build is the managed service, not upstream
+        # Kubernetes; the managed products still match their builds.
+        data = self.data
+        for name, want in (
+                ("Kubernetes 1.30.5-gke.1014001", None),
+                ("Kubernetes 1.27-eks-53", None),
+                ("Kubernetes 1.30.5", "kubernetes"),
+                ("Google Kubernetes Engine 1.30.5-gke.1014001",
+                 "google-kubernetes-engine"),
+                ("Amazon EKS 1.27-eks-53", "amazon-eks")):
+            with self.subTest(name=name):
+                got = match_product(name, "", data.aliases, data.products,
+                                    catalog_index=data.matching_index())
+                self.assertEqual(got.product, want)
+
 
 def gold_rows():
     import csv

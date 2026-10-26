@@ -102,13 +102,22 @@ which one found the product.
    `[x64]` (a locale is any ISO language-region pair, such as `es-AR`; a word
    like `go-to` is not one), drops a leading vendor word when the publisher carries that
    vendor (`Mozilla Firefox` with publisher Mozilla), and splits a trailing
-   version number off the name (`Foo 2.1`). A whole title wins over a split
-   one. The version column is used; when it is empty, the version from the
+   version number off the name (`Foo 2.1`). The split version may carry
+   suffix parts after `.`, `-` or `+` that start with a digit (a build or
+   distro number: `3.62.0-01`, `20.0.2+9`, `4.0r9`), one of a few named
+   build tags (`hf`, `eks`, `gke`, an installer build such as `I001`, a
+   dated build such as `.v20211001`), or a glued `patchN`
+   (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
+   `7.7.2-HF`); the rest of the name must still equal a title exactly. Any
+   other word after the version (`MySQL 8.0-router`, `nginx 1.24.0-plus`),
+   a pre-release or milestone suffix (`2.1-beta`, `2.0-rc1`, `1.0rc1`,
+   `11.0.0-M1`, `3.0.0.CR1`, `8.0-milestone-1`, `-ea`) and an update number
+   (`8u392`) stop the split, so such a name is not matched. A whole title wins over a split one. The version column is used; when it is empty, the version from the
    name is used; when both exist and pick different cycles, the item is not
    decided. A name of more than 64 words is never matched by title.
    - A one-word title matches only when the publisher names the product's
-     vendor as whole words, or when the product is on the one-word
-     allowlist in `curation.json`. `The Apache Software Foundation`
+     vendor as whole words, when the product is on the one-word allowlist
+     in `curation.json`, or by the version-in-name rule below. `The Apache Software Foundation`
      confirms the vendor `apache`; `ApacheFriends` does not. A vendor
      written as one word, such as `redhat`, is not confirmed by
      `Red Hat, Inc.`.
@@ -119,6 +128,22 @@ which one found the product.
      confirms Grafana only through its curated publisher alias. Known limit: a different
      product from a same-name vendor still confirms unless an exclusion
      stops it (the Moodle app from Moodle Pty Ltd is excluded).
+   - Version-in-name rule: a row with no publisher whose name is a
+     one-word title followed by a version (`Kibana 8.15.3`)
+     matches when the version decides exactly one cycle (and agrees with
+     the version column when both are given) and the title is on a
+     hand-reviewed list of coined titles (`VERSION_NAME_TITLES` in
+     `swlc/catalog_match.py`). Titles that are ordinary words, common names
+     or a name another product shares (Go, Flux, Salt, Puppet, Teleport,
+     Quasar, Rocket.Chat), and titles a same-named package or editor
+     extension shares, are not on the list, so `Go 1.21.5` with no
+     publisher stays unmatched. A Kubernetes version with a `-gke.` or
+     `-eks-` build is the managed service, not upstream Kubernetes, so it is
+     not matched to `kubernetes`. A row with a publisher still needs the
+     vendor check. A bare one-word name with no version is not touched,
+     and a product named by an exclusion never gets this rule. A product
+     added to the catalog later gets the rule only after it is reviewed
+     and added to the list.
    - Products whose catalog category is `device`, and products on
      `generated_off`, are never matched by title.
    - An exclusion stops one product for a name: it applies when its name
@@ -161,13 +186,41 @@ so; it does not hide them.
   never matches.
 - Ansible rows from Red Hat stay unmatched. The catalog vendor is
   `redhat`, one word, and the Red Hat VS Code extension named Ansible
-  shares the name and publisher, so no publisher alias adds Red Hat.
+  shares the name and publisher, so no publisher alias adds Red Hat to
+  Ansible. `ansible-core` rows from Red Hat match through their own alias.
 - A bare `podman` row with no publisher stays unmatched: the PyPI `podman`
   package (the API bindings) and the Homebrew `podman` formula look the
   same to the matcher. Podman matches when the publisher is Red Hat or the
   Podman project.
 - The VS Code extensions for Julia and Deno share vendor words with the
   Julia and Deno products, so an extension row can be read as the product.
+- The version-in-name rule trusts a coined title with no publisher, so a
+  match it makes is lower confidence than one the publisher confirms.
+  Titles with a same-named PyPI, npm or RubyGems package from someone else
+  whose versions fit a cycle (redis, elasticsearch, podman, sqlite,
+  openssl and others) are left off its list, so `redis 5.0.1` with no
+  publisher stays unmatched. So are titles with a same-named VS Code or
+  JetBrains extension whose versions fit a cycle:
+  - ESLint: the VS Code ESLint extension (`ESLint 3.0.34`).
+  - MySQL: a VS Code extension named MySQL (9.0.2).
+  - PostgreSQL: a VS Code extension named PostgreSQL (9.0.2).
+  - Quarkus: the VS Code Quarkus extension (1.x).
+  - Knative: the VS Code Knative extension (1.x).
+  - Vuetify: the VS Code Vuetify extension (1.0.x).
+  - Deno: the VS Code Deno extension (1.x to 3.x).
+  - AngularJS: JetBrains plugins named AngularJS (1.1 to 1.11).
+  - YouTrack: a JetBrains plugin named YouTrack (year versions).
+
+  Chrome and other browser extensions were not checked. The review was
+  made once, on 2026-10-26: a package or extension published later under
+  a listed title is not caught and would be read as the product. Issue
+  #12 tracks ambiguous names and a review of the list.
+- A version that ends in a bare letter splits with the letter
+  (`Firefox 129.0b` is read as Firefox 129), because OpenSSL-style
+  versions such as `1.1.1b` use the same shape.
+- Titles on the one-word allowlist (GStreamer, Liquibase and others) match
+  with any publisher or none, so a same-named package such as the npm
+  `liquibase` wrapper is read as the product.
 
 ## How KEV is checked
 
@@ -214,8 +267,8 @@ refresh. The file holds no descriptions, slugs, alternate URLs, page text
 or dates.
 
 `curation.json` has the keys `format`, `publisher_aliases` (a product id to
-an object of `phrases`, a sorted list of lowercase vendor phrases, `reason`
-and `source`), `single_word_allowlist` (a list of `product`, `reason`,
+an object of `phrases`, a sorted list of lowercase vendor phrases, `reason`,
+`source` and, optionally, `gold`, the gold benchmark row the entry protects), `single_word_allowlist` (a list of `product`, `reason`,
 `source` and `gold`, the gold benchmark row it was checked on, as
 `name|publisher|version`), where each `source` is an https URL,
 `exclusions` (a list of `product`, `name`, `publisher`, `reason` and `gold`;
@@ -302,7 +355,8 @@ rules in "The data folder".
 
 - A publisher alias adds vendor names for one product, so a one-word or
   short title can be confirmed by the row's publisher. Give `phrases`
-  (lowercase), a `reason` and an https `source`.
+  (lowercase), a `reason`, an https `source` and, for a new entry, the
+  `gold` row (`name|publisher|version`) it protects.
 - A one-word allowlist entry lets a one-word title match with no vendor.
   Give the `product`, a `reason`, a `source` and a `gold` row
   (`name|publisher|version`) that shows it is right.

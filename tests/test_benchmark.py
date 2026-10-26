@@ -899,6 +899,27 @@ class CurationCitesGoldTests(unittest.TestCase):
                 self.assertEqual(row["heldout"], "0")
                 self.assertEqual(row["expected_product"], item["product"])
 
+    def test_each_publisher_alias_gold_row_is_its_product_and_publisher(self):
+        from swlc.catalog_match import tokens, _has_run
+        curation = json.loads((ROOT / "data" / "curation.json").read_text(
+            encoding="utf-8"))
+        rows = {"%s|%s|%s" % row_key(r): r for r in read_gold()}
+        cited = 0
+        for pid, entry in sorted(curation["publisher_aliases"].items()):
+            if "gold" not in entry:
+                continue
+            cited += 1
+            with self.subTest(product=pid):
+                row = rows.get(entry["gold"])
+                self.assertIsNotNone(row, "alias cites no gold row")
+                self.assertEqual(row["heldout"], "0")
+                self.assertEqual(row["expected_product"], pid)
+                pub = tokens(row["publisher"])
+                self.assertTrue(any(_has_run(pub, tokens(p))
+                                    for p in entry["phrases"]),
+                                "the gold row's publisher has no phrase")
+        self.assertGreater(cited, 0)
+
 
 class ParentCaseFileTests(unittest.TestCase):
     NEEDED = ("one-os", "two-os", "no-os", "column-item", "column-product",
