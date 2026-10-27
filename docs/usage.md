@@ -173,7 +173,8 @@ These are known and not fixed. The tool leaves the row unmatched or says
 so; it does not hide them.
 
 - A curated alias matches by name, whatever the publisher, unless it has a
-  `publisher` list. Only some aliases have one (`node.js`, `ubuntu`).
+  `publisher` list. Only some aliases have one (`node.js`, `ubuntu`,
+  `debian gnu/linux`, the `macos` release names).
 - Two products with the same name from the same vendor cannot be told
   apart. The Moodle mobile app and the Moodle LMS are an example: both are
   left unmatched, by an exclusion.
@@ -225,6 +226,51 @@ so; it does not hide them.
 - Titles on the one-word allowlist (GStreamer, Liquibase and others) match
   with any publisher or none, so a same-named package such as the npm
   `liquibase` wrapper is read as the product.
+- Microsoft and operating system names left unmatched on purpose (issue
+  #17), because no public source for the name was found or the name
+  cannot pick one product or cycle: PowerShell 7 names (`PowerShell
+  7-x64`), Internet Explorer 11 (the same name covers client, LTSB, LTSC
+  and Server, which have different cycles), `Red Hat Enterprise Linux 9.4
+  (Plow)`, `Red Hat Enterprise Linux Server`, `Rocky Linux 9.4 (Blue
+  Onyx)`, `Oracle Linux Server`, `AlmaLinux`, and the bare `.NET Runtime`
+  and `.NET SDK` with no publisher. Office "Home and Business" and "Home
+  and Student" names are unmatched too, and so is `Microsoft ASP.NET Core
+  8.0.1 - Shared Framework (x64)`.
+- `Microsoft .NET SDK 8.0.101 (x64)` and `Microsoft Windows Desktop
+  Runtime - 6.0.25 (x64)` stay unmatched: the benchmark expects `dotnet`
+  for one row of each form and `NONE` for others of the same form, and
+  that conflict is the maintainer's to settle.
+- A codename in parentheses (`Debian GNU/Linux 12 (bookworm)`) is not an
+  edition word, so such a name stays unmatched. `Debian GNU/Linux` with
+  the version in its own column matches for Debian 8 to 13 only. Debian 4
+  to 7 get no cycle, because those numbers are also Linux kernel versions
+  (`4.19.0-21-amd64`), which some exports put in this column.
+- `Microsoft .NET Core SDK 2.1.x` names get `dotnet` with no cycle: SDK
+  2.1.4, 2.1.100 to 2.1.202 and others in that line ship the .NET Core 2.0
+  runtime, so the SDK number does not pick the runtime cycle.
+- A .NET release candidate or preview build (`Microsoft .NET Runtime -
+  10.0.0-rc.2.25502.107 (x64)`, `Microsoft .NET Runtime - 8.0.0-preview.7.23375.6
+  (x64)`, and the same for ASP.NET Core and the .NET Core SDK) matches the
+  cycle of its major version, although the cycle's dates are for the final
+  release. A Visual Studio preview build (`17.14.0-pre.1.0`) does the same.
+  The alias maps cannot reject a pre-release part.
+- `Microsoft .NET Framework Runtime <version>` reads the version from the
+  name, so any such name takes the cycle its number falls in. A number that
+  is not a cycle of its own (`4.8.2`) takes the parent cycle (`4.8`).
+- SUSE Linux Enterprise Server names with a service pack (`15 SP5`) need
+  the version column to agree (`15.5`); an empty column gives no cycle.
+  Names with the major only are matched by title, as before.
+- Windows 11 LTSC 2024, Windows 10 IoT Enterprise LTSC 2021 and Windows
+  Server 2003 R2 names stay unmatched. Windows Server 2003 names match
+  the product with no cycle, because 2003, SP1 and SP2 share build
+  5.2.3790. A Windows 7 or Windows Server 2008 R2 row with the RTM build
+  gets the product with no cycle: only the SP1 build is mapped.
+- SQL Server 2008 R2 maps only the SP1, SP2 and SP3 builds. The RTM
+  build (10.50.1600) gets the product with no cycle.
+- Exchange names with "Cumulative Update N" stay unmatched; an edition
+  word cannot cover the number.
+- Office names in a language other than en-us (`- fr-fr`) are not
+  covered by the LTSC aliases.
 
 ## Names to review
 
@@ -269,7 +315,7 @@ for the matched product. If the alias has no pair, or the product was
 matched by title, the tool compares the
 publisher and the full inventory name (version included) with KEV, exactly.
 `kev: false` therefore means "no match under those rules", not "known
-safe". The `windows-server` and Windows 10 client aliases use the broad
+safe". The `windows-server` and Windows client aliases use the broad
 Microsoft and Windows pair, so every Windows entry in KEV matches them.
 
 ## The data folder

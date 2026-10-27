@@ -87,6 +87,7 @@
       },
       "edition_words": [
         "datacenter",
+        "evaluation",
         "standard"
       ],
       "kev": {
@@ -120,6 +121,7 @@
       },
       "edition_words": [
         "datacenter",
+        "evaluation",
         "standard"
       ],
       "kev": {
@@ -333,6 +335,1344 @@
       "product": "bellsoft-liberica",
       "source": "https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/b/BellSoft/LibericaJDK/17/17.0.9.11/BellSoft.LibericaJDK.17.installer.yaml",
       "version_from": "name"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 11 home",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 11 home",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 11 pro",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 11 pro",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 11 pro education",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 11 pro education",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 11 pro for workstations",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-w",
+        "10.0.22621": "11-22h2-w",
+        "10.0.22631": "11-23h2-w",
+        "10.0.26100": "11-24h2-w",
+        "10.0.26200": "11-25h2-w",
+        "10.0.26300": "11-26h2-w",
+        "10.0.28000": "11-26h1-w"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 11 pro for workstations",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-e",
+        "10.0.22621": "11-22h2-e",
+        "10.0.22631": "11-23h2-e",
+        "10.0.26100": "11-24h2-e",
+        "10.0.26200": "11-25h2-e",
+        "10.0.26300": "11-26h2-e",
+        "10.0.28000": "11-26h1-e"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 11 education",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-e",
+        "10.0.22621": "11-22h2-e",
+        "10.0.22631": "11-23h2-e",
+        "10.0.26100": "11-24h2-e",
+        "10.0.26200": "11-25h2-e",
+        "10.0.26300": "11-26h2-e",
+        "10.0.28000": "11-26h1-e"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 11 education",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-e",
+        "10.0.22621": "11-22h2-e",
+        "10.0.22631": "11-23h2-e",
+        "10.0.26100": "11-24h2-e",
+        "10.0.26200": "11-25h2-e",
+        "10.0.26300": "11-26h2-e",
+        "10.0.28000": "11-26h1-e"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 11 enterprise",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.22000": "11-21h2-e",
+        "10.0.22621": "11-22h2-e",
+        "10.0.22631": "11-23h2-e",
+        "10.0.26100": "11-24h2-e",
+        "10.0.26200": "11-25h2-e",
+        "10.0.26300": "11-26h2-e",
+        "10.0.28000": "11-26h1-e"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 11 enterprise",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.10240": "10-1507-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 10 enterprise 2015 ltsb",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://endoflife.date/windows",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.10240": "10-1507-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 10 enterprise 2015 ltsb",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://endoflife.date/windows",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.14393": "10-1607-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 10 enterprise 2016 ltsb",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.14393": "10-1607-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 10 enterprise 2016 ltsb",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.17763": "10-1809-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 10 enterprise ltsc 2019",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.17763": "10-1809-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 10 enterprise ltsc 2019",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.19044": "10-21h2-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 10 enterprise ltsc 2021",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0.19044": "10-21h2-e-lts"
+      },
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 10 enterprise ltsc 2021",
+      "match": "exact",
+      "product": "windows",
+      "source": "https://learn.microsoft.com/en-us/windows/release-health/release-information",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "6.1.7601": "7-sp1"
+      },
+      "edition_words": [
+        "enterprise",
+        "professional",
+        "ultimate"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 7",
+      "match": "prefix",
+      "note": "Editions from the KMS client key list; build 6.1.7601 is 7 SP1 per endoflife.date.",
+      "product": "windows",
+      "source": "https://endoflife.date/windows",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "6.1.7601": "7-sp1"
+      },
+      "edition_words": [
+        "enterprise",
+        "professional",
+        "ultimate"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 7",
+      "match": "prefix",
+      "note": "Editions from the KMS client key list; build 6.1.7601 is 7 SP1 per endoflife.date.",
+      "product": "windows",
+      "source": "https://endoflife.date/windows",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "6.3.9600": "8.1"
+      },
+      "edition_words": [
+        "enterprise",
+        "pro"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows 8.1",
+      "match": "prefix",
+      "product": "windows",
+      "source": "https://endoflife.date/windows",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "6.3.9600": "8.1"
+      },
+      "edition_words": [
+        "enterprise",
+        "pro"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows 8.1",
+      "match": "prefix",
+      "product": "windows",
+      "source": "https://endoflife.date/windows",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "5.2.3790": [
+          "2003",
+          "2003-sp1",
+          "2003-sp2"
+        ]
+      },
+      "edition_words": [
+        "datacenter",
+        "edition",
+        "enterprise",
+        "standard",
+        "web"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows server 2003",
+      "match": "prefix",
+      "note": "CISA files Windows Server flaws under product Windows, so this KEV pair matches every Windows entry; the overlay means needs review, not affected.",
+      "product": "windows-server",
+      "source": "https://endoflife.date/windows-server",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "5.2.3790": [
+          "2003",
+          "2003-sp1",
+          "2003-sp2"
+        ]
+      },
+      "edition_words": [
+        "datacenter",
+        "edition",
+        "enterprise",
+        "standard",
+        "web"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows server 2003",
+      "match": "prefix",
+      "note": "CISA files Windows Server flaws under product Windows, so this KEV pair matches every Windows entry; the overlay means needs review, not affected.",
+      "product": "windows-server",
+      "source": "https://endoflife.date/windows-server",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "6.1.7601": "2008-r2-sp1"
+      },
+      "edition_words": [
+        "datacenter",
+        "enterprise",
+        "standard"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft windows server 2008 r2",
+      "match": "prefix",
+      "note": "CISA files Windows Server flaws under product Windows, so this KEV pair matches every Windows entry; the overlay means needs review, not affected.",
+      "product": "windows-server",
+      "source": "https://endoflife.date/windows-server",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "6.1.7601": "2008-r2-sp1"
+      },
+      "edition_words": [
+        "datacenter",
+        "enterprise",
+        "standard"
+      ],
+      "kev": {
+        "product": "Windows",
+        "vendor": "Microsoft"
+      },
+      "key": "windows server 2008 r2",
+      "match": "prefix",
+      "note": "CISA files Windows Server flaws under product Windows, so this KEV pair matches every Windows entry; the overlay means needs review, not affected.",
+      "product": "windows-server",
+      "source": "https://endoflife.date/windows-server",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.50.2500": "10.50-sp1",
+        "10.50.4000": "10.50-sp2",
+        "10.50.6000": "10.50-sp3"
+      },
+      "edition_words": [
+        "datacenter",
+        "developer",
+        "enterprise",
+        "express",
+        "standard",
+        "web",
+        "workgroup"
+      ],
+      "kev": {
+        "product": "SQL Server",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft sql server 2008 r2",
+      "match": "prefix",
+      "product": "mssqlserver",
+      "source": "https://support.microsoft.com/servicing/sql/kb321185-download-and-install-latest-updates",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "2017": "14.0",
+        "2019": "15.0",
+        "2022": "16.0",
+        "2025": "17.0"
+      },
+      "edition_words": [
+        "developer",
+        "edition",
+        "enterprise",
+        "express",
+        "standard",
+        "web"
+      ],
+      "kev": {
+        "product": "SQL Server",
+        "vendor": "Microsoft"
+      },
+      "key": "sql server",
+      "match": "prefix",
+      "product": "mssqlserver",
+      "source": "https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-2022",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2013": "2013",
+        "2016": "2016",
+        "2019": "2019"
+      },
+      "column_map": {
+        "14": "2010",
+        "15.0": "2013",
+        "15.1": "2016",
+        "15.2": [
+          "2019",
+          "subscription"
+        ],
+        "8": "2007"
+      },
+      "kev": {
+        "product": "Exchange Server",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft exchange server",
+      "match": "prefix",
+      "product": "msexchange",
+      "source": "https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2013": "2013",
+        "2016": "2016",
+        "2019": "2019"
+      },
+      "column_map": {
+        "14.0": "2010",
+        "15.0": "2013",
+        "16.0": [
+          "2016",
+          "2019",
+          "subscription"
+        ]
+      },
+      "kev": {
+        "product": "SharePoint Server",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft sharepoint server",
+      "match": "prefix",
+      "product": "sharepoint",
+      "source": "https://learn.microsoft.com/en-us/officeupdates/sharepoint-updates",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2024": "2024-ltsc"
+      },
+      "column_map": {
+        "14.0": "2010",
+        "15.0": "2013",
+        "16.0": [
+          "2016",
+          "2019",
+          "2021",
+          "2024",
+          "2024-ltsc"
+        ]
+      },
+      "kev": {
+        "product": "Office",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft office ltsc professional plus",
+      "match": "prefix",
+      "product": "office",
+      "source": "https://learn.microsoft.com/en-us/office/ltsc/2024/overview",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2024": "2024-ltsc"
+      },
+      "column_map": {
+        "14.0": "2010",
+        "15.0": "2013",
+        "16.0": [
+          "2016",
+          "2019",
+          "2021",
+          "2024",
+          "2024-ltsc"
+        ]
+      },
+      "kev": {
+        "product": "Office",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft office ltsc standard",
+      "match": "prefix",
+      "product": "office",
+      "source": "https://learn.microsoft.com/en-us/office/ltsc/2024/overview",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "14": "2011-for-mac"
+      },
+      "kev": {
+        "product": "Office",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft office 2011 for mac",
+      "match": "exact",
+      "product": "office",
+      "source": "https://learn.microsoft.com/en-us/security-updates/securitybulletins/2013/ms13-026",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "16.0": "16.0",
+        "16.1": "16.1",
+        "16.10": "16.10",
+        "16.11": "16.11",
+        "16.2": "16.2",
+        "16.3": "16.3",
+        "16.4": "16.4",
+        "16.5": "16.5",
+        "16.6": "16.6",
+        "16.7": "16.7",
+        "16.8": "16.8",
+        "16.9": "16.9"
+      },
+      "key": "microsoft visual studio community 2019",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2019/history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "16.0": "16.0",
+        "16.1": "16.1",
+        "16.10": "16.10",
+        "16.11": "16.11",
+        "16.2": "16.2",
+        "16.3": "16.3",
+        "16.4": "16.4",
+        "16.5": "16.5",
+        "16.6": "16.6",
+        "16.7": "16.7",
+        "16.8": "16.8",
+        "16.9": "16.9"
+      },
+      "key": "visual studio community 2019",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2019/history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "16.0": "16.0",
+        "16.1": "16.1",
+        "16.10": "16.10",
+        "16.11": "16.11",
+        "16.2": "16.2",
+        "16.3": "16.3",
+        "16.4": "16.4",
+        "16.5": "16.5",
+        "16.6": "16.6",
+        "16.7": "16.7",
+        "16.8": "16.8",
+        "16.9": "16.9"
+      },
+      "key": "microsoft visual studio professional 2019",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2019/history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "16.0": "16.0",
+        "16.1": "16.1",
+        "16.10": "16.10",
+        "16.11": "16.11",
+        "16.2": "16.2",
+        "16.3": "16.3",
+        "16.4": "16.4",
+        "16.5": "16.5",
+        "16.6": "16.6",
+        "16.7": "16.7",
+        "16.8": "16.8",
+        "16.9": "16.9"
+      },
+      "key": "visual studio professional 2019",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2019/history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "16.0": "16.0",
+        "16.1": "16.1",
+        "16.10": "16.10",
+        "16.11": "16.11",
+        "16.2": "16.2",
+        "16.3": "16.3",
+        "16.4": "16.4",
+        "16.5": "16.5",
+        "16.6": "16.6",
+        "16.7": "16.7",
+        "16.8": "16.8",
+        "16.9": "16.9"
+      },
+      "key": "microsoft visual studio enterprise 2019",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2019/history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "16.0": "16.0",
+        "16.1": "16.1",
+        "16.10": "16.10",
+        "16.11": "16.11",
+        "16.2": "16.2",
+        "16.3": "16.3",
+        "16.4": "16.4",
+        "16.5": "16.5",
+        "16.6": "16.6",
+        "16.7": "16.7",
+        "16.8": "16.8",
+        "16.9": "16.9"
+      },
+      "key": "visual studio enterprise 2019",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2019/history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "17.0": "17.0",
+        "17.1": "17.1",
+        "17.10": "17.10",
+        "17.11": "17.11",
+        "17.12": "17.12",
+        "17.13": "17.13",
+        "17.14": "17.14",
+        "17.2": "17.2",
+        "17.3": "17.3",
+        "17.4": "17.4",
+        "17.5": "17.5",
+        "17.6": "17.6",
+        "17.7": "17.7",
+        "17.8": "17.8",
+        "17.9": "17.9"
+      },
+      "key": "microsoft visual studio community 2022",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "17.0": "17.0",
+        "17.1": "17.1",
+        "17.10": "17.10",
+        "17.11": "17.11",
+        "17.12": "17.12",
+        "17.13": "17.13",
+        "17.14": "17.14",
+        "17.2": "17.2",
+        "17.3": "17.3",
+        "17.4": "17.4",
+        "17.5": "17.5",
+        "17.6": "17.6",
+        "17.7": "17.7",
+        "17.8": "17.8",
+        "17.9": "17.9"
+      },
+      "key": "visual studio community 2022",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "17.0": "17.0",
+        "17.1": "17.1",
+        "17.10": "17.10",
+        "17.11": "17.11",
+        "17.12": "17.12",
+        "17.13": "17.13",
+        "17.14": "17.14",
+        "17.2": "17.2",
+        "17.3": "17.3",
+        "17.4": "17.4",
+        "17.5": "17.5",
+        "17.6": "17.6",
+        "17.7": "17.7",
+        "17.8": "17.8",
+        "17.9": "17.9"
+      },
+      "key": "microsoft visual studio professional 2022",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "17.0": "17.0",
+        "17.1": "17.1",
+        "17.10": "17.10",
+        "17.11": "17.11",
+        "17.12": "17.12",
+        "17.13": "17.13",
+        "17.14": "17.14",
+        "17.2": "17.2",
+        "17.3": "17.3",
+        "17.4": "17.4",
+        "17.5": "17.5",
+        "17.6": "17.6",
+        "17.7": "17.7",
+        "17.8": "17.8",
+        "17.9": "17.9"
+      },
+      "key": "visual studio professional 2022",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "17.0": "17.0",
+        "17.1": "17.1",
+        "17.10": "17.10",
+        "17.11": "17.11",
+        "17.12": "17.12",
+        "17.13": "17.13",
+        "17.14": "17.14",
+        "17.2": "17.2",
+        "17.3": "17.3",
+        "17.4": "17.4",
+        "17.5": "17.5",
+        "17.6": "17.6",
+        "17.7": "17.7",
+        "17.8": "17.8",
+        "17.9": "17.9"
+      },
+      "key": "microsoft visual studio enterprise 2022",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "17.0": "17.0",
+        "17.1": "17.1",
+        "17.10": "17.10",
+        "17.11": "17.11",
+        "17.12": "17.12",
+        "17.13": "17.13",
+        "17.14": "17.14",
+        "17.2": "17.2",
+        "17.3": "17.3",
+        "17.4": "17.4",
+        "17.5": "17.5",
+        "17.6": "17.6",
+        "17.7": "17.7",
+        "17.8": "17.8",
+        "17.9": "17.9"
+      },
+      "key": "visual studio enterprise 2022",
+      "match": "exact",
+      "note": "Version numbers from https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history.",
+      "product": "visual-studio",
+      "source": "https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements",
+      "version_from": "version"
+    },
+    {
+      "edition_words": [
+        "(arm64)",
+        "(x64)",
+        "(x86)"
+      ],
+      "key": "microsoft .net runtime",
+      "match": "prefix",
+      "product": "dotnet",
+      "source": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet",
+      "version_from": "name"
+    },
+    {
+      "edition_words": [
+        "(arm64)",
+        "(x64)",
+        "(x86)"
+      ],
+      "key": "microsoft .net core runtime",
+      "match": "prefix",
+      "product": "dotnet",
+      "source": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "2.2": "2.2",
+        "3.0": "3.0",
+        "3.1": "3.1"
+      },
+      "edition_words": [
+        "(arm64)",
+        "(x64)",
+        "(x86)"
+      ],
+      "key": "microsoft .net core sdk",
+      "match": "prefix",
+      "note": "SDK 2.1.x is left without a cycle: some 2.1 SDKs ship the .NET Core 2.0 runtime.",
+      "product": "dotnet",
+      "source": "https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet",
+      "version_from": "name"
+    },
+    {
+      "edition_words": [
+        "(arm64)",
+        "(x64)",
+        "(x86)"
+      ],
+      "key": "microsoft asp.net core runtime",
+      "match": "prefix",
+      "product": "dotnet",
+      "source": "https://github.com/microsoft/winget-pkgs/blob/master/manifests/m/Microsoft/DotNet/AspNetCore/8/8.0.8/Microsoft.DotNet.AspNetCore.8.locale.en-US.yaml",
+      "version_from": "name"
+    },
+    {
+      "edition_words": [
+        "(arm64)",
+        "(x64)",
+        "(x86)"
+      ],
+      "key": "microsoft .net windows desktop runtime",
+      "match": "prefix",
+      "product": "dotnet",
+      "source": "https://github.com/microsoft/winget-pkgs/blob/master/manifests/m/Microsoft/DotNet/DesktopRuntime/8/8.0.8/Microsoft.DotNet.DesktopRuntime.8.locale.en-US.yaml",
+      "version_from": "name"
+    },
+    {
+      "kev": {
+        "product": ".NET Framework",
+        "vendor": "Microsoft"
+      },
+      "key": "microsoft .net framework runtime",
+      "match": "prefix",
+      "product": "dotnetfx",
+      "source": "https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "10": "10",
+        "11": "11",
+        "12": "12",
+        "13": "13",
+        "8": "8",
+        "9": "9"
+      },
+      "key": "debian gnu/linux",
+      "match": "exact",
+      "product": "debian",
+      "publisher": [
+        "debian"
+      ],
+      "source": "https://www.freedesktop.org/software/systemd/man/latest/os-release.html",
+      "version_from": "version"
+    },
+    {
+      "edition_words": [
+        "lts"
+      ],
+      "key": "ubuntu server",
+      "match": "prefix",
+      "product": "ubuntu",
+      "publisher": [
+        "canonical"
+      ],
+      "source": "https://ubuntu.com/download/server",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "10.12": "10.12"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos sierra",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.13": "10.13"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos high sierra",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.14": "10.14"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos mojave",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.15": "10.15"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos catalina",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "12": "12"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos monterey",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "13": "13"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos ventura",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "14": "14"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos sonoma",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15": "15"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos sequoia",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "26": "26"
+      },
+      "kev": {
+        "product": "macOS",
+        "vendor": "Apple"
+      },
+      "key": "macos tahoe",
+      "match": "exact",
+      "product": "macos",
+      "publisher": [
+        "apple"
+      ],
+      "source": "https://support.apple.com/en-us/109033",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "12.1": "12.1"
+      },
+      "key": "suse linux enterprise server 12 sp1",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "12.2": "12.2"
+      },
+      "key": "suse linux enterprise server 12 sp2",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "12.3": "12.3"
+      },
+      "key": "suse linux enterprise server 12 sp3",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "12.4": "12.4"
+      },
+      "key": "suse linux enterprise server 12 sp4",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15.1": "15.1"
+      },
+      "key": "suse linux enterprise server 15 sp1",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15.2": "15.2"
+      },
+      "key": "suse linux enterprise server 15 sp2",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15.3": "15.3"
+      },
+      "key": "suse linux enterprise server 15 sp3",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15.4": "15.4"
+      },
+      "key": "suse linux enterprise server 15 sp4",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15.5": "15.5"
+      },
+      "key": "suse linux enterprise server 15 sp5",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15.6": "15.6"
+      },
+      "key": "suse linux enterprise server 15 sp6",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "15.7": "15.7"
+      },
+      "key": "suse linux enterprise server 15 sp7",
+      "match": "exact",
+      "product": "sles",
+      "source": "https://endoflife.date/sles",
+      "version_from": "version"
     }
   ],
   "format": 1

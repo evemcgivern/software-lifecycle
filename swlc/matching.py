@@ -317,7 +317,7 @@ def _curated(name: str, version: str, aliases: list[dict],
     hits: list[tuple[str, dict]] = []
     blocked = set()
     for pos, entry in enumerate(aliases, 1):
-        _check(entry, pos)
+        _check_once(entry, pos)
         key = _norm_key(entry["key"])
         if not _hits(norm, key, entry["match"]):
             continue
@@ -329,6 +329,21 @@ def _curated(name: str, version: str, aliases: list[dict],
     if not hits:
         return False, MatchResult(None, None, NO_ALIAS), blocked
     return True, _decide(norm, version, hits, products), blocked
+
+
+# Alias entries already checked, by id. The entry itself is kept as the
+# value, so an id is never reused by another object while it is listed.
+# Checking every entry on every row cost more than the matching itself.
+_CHECKED: dict = {}
+
+
+def _check_once(entry, pos: int) -> None:
+    if _CHECKED.get(id(entry)) is entry:
+        return
+    _check(entry, pos)
+    if len(_CHECKED) >= 4096:
+        _CHECKED.clear()
+    _CHECKED[id(entry)] = entry
 
 
 @lru_cache(maxsize=4096)
