@@ -21,9 +21,9 @@ Microsoft Windows Server 2003 Standard Edition,,,NONE,https://learn.microsoft.co
 "Windows Server Datacenter, version 1809",10.0.17763,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info,
 Microsoft Windows 10 Enterprise,10.0.19045.7807,windows,10-22h2,https://learn.microsoft.com/en-us/windows/release-health/release-information,
 Windows 10 Pro,10.0.19045,windows,10-22h2,https://learn.microsoft.com/en-us/windows/release-health/release-information,
-Microsoft Windows 10 Enterprise LTSC 2021,10.0.19044,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,
+Microsoft Windows 10 Enterprise LTSC 2021,10.0.19044,windows,10-21h2-e-lts,https://learn.microsoft.com/en-us/windows/release-health/release-information,
 Microsoft Windows 10 Enterprise,10.0.19044,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,
-Microsoft Windows 10 Enterprise LTSC 2019,10.0.17763,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,
+Microsoft Windows 10 Enterprise LTSC 2019,10.0.17763,windows,10-1809-e-lts,https://learn.microsoft.com/en-us/windows/release-health/release-information,
 Microsoft Office,16.0,,NONE,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer,
 Microsoft Office,15.0,office,2013,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer,
 Microsoft Office,14.0,office,2010,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer,
@@ -70,3 +70,172 @@ MySQL Server 8.4,8.4.9,mysql,8.4,https://raw.githubusercontent.com/microsoft/win
 MySQL Server 8.4 Samples and Examples,8.4.9,,NONE,https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/o/Oracle/MySQL/8.4.9/Oracle.MySQL.installer.yaml,Oracle Corporation
 Liberica JDK 17 (64-bit),17.0.9.11,bellsoft-liberica,17,https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/b/BellSoft/LibericaJDK/17/17.0.9.11/BellSoft.LibericaJDK.17.installer.yaml,BellSoft
 Liberica JDK 17 Documentation,17.0.9.11,,NONE,https://raw.githubusercontent.com/microsoft/winget-pkgs/master/manifests/b/BellSoft/LibericaJDK/17/17.0.9.11/BellSoft.LibericaJDK.17.installer.yaml,BellSoft
+Microsoft Windows 11 Pro,10.0.26100.2314,windows,11-24h2-w,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Windows 11 Enterprise,10.0.22631.4460,windows,11-23h2-e,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Microsoft Windows 11 Pro Education,10.0.22621.4317,windows,11-22h2-w,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Windows 11 Pro for Workstations,10.0.26200.6584,windows,11-25h2-w,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Microsoft Windows 11 Education,10.0.22000.2538,windows,11-21h2-e,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Windows 11 Home,10.0.28000.3237,windows,11-26h1-w,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Microsoft Windows 11 Enterprise LTSC 2024,10.0.26100,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Microsoft Windows 11 Pro,10.0.19045,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Microsoft Windows 11 Pro N,10.0.26100.2314,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Microsoft Windows 10 Enterprise 2016 LTSB,10.0.14393.7515,windows,10-1607-e-lts,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 10 Enterprise 2015 LTSB,10.0.10240,windows,10-1507-e-lts,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows 10 Enterprise LTSC 2019,10.0.19044,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Microsoft Windows 10 IoT Enterprise LTSC 2021,10.0.19044,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Microsoft Windows 7 Professional,6.1.7601,windows,7-sp1,https://endoflife.date/windows,Microsoft Corporation
+Windows 8.1 Pro,6.3.9600,windows,8.1,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows 7 Professional,6.1.7600,,NONE,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows 7 Home Premium,6.1.7601,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Windows 8.1 Pro,6.1.7601,,NONE,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows Server 2008 R2 Datacenter,6.1.7601,windows-server,2008-r2-sp1,https://endoflife.date/windows-server,Microsoft Corporation
+Microsoft Windows Server 2008 R2 Standard,6.1.7600,,NONE,https://endoflife.date/windows-server,Microsoft Corporation
+Microsoft Windows Server 2003 Standard Edition,5.2.3790,,NONE,https://endoflife.date/windows-server,Microsoft Corporation
+Microsoft Windows Server 2003 R2 Enterprise Edition,5.2.3790,,NONE,https://endoflife.date/windows-server,Microsoft Corporation
+Windows Server 2022 Standard Evaluation,10.0.20348.1006,windows-server,2022,https://learn.microsoft.com/en-us/windows-server/get-started/upgrade-conversion-options,Microsoft Corporation
+Microsoft Windows Server 2022 Datacenter Evaluation,10.0.17763.6532,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/upgrade-conversion-options,Microsoft Corporation
+Microsoft SQL Server 2008 R2 (64-bit),10.50.6000.34,mssqlserver,10.50-sp3,https://support.microsoft.com/servicing/sql/kb321185-download-and-install-latest-updates,Microsoft Corporation
+Microsoft SQL Server 2008 R2 Express,10.50.4000.0,mssqlserver,10.50-sp2,https://support.microsoft.com/servicing/sql/kb321185-download-and-install-latest-updates,Microsoft Corporation
+Microsoft SQL Server 2008 R2 (64-bit),10.50.1600.1,,NONE,https://support.microsoft.com/servicing/sql/kb321185-download-and-install-latest-updates,Microsoft Corporation
+Microsoft SQL Server 2008 R2 Native Client,10.50.6000.34,,NONE,https://learn.microsoft.com/en-us/sql/relational-databases/native-client/sql-server-native-client,Microsoft Corporation
+SQL Server 2019,15.0.4430.1,mssqlserver,15.0,https://support.microsoft.com/servicing/sql/kb321185-download-and-install-latest-updates,Microsoft
+SQL Server 2019,16.0.1000.6,,NONE,https://support.microsoft.com/servicing/sql/kb321185-download-and-install-latest-updates,Microsoft Corporation
+SQL Server 2019 Express LocalDB,15.0.4153.1,,NONE,https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb,Microsoft Corporation
+Microsoft Exchange Server 2019,15.2.1544.4,msexchange,2019,https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates,Microsoft Corporation
+Microsoft Exchange Server 2019,15.1.2507.6,,NONE,https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates,Microsoft Corporation
+Microsoft Exchange Server 2019,14.3.513.0,,NONE,https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates,Microsoft Corporation
+Microsoft Exchange Server 2019 Management Tools,15.2.1544.4,,NONE,https://learn.microsoft.com/en-us/exchange/plan-and-deploy/post-installation-tasks/install-management-tools,Microsoft Corporation
+Microsoft SharePoint Server 2016,16.0.4351.1000,sharepoint,2016,https://learn.microsoft.com/en-us/officeupdates/sharepoint-updates,Microsoft Corporation
+Microsoft SharePoint Server 2016,15.0.4569.1506,,NONE,https://learn.microsoft.com/en-us/officeupdates/sharepoint-updates,Microsoft Corporation
+Microsoft SharePoint Server 2019 Language Pack - French,16.0.10337.12109,,NONE,https://learn.microsoft.com/en-us/officeupdates/sharepoint-updates,Microsoft Corporation
+Microsoft Office LTSC Professional Plus 2024 - en-us,16.0.17932.20130,office,2024-ltsc,https://learn.microsoft.com/en-us/office/ltsc/2024/overview,Microsoft Corporation
+Microsoft Office LTSC Standard 2024,16.0.17932.20130,office,2024-ltsc,https://learn.microsoft.com/en-us/office/ltsc/2024/overview,Microsoft Corporation
+Microsoft Office LTSC Professional Plus 2024,15.0.4569.1506,,NONE,https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/install-different-office-visio-and-project-versions-on-the-same-computer,Microsoft Corporation
+Microsoft Office LTSC Standard for Mac 2024,16.89,,NONE,https://learn.microsoft.com/en-us/office/ltsc/2024/overview,Microsoft
+Microsoft Office 2011 for Mac,14.7.7,office,2011-for-mac,https://learn.microsoft.com/en-us/security-updates/securitybulletins/2013/ms13-026,Microsoft
+Microsoft Office 2011 for Mac,16.16.27,,NONE,https://learn.microsoft.com/en-us/security-updates/securitybulletins/2013/ms13-026,Microsoft
+Microsoft Visual Studio Enterprise 2019,16.11.33,visual-studio,16.11,https://learn.microsoft.com/en-us/visualstudio/releases/2019/history,Microsoft Corporation
+Visual Studio Community 2022,17.14.0,visual-studio,17.14,https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history,Microsoft Corporation
+Microsoft Visual Studio Community 2022,16.11.33,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history,Microsoft Corporation
+Visual Studio Build Tools 2019,16.11.33,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Code,1.95.3,,NONE,https://code.visualstudio.com/updates/v1_95,Microsoft Corporation
+Microsoft .NET Runtime - 8.0.7 (x64),8.0.7.33814,dotnet,8,https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet,Microsoft Corporation
+Microsoft .NET Core Runtime - 3.1.32 (x64),3.1.32.31915,dotnet,3.1,https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet,Microsoft Corporation
+Microsoft .NET Core SDK 3.1.426 (x64),3.1.426.16244,dotnet,3.1,https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet,Microsoft Corporation
+Microsoft ASP.NET Core Runtime 8.0,8.0.11,dotnet,8,https://dotnet.microsoft.com/en-us/download/dotnet/8.0,Microsoft Corporation
+Microsoft .NET Windows Desktop Runtime 8.0,8.0.10,dotnet,8,https://dotnet.microsoft.com/en-us/download/dotnet/8.0,Microsoft Corporation
+Microsoft .NET Runtime - 6.0.25 (x64),8.0.7.33814,,NONE,https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet,Microsoft Corporation
+Microsoft .NET Runtime - 8.0.7 (x64) Language Pack,8.0.7.33814,,NONE,https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet,Microsoft Corporation
+Microsoft .NET Core Runtime - 3.1.32 (x64),6.0.25.33020,,NONE,https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet,Microsoft Corporation
+Microsoft ASP.NET Core Runtime 8.0,6.0.25,,NONE,https://dotnet.microsoft.com/en-us/download/dotnet/8.0,Microsoft Corporation
+Microsoft .NET Windows Desktop Runtime 8.0 Language Pack,8.0.10,,NONE,https://dotnet.microsoft.com/en-us/download/dotnet/8.0,Microsoft Corporation
+Microsoft .NET Core SDK 3.1.426 (x64),6.0.425,,NONE,https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/DotNet,Microsoft Corporation
+Microsoft .NET Framework Runtime 4.8.1,4.8.1,dotnetfx,4.8.1,https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481,Microsoft Corporation
+Microsoft .NET Framework Runtime 4.8.1 Language Pack (DEU),4.8.1,,NONE,https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481,Microsoft Corporation
+Debian GNU/Linux,11.11,debian,11,https://www.freedesktop.org/software/systemd/man/latest/os-release.html,Debian
+Debian GNU/Linux,banana,,NONE,https://www.freedesktop.org/software/systemd/man/latest/os-release.html,Debian
+Debian GNU/Linux,11.11,,NONE,https://www.freedesktop.org/software/systemd/man/latest/os-release.html,
+Ubuntu Server 24.04.1 LTS,24.04.1,ubuntu,24.04,https://ubuntu.com/download/server,Canonical Ltd.
+Ubuntu Server 22.04.4 LTS,24.04.1,,NONE,https://ubuntu.com/download/server,Canonical Ltd.
+Ubuntu Server 22.04.4 LTS,22.04.4,,NONE,https://ubuntu.com/download/server,
+macOS Sonoma,14.7.1,macos,14,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Tahoe,26.0,macos,26,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Sonoma,19.6,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Sonoma,14.7.1,,NONE,https://support.apple.com/en-us/109033,
+Install macOS Sonoma,19.6.03,,NONE,https://support.apple.com/en-us/102662,Apple Inc.
+SUSE Linux Enterprise Server 15 SP5,15.5,sles,15.5,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 12 SP4,12.4,sles,12.4,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP5,15.4,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15,15.5,,NONE,https://endoflife.date/sles,SUSE
+Microsoft Windows 11 Home,10.0.22631.4460,windows,11-23h2-w,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Microsoft Windows 11 Home,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Windows 11 Home,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Windows 11 Pro,10.0.22621.4317,windows,11-22h2-w,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Windows 11 Pro,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Microsoft Windows 11 Pro Education,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Windows 11 Pro Education,10.0.26100.2314,windows,11-24h2-w,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Windows 11 Pro Education,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Microsoft Windows 11 Pro for Workstations,10.0.26300.9725,windows,11-26h2-w,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Microsoft Windows 11 Pro for Workstations,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Windows 11 Pro for Workstations,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Microsoft Windows 11 Education,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Windows 11 Education,10.0.26200.6584,windows,11-25h2-e,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Windows 11 Education,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys,Microsoft Corporation
+Microsoft Windows 11 Enterprise,10.0.28000.3237,windows,11-26h1-e,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Microsoft Windows 11 Enterprise,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Windows 11 Enterprise,10.0.19045.5131,,NONE,https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information,Microsoft Corporation
+Microsoft Windows 10 Enterprise 2015 LTSB,10.0.10240.20000,windows,10-1507-e-lts,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows 10 Enterprise 2015 LTSB,10.0.14393.7515,,NONE,https://endoflife.date/windows,Microsoft Corporation
+Windows 10 Enterprise 2015 LTSB,10.0.14393.7515,,NONE,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows 10 Enterprise 2016 LTSB,10.0.10240,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 10 Enterprise 2016 LTSB,10.0.14393,windows,10-1607-e-lts,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 10 Enterprise 2016 LTSB,10.0.10240,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 10 Enterprise LTSC 2019,10.0.17763.6532,windows,10-1809-e-lts,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 10 Enterprise LTSC 2019,10.0.19044.5131,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Microsoft Windows 10 Enterprise LTSC 2021,10.0.17763.6532,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 10 Enterprise LTSC 2021,10.0.19044.5131,windows,10-21h2-e-lts,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 10 Enterprise LTSC 2021,10.0.17763.6532,,NONE,https://learn.microsoft.com/en-us/windows/release-health/release-information,Microsoft Corporation
+Windows 7 Enterprise,6.1.7601,windows,7-sp1,https://endoflife.date/windows,Microsoft Corporation
+Windows 7 Enterprise,6.1.7600,,NONE,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows 8.1 Enterprise,6.3.9600,windows,8.1,https://endoflife.date/windows,Microsoft Corporation
+Microsoft Windows 8.1 Enterprise,6.1.7601,,NONE,https://endoflife.date/windows,Microsoft Corporation
+Windows Server 2003 Enterprise Edition,5.2.3790,,NONE,https://endoflife.date/windows-server,Microsoft Corporation
+Windows Server 2008 R2 Enterprise,6.1.7601,windows-server,2008-r2-sp1,https://endoflife.date/windows-server,Microsoft Corporation
+Windows Server 2008 R2 Enterprise,6.1.7600,,NONE,https://endoflife.date/windows-server,Microsoft Corporation
+Microsoft Visual Studio Community 2019,16.9.0,visual-studio,16.9,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Community 2019,17.8.3,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Community 2022,17.9.0,visual-studio,17.9,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Visual Studio Community 2019,16.9.0,visual-studio,16.9,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Visual Studio Community 2019,17.8.3,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Visual Studio Community 2022,17.9.0,visual-studio,17.9,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Visual Studio Community 2022,16.11.33,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Professional 2019,16.0.0,visual-studio,16.0,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Professional 2019,17.8.3,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Professional 2022,17.12.0,visual-studio,17.12,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Professional 2022,16.11.33,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Visual Studio Professional 2019,16.0.0,visual-studio,16.0,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Visual Studio Professional 2019,17.8.3,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Visual Studio Professional 2022,17.12.0,visual-studio,17.12,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Visual Studio Professional 2022,16.11.33,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Enterprise 2019,16.10.0,visual-studio,16.10,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Enterprise 2019,17.8.3,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Enterprise 2022,17.10.0,visual-studio,17.10,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Microsoft Visual Studio Enterprise 2022,16.11.33,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Visual Studio Enterprise 2019,16.10.0,visual-studio,16.10,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Visual Studio Enterprise 2019,17.8.3,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements,Microsoft Corporation
+Visual Studio Enterprise 2022,17.10.0,visual-studio,17.10,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+Visual Studio Enterprise 2022,16.11.33,,NONE,https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements,Microsoft Corporation
+macOS Sierra,10.12.6,macos,10.12,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Sierra,14.7.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+macOS High Sierra,10.13.6,macos,10.13,https://support.apple.com/en-us/109033,Apple Inc.
+macOS High Sierra,14.7.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Mojave,10.14.6,macos,10.14,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Mojave,14.7.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Catalina,10.15.6,macos,10.15,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Catalina,14.7.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Monterey,12.6,macos,12,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Monterey,14.7.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Ventura,13.6,macos,13,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Ventura,14.7.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Sequoia,15.6,macos,15,https://support.apple.com/en-us/109033,Apple Inc.
+macOS Sequoia,14.7.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+SUSE Linux Enterprise Server 12 SP1,12.1,sles,12.1,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 12 SP1,12.2,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 12 SP2,12.2,sles,12.2,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 12 SP2,12.1,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 12 SP3,12.3,sles,12.3,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 12 SP3,12.2,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP1,15.1,sles,15.1,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP1,15.2,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP2,15.2,sles,15.2,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP2,15.1,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP3,15.3,sles,15.3,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP3,15.2,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP4,15.4,sles,15.4,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP4,15.3,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP6,15.6,sles,15.6,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP6,15.5,,NONE,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP7,15.7,sles,15.7,https://endoflife.date/sles,SUSE
+SUSE Linux Enterprise Server 15 SP7,15.6,,NONE,https://endoflife.date/sles,SUSE
+macOS Tahoe,15.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
+SUSE Linux Enterprise Server 12 SP4,12.3,,NONE,https://endoflife.date/sles,SUSE

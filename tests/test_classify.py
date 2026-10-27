@@ -717,7 +717,9 @@ class WrongParentTests(unittest.TestCase):
         self.assertEqual(win["inherited_from"], ident(*WIN10))
 
     def test_unmatched_lookalike_os_is_a_second_fit(self):
-        win11 = ("Microsoft Windows 11 Enterprise", MS, "10.0.22631")
+        # An OS-looking name no alias matches. Plain "Windows 11
+        # Enterprise" matches since issue #17; the LTSC 2024 name does not.
+        win11 = ("Microsoft Windows 11 Enterprise LTSC 2024", MS, "10.0.26100")
         _r, items = check([WIN10, win11, KB], bundled())
         self.assertIsNone(items[(win11[0], win11[2])]["product"])
         got = items[(KB[0], "1")]

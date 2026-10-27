@@ -191,21 +191,22 @@ artifact attestation, check it online before you use the release:
 - Coverage is partial. In the data release bundled when this was written
   (the weekly job can change the counts), the tool can match 452 of the 485
   products in `data/eol/`. Most are matched by the product's title from endoflife.date
-  (`data/products.json`). `data/aliases.json` adds 19 aliases for
-  11 products (mssqlserver, windows-server, windows, office,
+  (`data/products.json`). `data/aliases.json` adds 94 aliases for
+  19 products (mssqlserver, windows-server, windows, office,
   python, nodejs, ubuntu, eclipse-temurin, windows-powershell, mysql,
-  bellsoft-liberica). `data/curation.json` adds hand-kept vendor names for
+  bellsoft-liberica, msexchange, sharepoint, visual-studio, dotnet,
+  dotnetfx, debian, macos, sles). `data/curation.json` adds hand-kept vendor names for
   72 products and a short list of one-word product names. A further list
   of coined one-word titles matches a row with no publisher when the name
   carries a version that decides the cycle (`Kibana 8.15.3`). The other 33
   products are devices, products left out on purpose, or one-word titles
   with no vendor to check, and never match.
 - That is a count of products, not a hit rate. On the project's own
-  benchmark (the 1,712 hand-written and catalog rows in
-  `tests/benchmark/gold.csv`), 790 rows should match a product. 482 of them
-  are scored correct: 382 with the right cycle, and 100 rightly with the
-  product and no cycle. Of the 676 rows that need a cycle, 382 get one. The other 922 rows are
-  traps that should stay unmatched, and all 922 do. It is a benchmark, not a
+  benchmark (the 1,768 hand-written and catalog rows in
+  `tests/benchmark/gold.csv`), 827 rows should match a product. 549 of them
+  are scored correct: 427 with the right cycle, and 122 rightly with the
+  product and no cycle. Of the 691 rows that need a cycle, 427 get one. The other 941 rows are
+  traps that should stay unmatched, and all 941 do. It is a benchmark, not a
   real estate. The rate on a real estate is unknown.
 - No wrong lifecycle claim was found on the benchmark. That is not proof for
   other inventories: unknown in general.
@@ -230,11 +231,13 @@ artifact attestation, check it online before you use the release:
   the tool compares the publisher and the full inventory name (version
   included) with KEV, exactly. So `kev: false` means "no match under those
   rules". It does not mean the software is known safe.
-- `windows-server` and the Windows 10 client aliases use the broad
+- `windows-server` and the Windows client aliases use the broad
   Microsoft and Windows KEV pair, because CISA files Windows flaws under
   the product Windows. Every Windows entry matches.
 - Windows 10 names with extra words, such as "Windows 10 Enterprise 22H2",
-  land on NO_ALIAS. Windows 11 has no alias and is unmatched.
+  land on NO_ALIAS. Windows 11 matches by edition name (Home, Pro, Pro
+  Education, Pro for Workstations, Education, Enterprise); Windows 11
+  LTSC 2024 and IoT names stay unmatched.
 - The profiles are Unverified until run on a real export.
 - Data is a snapshot and can be out of date.
 - CI runs the tests on Python 3.9 to 3.13. The tool was tested on macOS

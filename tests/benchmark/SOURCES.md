@@ -73,6 +73,64 @@
 - https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno (the VS Code Deno extension; 1.x to 3.x releases)
 - https://pypi.org/project/podman/5.4.0/ (the PyPI podman package, Python bindings for the Podman API)
 - https://github.com/microsoft/winget-pkgs/blob/master/manifests/r/RedHat/Podman/5.8.3/RedHat.Podman.locale.en-US.yaml (winget gives Podman's publisher as Red Hat)
+- Issue #17 rows (Microsoft edition names and OS release names; names and
+  build numbers only, no dates), each page fetched on 2026-10-27:
+  - https://endoflife.date/windows (Windows 7 SP1 6.1.7601, 8.1 6.3.9600,
+    10 LTSB 2015 10.0.10240, the 10 21H2 IoT LTS row; (W) and (E) edition
+    groups)
+  - https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys
+    (Windows 11, 10, 8.1, 7 and Server 2008 R2 edition names, IoT
+    Enterprise LTSC 2021)
+  - https://learn.microsoft.com/en-us/windows-server/get-started/upgrade-conversion-options
+    (Windows Server evaluation editions)
+  - https://learn.microsoft.com/en-us/security-updates/securitybulletins/2006/ms06-015
+    (Windows Server 2003 and 2003 R2 edition names)
+  - https://www.microsoft.com/en-us/software-download/windows11 (Windows 11
+    Installation Assistant)
+  - https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus
+    (WSUS is a server role)
+  - https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb
+    (LocalDB is a feature of SQL Server Express)
+  - https://learn.microsoft.com/en-us/sql/reporting-services/install-windows/install-reporting-services
+    (Reporting Services has its own installer)
+  - https://learn.microsoft.com/en-us/sql/relational-databases/native-client/sql-server-native-client
+    (Native Client is the ODBC and OLE DB drivers)
+  - https://learn.microsoft.com/en-us/exchange/plan-and-deploy/post-installation-tasks/install-management-tools
+    (Exchange management tools install on other computers)
+  - https://learn.microsoft.com/en-us/officeupdates/sharepoint-updates
+    (SharePoint 2013 builds 15.0; 2016, 2019, Subscription Edition 16.0)
+  - https://learn.microsoft.com/en-us/office/ltsc/2024/overview (Office LTSC
+    Professional Plus 2024, Office LTSC Standard 2024, Office LTSC Standard
+    for Mac 2024; major version 16.0)
+  - https://learn.microsoft.com/en-us/security-updates/securitybulletins/2013/ms13-026
+    (Office for Mac 2011 updates are 14.x)
+  - https://code.visualstudio.com/updates/v1_95 (Visual Studio Code 1.95.3)
+  - https://learn.microsoft.com/en-us/visualstudio/releases/2019/system-requirements
+    (Visual Studio Community, Professional and Enterprise 2019; Build Tools
+    2019)
+  - https://learn.microsoft.com/en-us/visualstudio/releases/2022/system-requirements
+    (Visual Studio Community, Professional and Enterprise 2022)
+  - https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history
+    (Visual Studio 2022 is 17.0 to 17.14)
+  - https://learn.microsoft.com/en-us/previous-versions/visualstudio/mac/releasenotes/vs2019-mac-relnotes
+    (Visual Studio 2019 for Mac 8.10.25)
+  - https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481
+    (.NET Framework 4.8.1 Runtime)
+  - https://www.freedesktop.org/software/systemd/man/latest/os-release.html
+    (os-release NAME "Debian GNU/Linux")
+  - https://support.apple.com/en-us/109033 (macOS names and numbers,
+    Sierra 10.12 to Tahoe 26)
+  - https://support.apple.com/en-us/102662 (the macOS installer is named
+    "Install" plus the version name)
+  - https://ubuntu.com/download/server (Ubuntu Server naming, "24.04.5
+    LTS")
+  - https://github.com/dotnet/core/blob/main/release-notes/2.0/releases.json
+    (.NET Core SDK 2.1.4, 2.1.100 and 2.1.202 belong to the 2.0 release line)
+  - https://packages.debian.org/bullseye/linux-image-amd64,
+    https://packages.debian.org/bookworm/linux-image-amd64 and
+    https://packages.debian.org/trixie/linux-image-amd64 (Debian kernel
+    versions 5.10, 6.1 and 6.12)
+  - https://endoflife.date/sles (SLES service packs: 15 SP5 is 15.5)
 - endoflife.date product pages: https://endoflife.date/android,
   https://endoflife.date/centos-stream, https://endoflife.date/cockroachdb,
   https://endoflife.date/commvault, https://endoflife.date/django,

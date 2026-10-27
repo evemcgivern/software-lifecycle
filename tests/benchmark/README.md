@@ -154,10 +154,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 450 | 32 | 874 | 1356 |
+| hand | 465 | 54 | 893 | 1412 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1506 | 305 | 951 | 2762 |
+| all | 1521 | 327 | 970 | 2818 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -166,7 +166,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 164 rows. Do not use held-out rows when writing
+are always `0`. That is 167 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks
@@ -306,5 +306,17 @@ See the numbers with `SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tes
   near-duplicate cannot sit in both files.
 - Rows added by hand with mixed-granularity cycles (Jenkins, Tomcat, Docker
   Engine and others) have notes that start with "hand-added".
+- Issue #17 added 56 hand rows for the Microsoft edition and OS
+  release-name aliases (notes start "hand-added (issue #17)"): 46 traps
+  (look-alikes, tools, language packs, Mac editions, a name and a build
+  that disagree, a build no cycle claims, kernel versions in an OS row,
+  .NET Core SDK 2.1 builds that ship the 2.0 runtime), 9 positives and 1
+  probe. Every
+  row with a public page cites it; the language-pack rows use made-up
+  names. Three are held out. The hand and
+  catalog floor rose from 482 to 549 and the classification floor from
+  294 to 297 in the same change. Windows 11 Enterprise LTSC 2024 with build
+  26100.2314 is in gold as a row that must stay unmatched by the
+  Enterprise aliases; the build 26100.1742 row stays in `unsure.csv`.
 
 Sources are in `SOURCES.md`.

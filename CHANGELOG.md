@@ -12,6 +12,33 @@
   `--counts-only` prints `ambiguous_review N`. They stay in the unmatched
   list, never feed `--fail-on`, and claim no product, cycle or date.
   Matching results are unchanged; `schema_version` stays 1.
+- Microsoft edition names and OS release names (issue #17): 75 new
+  aliases in `aliases.json` (94 in all, for 19 products). Windows 11 by
+  edition (Home, Pro, Pro Education and Pro for Workstations map to the
+  `-w` cycles, Education and Enterprise to the `-e` cycles), Windows 10
+  Enterprise LTSB 2015 and 2016 and LTSC 2019 and 2021, Windows 7 and
+  8.1, Windows Server 2003 and 2008 R2, SQL Server 2008 R2 service packs
+  and "SQL Server <year>", Exchange Server, SharePoint Server, Office
+  LTSC 2024, Office 2011 for Mac, Visual Studio 2019 and 2022 editions,
+  named .NET runtime, SDK and ASP.NET Core forms, `.NET Framework
+  Runtime` names, `Debian GNU/Linux`, Ubuntu Server, macOS release names
+  and SUSE Linux Enterprise Server service packs. The two Windows Server
+  aliases accept the edition word `evaluation`. Where the name and the
+  version column both carry a version or a build the alias's map lists,
+  they must agree, or the row gets the product with no cycle; a build
+  the map does not list is ignored. Exchange,
+  SharePoint, .NET Framework and macOS matches carry the CISA KEV vendor
+  and product pair the catalog uses for them. Families with no source
+  for the name, or a name that cannot pick a cycle, stay unmatched; see
+  "Known limits of matching" in `docs/usage.md`. The data format stays 2
+  and `schema_version` stays 1.
+- Matching checks each alias entry once instead of on every row; results
+  are unchanged. With 94 aliases the old check made matching about four
+  times slower.
+- The benchmark gains 56 hand rows for these aliases (traps, conflicts
+  and a few positives). The hand and catalog floor rises from 482 to
+  549 and the classification floor from 294 to 297. Two corpus rows for
+  Windows 10 Enterprise LTSC 2019 and 2021 now expect the LTSC cycles.
 
 ## 0.3.0 - 2026-10-26
 
