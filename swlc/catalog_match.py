@@ -67,18 +67,22 @@ Refusals for review (lookup_noted only; lookup and every match result are
 unchanged): when no product matched, the row may carry one code saying it
 was refused on purpose, for a person to review.
 
-  title_needs_publisher  level 1 hit a title, and every product with that
-                         title was refused by the one-word vendor check
-                         alone (no publisher, or one that does not confirm)
-                         and is not named by any exclusion
+  title_needs_publisher  level 1 hit a title, the publisher is empty, and
+                         every product with that title was refused by the
+                         one-word vendor check alone and is not named by
+                         any exclusion (swlc/matching.py drops the code
+                         when the version column is not empty and decides
+                         no single cycle of those products)
   title_not_on_list      level 2 split a version off the whole or cleaned
                          name (step d on a or b), the publisher is empty,
                          the title is a one-word product that is not in
                          VERSION_NAME_TITLES and not named by any
                          exclusion, and the version would decide one cycle
 
-No code when any exclusion touched the row, or for generated_off, device,
-version or cycle refusals, or a name with no title hit. Level 1 returns
+No code when any exclusion touched the row, when a publisher is given (a
+publisher that does not confirm the product is often another product), or
+for generated_off, device, version or cycle refusals, or a name with no
+title hit. Level 1 returns
 before level 2 runs, so a row gets at most one code; if both ever applied,
 title_needs_publisher (the earlier step) would win.
 
@@ -375,7 +379,7 @@ class CatalogIndex:
             if pids:
                 ok = tuple(p for p in pids if allowed(p, False))
                 note = None
-                if want_note and not ok and not blocked and all(
+                if want_note and not ok and not pub and not blocked and all(
                         refused(p, False) == _REFUSED_VENDOR
                         and p not in self.excluded for p in pids):
                     note = (TITLE_NEEDS_PUBLISHER, pids)

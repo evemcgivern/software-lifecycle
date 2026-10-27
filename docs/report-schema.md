@@ -191,9 +191,10 @@ Set only on an unmatched item with no product, whose class is `unknown`
 or `governable`. It changes nothing else: the item keeps `state`
 `unmatched`, its `reason` (`NO_ALIAS`), `product` `null` and no date. It
 never puts the item on another list, and `--fail-on` never reads it.
-Unmatched on purpose, not a finding. A person adds a publisher to the
-inventory or asks the maintainer for a curated alias; the tool never
-promotes such a row to a match.
+Unmatched on purpose, not a finding. To settle one, a person adds a
+publisher that names the vendor, asks the maintainer for a curated alias,
+or records that it is a different product; the tool never promotes such
+a row to a match.
 
 | Key | Meaning |
 |---|---|
@@ -204,12 +205,14 @@ promotes such a row to a match.
 
 | Code | When |
 |---|---|
-| `title_needs_publisher` | The cleaned name is exactly a one-word product title, and the match was refused only because no publisher confirms the product (the publisher is empty, or names no confirming vendor). Reason: "The name is a product title, but no publisher confirms the product." |
+| `title_needs_publisher` | The cleaned name is exactly a one-word product title, the publisher is empty, and the match was refused only because no publisher confirms the product. When the version column is not empty, it must decide one cycle of that product; an empty version keeps the code. Reason: "The name is a product title, but the row has no publisher to confirm the product." |
 | `title_not_on_list` | The name is a one-word product title followed by a version, the publisher is empty, the version would decide one cycle, and the product is not on the reviewed list for rows with no publisher (the version-in-name rule in "How names are matched", `docs/usage.md`). Reason: "The name is a product title and a version, but that title is not on the reviewed list for rows with no publisher." |
 
-No code is set for a row refused by a curated exclusion (or for any
-product an exclusion names), a device or `generated_off` product, a
-version or cycle that does not fit, a name that hits no product title, or
+No code is set for a row with a publisher (a publisher that does not
+confirm the product is often a different product, such as an editor
+extension or a mobile app), a row refused by a curated exclusion (or for
+any product an exclusion names), a device or `generated_off` product, a
+version that is given but decides no single cycle, a name that hits no product title, or
 a row a curated alias decided. A row gets at most one code: the
 title check runs before the version split, so if both could apply,
 `title_needs_publisher` is used.

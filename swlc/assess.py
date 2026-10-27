@@ -46,8 +46,8 @@ PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 # to review. Fixed text, never row data. Not a state, list or reason code.
 AMBIGUITY_REASONS = {
     TITLE_NEEDS_PUBLISHER: (
-        "The name is a product title, but no publisher confirms the "
-        "product."),
+        "The name is a product title, but the row has no publisher to "
+        "confirm the product."),
     TITLE_NOT_ON_LIST: (
         "The name is a product title and a version, but that title is not "
         "on the reviewed list for rows with no publisher."),

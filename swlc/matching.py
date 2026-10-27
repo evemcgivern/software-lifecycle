@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from functools import lru_cache
 
-from .catalog_match import _has_run, tokens
+from .catalog_match import TITLE_NEEDS_PUBLISHER, _has_run, tokens
 from .errors import DataError
 from .normalize import best_cycle, normalize_name, split_version
 
@@ -156,7 +156,11 @@ def match_noted(name: str, version: str, aliases: list[dict],
     TITLE_NOT_ON_LIST, see swlc/catalog_match.py) is set only when no
     curated alias hit, generated matching found no product, and the
     catalog lookup refused the row on purpose. A product whose curated
-    alias was blocked by its publisher guard gives no code."""
+    alias was blocked by its publisher guard gives no code. Neither does
+    TITLE_NEEDS_PUBLISHER when the version column is not empty and decides
+    no single cycle of the refused products ("99.9", "banana"): that is a
+    version mismatch, not a missing publisher. An empty version keeps the
+    code."""
     return _match(name, version, aliases, products, catalog_index,
                   publisher, True)
 
@@ -201,6 +205,11 @@ def _generated(name: str, version: str, publisher: str, index,
         code = None
         if note is not None and not blocked.intersection(note[1]):
             code = note[0]
+            if code == TITLE_NEEDS_PUBLISHER and (version or "").strip() \
+                    and not any(_generated_cycle(p, None, version, index,
+                                                 products)[0] is not None
+                                for p in note[1]):
+                code = None
         return MatchResult(None, None, NO_ALIAS), code
     if len(pids) > 1:
         return MatchResult(None, None, AMBIGUOUS), None

@@ -96,9 +96,10 @@ REVIEW_POINTER = ("Names to review: %d of these were left unmatched on "
                   "purpose; see \"%s\" below.")
 REVIEW_LEAD = ("Unmatched on purpose, not a finding. Each name looks like a "
                "catalog product, but there is not enough evidence to match "
-               "it, so no product, cycle, date or state is claimed. A "
-               "person adds a publisher to the inventory or asks for a "
-               "curated alias. These items are also counted under "
+               "it, so no product, cycle, date or state is claimed. To "
+               "settle one, add a publisher that names the vendor, ask for "
+               "a curated alias, or record that it is a different product. "
+               "These items are also counted under "
                "\"Couldn't match\".")
 CSV_COLUMNS = (
     "id", "name", "version", "publisher", "owners", "rows", "state",
@@ -336,7 +337,9 @@ def _item_block(it: dict, eol_snap: str, by_id: dict) -> list:
 def _review_block(it: dict) -> list:
     """An ambiguous item: name, version, publisher and the fixed reason.
     No product, cycle, date or state."""
-    head = "- **%s** %s" % (_name(it["name"]), _disp(it["version"]))
+    head = "- **%s**" % _name(it["name"])
+    if _disp(it["version"]):
+        head += " " + _disp(it["version"])
     if it["publisher"]:
         head += ", publisher %s" % _disp(it["publisher"])
     return [head + " (id `%s`)" % it["id"],

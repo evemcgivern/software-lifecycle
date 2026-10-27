@@ -52,12 +52,26 @@ class TitleNeedsPublisherTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertEqual(noted(name, version), TITLE_NEEDS_PUBLISHER)
 
-    def test_publisher_that_does_not_confirm(self):
-        self.assertEqual(noted("Lexicon", "1.0", "Acme Corp"),
-                         TITLE_NEEDS_PUBLISHER)
+    def test_publisher_that_does_not_confirm_has_no_code(self):
+        # A publisher that does not confirm the product is often another
+        # product: no code, so no one is invited to add an alias for it.
+        self.assertIsNone(noted("Lexicon", "1.0", "Acme Corp"))
         # "Promo Group" is not exactly the one-word title vendor "promo".
-        self.assertEqual(noted("Promo", "3.5", "Promo Group"),
-                         TITLE_NEEDS_PUBLISHER)
+        self.assertIsNone(noted("Promo", "3.5", "Promo Group"))
+        # Same answer whether the version is in the name or the column.
+        self.assertIsNone(noted("Lexicon 1.0", "", "Acme Corp"))
+
+    def test_version_that_fits_no_cycle_has_no_code(self):
+        for version in ("99.9", "banana", "9.9.9"):
+            with self.subTest(version=version):
+                self.assertIsNone(noted("Plainword", version))
+                self.assertIsNone(noted("Lexicon", version))
+
+    def test_empty_version_keeps_the_code(self):
+        for version in ("", "  "):
+            with self.subTest(version=version):
+                self.assertEqual(noted("Plainword", version),
+                                 TITLE_NEEDS_PUBLISHER)
 
     def test_matched_rows_have_no_code(self):
         for name, version, pub in (("Listed", "4", ""),
@@ -199,7 +213,9 @@ ROWS = {
     ("Tabby Tablet", "8", "", ""): None,                # device
     ("Lexicon 9.9", "", "", ""): None,                  # no such cycle
     ("Foo Tool", "2.1.4", "", ""): None,                # matched, past EOL
-    ("Plainword", "1", "Acme", "Foo Tool"): None,       # a bundle part
+    ("Plainword", "1.0", "", "Foo Tool"): None,         # a bundle part
+    ("Lexicon", "1.0", "Acme", ""): None,               # has a publisher
+    ("Lexicon", "99.9", "", ""): None,                  # version fits none
     ("Nothing", "1", "", ""): None,                     # no title hit
 }
 
@@ -250,12 +266,12 @@ class ReportKeyTests(unittest.TestCase):
                                            "reason": AMBIGUITY_REASONS[code]})
 
     def test_part_is_never_ambiguous(self):
-        part = self.items[("Plainword", "1", "Acme")]
+        part = self.items[("Plainword", "1.0", "")]
         self.assertEqual(part["classification"], "bundle_member")
         self.assertIsNone(part["ambiguity"])
         # The same row with no parent is reviewed.
-        alone = by_row(run_rows([("Plainword", "1", "Acme", "")]))
-        self.assertEqual(alone[("Plainword", "1", "Acme")]["ambiguity"][
+        alone = by_row(run_rows([("Plainword", "1.0", "", "")]))
+        self.assertEqual(alone[("Plainword", "1.0", "")]["ambiguity"][
             "code"], TITLE_NEEDS_PUBLISHER)
 
     def test_ambiguous_items_claim_nothing(self):
@@ -269,6 +285,22 @@ class ReportKeyTests(unittest.TestCase):
                         "eol_endoflife", "support", "extended_support",
                         "state_endoflife", "kev"):
                 self.assertIsNone(it[key], key)
+
+    def test_each_code_string_has_its_own_reason(self):
+        # Pinned literals: swapping the code strings or the texts fails.
+        self.assertEqual(TITLE_NEEDS_PUBLISHER, "title_needs_publisher")
+        self.assertEqual(TITLE_NOT_ON_LIST, "title_not_on_list")
+        self.assertEqual(AMBIGUITY_REASONS, {
+            "title_needs_publisher": (
+                "The name is a product title, but the row has no publisher "
+                "to confirm the product."),
+            "title_not_on_list": (
+                "The name is a product title and a version, but that title "
+                "is not on the reviewed list for rows with no publisher."),
+        })
+        for text in AMBIGUITY_REASONS.values():
+            for claim in ("cycle", "date", "end of life", "supported"):
+                self.assertNotIn(claim, text.lower())
 
     def test_reason_is_fixed_text(self):
         for code, text in AMBIGUITY_REASONS.items():
@@ -414,6 +446,23 @@ class ViewTests(unittest.TestCase):
                       "Product matched", "past end of life", "redmine/",
                       "Classification:", VIEW_DATE):
             self.assertNotIn(claim, sec)
+
+    def test_markdown_lead_gives_the_three_ways_to_settle(self):
+        sec = self.section(self.md, "Names to review")
+        self.assertIn("add a publisher that names the vendor, ask for a "
+                      "curated alias, or record that it is a different "
+                      "product", sec)
+
+    def test_review_line_has_no_double_space_without_a_version(self):
+        from swlc.report import _review_block
+        it = {"id": "0123456789ab", "name": "Redmine", "version": "",
+              "publisher": "", "ambiguity": {"code": TITLE_NEEDS_PUBLISHER,
+                                             "reason": "r"}}
+        self.assertEqual(_review_block(it)[0],
+                         "- **Redmine** (id `0123456789ab`)")
+        it["version"] = "5.1.2"
+        self.assertEqual(_review_block(it)[0],
+                         "- **Redmine** 5.1.2 (id `0123456789ab`)")
 
     def test_markdown_pointer_and_summary_count(self):
         unmatched = self.section(self.md, "Couldn't match")

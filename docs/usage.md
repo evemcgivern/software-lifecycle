@@ -218,6 +218,10 @@ so; it does not hide them.
 - A version that ends in a bare letter splits with the letter
   (`Firefox 129.0b` is read as Firefox 129), because OpenSSL-style
   versions such as `1.1.1b` use the same shape.
+- A product named by an exclusion never gets a "Names to review" code,
+  even on a row the exclusion does not block. Go is one: the Google Go
+  exclusion names it, so `Go 1.22.0` with no publisher is unmatched and
+  not listed for review.
 - Titles on the one-word allowlist (GStreamer, Liquibase and others) match
   with any publisher or none, so a same-named package such as the npm
   `liquibase` wrapper is read as the product.
@@ -238,19 +242,24 @@ is `ambiguity` and the count is `counts.ambiguous_review`; see
 There are two reasons:
 
 - `title_needs_publisher`: the name is a one-word product title (`Redmine`
-  with version `5.1.2`), and no publisher confirms the product: the
-  publisher is empty, or names no vendor of that product.
+  with version `5.1.2`) and the publisher is empty. When a version is
+  given it must fit one cycle (`Redmine` with `99.9` gets no code); an
+  empty version keeps the code.
 - `title_not_on_list`: the name is a one-word title and a version
   (`Caddy 2.7.6`, `Bun 1.1.0`), the publisher is empty, the version
   fits one cycle, and the title is not on the version-in-name list (a
   short title, an ordinary word, a title another product, package or
   extension shares, or a product not yet reviewed).
 
-To settle one, add the publisher to the inventory row, or ask the
-maintainer for a curated alias or a publisher alias. The tool never
-promotes such a row to a match. A row refused by an exclusion (Moodle,
+To settle one, add a publisher that names the vendor, ask the maintainer
+for a curated alias, or record that it is a different product. The tool
+never promotes such a row to a match. A row with a publisher is not
+listed here: a publisher that does not confirm the product is often a
+different product (an editor extension, a mobile app), and an alias for
+it would invite a wrong match. A row refused by an exclusion (Moodle,
 Mattermost, Nextcloud), a device or `generated_off` product, a version
-that fits no cycle, and a name that hits no title are not listed here.
+that is given but fits no cycle, and a name that hits no title are not
+listed here either.
 
 ## How KEV is checked
 
