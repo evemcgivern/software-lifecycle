@@ -114,6 +114,16 @@ class AnswerKeyTests(DemoBase):
                          self.key["counts"]["inherited_attention"])
         self.assertGreater(self.key["counts"]["inherited_attention"], 0)
 
+    def test_names_to_review_case(self):
+        ids = [gid for gid, c in self.key["cases"].items()
+               if c["case"] == "names_to_review"]
+        self.assertEqual(len(ids), 1)
+        flagged = [it["id"] for it in self.report["items"]
+                   if it["ambiguity"]]
+        self.assertEqual(flagged, ids)
+        self.assertEqual(self.report["counts"]["ambiguous_review"], 1)
+        self.assertIn("## Names to review (1)", self.md)
+
     def test_case_names_are_unique(self):
         names = [c["case"] for c in self.key["cases"].values()]
         self.assertEqual(len(names), len(set(names)))

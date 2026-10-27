@@ -63,6 +63,29 @@ Puppet, Teleport, Quasar, Rocket.Chat with its desktop app) is left out
 and still needs the vendor check or the allowlist. A product named by an
 exclusion never gets this rule.
 
+Refusals for review (lookup_noted only; lookup and every match result are
+unchanged): when no product matched, the row may carry one code saying it
+was refused on purpose, for a person to review.
+
+  title_needs_publisher  level 1 hit a title, the publisher is empty, and
+                         every product with that title was refused by the
+                         one-word vendor check alone and is not named by
+                         any exclusion (swlc/matching.py drops the code
+                         when the version column is not empty and decides
+                         no single cycle of those products)
+  title_not_on_list      level 2 split a version off the whole or cleaned
+                         name (step d on a or b), the publisher is empty,
+                         the title is a one-word product that is not in
+                         VERSION_NAME_TITLES and not named by any
+                         exclusion, and the version would decide one cycle
+
+No code when any exclusion touched the row, when a publisher is given (a
+publisher that does not confirm the product is often another product), or
+for generated_off, device, version or cycle refusals, or a name with no
+title hit. Level 1 returns
+before level 2 runs, so a row gets at most one code; if both ever applied,
+title_needs_publisher (the earlier step) would win.
+
 Products on generated_off and products whose catalog
 category is "device" never match here. An exclusion blocks one product when
 its cleaned name equals ANY candidate form of the row (whole, cleaned,
@@ -189,6 +212,14 @@ VERSION_NAME_TITLES = frozenset((
     "valkey virtualbox vitess weakforced weechat xcp-ng zabbix "
     "zentyal"
 ).split())
+# Refusal codes for review (see "Refusals for review" above). Item-level
+# codes in report.json; the _REFUSED_* values are internal.
+TITLE_NEEDS_PUBLISHER = "title_needs_publisher"
+TITLE_NOT_ON_LIST = "title_not_on_list"
+_REFUSED_CURATED = "curated"     # generated_off, device or an exclusion
+_REFUSED_VENDOR = "vendor"       # one-word title, publisher does not confirm
+_REFUSED_NOT_LISTED = "unlisted"  # version-in-name rule: not on the list
+_REFUSED_VERSION = "version"     # version-in-name rule: no single cycle
 # Names with more words than this are never matched by title: no product
 # title is that long, and it bounds the work on a hostile row.
 MAX_WORDS = 64
@@ -249,6 +280,7 @@ class CatalogIndex:
         default_factory=lambda: MappingProxyType({}))
     version_names: frozenset = frozenset()  # ids the version-in-name
     #                                         rule may match
+    excluded: frozenset = frozenset()  # ids named by any exclusion
 
     def phrase_ok(self, pid: str, phrase: tuple, pub: tuple) -> bool:
         """Whether this confirming phrase of pid is in the publisher. A
@@ -281,11 +313,24 @@ class CatalogIndex:
         version decides one cycle of that product; without it the
         version-in-name rule is off.
         """
+        ids, tails, _note = self._lookup(name, publisher, fits, False)
+        return ids, tails
+
+    def lookup_noted(self, name: str, publisher: str = "",
+                     fits=None) -> tuple:
+        """lookup, plus a third value: None, or (code, product ids) when no
+        product matched and the row was refused on purpose (see "Refusals
+        for review" in the module text). The first two values are always
+        the same as lookup's."""
+        return self._lookup(name, publisher, fits, True)
+
+    def _lookup(self, name: str, publisher: str, fits,
+                want_note: bool) -> tuple:
         norm = normalize_name(name or "")
         clean = strip_arch(norm)
         words = clean.split(" ")
         if len(words) > MAX_WORDS:
-            return (), {}
+            return (), {}, None
         pub = tokens(publisher)
 
         # Leading phrases that are runs of the publisher, at most max_lead
@@ -308,28 +353,42 @@ class CatalogIndex:
                 forms.add(split[0])
         blocked = self._excluded(forms, pub)
 
-        def allowed(pid, confirmed, tail=None):
+        def refused(pid, confirmed, tail=None):
+            """None when pid may match, else why not (a _REFUSED_* code)."""
             if pid in self.off or pid in self.devices or pid in blocked:
-                return False
+                return _REFUSED_CURATED
             if pid in self.one_word and pid not in self.allow:
                 if confirmed or self.confirms(pid, pub):
-                    return True
+                    return None
                 # Version-in-name rule: no publisher, and the name is this
                 # one-word title plus a version token that decides one
                 # cycle.
-                return (not pub and tail is not None and fits is not None
-                        and pid in self.version_names and fits(pid, tail))
-            return True
+                if pub or tail is None or fits is None:
+                    return _REFUSED_VENDOR
+                if pid not in self.version_names:
+                    return _REFUSED_NOT_LISTED
+                return None if fits(pid, tail) else _REFUSED_VERSION
+            return None
+
+        def allowed(pid, confirmed, tail=None):
+            return refused(pid, confirmed, tail) is None
 
         # Level 1: the whole name, then the name without arch/locale groups.
         for cand in (norm, clean):
             pids = self.titles.get(cand)
             if pids:
                 ok = tuple(p for p in pids if allowed(p, False))
-                return ok, {p: None for p in ok}
+                note = None
+                if want_note and not ok and not pub and not blocked and all(
+                        refused(p, False) == _REFUSED_VENDOR
+                        and p not in self.excluded for p in pids):
+                    note = (TITLE_NEEDS_PUBLISHER, pids)
+                return ok, {p: None for p in ok}, note
 
         # Level 2: vendor-dropped forms and version-split forms, pooled.
         found = {}
+
+        unlisted = []
 
         def take(cand, tail, only=None):
             for pid in self.titles.get(cand, ()):
@@ -338,9 +397,13 @@ class CatalogIndex:
                 managed = _MANAGED_TAGS.get(pid)
                 if managed is not None and tail and managed.search(tail):
                     continue
-                if pid not in found and allowed(pid, only is not None,
-                                                tail):
+                if pid in found:
+                    continue
+                why = refused(pid, only is not None, tail)
+                if why is None:
                     found[pid] = tail
+                elif why == _REFUSED_NOT_LISTED and want_note:
+                    unlisted.append((pid, tail))
 
         dropped = []
         for lead, rest in leading:
@@ -359,7 +422,16 @@ class CatalogIndex:
             if split:
                 take(split[0], split[1], pids)
         ids = tuple(sorted(found))
-        return ids, {p: found[p] for p in ids}
+        note = None
+        if want_note and not ids and not blocked:
+            # Only a product kept off the list for its title, not for its
+            # version: the version would decide one cycle.
+            hits = tuple(sorted({pid for pid, tail in unlisted
+                                 if pid not in self.excluded
+                                 and fits(pid, tail)}))
+            if hits:
+                note = (TITLE_NOT_ON_LIST, hits)
+        return ids, {p: found[p] for p in ids}, note
 
 
 def _vendor_phrase(vendor: str) -> tuple:
@@ -420,6 +492,7 @@ def build_index(catalog: dict, curation=None,
         no_cycle=MappingProxyType({
             pid: tuple(tuple(split_version(p)) for p in entry["prefixes"])
             for pid, entry in (cur.get("no_cycle_versions") or {}).items()}),
+        excluded=excluded,
         version_names=frozenset(
             pid for pid in frozenset(version_names) & one_word
             if pid not in excluded and pid not in off

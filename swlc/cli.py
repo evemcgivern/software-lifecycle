@@ -276,7 +276,8 @@ def _counts_text(result: dict) -> str:
                                   in sorted(counts["states"].items())),
              "classification " + " ".join(
                  "%s=%d" % (k, v) for k, v
-                 in sorted(counts["classification"].items()))]
+                 in sorted(counts["classification"].items())),
+             "ambiguous_review %d" % counts["ambiguous_review"]]
     for name in LISTS:
         ids = result["lists"][name]
         lines.append("%s %d%s" % (name, len(ids),

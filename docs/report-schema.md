@@ -9,6 +9,10 @@ repo fails if a key in a real run is missing from this page.
 listed as unmatched. Check the source and cycle before relying on any
 row." It is not a key and is not in `report.json` or `report.csv`.
 
+`report.md` also has a "Names to review" section and `report.csv` a
+trailing "Review reason" column, both made from the item key `ambiguity`
+(see below).
+
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.
 
@@ -48,6 +52,7 @@ inventory, so keep it as private as the inventory.
 | `lists` | Count of item IDs in each list. |
 | `classification` | Count of items in each class. See `counts.classification`. |
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
+| `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 
 ### counts.classification
@@ -148,6 +153,7 @@ tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 | `parent_ref` | The named parent of a `bundle_member`, or `null`. See `parent_ref` below. |
 | `inherited_from` | The parent item's ID when the parent is in the same inventory; otherwise `null`. |
 | `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's, or `null`. See `inherited_lifecycle` below. The item's own date fields never change. |
+| `ambiguity` | `null`, or an object with `code` and `reason` when the matcher refused this unmatched row on purpose: the name looks like a catalog product, but there is not enough evidence. See `ambiguity` below. Never set on a matched item or on a part (`component` or `bundle_member`). |
 
 ### parent_ref
 
@@ -178,6 +184,38 @@ only: a part whose parent is itself a part gets none.
 | `extended_support` | The parent's `extended_support`. |
 | `state` | The parent's `state`, in the item state words. |
 | `label` | Always "inherited from parent". |
+
+### ambiguity
+
+Set only on an unmatched item with no product, whose class is `unknown`
+or `governable`. It changes nothing else: the item keeps `state`
+`unmatched`, its `reason` (`NO_ALIAS`), `product` `null` and no date. It
+never puts the item on another list, and `--fail-on` never reads it.
+Unmatched on purpose, not a finding. To settle one, a person adds a
+publisher that names the vendor, asks the maintainer for a curated alias,
+or records that it is a different product; the tool never promotes such
+a row to a match.
+
+| Key | Meaning |
+|---|---|
+| `code` | One of the `ambiguity` codes below. |
+| `reason` | A fixed one-line English text for the code. It holds no text from the inventory. |
+
+### ambiguity codes
+
+| Code | When |
+|---|---|
+| `title_needs_publisher` | The cleaned name is exactly a one-word product title, the publisher is empty, and the match was refused only because no publisher confirms the product. When the version column is not empty, it must decide one cycle of that product; an empty version keeps the code. Reason: "The name is a product title, but the row has no publisher to confirm the product." |
+| `title_not_on_list` | The name is a one-word product title followed by a version, the publisher is empty, the version would decide one cycle, and the product is not on the reviewed list for rows with no publisher (the version-in-name rule in "How names are matched", `docs/usage.md`). Reason: "The name is a product title and a version, but that title is not on the reviewed list for rows with no publisher." |
+
+No code is set for a row with a publisher (a publisher that does not
+confirm the product is often a different product, such as an editor
+extension or a mobile app), a row refused by a curated exclusion (or for
+any product an exclusion names), a device or `generated_off` product, a
+version that is given but decides no single cycle, a name that hits no product title, or
+a row a curated alias decided. A row gets at most one code: the
+title check runs before the version split, so if both could apply,
+`title_needs_publisher` is used.
 
 Date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
 `extended_support`) hold `YYYY-MM-DD` text, `null` for none, or `true` or
@@ -367,7 +405,11 @@ Links a finding to your change and problem records.
 Within a `schema_version`, keys are never removed or renamed and never
 change meaning or type. New keys may be added; consumers must ignore keys
 they do not know. Adding a state, a list name, a reason code or a decision
-code bumps `schema_version`. The keyword arguments of `swlc.cli.run` follow
+code bumps `schema_version`. The item key `ambiguity` and
+`counts.ambiguous_review` were added within schema version 1 as new keys;
+they add no state, list, reason code or decision code. The `ambiguity`
+codes follow the reason-code rule: adding one bumps `schema_version`.
+The keyword arguments of `swlc.cli.run` follow
 the same rule. The tool only reads a `--previous` report of its own schema
 version.
 

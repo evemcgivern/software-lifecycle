@@ -10,11 +10,12 @@ import calendar
 import re
 from datetime import date, datetime
 
-from .classify import (CLASSES, PARENT_ABSENT, apply_classification,
-                       inherited_states)
+from .catalog_match import TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST
+from .classify import (CLASSES, PARENT_ABSENT, PART_CLASSES,
+                       apply_classification, inherited_states)
 from .data import Data, kev_match
 from .errors import InputError
-from .matching import match_product
+from .matching import match_noted
 from .normalize import normalize_name
 from .overrides import Exceptions, Golden
 
@@ -41,6 +42,16 @@ GOLDEN_CLASH = ("%d item(s) matched two golden-source rows; the product-id "
                 "row was used.")
 PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
+# Item "ambiguity" codes: a row the matcher refused on purpose, for a person
+# to review. Fixed text, never row data. Not a state, list or reason code.
+AMBIGUITY_REASONS = {
+    TITLE_NEEDS_PUBLISHER: (
+        "The name is a product title, but the row has no publisher to "
+        "confirm the product."),
+    TITLE_NOT_ON_LIST: (
+        "The name is a product title and a version, but that title is not "
+        "on the reviewed list for rows with no publisher."),
+}
 
 # ISO date, optionally followed by a time ("2026-01-15 00:00:00",
 # "2026-01-15T00:00:00Z"). Day-first or month-first forms are never read.
@@ -124,9 +135,10 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
           golden_clashes: list) -> dict:
     name, version = group["name"], group["version"]
     norm_name = normalize_name(name)
-    match = match_product(name, version, data.aliases, data.products,
-                          catalog_index=data.matching_index(),
-                          publisher=group["publisher"])
+    match, ambiguity = match_noted(name, version, data.aliases,
+                                   data.products,
+                                   catalog_index=data.matching_index(),
+                                   publisher=group["publisher"])
     cycle = match.cycle
     export_date, export_readable, export_conflict, export_raw = \
         _read_exports(list(group.get("export_eols") or []))
@@ -230,6 +242,9 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "kev_stale": bool(kev is not None and not data.kev_current),
         "change_ref": refs.get("change_ref") or None,
         "problem_ref": refs.get("problem_ref") or None,
+        "ambiguity": {"code": ambiguity,
+                      "reason": AMBIGUITY_REASONS[ambiguity]}
+        if ambiguity and match.product is None else None,
     }
 
 
@@ -300,6 +315,10 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
                    window_end, clashes) for gid in sorted(groups)]
     apply_classification(items, groups, data)
+    for it in items:
+        # A part is reviewed with its parent, not as a name on its own.
+        if it["classification"] in PART_CLASSES:
+            it["ambiguity"] = None
     lists = _lists(items)
 
     warnings = list(data.warnings)
@@ -361,6 +380,9 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             "inherited_attention": sum(
                 1 for it in items if it["inherited_lifecycle"]
                 and it["inherited_lifecycle"]["state"] in inherited_states),
+            # Unmatched items refused on purpose (item "ambiguity"). They
+            # stay in lists.unmatched; a count, not a list.
+            "ambiguous_review": sum(1 for it in items if it["ambiguity"]),
         },
         "diff": _diff(items, before),
     }

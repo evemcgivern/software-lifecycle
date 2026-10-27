@@ -114,6 +114,10 @@ CASES = [
          UNMATCHED, [UNMATCHED], reason="NO_ALIAS"),
     case("hostile_pipe_backtick", "Util | `rm -rf` tool", "2", HOSTILE,
          UNMATCHED, [UNMATCHED], reason="NO_ALIAS"),
+    # A product title with no publisher: unmatched on purpose, listed
+    # under "Names to review" (item key ambiguity), never a finding.
+    case("names_to_review", "Quillbase", "2019", "", UNMATCHED, [UNMATCHED],
+         reason="NO_ALIAS"),
     # Parent cases: the part keeps its own state and lists; the parent's
     # state is shown against it and never puts it in past_eol.
     case("part-parent-past-eol", "Harborview CRM Mail Connector", "5.1.2",
