@@ -1,15 +1,15 @@
 {
   "as_of": "2026-10-24",
   "counts": {
-    "ambiguous_review": 0,
+    "ambiguous_review": 1,
     "classification": {
       "bundle_member": 3,
       "component": 0,
-      "governable": 42,
-      "unknown": 6
+      "governable": 40,
+      "unknown": 7
     },
     "inherited_attention": 2,
-    "items": 51,
+    "items": 50,
     "lists": {
       "accepted_risk": 1,
       "dates_disagree": 4,
@@ -18,18 +18,18 @@
       "ownerless": 1,
       "past_eol": 8,
       "review_urgently": 2,
-      "unmatched": 10
+      "unmatched": 11
     },
     "rows": 60,
     "states": {
       "ends_soon": 5,
       "mainstream_ended": 1,
       "past_eol": 8,
-      "supported": 27,
-      "unmatched": 10
+      "supported": 25,
+      "unmatched": 11
     },
     "unmatched_breakdown": {
-      "needs_review": 7,
+      "needs_review": 8,
       "parts_parent_absent": 1,
       "parts_with_parent": 2
     }
@@ -433,6 +433,7 @@
       "match_source": "curated",
       "name": "Lantern Viewer",
       "owners": [
+        "Finance Systems",
         "Infrastructure",
         "Marketing Ops"
       ],
@@ -441,52 +442,11 @@
       "product": "lanternviewer",
       "publisher": "Example Corp",
       "reason": null,
-      "rows": 2,
+      "rows": 4,
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
       "version": "11.4"
-    },
-    {
-      "accepted_risk": false,
-      "ambiguity": null,
-      "change_ref": null,
-      "classification": "governable",
-      "classification_basis": [
-        "category_governable"
-      ],
-      "cycle": "3",
-      "dates_disagree": null,
-      "decision_needed": [],
-      "eol_endoflife": "2030-06-30",
-      "eol_export": null,
-      "eol_export_raw": null,
-      "eol_source": "endoflife.date",
-      "eol_used": "2030-06-30",
-      "exception_expired": false,
-      "extended_support": null,
-      "golden_applied": null,
-      "golden_expired": false,
-      "id": "47f4fe355498",
-      "inherited_from": null,
-      "inherited_lifecycle": null,
-      "kev": null,
-      "kev_stale": false,
-      "match_source": "curated",
-      "name": "Redwood Backup",
-      "owners": [
-        "Facilities"
-      ],
-      "parent_ref": null,
-      "problem_ref": null,
-      "product": "redwoodbackup",
-      "publisher": "Sample Systems Inc",
-      "reason": null,
-      "rows": 1,
-      "state": "supported",
-      "state_endoflife": "supported",
-      "support": "2028-06-30",
-      "version": "3.3"
     },
     {
       "accepted_risk": false,
@@ -713,6 +673,47 @@
       "accepted_risk": false,
       "ambiguity": null,
       "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
+      "cycle": "3",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "eol_endoflife": null,
+      "eol_export": null,
+      "eol_export_raw": null,
+      "eol_source": "endoflife.date",
+      "eol_used": null,
+      "exception_expired": false,
+      "extended_support": null,
+      "golden_applied": null,
+      "golden_expired": false,
+      "id": "5a4b4694214c",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
+      "kev": null,
+      "kev_stale": false,
+      "match_source": "curated",
+      "name": "Mapleton Reports",
+      "owners": [
+        "HR Systems"
+      ],
+      "parent_ref": null,
+      "problem_ref": null,
+      "product": "mapletonreports",
+      "publisher": "Fictional Software Ltd",
+      "reason": null,
+      "rows": 1,
+      "state": "supported",
+      "state_endoflife": "supported",
+      "support": true,
+      "version": "3.4"
+    },
+    {
+      "accepted_risk": false,
+      "ambiguity": null,
+      "change_ref": null,
       "classification": "unknown",
       "classification_basis": [
         "no_signal"
@@ -902,7 +903,6 @@
       "match_source": "curated",
       "name": "Quillbase Database",
       "owners": [
-        "Marketing Ops",
         "Support Desk"
       ],
       "parent_ref": null,
@@ -910,7 +910,7 @@
       "product": "quillbase",
       "publisher": "Placeholder Labs",
       "reason": null,
-      "rows": 2,
+      "rows": 1,
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-02-29",
@@ -1026,7 +1026,7 @@
       "match_source": "curated",
       "name": "Mapleton Reports",
       "owners": [
-        "Facilities"
+        "Support Desk"
       ],
       "parent_ref": null,
       "problem_ref": null,
@@ -1267,47 +1267,6 @@
       "classification_basis": [
         "category_governable"
       ],
-      "cycle": "6",
-      "dates_disagree": null,
-      "decision_needed": [],
-      "eol_endoflife": "2031-01-01",
-      "eol_export": null,
-      "eol_export_raw": null,
-      "eol_source": "endoflife.date",
-      "eol_used": "2031-01-01",
-      "exception_expired": false,
-      "extended_support": null,
-      "golden_applied": null,
-      "golden_expired": false,
-      "id": "8910e2fe441b",
-      "inherited_from": null,
-      "inherited_lifecycle": null,
-      "kev": null,
-      "kev_stale": false,
-      "match_source": "curated",
-      "name": "Tidewater Suite",
-      "owners": [
-        "Support Desk"
-      ],
-      "parent_ref": null,
-      "problem_ref": null,
-      "product": "tidewatersuite",
-      "publisher": "Example Corp",
-      "reason": null,
-      "rows": 1,
-      "state": "supported",
-      "state_endoflife": "supported",
-      "support": "2029-01-01",
-      "version": "6.3"
-    },
-    {
-      "accepted_risk": false,
-      "ambiguity": null,
-      "change_ref": null,
-      "classification": "governable",
-      "classification_basis": [
-        "category_governable"
-      ],
       "cycle": "8",
       "dates_disagree": null,
       "decision_needed": [],
@@ -1369,15 +1328,14 @@
       "match_source": "curated",
       "name": "Brightline Editor",
       "owners": [
-        "Finance Systems",
-        "Support Desk"
+        "Finance Systems"
       ],
       "parent_ref": null,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
       "reason": null,
-      "rows": 2,
+      "rows": 1,
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
@@ -1464,6 +1422,48 @@
       "state_endoflife": "supported",
       "support": true,
       "version": "3.5"
+    },
+    {
+      "accepted_risk": false,
+      "ambiguity": null,
+      "change_ref": null,
+      "classification": "governable",
+      "classification_basis": [
+        "category_governable"
+      ],
+      "cycle": "3",
+      "dates_disagree": null,
+      "decision_needed": [],
+      "eol_endoflife": "2030-06-30",
+      "eol_export": null,
+      "eol_export_raw": null,
+      "eol_source": "endoflife.date",
+      "eol_used": "2030-06-30",
+      "exception_expired": false,
+      "extended_support": null,
+      "golden_applied": null,
+      "golden_expired": false,
+      "id": "a320856eef29",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
+      "kev": null,
+      "kev_stale": false,
+      "match_source": "curated",
+      "name": "Redwood Backup",
+      "owners": [
+        "HR Systems",
+        "Infrastructure"
+      ],
+      "parent_ref": null,
+      "problem_ref": null,
+      "product": "redwoodbackup",
+      "publisher": "Sample Systems Inc",
+      "reason": null,
+      "rows": 2,
+      "state": "supported",
+      "state_endoflife": "supported",
+      "support": "2028-06-30",
+      "version": "3.0"
     },
     {
       "accepted_risk": false,
@@ -1680,47 +1680,6 @@
       "classification_basis": [
         "category_governable"
       ],
-      "cycle": "8",
-      "dates_disagree": null,
-      "decision_needed": [],
-      "eol_endoflife": "2029-01-01",
-      "eol_export": null,
-      "eol_export_raw": null,
-      "eol_source": "endoflife.date",
-      "eol_used": "2029-01-01",
-      "exception_expired": false,
-      "extended_support": null,
-      "golden_applied": null,
-      "golden_expired": false,
-      "id": "b7a5866a4a5f",
-      "inherited_from": null,
-      "inherited_lifecycle": null,
-      "kev": null,
-      "kev_stale": false,
-      "match_source": "curated",
-      "name": "Brightline Editor",
-      "owners": [
-        "Records Office"
-      ],
-      "parent_ref": null,
-      "problem_ref": null,
-      "product": "brightlineeditor",
-      "publisher": "Fictional Software Ltd",
-      "reason": null,
-      "rows": 1,
-      "state": "supported",
-      "state_endoflife": "supported",
-      "support": true,
-      "version": "8.2"
-    },
-    {
-      "accepted_risk": false,
-      "ambiguity": null,
-      "change_ref": null,
-      "classification": "governable",
-      "classification_basis": [
-        "category_governable"
-      ],
       "cycle": null,
       "dates_disagree": null,
       "decision_needed": [],
@@ -1835,6 +1794,50 @@
       "state_endoflife": "mainstream_ended",
       "support": false,
       "version": "7.0"
+    },
+    {
+      "accepted_risk": false,
+      "ambiguity": {
+        "code": "title_needs_publisher",
+        "reason": "The name is a product title, but the row has no publisher to confirm the product."
+      },
+      "change_ref": null,
+      "classification": "unknown",
+      "classification_basis": [
+        "no_signal"
+      ],
+      "cycle": null,
+      "dates_disagree": null,
+      "decision_needed": [],
+      "eol_endoflife": null,
+      "eol_export": null,
+      "eol_export_raw": null,
+      "eol_source": null,
+      "eol_used": null,
+      "exception_expired": false,
+      "extended_support": null,
+      "golden_applied": null,
+      "golden_expired": false,
+      "id": "cc1211feace1",
+      "inherited_from": null,
+      "inherited_lifecycle": null,
+      "kev": null,
+      "kev_stale": false,
+      "match_source": null,
+      "name": "Quillbase",
+      "owners": [
+        "Finance Systems"
+      ],
+      "parent_ref": null,
+      "problem_ref": null,
+      "product": null,
+      "publisher": "",
+      "reason": "NO_ALIAS",
+      "rows": 1,
+      "state": "unmatched",
+      "state_endoflife": null,
+      "support": null,
+      "version": "2019"
     },
     {
       "accepted_risk": false,
@@ -2042,47 +2045,6 @@
       "version": "2"
     },
     {
-      "accepted_risk": false,
-      "ambiguity": null,
-      "change_ref": null,
-      "classification": "governable",
-      "classification_basis": [
-        "category_governable"
-      ],
-      "cycle": "3",
-      "dates_disagree": null,
-      "decision_needed": [],
-      "eol_endoflife": null,
-      "eol_export": null,
-      "eol_export_raw": null,
-      "eol_source": "endoflife.date",
-      "eol_used": null,
-      "exception_expired": false,
-      "extended_support": null,
-      "golden_applied": null,
-      "golden_expired": false,
-      "id": "f8a1fd46aab6",
-      "inherited_from": null,
-      "inherited_lifecycle": null,
-      "kev": null,
-      "kev_stale": false,
-      "match_source": "curated",
-      "name": "Mapleton Reports",
-      "owners": [
-        "Records Office"
-      ],
-      "parent_ref": null,
-      "problem_ref": null,
-      "product": "mapletonreports",
-      "publisher": "Fictional Software Ltd",
-      "reason": null,
-      "rows": 1,
-      "state": "supported",
-      "state_endoflife": "supported",
-      "support": true,
-      "version": "3.3"
-    },
-    {
       "accepted_risk": true,
       "ambiguity": null,
       "change_ref": "CHG-1001",
@@ -2152,7 +2114,7 @@
       "match_source": "curated",
       "name": "Tidewater Suite",
       "owners": [
-        "HR Systems",
+        "Facilities",
         "Marketing Ops"
       ],
       "parent_ref": null,
@@ -2255,6 +2217,7 @@
       "86cd3cda695f",
       "b3e080c410cc",
       "bbccc7b93adf",
+      "cc1211feace1",
       "f08603b790e5",
       "f3d465853a7a"
     ]
