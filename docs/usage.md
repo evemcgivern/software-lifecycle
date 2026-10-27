@@ -214,13 +214,43 @@ so; it does not hide them.
   Chrome and other browser extensions were not checked. The review was
   made once, on 2026-10-26: a package or extension published later under
   a listed title is not caught and would be read as the product. Issue
-  #12 tracks ambiguous names and a review of the list.
+  #12 added "Names to review" (below) for rows refused this way.
 - A version that ends in a bare letter splits with the letter
   (`Firefox 129.0b` is read as Firefox 129), because OpenSSL-style
   versions such as `1.1.1b` use the same shape.
 - Titles on the one-word allowlist (GStreamer, Liquibase and others) match
   with any publisher or none, so a same-named package such as the npm
   `liquibase` wrapper is read as the product.
+
+## Names to review
+
+Some unmatched rows were refused on purpose: the name looks like a
+catalog product, but there is not enough evidence to match it. They are
+unmatched on purpose, not a finding. `report.md` lists them in a "Names
+to review" section, after "Couldn't match", with the name, version,
+publisher and a one-line reason. The section never shows a product,
+cycle, date or state for them. They are still counted in "Couldn't
+match" and in `lists.unmatched`, they never feed `--fail-on`, and
+`--governable-only` never hides them (they are never parts). The item key
+is `ambiguity` and the count is `counts.ambiguous_review`; see
+`docs/report-schema.md`.
+
+There are two reasons:
+
+- `title_needs_publisher`: the name is a one-word product title (`Redmine`
+  with version `5.1.2`), and no publisher confirms the product: the
+  publisher is empty, or names no vendor of that product.
+- `title_not_on_list`: the name is a one-word title and a version
+  (`Caddy 2.7.6`, `Bun 1.1.0`), the publisher is empty, the version
+  fits one cycle, and the title is not on the version-in-name list (a
+  short title, an ordinary word, a title another product, package or
+  extension shares, or a product not yet reviewed).
+
+To settle one, add the publisher to the inventory row, or ask the
+maintainer for a curated alias or a publisher alias. The tool never
+promotes such a row to a match. A row refused by an exclusion (Moodle,
+Mattermost, Nextcloud), a device or `generated_off` product, a version
+that fits no cycle, and a name that hits no title are not listed here.
 
 ## How KEV is checked
 
@@ -491,6 +521,7 @@ It prints:
 - the checked-on date and whether the KEV data is current;
 - the number of items and rows, and the count in each state;
 - the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
+- the count of names to review (`ambiguous_review N`), with no names;
 - each list with its count and the item IDs.
 
 It prints no names, versions, publishers or owners. In this mode an error

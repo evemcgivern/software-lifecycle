@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Names to review (issue #12): an unmatched row whose name is a one-word
+  product title, refused because no publisher confirms it
+  (`title_needs_publisher`) or because the title is not on the
+  version-in-name list (`title_not_on_list`), carries a new item key
+  `ambiguity` with the code and a fixed reason. `counts.ambiguous_review`
+  counts them. `report.md` lists them in a "Names to review" section,
+  `report.csv` adds a trailing "Review reason" column, and
+  `--counts-only` prints `ambiguous_review N`. They stay in the unmatched
+  list, never feed `--fail-on`, and claim no product, cycle or date.
+  Matching results are unchanged; `schema_version` stays 1.
+
 ## 0.3.0 - 2026-10-26
 
 - Matching by product title splits a wider version token off a name:

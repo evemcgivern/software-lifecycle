@@ -9,6 +9,10 @@ repo fails if a key in a real run is missing from this page.
 listed as unmatched. Check the source and cycle before relying on any
 row." It is not a key and is not in `report.json` or `report.csv`.
 
+`report.md` also has a "Names to review" section and `report.csv` a
+trailing "Review reason" column, both made from the item key `ambiguity`
+(see below).
+
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.
 
@@ -398,7 +402,11 @@ Links a finding to your change and problem records.
 Within a `schema_version`, keys are never removed or renamed and never
 change meaning or type. New keys may be added; consumers must ignore keys
 they do not know. Adding a state, a list name, a reason code or a decision
-code bumps `schema_version`. The keyword arguments of `swlc.cli.run` follow
+code bumps `schema_version`. The item key `ambiguity` and
+`counts.ambiguous_review` were added within schema version 1 as new keys;
+they add no state, list, reason code or decision code. The `ambiguity`
+codes follow the reason-code rule: adding one bumps `schema_version`.
+The keyword arguments of `swlc.cli.run` follow
 the same rule. The tool only reads a `--previous` report of its own schema
 version.
 
