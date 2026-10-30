@@ -190,6 +190,59 @@ class RuleTests(unittest.TestCase):
             match_product("Acme OS SDK", "10.0.19045.1", a, products).reason,
             NO_ALIAS)
 
+    def test_numbered_words_take_one_whole_number(self):
+        # Issue #20: "Cumulative Update 23" after the year in an Exchange
+        # name. The numbered word must be followed by one whole number.
+        a = [alias("acme server", "acme", match="prefix", version_from="name",
+                   edition_words=["cumulative", "update"],
+                   numbered_words=["update"], build_map={"2019": "2019"})]
+        products = {"acme": cycles("2019")}
+        for name in ("Acme Server 2019 Cumulative Update 23",
+                     "Acme Server 2019 Update 23",
+                     "Acme Server 2019 Cumulative Update 1",
+                     "Acme Server 2019 Cumulative Update 999"):
+            self.assertEqual(match_product(name, "", a, products).cycle,
+                             {"cycle": "2019"}, name)
+        for name in ("Acme Server 2019 Cumulative 23",
+                     "Acme Server 2019 Update",
+                     "Acme Server 2019 Cumulative Update",
+                     "Acme Server 2019 Cumulative Update 23 Language Pack",
+                     "Acme Server 2019 23 Cumulative Update",
+                     "Acme Server 2019 Cumulative Update 14 14",
+                     "Acme Server 2019 Cumulative Update 14b",
+                     "Acme Server 2019 Cumulative Update Update 14",
+                     "Acme Server 2019 Cumulative Update 14 Update 2",
+                     "Acme Server 2019 Cumulative Update \u0662\u0663",
+                     "Acme Server 2019 Cumulative Update 014",
+                     "Acme Server 2019 Cumulative Update 0",
+                     "Acme Server 2019 Cumulative Update 1000",
+                     "Acme Server 2019 Cumulative Update " + "9" * 4000):
+            self.assertEqual(match_product(name, "", a, products),
+                             MatchResult(None, None, NO_ALIAS), name)
+
+    def test_numbered_words_are_part_of_the_rule(self):
+        # Two same-key entries that differ only in numbered_words are two
+        # rules for one name: the row is not decided.
+        base = dict(match="prefix", version_from="name",
+                    edition_words=["cumulative", "update"],
+                    build_map={"2019": "2019"})
+        a = [alias("acme server", "acme", numbered_words=["update"], **base),
+             alias("acme server", "acme", numbered_words=["release"],
+                   **base)]
+        r = match_product("Acme Server 2019", "", a,
+                          {"acme": cycles("2019")})
+        self.assertEqual((r.product, r.cycle, r.reason),
+                         ("acme", None, AMBIGUOUS))
+
+    def test_numbered_words_are_off_without_the_field(self):
+        a = [alias("acme server", "acme", match="prefix", version_from="name",
+                   edition_words=["cumulative", "update"],
+                   build_map={"2019": "2019"})]
+        products = {"acme": cycles("2019")}
+        self.assertEqual(
+            match_product("Acme Server 2019 Cumulative Update 23", "", a,
+                          products).reason, NO_ALIAS)
+
     def test_prefix_without_edition_words_needs_empty_tail(self):
         a = [alias("python", "python", match="prefix", version_from="name")]
         products = {"python": cycles("3.11")}
@@ -300,7 +353,11 @@ class RuleTests(unittest.TestCase):
                     alias("x", "x", build_map=["1"]),
                     alias("x", "x", build_map={"1": 2}),
                     alias("x", "x", edition_words="standard"),
-                    alias("x", "x", edition_words=[""])):
+                    alias("x", "x", edition_words=[""]),
+                    alias("x", "x", numbered_words="update"),
+                    alias("x", "x", numbered_words=[]),
+                    alias("x", "x", numbered_words=[" "]),
+                    alias("x", "x", numbered_words=[3])):
             with self.assertRaises(DataError, msg=repr(bad)):
                 match_product("x", "1", [bad], products)
 
@@ -550,6 +607,12 @@ EOL_CYCLE_LABELS = {
     "macos": ["27", "26", "15", "14", "13", "12", "11", "10.15", "10.14",
               "10.13", "10.12", "10.11", "10.10", "10.9", "10.8", "10.7",
               "10.6", "10.5", "10.4", "10.3", "10.2", "10.1", "10.0"],
+    "powershell": ["7.6", "7.5", "7.4", "7.3", "7.2", "7.1", "7.0", "6.2",
+                   "6.1", "6.0"],
+    "rhel": ["10", "9", "8", "7", "6", "5", "4"],
+    "rocky-linux": ["10", "9", "8"],
+    "almalinux": ["10", "9", "8"],
+    "oracle-linux": ["10", "9", "8", "7", "6"],
     "sles": ["16.0", "15.7", "15.6", "15.5", "15.4", "15.3", "15.2", "12.5",
              "15.1", "12.4", "15.0", "12.3", "12.2", "12.1", "11.4", "12.0",
              "11.3", "11.2", "10.4", "11.1", "10.3", "11.0", "10.2", "10.1",
@@ -580,7 +643,7 @@ class AliasFileTests(unittest.TestCase):
         self.assertGreaterEqual(len(entries), 12)
         allowed = {"key", "match", "product", "version_from", "cycle",
                    "build_map", "column_map", "source", "edition_words",
-                   "kev", "note", "publisher"}
+                   "numbered_words", "kev", "note", "publisher"}
         for e in entries:
             self.assertLessEqual(set(e), allowed, e)
             self.assertIn(e["match"], ("exact", "prefix"))
@@ -591,6 +654,9 @@ class AliasFileTests(unittest.TestCase):
             for p in e.get("publisher", []):
                 self.assertEqual(p, normalize_name(p), e)
             for w in e.get("edition_words", []):
+                self.assertEqual(w, normalize_name(w), e)
+                self.assertEqual(len(w.split()), 1, e)
+            for w in e.get("numbered_words", []):
                 self.assertEqual(w, normalize_name(w), e)
                 self.assertEqual(len(w.split()), 1, e)
 

@@ -39,6 +39,28 @@
   and a few positives). The hand and catalog floor rises from 482 to
   549 and the classification floor from 294 to 297. Two corpus rows for
   Windows 10 Enterprise LTSC 2019 and 2021 now expect the LTSC cycles.
+- Held OS and Microsoft names (issue #20): 61 new aliases (155 in all,
+  for 24 products). `PowerShell 7-x64` (PowerShell 7.0 to 7.6 only), Red
+  Hat Enterprise Linux 7 Server names, RHEL 8.0 to 8.10 (Ootpa) and 9.0
+  to 9.8 (Plow), Rocky Linux 8.4 to 8.10 (Green Obsidian) and 9.0 to 9.7
+  (Blue Onyx), `AlmaLinux` and AlmaLinux 8.3 to 10.2 by codename, and
+  `Oracle Linux Server`. Each name form has two public sources. A
+  release name with a codename matches only as an exact name whose
+  number and codename are one pair on the vendor's list, and the version
+  column must be that release. All of them need the vendor in the
+  publisher; rows with a blank publisher stay unmatched.
+- New optional alias field `numbered_words`: a word that must be
+  followed by one whole number. The Exchange Server alias uses it, so
+  "Microsoft Exchange Server 2019 Cumulative Update 14" matches 2019; the
+  update number is not checked against the build. The data format stays
+  2 and `schema_version` stays 1.
+- Internet Explorer 11 stays as it was (issue #21).
+- The benchmark gains 257 hand rows for these names. The hand and
+  catalog floor rises from 549 to 751 and the classification floor from
+  297 to 299. Matching 100,000 rows (best of 3) took 4.6 s on main and
+  6.3 s with 155 aliases on Python 3.15, and 5.2 s and 8.2 s on Python
+  3.9; the test limit is 20 s. Each alias is checked against every row,
+  so the headroom shrinks as aliases are added.
 
 ## 0.3.0 - 2026-10-26
 

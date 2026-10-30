@@ -653,6 +653,13 @@ class ExtendingAliasesTests(unittest.TestCase):
         start = body.index("## Extending the alias table")
         return body[start:body.index("\n## ", start + 5)]
 
+    def test_every_alias_field_is_listed(self):
+        sec = self.section()
+        aliases = json.loads(text(ROOT / "data" / "aliases.json"))["aliases"]
+        fields = {f for a in aliases for f in a} | {"numbered_words"}
+        for field in sorted(fields):
+            self.assertIn("`%s`" % field, sec, field)
+
     def test_worked_example_and_manifest_command_work(self):
         sec = self.section()
         block = re.search(r"\n       (\{\n.*?\n       \})\n", sec, re.S)

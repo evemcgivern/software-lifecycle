@@ -154,10 +154,10 @@ Counts (product with a cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
-| hand | 465 | 54 | 893 | 1412 |
+| hand | 641 | 86 | 942 | 1669 |
 | catalog | 226 | 82 | 48 | 356 |
 | generated | 830 | 191 | 29 | 1050 |
-| all | 1521 | 327 | 970 | 2818 |
+| all | 1697 | 359 | 1019 | 3075 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -166,7 +166,7 @@ also hand-written, so they count as `hand` and `catalog` holds 356.
 
 `heldout` is `1` when the SHA-256 of `name|publisher|version`, read as a
 number, is divisible by 10, for `hand` and `catalog` rows. `generated` rows
-are always `0`. That is 167 rows. Do not use held-out rows when writing
+are always `0`. That is 199 rows. Do not use held-out rows when writing
 exclusions, aliases or rules. The test reports them separately.
 
 ## What the test checks
@@ -318,5 +318,21 @@ See the numbers with `SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tes
   294 to 297 in the same change. Windows 11 Enterprise LTSC 2024 with build
   26100.2314 is in gold as a row that must stay unmatched by the
   Enterprise aliases; the build 26100.1742 row stays in `unsure.csv`.
+- Issue #20 added 257 hand rows for PowerShell 7, Red Hat Enterprise
+  Linux, Rocky Linux, AlmaLinux and Oracle Linux release names and
+  Exchange "Cumulative Update N" names (notes start "hand-added (issue
+  #20)"): 176 expect a cycle, 32 the product with no cycle (a name and a
+  version column that disagree, an empty or out-of-map version) and 49
+  `NONE` (a codename that belongs to another release, modules, tools,
+  documentation and release packages, language packs, update packages).
+  15 of the rows that expect a cycle stay missed on purpose: names with
+  a blank publisher, the `release` file form, the version-in-name
+  PowerShell MSI form, the winget name `PowerShell`, RHEL 10, Rocky 10
+  and Rocky 9.8. 32 are held out. Rows whose answer is defensible either
+  way were left out: a real name with a made-up publisher, a real name
+  with an extra word, previews, betas and RHEL variants. Internet
+  Explorer rows wait for issue #21. The hand and catalog floor rose from
+  549 to 751 and the classification floor from 297 to 299 in the same
+  change.
 
 Sources are in `SOURCES.md`.

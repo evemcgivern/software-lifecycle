@@ -82,6 +82,11 @@ def _check(entry: dict, pos: int) -> None:
         if not isinstance(words, list) or not all(
                 isinstance(w, str) and w.strip() for w in words):
             raise bad("'edition_words' must be a list of words")
+    if "numbered_words" in entry:
+        words = entry["numbered_words"]
+        if not isinstance(words, list) or not words or not all(
+                isinstance(w, str) and w.strip() for w in words):
+            raise bad("'numbered_words' must be a non-empty list of words")
     if "publisher" in entry:
         pubs = entry["publisher"]
         if not isinstance(pubs, list) or not pubs or not all(
@@ -116,7 +121,9 @@ def _rule(entry: dict) -> tuple:
             (k, tuple(v) if isinstance(v, list) else (v,))
             for k, v in bmap.items()))
     words = tuple(sorted(entry.get("edition_words") or []))
-    return (entry["version_from"], entry.get("cycle"), frozen, words)
+    numbered = tuple(sorted(entry.get("numbered_words") or []))
+    return (entry["version_from"], entry.get("cycle"), frozen, words,
+            numbered)
 
 
 def _distinct_by_parts(labels: list[str]) -> list[tuple[str, ...]]:
@@ -372,10 +379,12 @@ def _decide(norm: str, version: str, hits: list,
 
     def finish(result: MatchResult, used_parts: int) -> MatchResult:
         # Prefix aliases are strict: words left after the key (and after
-        # the version text read from the name) must be edition words.
+        # the version text read from the name) must be edition words, or a
+        # numbered word and its number ("update 23").
         if entry["match"] == "prefix":
             skip = _words_for_parts(rest, used_parts) if from_name else 0
-            if not _tail_ok(rest[skip:], entry.get("edition_words") or []):
+            if not _tail_ok(rest[skip:], entry.get("edition_words") or [],
+                            entry.get("numbered_words") or []):
                 return MatchResult(None, None, NO_ALIAS)
         if result.cycle is not None and "kev" in entry:
             # The alias's sourced CISA KEV pair rides along with a match.
@@ -490,10 +499,33 @@ def _words_for_parts(words: list[str], used_parts: int) -> int:
     return len(words)
 
 
-def _tail_ok(words: list[str], edition_words: list[str]) -> bool:
-    """Every tail word is an edition word or bare punctuation ("-")."""
+def _tail_ok(words: list[str], edition_words: list[str],
+             numbered_words=()) -> bool:
+    """Every tail word is an edition word or bare punctuation ("-"). A
+    numbered word must be followed by one whole number (one to three ASCII
+    digits, no leading zero), a whole number is allowed only right after a
+    numbered word, and only one numbered word may appear: "cumulative
+    update 23" passes; "update", "cumulative 23", "23 update", "update 14
+    14", "update 14 update 2", "update 014" and "update 1000" do not."""
     allowed = {normalize_name(w) for w in edition_words}
-    return all(not w.strip(".-_") or w in allowed for w in words)
+    numbered = {normalize_name(w) for w in numbered_words}
+
+    def number(word: str) -> bool:
+        return (word.isascii() and word.isdigit() and len(word) <= 3
+                and word[0] != "0")
+
+    if sum(w in numbered for w in words) > 1:
+        return False
+    for i, w in enumerate(words):
+        if not w.strip(".-_"):
+            continue
+        if w in numbered:
+            if i + 1 >= len(words) or not number(words[i + 1]):
+                return False
+        elif not (w in allowed
+                  or (number(w) and i > 0 and words[i - 1] in numbered)):
+            return False
+    return True
 
 
 def _exact_cycle(product: str, targets: list[str],

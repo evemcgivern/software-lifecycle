@@ -953,7 +953,7 @@ class AssessTests(unittest.TestCase):
 
 # --- the bundled data: speed -----------------------------------------------
 
-MAX_SECONDS_100K = 20.0   # measured 3.8 s (3.15) and 5.0 s (3.9) here
+MAX_SECONDS_100K = 20.0   # measured 6.3 s (3.15) and 8.2 s (3.9) here
 
 
 def synthetic_rows(catalog: dict, count: int, seed: int = 11):
