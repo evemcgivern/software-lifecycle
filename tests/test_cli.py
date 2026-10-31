@@ -47,7 +47,8 @@ class CheckTests(CliBase):
         for name in ("report.json", "report.md", "report.csv"):
             path = self.out / name
             self.assertTrue(path.is_file())
-            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            if sys.platform != "win32":  # no POSIX file modes on Windows
+                self.assertEqual(path.stat().st_mode & 0o777, 0o600)
 
     def test_two_runs_byte_identical(self):
         self.check("--out", str(self.root / "a"))

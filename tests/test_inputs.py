@@ -319,6 +319,7 @@ class GroupRowsTests(unittest.TestCase):
 
 
 class WriteTextTests(TempCase):
+    @unittest.skipIf(sys.platform == "win32", "Windows has no POSIX file modes")
     def test_writes_with_mode_600(self):
         out = str(self.dir / "out.txt")
         safeio.write_text(out, "hello")
@@ -330,7 +331,8 @@ class WriteTextTests(TempCase):
         Path(out).write_text("old")
         safeio.write_text(out, "new")
         self.assertEqual(Path(out).read_text(), "new")
-        self.assertEqual(stat.S_IMODE(os.stat(out).st_mode), 0o600)
+        if sys.platform != "win32":  # no POSIX file modes on Windows
+            self.assertEqual(stat.S_IMODE(os.stat(out).st_mode), 0o600)
 
     def test_refuses_input_path(self):
         p = self.write("Name,Version\nA,1\n")

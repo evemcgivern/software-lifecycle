@@ -149,6 +149,8 @@ def simulate(eol_days, kev_days=0, suite=True, catalog_change=False,
 
 
 @unittest.skipUnless(shutil.which("bash"), "needs bash")
+@unittest.skipIf(sys.platform == "win32",
+                 "bash on Windows is the WSL launcher, not POSIX bash")
 @unittest.skipIf(os.environ.get("SWLC_GATE_SIM"),
                  "already inside the simulation copy")
 class WeeklyGateSimulation(unittest.TestCase):
