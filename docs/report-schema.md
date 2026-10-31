@@ -13,14 +13,19 @@ row." It is not a key and is not in `report.json` or `report.csv`.
 "Review reason" column, both made from the item key `ambiguity`
 (see below).
 
-With `--support-records`, `report.md` adds a support-record line to items
-in "Past end of life" and "Ends within the lookahead window" and a
-"Support records" section, and `report.csv` a last column "Support
-records (from your file)", made from the item key `support_records` (see
-below). `--counts-only` prints `support_records listed=N ending_soon=M
-not_matched=K`. report.md and report.csv show at most 10 records per item,
-then "and N more in report.json"; `report.json` keeps them all. The tool does not check that a record was paid for or
-is current. Record references are confidential, like item IDs.
+`report.csv` always has a last column "Support records (from your
+file)", made from the item key `support_records` (see below), so "Review
+reason" is no longer the last column. A run without `--support-records`
+gets the column with every cell empty. With `--support-records`,
+`report.md` adds a support-record line to items in "Past end of life"
+and "Ends within the lookahead window" and a "Support records" section.
+`--counts-only` prints `support_records listed=N ending_soon=M
+not_matched=K`. report.md and report.csv show at most 10 records per
+item, then "and N more in report.json": records that have not ended
+first, nearest end date first, then ended ones, most recently ended
+first. `report.json` keeps them all, sorted by end date and reference.
+The tool does not check that a record was paid for or is current.
+Record references are confidential, like item IDs.
 
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.

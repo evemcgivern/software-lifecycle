@@ -442,7 +442,7 @@ class DemoViews(Base):
         self.assertIn(report.SUPPORT_LEAD, sec)
         for line in ("The tool does not check that a record was paid for "
                      "or is current.", "Discovery coverage is unknown",
-                     "Extended support may cover only some fixes or "
+                     "Extended support may include only some fixes or "
                      "editions.", "Record references are confidential"):
             self.assertIn(line, sec)
         self.assertIn(report.SUPPORT_COUNTS_LEAD, sec)
@@ -526,6 +526,35 @@ class DemoViews(Base):
         rep = json.loads((out / "report.json").read_text("utf-8"))
         item = [it for it in rep["items"] if it["version"] == "4.2"][0]
         self.assertEqual(len(item["support_records"]), 12)
+
+    def test_cap_shows_records_not_ended_first(self):
+        recs = [("SR-E%02d" % i, "tidewatersuite", "4", "k",
+                 "2026-01-%02d" % i, "") for i in range(1, 11)]
+        recs += [("SR-LATER", "tidewatersuite", "4", "k", "2028-01-01", ""),
+                 ("SR-SOON", "tidewatersuite", "4", "k", "2026-12-01", "")]
+        out = self.dir / "order"
+        code, _o, err = run_main(["check", self.inventory(), "--data",
+                                  str(DATA), "--as-of", "2026-10-24",
+                                  "--out", str(out), "--support-records",
+                                  self.records_file(recs, "order.csv")])
+        self.assertEqual(code, 0, err)
+        want = ["SR-SOON", "SR-LATER"] + ["SR-E%02d" % i
+                                          for i in range(10, 2, -1)]
+        md = (out / "report.md").read_text("utf-8")
+        self.assertEqual(re.findall(r"listed in your file: (SR-\w+)", md),
+                         want)
+        self.assertIn("  - and 2 more in report.json.", md)
+        rows = list(csv.DictReader(io.StringIO(
+            (out / "report.csv").read_text("utf-8"))))
+        cell = [r for r in rows if r["version"] == "4.2"][0][
+            report.SUPPORT_COLUMN]
+        self.assertEqual(re.findall(r"SR-\w+", cell), want)
+        self.assertTrue(cell.endswith("; and 2 more in report.json"), cell)
+        rep = json.loads((out / "report.json").read_text("utf-8"))
+        item = [it for it in rep["items"] if it["version"] == "4.2"][0]
+        self.assertEqual([e["record_ref"] for e in item["support_records"]],
+                         ["SR-E%02d" % i for i in range(1, 11)]
+                         + ["SR-SOON", "SR-LATER"])
 
     def test_csv_and_md_guard_record_text(self):
         inv = self.inventory()

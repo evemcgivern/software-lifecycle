@@ -640,17 +640,20 @@ What it does:
   product)." or "(scope: CYCLE)". A date on or before the checked-on
   date reads "ended on DATE", the same rule as an item's state. The next
   line says "The tool does not check that this record is current." At
-  most 10 records print per item, then "and N more in report.json". Items
-  in other sections get no line.
+  most 10 records print per item, then "and N more in report.json".
+  Records that have not ended print first, nearest end date first, then
+  ended ones, most recently ended first. Items in other sections get no
+  line.
 - `report.md` adds a "Support records" section, after the item sections,
   when a file is given. It lists the records that end within the
   lookahead window (after the checked-on date, up to and including the
   window end) and the records not matched to a dated item in this
   inventory, with the reference, product, scope, kind and date only.
   Without a file the section is left out.
-- `report.csv` adds a last column, "Support records (from your file)",
-  with at most 10 records per item and then "and N more in report.json".
-  `report.json` adds the item key `support_records` (every record, no
+- `report.csv` always has a last column, "Support records (from your
+  file)", after "Review reason"; without a file every cell is empty.
+  With a file it holds at most 10 records per item, in the same order as
+  report.md, and then "and N more in report.json". `report.json` adds the item key `support_records` (every record, no
   cap), `counts.support_records` (`listed`, `ending_soon`, `not_matched`)
   and, only when the flag is used, `meta.override_hashes.support_records`.
 - `--counts-only` prints one line,
@@ -675,7 +678,7 @@ What it does not do:
 - Discovery coverage is unknown: software missing from the inventory may
   still be in use, so "not matched to a dated item in this inventory" is
   not proof that a product is not in use.
-- Extended support may cover only some fixes or editions. Read the
+- Extended support may include only some fixes or editions. Read the
   record itself.
 - It does not compare what is installed with what is owned.
 - Record references are confidential, like item IDs and the inventory.

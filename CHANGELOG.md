@@ -6,7 +6,8 @@
   the support records you hold (your reference, an endoflife.date product
   ID, an optional cycle or version, a kind and an end date). `report.md`
   shows a line on past and near end-of-life items that have one and a
-  "Support records" section; `report.csv` adds a last column;
+  "Support records" section; `report.csv` always has a new last column,
+  empty without the flag, so "Review reason" is no longer last;
   `report.json` adds the item key `support_records` (always present, empty
   by default) and `counts.support_records`; `--counts-only` prints one
   count line, and `meta.override_hashes` gains the file's hash when the

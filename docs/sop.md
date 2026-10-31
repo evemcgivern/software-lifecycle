@@ -51,12 +51,13 @@ who holds each role.
    each item, the owner chooses: replace, upgrade, retire, or request risk
    acceptance (step 8). If a support record is listed in your file, the
    item shows it ("A support record is listed in your file: REF, KIND,
-   ends on DATE (scope: ...)."); use it to weigh paying for extended
-   support against migrating. The tool does not check that a record was
-   paid for or is current, and extended support may cover only some
-   fixes or editions. Then read the "Support records" section: renew or
-   end the records that end within the window, and check each record not
-   matched to a dated item in this inventory. That includes a product
+   ends on DATE (scope: ...)." or "ended on DATE"); use it to weigh
+   paying for extended support against migrating. The tool does not
+   check that a record was paid for or is current, and extended support
+   may include only some fixes or editions. Then read the "Support
+   records" section: renew or end the records that end within the
+   window, and check each record not matched to a dated item in this
+   inventory. That includes a product
    that is in the inventory without a decided cycle or version, and
    discovery coverage is unknown, so the product may still be in use.
    After a data refresh, a record whose product ID was renamed or removed

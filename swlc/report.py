@@ -121,7 +121,7 @@ SUPPORT_LEAD = (
     "and never affects --fail-on. The tool does not check that a record "
     "was paid for or is current. Discovery coverage is unknown: software "
     "missing from this inventory may still be in use. Extended support may "
-    "cover only some fixes or editions. Record references are "
+    "include only some fixes or editions. Record references are "
     "confidential; keep this report as private as the file.")
 SUPPORT_COUNTS_LEAD = (
     "Listed: records that fit at least one dated item (an item with a "
@@ -336,14 +336,22 @@ def _ends_word(ends_on: str, as_of: str) -> str:
     return "ended" if ends_on <= as_of else "ends"
 
 
-def _shown(it: dict) -> tuple:
-    """(entries to print, how many more are only in report.json)."""
+def _shown(it: dict, as_of: str) -> tuple:
+    """(entries to print, how many more are only in report.json).
+
+    Records that have not ended come first, nearest end first, then
+    ended ones, most recently ended first, so the cap never hides the
+    next end date. report.json keeps its own order."""
     entries = it.get("support_records") or []
-    return entries[:SUPPORT_SHOWN], max(0, len(entries) - SUPPORT_SHOWN)
+    ahead = [e for e in entries if e["ends_on"] > as_of]
+    ended = [e for e in entries if e["ends_on"] <= as_of]
+    ended = sorted(ended, key=lambda e: e["ends_on"], reverse=True)
+    ordered = ahead + ended
+    return ordered[:SUPPORT_SHOWN], max(0, len(ordered) - SUPPORT_SHOWN)
 
 
 def _support_lines(it: dict, as_of: str) -> list:
-    entries, more = _shown(it)
+    entries, more = _shown(it, as_of)
     if not entries:
         return []
     out = [SUPPORT_NOTE % (_disp(e["record_ref"]), _disp(e["kind"]),
@@ -359,7 +367,7 @@ def _support_lines(it: dict, as_of: str) -> list:
 
 
 def _support_cell(it: dict, as_of: str) -> str:
-    entries, more = _shown(it)
+    entries, more = _shown(it, as_of)
     parts = ["%s, %s, %s on %s, scope %s%s" % (
         e["record_ref"], e["kind"], _ends_word(e["ends_on"], as_of),
         e["ends_on"], e["scope"] or SUPPORT_ANY_SCOPE,
