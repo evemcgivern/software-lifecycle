@@ -604,6 +604,13 @@ message also leaves out file content; it says to rerun locally without
 An item ID is a 12-character code made from the publisher, name and
 version. It is the same on every run for the same item.
 
+An item ID is a hash with no secret in it. It keeps names out of the
+counts, but anyone who holds a guess of a product (publisher, name and
+version) can hash it and confirm that the item is in the estate. Common
+products and versions are easy to guess. Treat item IDs with the same
+care as the inventory itself: send them only to people and tools that may
+know what software you run.
+
 ## Running it with an AI agent safely
 
 Real inventories are Confidential.

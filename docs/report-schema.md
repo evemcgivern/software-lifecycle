@@ -118,6 +118,8 @@ Rows with the same normalized publisher, name and version make one item.
 "Normalized" means lowercased, with extra spaces removed and a few fixed
 tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
 `id` is 12 hex characters made from those three values, stable across runs.
+It is an unsalted hash: a guessed publisher, name and version can be
+confirmed against it, so treat IDs with the same care as the inventory.
 
 | Field | Meaning |
 |---|---|

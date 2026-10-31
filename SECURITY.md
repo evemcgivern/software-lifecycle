@@ -91,3 +91,8 @@ Out of scope:
 - It has not been independently assessed or audited.
 - Its end-of-life and KEV data are snapshots and can be out of date.
 - A clean result does not prove that software is safe or supported.
+- Item IDs do not hide an item from someone who can guess it. An ID is
+  an unsalted, truncated SHA-256 of publisher, name and version, so a
+  guessed product can be confirmed against the IDs in a report, in
+  `--counts-only` output or in an override file. Treat IDs with the same
+  care as the inventory.

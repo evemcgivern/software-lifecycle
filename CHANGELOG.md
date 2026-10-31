@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Docs say plainly that an item ID is an unsalted, truncated hash of
+  publisher, name and version: it keeps names out of counts and findings,
+  but a guessed product can be confirmed against it, so IDs need the same
+  care as the inventory. README, `docs/usage.md`, `docs/report-schema.md`
+  and `SECURITY.md`. A keyed ID option is still open in issue #26.
 - Matching looks up only the aliases whose key starts with the name's
   first word, instead of testing every alias on every row (issue #23).
   The lookup is built once per loaded data folder. Results are
