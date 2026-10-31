@@ -654,7 +654,7 @@ What it does:
   window end) and the records not matched to a dated item in this
   inventory, with the reference, product, scope, kind and date only.
   Without a file the section is left out.
-- `report.csv` always has a last column, "Support records (from your
+- `report.csv` always has a column, "Support records (from your
   file)", after "Review reason"; without a file every cell is empty.
   With a file it holds at most 10 records per item, in the same order as
   report.md, and then "and N more in report.json". `report.json` adds the item key `support_records` (every record, no
@@ -693,6 +693,32 @@ no line has no record listed in the file given; that is all it means.
 Words the tool never uses about a record: covered, licensed, unlicensed,
 shelfware, compliant, non-compliant, audit-ready, over-licensed.
 
+## The count column
+
+The optional `count` column (headings such as "Install Count", "Qty" or
+"Device Count"; see the README) is a count from your file, not
+discovered installs. The tool does not check it.
+
+- An item's `install_count` is the sum of the valid count cells in its
+  rows. A valid cell is a whole number from 0 to 1000000000, digits only:
+  no sign, decimal point, separator, text or formula. A blank cell adds
+  nothing. Any other cell is ignored and counted in
+  `counts.count_invalid_cells`. An item with no valid cell has
+  `install_count` `null`.
+- Each list in `report.json`, each section in `report.md` and the rows of
+  `report.csv` are ordered by `install_count`, largest first, then items
+  with no count, then by item ID. Without a count column, or with no
+  valid cell, the order is the item-ID order of earlier versions and
+  `report.md` is unchanged.
+- `report.md` adds "Count (from your file): N" to each item that has a
+  count, one line under the summary saying how items are ordered, and,
+  when any cell was ignored, "Count cells ignored: N."
+- `report.csv` always has a last column, "Count (from your file)", after
+  "Support records (from your file)"; it is empty for an item with no
+  count.
+- A count never changes an item's state, list, class, parent links,
+  names to review, item ID or `--fail-on`. It only sets the order.
+
 ## Counts-only mode
 
     python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out
@@ -707,7 +733,10 @@ It prints:
 - the support-record counts
   (`support_records listed=N ending_soon=M not_matched=K`), with no
   references, products or dates;
-- each list with its count and the item IDs.
+- `count_total N`, the sum of every item's count, only when the count
+  column has at least one filled cell;
+- each list with its count and the item IDs, in item-ID order, so the
+  order says nothing about any one item's count.
 
 It prints no names, versions, publishers or owners. In this mode an error
 message also leaves out file content; it says to rerun locally without

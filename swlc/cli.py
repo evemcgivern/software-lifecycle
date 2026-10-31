@@ -308,8 +308,14 @@ def _counts_text(result: dict) -> str:
              "support_records " + " ".join(
                  "%s=%d" % (k, counts["support_records"][k])
                  for k in ("listed", "ending_soon", "not_matched"))]
+    with_count = [it["install_count"] for it in result["items"]
+                  if it["install_count"] is not None]
+    if with_count or counts["count_invalid_cells"]:
+        # A total only; IDs below stay in ID order so the list order says
+        # nothing about any one item's count.
+        lines.append("count_total %d" % sum(with_count))
     for name in LISTS:
-        ids = result["lists"][name]
+        ids = sorted(result["lists"][name])
         lines.append("%s %d%s" % (name, len(ids),
                                   ": " + " ".join(ids) if ids else ""))
     return "\n".join(lines) + "\n"

@@ -36,6 +36,9 @@ GENERIC_ALIASES: dict[str, list[str]] = {
 }
 
 _HEADER_JUNK = re.compile(r"[^0-9a-z]+")
+_WHOLE = re.compile(r"[0-9]+")
+# Largest count cell accepted. A bigger number is treated as a mistake.
+MAX_COUNT_CELL = 10**9
 
 
 def _norm_header(text: str) -> str:
@@ -185,6 +188,19 @@ def map_columns(headers: list[str], profile: dict | None,
     return found
 
 
+def count_cell(text: str):
+    """A count cell as an int, or None when it is not a whole number from
+    0 to MAX_COUNT_CELL (negatives, decimals, separators, text, formulas).
+    Blank cells are the caller's to skip."""
+    if not _WHOLE.fullmatch(text):
+        return None
+    digits = text.lstrip("0") or "0"
+    if len(digits) > len(str(MAX_COUNT_CELL)):
+        return None
+    value = int(digits)
+    return value if value <= MAX_COUNT_CELL else None
+
+
 def item_id(publisher: str, name: str, version: str) -> str:
     parts = "\x1f".join(normalize_name(p) for p in (publisher, name, version))
     return hashlib.sha256(parts.encode("utf-8")).hexdigest()[:12]
@@ -212,7 +228,9 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         if grp is None:
             grp = groups[gid] = {"id": gid, "rows": 0, "owners": [],
                                  "export_eols": [], "publisher": pub,
-                                 "name": name, "version": ver}
+                                 "name": name, "version": ver,
+                                 "install_count": None,
+                                 "count_invalid_cells": 0}
             owners[gid] = set()
             eols[gid] = set()
             parents[gid] = set()
@@ -226,6 +244,13 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         parent = cell(row, "parent")
         if parent:
             parents[gid].add(parent)
+        count = cell(row, "count")
+        if count:
+            value = count_cell(count)
+            if value is None:
+                grp["count_invalid_cells"] += 1
+            else:
+                grp["install_count"] = (grp["install_count"] or 0) + value
     for gid, grp in groups.items():
         grp["owners"] = sorted(owners[gid])
         grp["export_eols"] = sorted(eols[gid])

@@ -39,10 +39,11 @@ INHERITED_STATES = (PAST, SOON, MAINSTREAM)
 
 def case(label, name, version, publisher, state, lists=(), *, rows=None,
          reason=None, disagree=None, decision=(), parent="",
-         classification=None, inherited_state=None):
+         classification=None, inherited_state=None, count_text=None):
     """One planted item. rows is [(owner, export date)]; default is one
     row owned by Finance Systems with no export date. parent is the Parent
-    cell; a parent case also gives its class and the parent's state."""
+    cell; a parent case also gives its class and the parent's state.
+    count_text replaces the random Install Count cell of each row."""
     return {
         "case": label, "name": name, "version": version,
         "publisher": publisher, "state": state, "reason": reason,
@@ -50,7 +51,7 @@ def case(label, name, version, publisher, state, lists=(), *, rows=None,
         "decision_needed": sorted(decision),
         "rows": rows or [("Finance Systems", "")], "parent": parent,
         "classification": classification,
-        "inherited_state": inherited_state,
+        "inherited_state": inherited_state, "count_text": count_text,
     }
 
 
@@ -97,8 +98,11 @@ CASES = [
     case("exception_active", "Demo OS 1.0", "1.0", FS, PAST,
          [PAST, "accepted_risk"],
          rows=[("Infrastructure", ""), ("Support Desk", "")]),
+    # A count cell that is not a whole number: ignored and counted in
+    # counts.count_invalid_cells, so the item has no count and comes last.
     case("exception_expired", "Redwood Backup", "1.0", SS, PAST, [PAST],
-         rows=[("Infrastructure", "")], decision=["EXCEPTION_EXPIRED"]),
+         rows=[("Infrastructure", "")], decision=["EXCEPTION_EXPIRED"],
+         count_text="about 40"),
     case("ownerless", "Tidewater Suite", "6.0", EC, SUPPORTED, ["ownerless"],
          rows=[("", "")]),
     case("build_number_mapped", "Quillbase Database", "12.0.6024.0", PL,
@@ -196,10 +200,16 @@ def build() -> dict:
     rng = random.Random(SEED)
     planted = {_key(c) for c in CASES}
     rows = []
+    counts: dict = {}
     for c in CASES:
         for owner, export in c["rows"]:
+            count = rng.randint(1, 400)
+            if c["count_text"] is None:
+                counts[c["case"]] = counts.get(c["case"], 0) + count
+            else:
+                count = c["count_text"]
             rows.append([c["name"], c["version"], c["publisher"], owner,
-                         rng.randint(1, 400), export, c["parent"]])
+                         count, export, c["parent"]])
     while len(rows) < TOTAL_ROWS:
         name, publisher, fmt, span = rng.choice(FILLER)
         version = fmt if span is None else fmt % rng.randint(*span)
@@ -224,13 +234,18 @@ def build() -> dict:
             "accepted_risk", "ownerless", "review_urgently",
             "golden_overrides")},
         "cases": {ids[c["case"]]: {
-            k: c[k] for k in ("case", "name", "version", "state", "reason",
-                              "lists", "dates_disagree", "decision_needed",
-                              "classification", "inherited_state")
-            if k not in ("classification", "inherited_state")
-            or c["classification"] is not None}
+            **{k: c[k] for k in ("case", "name", "version", "state",
+                                 "reason", "lists", "dates_disagree",
+                                 "decision_needed", "classification",
+                                 "inherited_state")
+               if k not in ("classification", "inherited_state")
+               or c["classification"] is not None},
+            # The sum of the item's Install Count cells, or None.
+            "install_count": counts.get(c["case"])}
             for c in CASES},
-        "counts": {"inherited_attention": sum(
+        "counts": {"count_invalid_cells": sum(
+            len(c["rows"]) for c in CASES if c["count_text"] is not None),
+            "inherited_attention": sum(
             1 for c in CASES if c["inherited_state"] in INHERITED_STATES),
             "support_records": {
                 "listed": sum(1 for r in SUPPORT_RECORDS if r[6]),

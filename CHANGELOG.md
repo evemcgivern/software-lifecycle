@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- The inventory's `count` column now orders the findings (issue #37).
+  Each item gets `install_count`, the sum of its rows' count cells: a
+  count from your file, not discovered installs. A cell that is not a
+  whole number from 0 to 1000000000 is ignored and counted in
+  `counts.count_invalid_cells`. Each list in `report.json`, each section
+  of `report.md` and the rows of `report.csv` go largest count first,
+  then items with no count, then by item ID. `report.md` shows "Count
+  (from your file): N" on items with a count; `report.csv` gains a last
+  column "Count (from your file)", after "Support records (from your
+  file)"; `--counts-only` prints `count_total N`. Without a count column
+  the order and `report.md` are unchanged. A count never changes a
+  state, a list's members, a class, an item ID or `--fail-on`.
+  `schema_version` stays 1.
 - Docs wording before publication (issue #36): the claims line is now
   "Runs locally with no network by default; not independently assessed."
   in the README, SECURITY.md and `report.md`. The BOD 26-04 sentence cites
