@@ -35,7 +35,8 @@ FIX_TEXT = {
                     "publisher when there is one; add a Publisher column if "
                     "the export has it.",
     "NO_COUNT": "No count column was found. That is fine: the report counts "
-                "inventory rows.",
+                "inventory rows and keeps its usual order. Add a count "
+                "column to rank items by it.",
     "NO_PARENT": "No parent column was found. That is fine; add one if the "
                  "export has it (see \"The Parent column\" in "
                  "docs/usage.md).",
