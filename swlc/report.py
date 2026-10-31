@@ -390,7 +390,8 @@ def render_markdown(result: dict, meta: dict,
     ambiguous = [it["id"] for it in result["items"] if it["ambiguity"]]
     out += ["", "Items: %d (rows: %d; inventory rows, not installs). %s; %s %d." % (
         result["counts"]["items"], result["counts"]["rows"],
-        "; ".join("%s %d" % (h.lower(), counts[name])
+        "; ".join("%s %d" % (h.lower().replace("cisa kev", "CISA KEV"),
+                             counts[name])
                   for name, h, _ in SECTIONS),
         REVIEW_HEADING.lower(), len(ambiguous))]
     out += ["", MATCH_CAVEAT]
