@@ -6,8 +6,14 @@ flag that marks items whose vendor and product appear in CISA's list of
 known exploited vulnerabilities (the KEV catalog), so a person can review
 them first.
 
-Runs locally with no network by default; built to enterprise security
-practices; not independently assessed.
+Runs locally with no network by default; not independently assessed.
+
+Who this is for: teams that have an inventory export but no commercial
+software catalog; security and platform teams that use `--fail-on` as an
+offline gate; and one-off reviews of an estate. When not to use it: shops
+that already run Flexera, ServiceNow or Rapid7 likely have wider catalogs,
+and this tool covers only the products endoflife.date lists.
+Dates come from endoflife.date unless a golden-sources file overrides them.
 
 It needs Python 3.9 or newer and nothing else. It uses only the standard
 library.
@@ -86,7 +92,8 @@ as the suite a part belongs to. A blank or placeholder cell (`n/a`, `none`)
 means no parent. See "The Parent column" in [docs/usage.md](docs/usage.md).
 
 The `count` and `export_support` headings are accepted but not used in
-this version: the tool reads them and does nothing with them. `rows` in the
+this version: the tool reads them and does nothing with them. The `count`
+column is read but not used to rank or filter findings. `rows` in the
 report counts inventory rows, not installs or machines. `report.md` says so in
 its summary line and labels each item's count "Inventory rows".
 
@@ -160,7 +167,10 @@ goes beyond it.
 - Details of the supply chain are in [SECURITY.md](SECURITY.md). See it for
   how to report a security problem.
 
-CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01. It is a reference only. It binds federal civilian agencies only. This tool does not implement it or its deadlines. Details are not reviewed here (Unverified).
+CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01 (source:
+<https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk>).
+It is a reference only. It binds federal civilian agencies only. This tool
+does not implement it or its deadlines.
 
 ## Data and release verification
 
@@ -287,16 +297,8 @@ Already set up (as of 2026-10-25):
   (one issue, opened or updated when the weekly update stops). Create it
   once by hand; the job also creates it if it is missing.
 
-The repository is currently private. When it goes public again:
-
-- Turn private vulnerability reporting on again (it was on while the
-  repository was public on 2026-10-25). SECURITY.md and the issue-template
-  link send reporters there, and no email address is given.
-- Re-enable the daily KEV and weekly end-of-life workflows.
-- Check that "Allow GitHub Actions to create and approve pull requests" is
-  on in the Actions settings. The weekly end-of-life job opens its pull
-  request with the job token.
-- Re-run the dry runs.
+The steps for taking the repository public again are in
+[docs/maintaining.md](docs/maintaining.md).
 
 Run the tests from the repo root:
 
