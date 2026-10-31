@@ -18,6 +18,7 @@ from .errors import InputError
 from .matching import match_noted
 from .normalize import normalize_name
 from .overrides import Exceptions, Golden
+from .support import attach as attach_support
 
 SCHEMA_VERSION = 1
 STATES = ("supported", "mainstream_ended", "ends_soon", "past_eol",
@@ -300,8 +301,13 @@ def _diff(items: list, before: dict | None) -> dict:
 
 def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
            tracking: dict, as_of: date, lookahead_months: int = 12,
-           previous: dict | None = None) -> dict:
-    """Assess grouped inventory items against the loaded data."""
+           previous: dict | None = None,
+           support_records: list | None = None) -> dict:
+    """Assess grouped inventory items against the loaded data.
+
+    ``support_records`` (from swlc.support) only adds the item key
+    ``support_records`` and ``counts.support_records``; it changes no
+    state, list or other count."""
     if isinstance(as_of, datetime) or not isinstance(as_of, date):
         raise ValueError("as_of must be a date")
     if isinstance(lookahead_months, bool) or not isinstance(
@@ -320,6 +326,8 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
         if it["classification"] in PART_CLASSES:
             it["ambiguity"] = None
     lists = _lists(items)
+    support_counts = attach_support(items, support_records, as_of,
+                                    window_end)
 
     warnings = list(data.warnings)
     if not data.kev_current and not any("not current" in w for w in warnings):
@@ -383,6 +391,9 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             # Unmatched items refused on purpose (item "ambiguity"). They
             # stay in lists.unmatched; a count, not a list.
             "ambiguous_review": sum(1 for it in items if it["ambiguity"]),
+            # Records from the support-records file. Counts only; a record
+            # never changes a state, a list or --fail-on.
+            "support_records": support_counts,
         },
         "diff": _diff(items, before),
     }

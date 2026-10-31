@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from swlc import assess, cli, matching, overrides
+from swlc import assess, cli, matching, overrides, support
 from swlc.inputs import GENERIC_ALIASES, map_columns, read_rows
 from swlc.report import CLAIMS_LINE, DECISION_TEXT, KEV_LINE
 
@@ -71,11 +71,14 @@ class TemplateTests(unittest.TestCase):
         self.assertEqual(
             overrides.load_exceptions(str(p / "exceptions.csv")).rows, {})
         self.assertEqual(overrides.load_tracking(str(p / "tracking.csv")), {})
+        self.assertEqual(support.load_support_records(
+            str(p / "support-records.csv"), set()), [])
 
     def test_override_template_columns_match_the_loader(self):
         for name, cols in (("golden-sources.csv", overrides._GOLDEN_COLS),
                            ("exceptions.csv", overrides._EXC_COLS),
-                           ("tracking.csv", overrides._TRACK_COLS)):
+                           ("tracking.csv", overrides._TRACK_COLS),
+                           ("support-records.csv", support.COLUMNS)):
             with open(TEMPLATES / name, newline="", encoding="utf-8") as fh:
                 self.assertEqual(next(csv.reader(fh)), list(cols), name)
             self.assertEqual(cols[0], "schema_version")
@@ -387,6 +390,7 @@ class SchemaTests(unittest.TestCase):
             "counts.classification": set(r["counts"]["classification"]),
             "counts.unmatched_breakdown": set(
                 r["counts"]["unmatched_breakdown"]),
+            "counts.support_records": set(r["counts"]["support_records"]),
             "meta": set(r["meta"]),
             "meta.data_release": set(r["meta"]["data_release"]),
             "meta.override_hashes": set(r["meta"]["override_hashes"]),
@@ -418,8 +422,22 @@ class SchemaTests(unittest.TestCase):
     def test_override_columns_match_loader(self):
         for heading, cols in (("golden-sources.csv", overrides._GOLDEN_COLS),
                               ("exceptions.csv", overrides._EXC_COLS),
-                              ("tracking.csv", overrides._TRACK_COLS)):
+                              ("tracking.csv", overrides._TRACK_COLS),
+                              ("support-records.csv", support.COLUMNS)):
             self.assertEqual(self.documented(heading), set(cols), heading)
+
+    def test_support_record_entry_keys_documented(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "sr.csv"
+            path.write_text(",".join(support.COLUMNS) + "\n1,SR-1,"
+                            "tidewatersuite,,extended support,2027-01-31,"
+                            "\n", encoding="utf-8")
+            from datetime import date
+            r = cli.run(str(DEMO), data=str(FIXTURE_DATA),
+                        as_of=date(2026, 10, 24), support_records=str(path))
+        entries = [e for it in r["items"] for e in it["support_records"]]
+        self.assertTrue(entries)
+        self.assertEqual(self.documented("support_records"), set(entries[0]))
 
 
 # Plain words that are not identifying.

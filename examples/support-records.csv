@@ -1,0 +1,8 @@
+schema_version,record_ref,product,scope,kind,ends_on,owner_role
+1,SR-1001,tidewatersuite,4,extended support,2027-06-30,Application owner
+1,SR-1002,examplesql,14,extended support,2026-06-30,
+1,SR-1003,tidewatersuite,5.0,vendor support,2028-03-31,ITAM lead
+1,SR-1004,northwindgateway,,vendor support,2029-01-31,Infrastructure lead
+1,SR-1005,copperfieldnotes,9,extended support,2027-01-31,
+1,SR-1006,brightlineeditor,9.0,vendor support,2028-12-31,
+1,SR-1007,lanternviewer,,vendor support,2027-12-31,Desktop lead

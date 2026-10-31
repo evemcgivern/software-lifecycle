@@ -10,8 +10,16 @@ listed as unmatched. Check the source and cycle before relying on any
 row." It is not a key and is not in `report.json` or `report.csv`.
 
 `report.md` also has a "Names to review" section and `report.csv` a
-trailing "Review reason" column, both made from the item key `ambiguity`
+"Review reason" column, both made from the item key `ambiguity`
 (see below).
+
+With `--support-records`, `report.md` adds a support-record line to items
+in "Past end of life" and "Ends within the lookahead window" and a
+"Support records" section, and `report.csv` a last column "Support
+records (from your file)", made from the item key `support_records` (see
+below). `--counts-only` prints `support_records listed=N ending_soon=M
+nothing_found=K`. The tool does not check that a record was paid for or
+is current. Record references are confidential, like item IDs.
 
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.
@@ -53,6 +61,7 @@ inventory, so keep it as private as the inventory.
 | `classification` | Count of items in each class. See `counts.classification`. |
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
 | `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
+| `support_records` | Counts from the support-records file. See `counts.support_records`. Zeros when no file is given. A count only: a record never changes a state, a list or `--fail-on`. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 
 ### counts.classification
@@ -79,6 +88,14 @@ is unchanged. `report.md` leads its "Couldn't match" section with the
 `needs_review` number and lists the other unmatched items in "Parts that could
 not be matched". The warning "N parts whose parent is not in this inventory"
 (`parent_absent` in `classification_basis`) appears in `warnings`.
+
+### counts.support_records
+
+| Key | Meaning |
+|---|---|
+| `listed` | Records that fit at least one matched item in this inventory. |
+| `ending_soon` | Records whose `ends_on` is from `as_of` to the end of the lookahead window, both included, whether or not they fit an item. |
+| `nothing_found` | Records that fit no matched item: nothing found in this inventory. `listed` and `nothing_found` add up to the records in the file. |
 
 ### meta
 
@@ -155,6 +172,7 @@ confirmed against it, so treat IDs with the same care as the inventory.
 | `parent_ref` | The named parent of a `bundle_member`, or `null`. See `parent_ref` below. |
 | `inherited_from` | The parent item's ID when the parent is in the same inventory; otherwise `null`. |
 | `inherited_lifecycle` | The parent's dates, shown against a part and labelled as the parent's, or `null`. See `inherited_lifecycle` below. The item's own date fields never change. |
+| `support_records` | Always present: a list, empty by default, of the support records from `--support-records` that fit this item, sorted by `ends_on` then `record_ref`. See `support_records` below. Only matched items (with a `cycle`) get records. It changes no other key. |
 | `ambiguity` | `null`, or an object with `code` and `reason` when the matcher refused this unmatched row on purpose: the name looks like a catalog product, but there is not enough evidence. See `ambiguity` below. Never set on a matched item or on a part (`component` or `bundle_member`). |
 
 ### parent_ref
@@ -186,6 +204,21 @@ only: a part whose parent is itself a part gets none.
 | `extended_support` | The parent's `extended_support`. |
 | `state` | The parent's `state`, in the item state words. |
 | `label` | Always "inherited from parent". |
+
+### support_records
+
+A record fits an item when the item has a `cycle`, its `product` is the
+record's `product`, and the record's `scope` is empty or equal to the
+item's `cycle` or `version` (compared without regard to case or spacing).
+A record never changes `state`, never puts an item on a list, and
+`--fail-on` never reads it. Record references are confidential.
+
+| Key | Meaning |
+|---|---|
+| `record_ref` | Your reference, as in the file. |
+| `kind` | The kind, as in the file, for example `extended support`. |
+| `ends_on` | The record's end date, `YYYY-MM-DD`. |
+| `owner_role` | The role from the file, or `null`. |
 
 ### ambiguity
 
@@ -351,7 +384,7 @@ changes from format 1 to format 2 lists many items here: rows that were
 
 ## Override file columns (schema_version 1)
 
-All three files are CSV with a header row. The first column is
+All four files are CSV with a header row. The first column is
 `schema_version` and every row must hold `1`. Every column listed below
 must appear in the header, even the optional ones; a missing one stops the
 run with "missing required column(s)". Header names are matched
@@ -406,6 +439,22 @@ Links a finding to your change and problem records.
 | `change_ref` | Your change record reference. May be empty. |
 | `problem_ref` | Your problem record reference. May be empty. |
 
+### support-records.csv
+
+Support records you hold, shown beside the vendor's dates. A lifecycle
+and renewal aid, not a licence or audit position. There is no quantity,
+licence metric, cost or vendor column.
+
+| Column | Rule |
+|---|---|
+| `schema_version` | `1`. |
+| `record_ref` | Required. Your own reference (contract, purchase order or ticket), up to 64 characters. Each one once (compared without regard to case or spacing). |
+| `product` | Required. An endoflife.date product ID in the loaded data, exactly. Product names are not matched; an unknown ID stops the run. |
+| `scope` | Optional. A cycle label or version, up to 64 characters. Empty means any cycle of the product. |
+| `kind` | Required. A short label, up to 40 characters, for example `extended support`. |
+| `ends_on` | Required date. |
+| `owner_role` | Optional. A role, not a person, up to 80 characters. |
+
 ## Stability
 
 Within a `schema_version`, keys are never removed or renamed and never
@@ -413,7 +462,11 @@ change meaning or type. New keys may be added; consumers must ignore keys
 they do not know. Adding a state, a list name, a reason code or a decision
 code bumps `schema_version`. The item key `ambiguity` and
 `counts.ambiguous_review` were added within schema version 1 as new keys;
-they add no state, list, reason code or decision code. The `ambiguity`
+they add no state, list, reason code or decision code. The item key
+`support_records`, `counts.support_records` and the `support_records`
+keyword of `swlc.cli.run` were added the same way: optional keys only, no
+new state, list, reason code or decision code. A report with them and a
+report without them read each other with `--previous`. The `ambiguity`
 codes follow the reason-code rule: adding one bumps `schema_version`.
 The keyword arguments of `swlc.cli.run` follow
 the same rule. The tool only reads a `--previous` report of its own schema
@@ -432,7 +485,7 @@ from the repo root, or put the repo on `sys.path`.
 
 Options are keyword arguments: `as_of` (required), `data`,
 `lookahead_months`, `profile`, `columns`, `golden`, `exceptions`,
-`tracking`, `previous` and `encoding`. They match the command-line flags.
+`tracking`, `support_records`, `previous` and `encoding`. They match the command-line flags.
 It raises:
 
 - `InputError` (in `swlc.errors`) when the inventory, a columns file, an

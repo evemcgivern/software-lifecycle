@@ -24,7 +24,7 @@ Run these from the repo root.
 1. Try the demo. The demo inventory is made up and runs against synthetic
    data, so the output never changes with the date:
 
-       python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --out /tmp/swlc-demo
+       python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo
 
 2. Open `/tmp/swlc-demo/report.md`. `report.json` and `report.csv` are in
    the same folder.
@@ -120,6 +120,14 @@ You own these files. The tool never changes them.
   reference.
 - `tracking.csv` links a finding's item ID to a change reference and a
   problem reference.
+- `support-records.csv` lists the support records you hold (your
+  reference, an endoflife.date product ID, an optional cycle, a kind such
+  as extended support, and an end date). The report shows them beside the
+  vendor's dates and lists records that end within the window or name
+  nothing found in this inventory. It is a lifecycle and renewal aid, not
+  a licence or audit position: the tool does not check that a record was
+  paid for or is current, and a record never changes a state, a list or
+  `--fail-on`. See "Support records" in [docs/usage.md](docs/usage.md).
 
 Blank copies are in `templates/`. The column rules are in
 [docs/report-schema.md](docs/report-schema.md). The quarterly process is in

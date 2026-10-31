@@ -96,3 +96,8 @@ Out of scope:
   guessed product can be confirmed against the IDs in a report, in
   `--counts-only` output or in an override file. Treat IDs with the same
   care as the inventory.
+- A support-records file and the reports made with it hold your record
+  references (contract, purchase order or ticket references). Treat them
+  as confidential, like item IDs. `--counts-only` prints only the three
+  support-record counts. The tool does not check that a record was paid
+  for or is current.

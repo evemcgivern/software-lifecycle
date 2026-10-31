@@ -14,6 +14,7 @@ import json
 import unicodedata
 from datetime import date, timedelta
 
+from .assess import add_months
 from .classify import PARENT_ABSENT, PARENT_NO_DATE, inherited_states
 
 MAX_DISPLAY = 120
@@ -101,6 +102,22 @@ REVIEW_LEAD = ("Unmatched on purpose, not a finding. Each name looks like a "
                "a curated alias, or record that it is a different product. "
                "These items are also counted under "
                "\"Couldn't match\".")
+SUPPORT_HEADING = "Support records"
+SUPPORT_COLUMN = "Support records (from your file)"
+SUPPORT_NOTE = "A support record is listed in your file: %s, %s, %s on %s."
+SUPPORT_LEAD = (
+    "From your support-records file, shown beside the vendor's dates. A "
+    "record never changes an item's state, never puts an item on a list "
+    "and never affects --fail-on. The tool does not check that a record "
+    "was paid for or is current. Discovery coverage is unknown: software "
+    "missing from this inventory may still be in use. Extended support may "
+    "cover only some fixes or editions. Record references are "
+    "confidential; keep this report as private as the file.")
+SUPPORT_COUNTS = ("Listed against items in this inventory: %d. Ending "
+                  "within the lookahead window: %d. Nothing found in this "
+                  "inventory: %d.")
+# Item sections whose items get a support-record note line.
+SUPPORT_SECTIONS = ("past_eol", "ends_soon")
 CSV_COLUMNS = (
     "id", "name", "version", "publisher", "owners", "rows", "state",
     "reason", "product", "cycle", "eol_used", "eol_source", "eol_endoflife",
@@ -108,7 +125,8 @@ CSV_COLUMNS = (
     "golden_applied", "golden_expired", "dates_disagree", "accepted_risk",
     "exception_expired", "decision_needed", "kev", "kev_stale",
     "change_ref", "problem_ref", "lists", "match_source",
-    "classification", "parent_ref", INHERITED_HEADING, REVIEW_COLUMN)
+    "classification", "parent_ref", INHERITED_HEADING, REVIEW_COLUMN,
+    SUPPORT_COLUMN)
 
 _MD_SPECIAL = "\\`*_[]()#|~!"
 
@@ -294,7 +312,47 @@ def _parent_lines(it: dict, by_id: dict) -> list:
     return lines
 
 
-def _item_block(it: dict, eol_snap: str, by_id: dict) -> list:
+def _ends_word(ends_on: str, as_of: str) -> str:
+    return "ended" if ends_on < as_of else "ends"
+
+
+def _support_lines(it: dict, as_of: str) -> list:
+    return [SUPPORT_NOTE % (_disp(e["record_ref"]), _disp(e["kind"]),
+                            _ends_word(e["ends_on"], as_of), e["ends_on"])
+            for e in it.get("support_records") or ()]
+
+
+def _record_line(rec: dict, as_of: str) -> str:
+    ends_on = rec["ends_on"].isoformat()
+    return "- %s, product %s, %s, %s on %s." % (
+        _disp(rec["record_ref"]), _disp(rec["product"]), _disp(rec["kind"]),
+        _ends_word(ends_on, as_of), ends_on)
+
+
+def _support_section(result: dict, records: list) -> list:
+    """The "Support records" section: records ending within the window and
+    records that fit nothing here. Record fields only, no inventory text."""
+    as_of = result["as_of"]
+    end = add_months(date.fromisoformat(as_of), result["lookahead_months"])
+    listed = {e["record_ref"] for it in result["items"]
+              for e in it.get("support_records") or ()}
+    soon = [r for r in records
+            if as_of <= r["ends_on"].isoformat() <= end.isoformat()]
+    none = [r for r in records if r["record_ref"] not in listed]
+    counts = result["counts"]["support_records"]
+    out = ["", "## %s" % SUPPORT_HEADING, "", SUPPORT_LEAD, "",
+           SUPPORT_COUNTS % (counts["listed"], counts["ending_soon"],
+                             counts["nothing_found"]), ""]
+    for label, chosen in (("Ending within the lookahead window", soon),
+                          ("Nothing found in this inventory", none)):
+        out += ["%s (%d):" % (label, len(chosen)), ""]
+        out += [_record_line(r, as_of) for r in chosen] or ["None."]
+        out.append("")
+    return out[:-1]
+
+
+def _item_block(it: dict, eol_snap: str, by_id: dict,
+                as_of: str | None = None) -> list:
     head = "- **%s** %s" % (_name(it["name"]), _disp(it["version"]))
     if it["publisher"]:
         head += ", publisher %s" % _disp(it["publisher"])
@@ -316,6 +374,8 @@ def _item_block(it: dict, eol_snap: str, by_id: dict) -> list:
     if it["state"] == "unmatched":
         sub.append(_unmatched_line(it))
     sub.extend(_date_lines(it, eol_snap))
+    if as_of is not None:
+        sub.extend(_support_lines(it, as_of))
     if it["dates_disagree"]:
         sub.append("Dates disagree: %s" % it["dates_disagree"])
     if it["accepted_risk"]:
@@ -354,7 +414,10 @@ def _kev_age_text(result: dict) -> str:
 
 
 def render_markdown(result: dict, meta: dict,
-                    governable_only: bool = False) -> str:
+                    governable_only: bool = False,
+                    support_records: list | None = None) -> str:
+    """``support_records`` is the loaded file (swlc.support), or None when
+    no file was given; then the "Support records" section is left out."""
     rel = result["data_release"]
     eol_snap = _snapshot(result, "eol_age_days")
     kev_snap = _snapshot(result, "kev_age_days")
@@ -401,7 +464,8 @@ def render_markdown(result: dict, meta: dict,
     def hidden(gid):
         return governable_only and not _needs_review(items[gid])
 
-    def emit(heading, count, ids, lead=None, none_text="None."):
+    def emit(heading, count, ids, lead=None, none_text="None.",
+             notes=False):
         out.extend(["", "## %s (%d)" % (heading, count), ""])
         if lead:
             out.extend(lead)
@@ -411,7 +475,8 @@ def render_markdown(result: dict, meta: dict,
         elif not shown:
             out.append("All of these are hidden by --governable-only.")
         for gid in shown:
-            out.extend(_item_block(items[gid], eol_snap, items))
+            out.extend(_item_block(items[gid], eol_snap, items,
+                                   result["as_of"] if notes else None))
 
     unmatched = result["lists"]["unmatched"]
     review = [gid for gid in unmatched if _needs_review(items[gid])]
@@ -445,7 +510,11 @@ def render_markdown(result: dict, meta: dict,
             if not result["kev_current"]:
                 none_text = ("None listed. KEV overlay is not current, so "
                              "this does not show there are none.")
-        emit(heading, len(ids), ids, lead, none_text)
+        emit(heading, len(ids), ids, lead, none_text,
+             name in SUPPORT_SECTIONS)
+
+    if support_records is not None:
+        out += _support_section(result, support_records)
 
     diff = result["diff"]
     if diff["available"]:
@@ -518,6 +587,12 @@ def render_csv(result: dict, governable_only: bool = False) -> str:
         row["parent_ref"] = _parent_cell(it, by_id)
         row[INHERITED_HEADING] = _inherited_cell(it)
         row[REVIEW_COLUMN] = (it["ambiguity"] or {}).get("reason")
+        row[SUPPORT_COLUMN] = "; ".join(
+            "%s, %s, %s on %s%s" % (
+                e["record_ref"], e["kind"],
+                _ends_word(e["ends_on"], result["as_of"]), e["ends_on"],
+                ", owner role " + e["owner_role"] if e["owner_role"] else "")
+            for e in it.get("support_records") or ())
         row["owners"] = "; ".join(it["owners"])
         row["decision_needed"] = "; ".join(it["decision_needed"])
         row["lists"] = "; ".join(sorted(member.get(it["id"], [])))

@@ -17,6 +17,7 @@ from .inputs import GENERIC_ALIASES, group_rows, map_columns, read_rows
 from .overrides import file_hash, load_exceptions, load_golden, load_tracking
 from .report import (hidden_line, render_csv, render_json, render_markdown)
 from .safeio import write_text
+from .support import load_support_records
 
 EXIT_OK, EXIT_USAGE, EXIT_INPUT, EXIT_DATA = 0, 2, 3, 4
 EXIT_FINDINGS, EXIT_UNEXPECTED = 10, 70
@@ -101,8 +102,25 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
           lookahead_months: int = 12, profile: str = "generic",
           columns: str | None = None, golden: str | None = None,
           exceptions: str | None = None, tracking: str | None = None,
-          previous: str | None = None, encoding: str | None = None):
+          previous: str | None = None, encoding: str | None = None,
+          support_records: str | None = None):
     """Run the whole check; return (result, meta). Raises the tool's errors."""
+    result, meta, _records = _build(
+        inventory_path, as_of=as_of, data=data,
+        lookahead_months=lookahead_months, profile=profile, columns=columns,
+        golden=golden, exceptions=exceptions, tracking=tracking,
+        previous=previous, encoding=encoding,
+        support_records=support_records)
+    return result, meta
+
+
+def _build(inventory_path: str, *, as_of: date, data: str | None,
+           lookahead_months: int, profile: str, columns: str | None,
+           golden: str | None, exceptions: str | None, tracking: str | None,
+           previous: str | None, encoding: str | None,
+           support_records: str | None):
+    """As build, plus the loaded support records (None when no file),
+    which report.md needs for its "Support records" section."""
     loaded = load_data(data or BUNDLED_DATA, as_of)
     if profile == "generic":
         columns_map, status = None, None
@@ -120,10 +138,11 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
     groups = group_rows(rows, colmap)
     prior = _read_json(previous, MAX_PREVIOUS_BYTES, "previous report") \
         if previous else None
+    records = load_support_records(support_records, set(loaded.products))
     try:
         result = assess(groups, loaded, load_golden(golden),
                         load_exceptions(exceptions), load_tracking(tracking),
-                        as_of, lookahead_months, prior)
+                        as_of, lookahead_months, prior, records)
     except (OverflowError, ValueError):
         raise UsageError("a date is out of range") from None
     meta = {
@@ -137,7 +156,7 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
         "profile": {"name": profile, "status": status},
         "encoding": encoding or "utf-8",
     }
-    return result, meta
+    return result, meta, records
 
 
 def run(inventory_path: str, **options) -> dict:
@@ -193,6 +212,10 @@ def _parser() -> argparse.ArgumentParser:
                        help="exceptions CSV: accepted risk")
     check.add_argument("--tracking", metavar="FILE",
                        help="tracking CSV: change and problem references")
+    check.add_argument("--support-records", metavar="FILE",
+                       help="support-records CSV: your own support records, "
+                            "shown beside the dates; never changes a state "
+                            "or a list")
     check.add_argument("--previous", metavar="REPORT.json",
                        help="an earlier report.json, to show what changed")
     check.add_argument("--out", metavar="DIR",
@@ -249,9 +272,9 @@ def _check_out(out: str, inventory: str) -> None:
 
 
 def _write_out(out: str, inventory: str, result: dict, meta: dict,
-               governable_only: bool = False) -> None:
+               governable_only: bool = False, records=None) -> None:
     texts = (render_json(result, meta),
-             render_markdown(result, meta, governable_only),
+             render_markdown(result, meta, governable_only, records),
              render_csv(result, governable_only))
     try:
         os.makedirs(out, mode=0o700, exist_ok=True)
@@ -277,7 +300,10 @@ def _counts_text(result: dict) -> str:
              "classification " + " ".join(
                  "%s=%d" % (k, v) for k, v
                  in sorted(counts["classification"].items())),
-             "ambiguous_review %d" % counts["ambiguous_review"]]
+             "ambiguous_review %d" % counts["ambiguous_review"],
+             "support_records " + " ".join(
+                 "%s=%d" % (k, counts["support_records"][k])
+                 for k in ("listed", "ending_soon", "nothing_found"))]
     for name in LISTS:
         ids = result["lists"][name]
         lines.append("%s %d%s" % (name, len(ids),
@@ -295,15 +321,16 @@ def _check(args) -> int:
     if args.out:
         _check_out(args.out, args.inventory)
     as_of = args.as_of or date.today()  # only clock read in the tool
-    result, meta = build(
+    result, meta, records = _build(
         args.inventory, as_of=as_of, data=args.data,
         lookahead_months=args.lookahead_months, profile=args.profile,
         columns=args.columns, golden=args.golden,
         exceptions=args.exceptions, tracking=args.tracking,
-        previous=args.previous, encoding=args.encoding)
+        previous=args.previous, encoding=args.encoding,
+        support_records=args.support_records)
     if args.out:
         _write_out(args.out, args.inventory, result, meta,
-                   args.governable_only)
+                   args.governable_only, records)
     if args.counts_only:
         sys.stdout.write(_counts_text(result))
     elif args.out:
@@ -311,7 +338,8 @@ def _check(args) -> int:
         if args.governable_only:
             print(hidden_line(result))
     else:
-        sys.stdout.write(render_markdown(result, meta, args.governable_only))
+        sys.stdout.write(render_markdown(result, meta, args.governable_only,
+                                         records))
     hit = [n for n in fail_on if result["lists"][n]]
     if hit:
         print("Findings present in: %s" % ", ".join(hit), file=sys.stderr)

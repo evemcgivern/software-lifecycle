@@ -28,6 +28,11 @@
       "supported": 25,
       "unmatched": 11
     },
+    "support_records": {
+      "ending_soon": 2,
+      "listed": 5,
+      "nothing_found": 2
+    },
     "unmatched_breakdown": {
       "needs_review": 8,
       "parts_parent_absent": 1,
@@ -112,6 +117,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "1.2"
     },
     {
@@ -153,6 +159,14 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": false,
+      "support_records": [
+        {
+          "ends_on": "2026-06-30",
+          "kind": "extended support",
+          "owner_role": null,
+          "record_ref": "SR-1002"
+        }
+      ],
       "version": "14"
     },
     {
@@ -194,6 +208,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "3.1"
     },
     {
@@ -235,6 +250,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2025-10-24",
+      "support_records": [],
       "version": "1.0"
     },
     {
@@ -278,6 +294,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2025-12-31",
+      "support_records": [],
       "version": "2.0"
     },
     {
@@ -321,6 +338,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "3.1"
     },
     {
@@ -362,6 +380,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2019-07-09",
+      "support_records": [],
       "version": "12.0.6024.0"
     },
     {
@@ -403,6 +422,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2026-01-01",
+      "support_records": [],
       "version": "2.0"
     },
     {
@@ -446,6 +466,14 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [
+        {
+          "ends_on": "2027-12-31",
+          "kind": "vendor support",
+          "owner_role": "Desktop lead",
+          "record_ref": "SR-1007"
+        }
+      ],
       "version": "11.4"
     },
     {
@@ -487,6 +515,7 @@
       "state": "past_eol",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "5.1"
     },
     {
@@ -542,6 +571,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "5.1.2"
     },
     {
@@ -585,6 +615,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2024-01-31",
+      "support_records": [],
       "version": "1.0"
     },
     {
@@ -626,6 +657,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-02-29",
+      "support_records": [],
       "version": "15.0.2000.1"
     },
     {
@@ -667,6 +699,14 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-12-31",
+      "support_records": [
+        {
+          "ends_on": "2029-01-31",
+          "kind": "vendor support",
+          "owner_role": "Infrastructure lead",
+          "record_ref": "SR-1004"
+        }
+      ],
       "version": "5.0"
     },
     {
@@ -708,6 +748,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "3.4"
     },
     {
@@ -749,6 +790,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "2"
     },
     {
@@ -791,6 +833,14 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [
+        {
+          "ends_on": "2027-12-31",
+          "kind": "vendor support",
+          "owner_role": "Desktop lead",
+          "record_ref": "SR-1007"
+        }
+      ],
       "version": "11.1"
     },
     {
@@ -832,6 +882,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-03-31",
+      "support_records": [],
       "version": "2.3"
     },
     {
@@ -873,6 +924,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2026-03-15",
+      "support_records": [],
       "version": "5.1"
     },
     {
@@ -914,6 +966,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-02-29",
+      "support_records": [],
       "version": "15.0.2000.3"
     },
     {
@@ -955,6 +1008,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-02-29",
+      "support_records": [],
       "version": "15.0.2000.5"
     },
     {
@@ -996,6 +1050,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "1"
     },
     {
@@ -1037,6 +1092,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "3.2"
     },
     {
@@ -1080,6 +1136,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "2.0"
     },
     {
@@ -1122,6 +1179,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-01-01",
+      "support_records": [],
       "version": "6.4"
     },
     {
@@ -1163,6 +1221,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2027-01-01",
+      "support_records": [],
       "version": "3.0"
     },
     {
@@ -1202,6 +1261,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-01-01",
+      "support_records": [],
       "version": "6.0"
     },
     {
@@ -1257,6 +1317,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "1"
     },
     {
@@ -1298,6 +1359,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "8.0"
     },
     {
@@ -1339,6 +1401,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "8.1"
     },
     {
@@ -1380,6 +1443,14 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2025-03-01",
+      "support_records": [
+        {
+          "ends_on": "2027-06-30",
+          "kind": "extended support",
+          "owner_role": "Application owner",
+          "record_ref": "SR-1001"
+        }
+      ],
       "version": "4.2"
     },
     {
@@ -1421,6 +1492,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "3.5"
     },
     {
@@ -1463,6 +1535,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-06-30",
+      "support_records": [],
       "version": "3.0"
     },
     {
@@ -1504,6 +1577,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2024-12-31",
+      "support_records": [],
       "version": "15"
     },
     {
@@ -1546,6 +1620,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "8.3"
     },
     {
@@ -1587,6 +1662,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-03-31",
+      "support_records": [],
       "version": "2.1"
     },
     {
@@ -1628,6 +1704,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [],
       "version": "16"
     },
     {
@@ -1670,6 +1747,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": ""
     },
     {
@@ -1711,6 +1789,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "9.0"
     },
     {
@@ -1752,6 +1831,14 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2024-12-31",
+      "support_records": [
+        {
+          "ends_on": "2029-01-31",
+          "kind": "vendor support",
+          "owner_role": "Infrastructure lead",
+          "record_ref": "SR-1004"
+        }
+      ],
       "version": "4.1"
     },
     {
@@ -1793,6 +1880,7 @@
       "state": "mainstream_ended",
       "state_endoflife": "mainstream_ended",
       "support": false,
+      "support_records": [],
       "version": "7.0"
     },
     {
@@ -1837,6 +1925,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "2019"
     },
     {
@@ -1878,6 +1967,14 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [
+        {
+          "ends_on": "2027-12-31",
+          "kind": "vendor support",
+          "owner_role": "Desktop lead",
+          "record_ref": "SR-1007"
+        }
+      ],
       "version": "11.5"
     },
     {
@@ -1919,6 +2016,14 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_records": [
+        {
+          "ends_on": "2027-12-31",
+          "kind": "vendor support",
+          "owner_role": "Desktop lead",
+          "record_ref": "SR-1007"
+        }
+      ],
       "version": "11.3"
     },
     {
@@ -1960,6 +2065,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "9"
     },
     {
@@ -2001,6 +2107,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-06-30",
+      "support_records": [],
       "version": "3.4"
     },
     {
@@ -2042,6 +2149,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_records": [],
       "version": "2"
     },
     {
@@ -2084,6 +2192,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2024-06-30",
+      "support_records": [],
       "version": "1.0"
     },
     {
@@ -2126,6 +2235,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-01-01",
+      "support_records": [],
       "version": "6.1"
     },
     {
@@ -2167,6 +2277,14 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2026-03-15",
+      "support_records": [
+        {
+          "ends_on": "2028-03-31",
+          "kind": "vendor support",
+          "owner_role": "ITAM lead",
+          "record_ref": "SR-1003"
+        }
+      ],
       "version": "5.0"
     }
   ],

@@ -24,6 +24,7 @@ screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 | `--golden FILE` | Golden-sources CSV. | `--golden golden-sources.csv` |
 | `--exceptions FILE` | Exceptions CSV (accepted risk). | `--exceptions exceptions.csv` |
 | `--tracking FILE` | Tracking CSV (change and problem references). | `--tracking tracking.csv` |
+| `--support-records FILE` | Support-records CSV: your own support records, shown beside the vendor's dates. Never changes a state, a list or `--fail-on`. See "Support records" below. | `--support-records support-records.csv` |
 | `--previous REPORT.json` | An earlier `report.json`. The new report then shows what is new, gone or changed. | `--previous last-quarter/report.json` |
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
@@ -32,13 +33,14 @@ screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
 | `-h`, `--help` | Show help. | `--help` |
 
-The override files (`--golden`, `--exceptions`, `--tracking`) are optional.
+The override files (`--golden`, `--exceptions`, `--tracking`,
+`--support-records`) are optional.
 A file with only its header row is a valid empty file. Their columns are in
 [report-schema.md](report-schema.md).
 
 Full example, the demo:
 
-    python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --out /tmp/swlc-demo
+    python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo
 
 ## verify-data
 
@@ -282,8 +284,8 @@ so; it does not hide them.
 - Exchange names with "Cumulative Update N" match the year in the name;
   the update number is not checked against the build in the version
   column, only the year is.
-- Office names in a language other than en-us (`- fr-fr`) are not
-  covered by the LTSC aliases.
+- Office names in a language other than en-us (`- fr-fr`) do not match
+  the LTSC aliases.
 
 ## Names to review
 
@@ -585,6 +587,82 @@ stays complete, and `unknown` items are never hidden.
 - The rates on a real estate are unknown. The benchmark measures
   classification on a gold sample, not on any inventory.
 
+## Support records
+
+A support-records file lists the support records your organisation holds,
+for example an extended-support contract, so that they show beside the
+vendor's end-of-life and extended-support dates. It is a lifecycle and
+renewal aid: it helps decide "pay for extended support or migrate" and
+plan renewals. It is not a licence position and not audit preparation.
+The tool shows the fact you list and makes no judgement about it.
+
+    python3 software_lifecycle.py check inventory.csv --support-records support-records.csv --out ../swlc-out
+
+One row per record. A blank copy is `templates/support-records.csv`; the
+demo has `examples/support-records.csv`. The columns are in
+[report-schema.md](report-schema.md):
+
+    schema_version,record_ref,product,scope,kind,ends_on,owner_role
+    1,SR-1001,tidewatersuite,4,extended support,2027-06-30,Application owner
+
+- `record_ref` is your own reference (a contract, purchase order or
+  ticket). Each one once in the file.
+- `product` is an endoflife.date product ID that is in the data the run
+  loads. Product names are not matched. An unknown ID stops the run with
+  an error that names the data row number, never the cell text.
+- `scope` is empty (any cycle of the product) or a cycle label or a
+  version, compared as in the exceptions file.
+- `kind` is a short label, up to 40 characters, such as `extended
+  support`. `ends_on` is the record's end date. `owner_role` is a role,
+  not a person, and may be empty.
+- The file has no quantity, licence metric, cost or vendor column. Other
+  columns are ignored, as in every override file, and never reach the
+  report.
+
+What it does:
+
+- An item gets the record when the item matched a product and cycle, the
+  product is the record's product, and the record's scope (if any) is the
+  item's cycle label or version. Unmatched items never get a record.
+- `report.md` adds one line to each item in "Past end of life" and "Ends
+  within the lookahead window" that has a record: "A support record is
+  listed in your file: REF, KIND, ends on DATE." When DATE is before the
+  checked-on date it says "ended on DATE". Items in other sections get no
+  line.
+- `report.md` adds a "Support records" section, after the item sections,
+  when a file is given. It lists the records that end within the
+  lookahead window (from the checked-on date to the window end, both
+  included) and the records that name nothing found in this inventory,
+  with the reference, product, kind and date only. Without a file the
+  section is left out.
+- `report.csv` adds a last column, "Support records (from your file)".
+  `report.json` adds the item key `support_records` and
+  `counts.support_records` (`listed`, `ending_soon`, `nothing_found`).
+- `--counts-only` prints one line,
+  `support_records listed=N ending_soon=M nothing_found=K`, with no
+  references, products or dates.
+
+What it does not do:
+
+- A record never changes an item's state, never puts an item on a list
+  or takes it off one, and never affects `--fail-on`, the class, the
+  parent links or any other count.
+- The tool does not check that a record was paid for or is current.
+- Discovery coverage is unknown: software missing from the inventory may
+  still be in use, so "nothing found in this inventory" is not proof that
+  a product is not in use.
+- Extended support may cover only some fixes or editions. Read the
+  record itself.
+- It does not compare what is installed with what is owned.
+- Record references are confidential, like item IDs and the inventory.
+
+The report words a record only as "a support record is listed in your
+file" or "nothing found in this inventory". An item with no line has no
+record listed in the file given; that is all it means. The tool never
+claims an item is in or out of entitlement. Words the tool never uses about a record: covered, licensed,
+unlicensed, shelfware, compliant, non-compliant, audit-ready,
+over-licensed.
+
 ## Counts-only mode
 
     python3 software_lifecycle.py check INVENTORY --counts-only --out ../swlc-out
@@ -596,6 +674,9 @@ It prints:
   and the count in each state;
 - the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - the count of names to review (`ambiguous_review N`), with no names;
+- the support-record counts
+  (`support_records listed=N ending_soon=M nothing_found=K`), with no
+  references, products or dates;
 - each list with its count and the item IDs.
 
 It prints no names, versions, publishers or owners. In this mode an error
