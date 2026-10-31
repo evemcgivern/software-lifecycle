@@ -49,7 +49,8 @@ FIX_TEXT = {
                "report.csv neutralizes them; check the export if you did "
                "not expect them.",
     "OTHER_PROFILE": "Another profile fits this file better than the one "
-                     "passed. The next command below uses the better fit.",
+                     "passed; see \"best fit\" above. The next command "
+                     "keeps the profile you passed.",
 }
 BLOCKING = ("NO_ROWS", "NO_NAME", "NO_VERSION")
 
@@ -105,7 +106,8 @@ def _score(headers: list, profiles: dict, extra: dict | None) -> dict:
         cols = profiles[name]["columns"]
         matched = sorted(f for f, aliases in cols.items()
                          if any(_norm_header(a) in seen for a in aliases))
-        fits = all(f in matched for f in CORE if f in cols)
+        core = [f for f in CORE if f in cols]
+        fits = bool(core) and all(f in matched for f in core)
         if fits:
             try:
                 map_columns(headers, cols, extra, require=False)
@@ -213,9 +215,7 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
         "formula_cells": formula,
         "fix": [{"code": c, "blocking": c in BLOCKING, "text": FIX_TEXT[c]}
                 for c in fix],
-        "next_command": _next_command(
-            path, best if profile and profile != best and best != "generic"
-            else used, columns, encoding),
+        "next_command": _next_command(path, used, columns, encoding),
     }
 
 

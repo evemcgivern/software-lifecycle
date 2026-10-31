@@ -83,7 +83,17 @@ class ProfileTests(Base):
         self.assertEqual(res["profile"]["used"], "flexera")
         self.assertEqual(res["profile"]["best"], "rapid7")
         self.assertIn("OTHER_PROFILE", [f["code"] for f in res["fix"]])
-        self.assertIn("--profile rapid7", res["next_command"])
+        self.assertIn("--profile flexera", res["next_command"])
+        self.assertNotIn("rapid7", res["next_command"])
+
+    def test_profile_without_core_headings_never_fits(self):
+        profiles = {"countonly": {"columns": {"count": ["Seats"]}},
+                    "empty": {"columns": {}}}
+        path = self.inv(["Product", "Version", "Seats"], [["a", "1", "2"]])
+        res = preflight.inspect(path, profiles)
+        self.assertFalse(res["profile"]["scores"]["countonly"]["fits"])
+        self.assertFalse(res["profile"]["scores"]["empty"]["fits"])
+        self.assertEqual(res["profile"]["best"], "generic")
 
     def test_unknown_profile_is_a_usage_error(self):
         path = self.inv(["Name", "Version"], [["a", "1"]])
