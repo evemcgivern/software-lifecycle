@@ -131,6 +131,48 @@
     https://packages.debian.org/trixie/linux-image-amd64 (Debian kernel
     versions 5.10, 6.1 and 6.12)
   - https://endoflife.date/sles (SLES service packs: 15 SP5 is 15.5)
+- Issue #20 rows (PowerShell 7, Red Hat Enterprise Linux, Rocky Linux,
+  AlmaLinux and Oracle Linux release names, Exchange "Cumulative Update N"
+  names; names and build numbers only, no dates), each page fetched on
+  2026-10-30. Every name form the aliases match has two sources:
+  - https://github.com/PowerShell/PowerShell/issues/27993 (the MSI product
+    name "PowerShell 7-x64")
+  - https://github.com/chef/automate/blob/61ca031112bf605c9c2a8975957b505635374e49/dev-docs/adding-data/sample-reports/desktop-report-3.json
+    (a captured Windows inventory listing "PowerShell 7-x64", publisher
+    Microsoft Corporation)
+  - https://access.redhat.com/articles/3078 (RHEL 7, 8 and 9 minor releases;
+    codenames Maipo for 7 and Ootpa for 8)
+  - https://access.redhat.com/solutions/6973382 (a RHEL 9.0 os-release file:
+    "Red Hat Enterprise Linux 9.0 (Plow)")
+  - https://www.postgresql.org/message-id/attachment/164600/os_info.txt (a
+    captured RHEL 7.9 os-release file: NAME "Red Hat Enterprise Linux
+    Server", PRETTY_NAME "Red Hat Enterprise Linux Server 7.9 (Maipo)")
+  - https://docs.rockylinux.org/9/release_notes/ (Rocky Linux 8.4 to 8.10
+    Green Obsidian, 9.0 to 9.7 Blue Onyx)
+  - https://wiki.almalinux.org/release-notes/ (AlmaLinux 8.3 to 10.2 and
+    each release's codename; 9.9 and 10.3 are betas)
+  - https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/oracle_8
+    and the files `redhat_7`, `redhat_8`, `redhat_9`, `redhat_10`,
+    `rocky_8`, `rocky_9`, `alma_8`, `alma_9`, `alma_10`, `oracle_7` and
+    `oracle_9` in the same commit (captured os-release files; NAME
+    "Oracle Linux Server", "AlmaLinux", "Rocky Linux"; RHEL 10.0 is
+    "Coughlan")
+  - https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479
+    (captured os-release files of container images: AlmaLinux 8.4
+    (Electric Cheetah), Rocky Linux 8.4 (Green Obsidian), Oracle Linux
+    Server 8.4, Red Hat Enterprise Linux 8.4 (Ootpa) and Server 7.9
+    (Maipo))
+  - https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates
+    (Exchange 2013, 2016 and 2019 cumulative update builds)
+  - https://support.microsoft.com/help/5035606 (the download title
+    "Microsoft Exchange Server 2019 Cumulative Update 14")
+  - https://docs.oracle.com/en/operating-systems/oracle-linux/ (Oracle
+    Linux Automation Manager, Oracle Linux Virtualization Manager, Oracle
+    Cloud Native Environment and the Unbreakable Enterprise Kernel are
+    named as separate items)
+  - https://services.nvd.nist.gov/rest/json/cpes/2.0?cpeMatchString=cpe:2.3:a:microsoft:exchange_server:2019:cumulative_update_14
+    (the NVD CPE title "Microsoft Exchange Server 2019 Cumulative Update
+    14")
 - endoflife.date product pages: https://endoflife.date/android,
   https://endoflife.date/centos-stream, https://endoflife.date/cockroachdb,
   https://endoflife.date/commvault, https://endoflife.date/django,

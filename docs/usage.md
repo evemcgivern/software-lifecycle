@@ -174,7 +174,9 @@ so; it does not hide them.
 
 - A curated alias matches by name, whatever the publisher, unless it has a
   `publisher` list. Only some aliases have one (`node.js`, `ubuntu`,
-  `debian gnu/linux`, the `macos` release names).
+  `debian gnu/linux`, the `macos` release names, and the PowerShell 7,
+  Red Hat Enterprise Linux, Rocky Linux, AlmaLinux and Oracle Linux
+  names). Rows with a blank publisher are not matched by those aliases.
 - Two products with the same name from the same vendor cannot be told
   apart. The Moodle mobile app and the Moodle LMS are an example: both are
   left unmatched, by an exclusion.
@@ -226,14 +228,24 @@ so; it does not hide them.
 - Titles on the one-word allowlist (GStreamer, Liquibase and others) match
   with any publisher or none, so a same-named package such as the npm
   `liquibase` wrapper is read as the product.
-- Microsoft and operating system names left unmatched on purpose (issue
-  #17), because no public source for the name was found or the name
-  cannot pick one product or cycle: PowerShell 7 names (`PowerShell
-  7-x64`), Internet Explorer 11 (the same name covers client, LTSB, LTSC
-  and Server, which have different cycles), `Red Hat Enterprise Linux 9.4
-  (Plow)`, `Red Hat Enterprise Linux Server`, `Rocky Linux 9.4 (Blue
-  Onyx)`, `Oracle Linux Server`, `AlmaLinux`, and the bare `.NET Runtime`
-  and `.NET SDK` with no publisher. Office "Home and Business" and "Home
+- Microsoft and operating system names left unmatched on purpose (issues
+  #17 and #20), because no second public source for the name was found
+  or the name cannot pick one product or cycle: the bare `.NET Runtime`
+  and `.NET SDK` with no publisher; PowerShell 7 names other than
+  `PowerShell 7-x64` (`PowerShell 7.4.6.0-x64`, the x86, arm64 and
+  preview names, and the bare `PowerShell`, which is also the name of
+  the VS Code extension); `PowerShell 7-x64` with a 5.1, 6.x or 7.7
+  version gets no cycle; the `release` file forms (`Red Hat Enterprise
+  Linux release 9.4 (Plow)`, `Oracle Linux Server release 8.9`); Red Hat
+  Enterprise Linux 10 and Rocky Linux 10 release names, Rocky Linux 9.8,
+  and AlmaLinux betas. A release name with a codename matches only as an
+  exact name whose number and codename are one pair on the vendor's list
+  (`Rocky Linux 9.4 (Blue Onyx)`), and the version column must be that
+  release.
+- Internet Explorer 11 is held for issue #21. `Internet Explorer` and
+  `Internet Explorer 11` match by title and take the generic cycle `11`
+  for any 11.x version, so IE 11 on a Windows Server, LTSB or LTSC build
+  takes the generic cycle, not that build's own cycle. Office "Home and Business" and "Home
   and Student" names are unmatched too, and so is `Microsoft ASP.NET Core
   8.0.1 - Shared Framework (x64)`.
 - `Microsoft .NET SDK 8.0.101 (x64)` and `Microsoft Windows Desktop
@@ -267,8 +279,9 @@ so; it does not hide them.
   gets the product with no cycle: only the SP1 build is mapped.
 - SQL Server 2008 R2 maps only the SP1, SP2 and SP3 builds. The RTM
   build (10.50.1600) gets the product with no cycle.
-- Exchange names with "Cumulative Update N" stay unmatched; an edition
-  word cannot cover the number.
+- Exchange names with "Cumulative Update N" match the year in the name;
+  the update number is not checked against the build in the version
+  column, only the year is.
 - Office names in a language other than en-us (`- fr-fr`) are not
   covered by the LTSC aliases.
 
@@ -414,7 +427,12 @@ the data folder. Do not edit `data/` in place.
    cycle label), `build_map`, `column_map` (for an alias that reads the
    version from the name: version-column builds to the cycles they can be,
    used only to check the name), `kev` (an object with `vendor` and
-   `product`), `note`, `edition_words` and `publisher` (a non-empty list of
+   `product`), `note`, `edition_words`, `numbered_words` (words that must
+   be followed by one whole number of one to three digits with no leading
+   zero, for example `update` in "Cumulative Update 23"; the number is
+   allowed only right after such a word, and only one such word may
+   appear) and
+   `publisher` (a non-empty list of
    lowercase publisher phrases; the alias then applies only when the row's
    publisher holds one of them as whole words). `source` is a link to where you
    confirmed the mapping.

@@ -922,12 +922,20 @@
         ],
         "8": "2007"
       },
+      "edition_words": [
+        "cumulative",
+        "update"
+      ],
       "kev": {
         "product": "Exchange Server",
         "vendor": "Microsoft"
       },
       "key": "microsoft exchange server",
       "match": "prefix",
+      "note": "Names with Cumulative Update N after the year (Microsoft Exchange Server 2019 Cumulative Update 14) also match. The update number is not checked against the build. The full name is the download title on https://support.microsoft.com/help/5035606 and the NVD CPE title at https://services.nvd.nist.gov/rest/json/cpes/2.0?cpeMatchString=cpe:2.3:a:microsoft:exchange_server:2019:cumulative_update_14",
+      "numbered_words": [
+        "update"
+      ],
       "product": "msexchange",
       "source": "https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates",
       "version_from": "name"
@@ -1673,6 +1681,872 @@
       "product": "sles",
       "source": "https://endoflife.date/sles",
       "version_from": "version"
+    },
+    {
+      "build_map": {
+        "7.0": "7.0",
+        "7.1": "7.1",
+        "7.2": "7.2",
+        "7.3": "7.3",
+        "7.4": "7.4",
+        "7.5": "7.5",
+        "7.6": "7.6"
+      },
+      "key": "powershell 7-x64",
+      "match": "exact",
+      "note": "MSI display name of PowerShell 7 (x64); also in a captured Windows inventory: https://github.com/chef/automate/blob/61ca031112bf605c9c2a8975957b505635374e49/dev-docs/adding-data/sample-reports/desktop-report-3.json. Only 7.0 to 7.6 are mapped: a 5.1, 6.x or 7.7 version gets no cycle. Rows with a blank publisher are not matched.",
+      "product": "powershell",
+      "publisher": [
+        "microsoft"
+      ],
+      "source": "https://github.com/PowerShell/PowerShell/issues/27993",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "7": "7"
+      },
+      "key": "red hat enterprise linux server",
+      "match": "exact",
+      "note": "os-release NAME of RHEL 7, in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_7 and https://www.postgresql.org/message-id/attachment/164600/os_info.txt. Only major 7 is mapped. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "7": "7"
+      },
+      "edition_words": [
+        "(maipo)"
+      ],
+      "key": "red hat enterprise linux server",
+      "match": "prefix",
+      "note": "os-release PRETTY_NAME of RHEL 7 (Server 7.9 (Maipo)), in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_7 and https://www.postgresql.org/message-id/attachment/164600/os_info.txt. Maipo is the RHEL 7 codename on the source page; only major 7 is mapped. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "name"
+    },
+    {
+      "build_map": {
+        "8.0": "8"
+      },
+      "key": "red hat enterprise linux 8.0 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.1": "8"
+      },
+      "key": "red hat enterprise linux 8.1 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.2": "8"
+      },
+      "key": "red hat enterprise linux 8.2 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.3": "8"
+      },
+      "key": "red hat enterprise linux 8.3 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.4": "8"
+      },
+      "key": "red hat enterprise linux 8.4 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.5": "8"
+      },
+      "key": "red hat enterprise linux 8.5 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.6": "8"
+      },
+      "key": "red hat enterprise linux 8.6 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.7": "8"
+      },
+      "key": "red hat enterprise linux 8.7 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.8": "8"
+      },
+      "key": "red hat enterprise linux 8.8 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.9": "8"
+      },
+      "key": "red hat enterprise linux 8.9 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.10": "8"
+      },
+      "key": "red hat enterprise linux 8.10 (ootpa)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; Ootpa and the 8.x minors are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/articles/3078",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.0": "9"
+      },
+      "key": "red hat enterprise linux 9.0 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.1": "9"
+      },
+      "key": "red hat enterprise linux 9.1 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.2": "9"
+      },
+      "key": "red hat enterprise linux 9.2 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.3": "9"
+      },
+      "key": "red hat enterprise linux 9.3 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.4": "9"
+      },
+      "key": "red hat enterprise linux 9.4 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.5": "9"
+      },
+      "key": "red hat enterprise linux 9.5 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.6": "9"
+      },
+      "key": "red hat enterprise linux 9.6 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.7": "9"
+      },
+      "key": "red hat enterprise linux 9.7 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.8": "9"
+      },
+      "key": "red hat enterprise linux 9.8 (plow)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the source page shows 9.0 (Plow), https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/redhat_9 shows 9.6 (Plow), and the 9.x minors are on https://access.redhat.com/articles/3078. Rows with a blank publisher are not matched.",
+      "product": "rhel",
+      "publisher": [
+        "red hat"
+      ],
+      "source": "https://access.redhat.com/solutions/6973382",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.4": "8"
+      },
+      "key": "rocky linux 8.4 (green obsidian)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.5": "8"
+      },
+      "key": "rocky linux 8.5 (green obsidian)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.6": "8"
+      },
+      "key": "rocky linux 8.6 (green obsidian)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.7": "8"
+      },
+      "key": "rocky linux 8.7 (green obsidian)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.8": "8"
+      },
+      "key": "rocky linux 8.8 (green obsidian)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.9": "8"
+      },
+      "key": "rocky linux 8.9 (green obsidian)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.10": "8"
+      },
+      "key": "rocky linux 8.10 (green obsidian)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.0": "9"
+      },
+      "key": "rocky linux 9.0 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.1": "9"
+      },
+      "key": "rocky linux 9.1 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.2": "9"
+      },
+      "key": "rocky linux 9.2 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.3": "9"
+      },
+      "key": "rocky linux 9.3 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.4": "9"
+      },
+      "key": "rocky linux 9.4 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.5": "9"
+      },
+      "key": "rocky linux 9.5 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.6": "9"
+      },
+      "key": "rocky linux 9.6 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.7": "9"
+      },
+      "key": "rocky linux 9.7 (blue onyx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are on the source page, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/rocky_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "rocky-linux",
+      "publisher": [
+        "rocky enterprise software foundation"
+      ],
+      "source": "https://docs.rockylinux.org/9/release_notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10": "10",
+        "8": "8",
+        "9": "9"
+      },
+      "key": "almalinux",
+      "match": "exact",
+      "note": "os-release NAME of AlmaLinux (the catalog title is AlmaLinux OS), in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.3": "8"
+      },
+      "key": "almalinux 8.3 (purple manul)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.4": "8"
+      },
+      "key": "almalinux 8.4 (electric cheetah)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.5": "8"
+      },
+      "key": "almalinux 8.5 (arctic sphynx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.6": "8"
+      },
+      "key": "almalinux 8.6 (sky tiger)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.7": "8"
+      },
+      "key": "almalinux 8.7 (stone smilodon)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.8": "8"
+      },
+      "key": "almalinux 8.8 (sapphire caracal)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.9": "8"
+      },
+      "key": "almalinux 8.9 (midnight oncilla)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "8.10": "8"
+      },
+      "key": "almalinux 8.10 (cerulean leopard)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_8 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.0": "9"
+      },
+      "key": "almalinux 9.0 (emerald puma)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.1": "9"
+      },
+      "key": "almalinux 9.1 (lime lynx)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.2": "9"
+      },
+      "key": "almalinux 9.2 (turquoise kodkod)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.3": "9"
+      },
+      "key": "almalinux 9.3 (shamrock pampas cat)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.4": "9"
+      },
+      "key": "almalinux 9.4 (seafoam ocelot)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.5": "9"
+      },
+      "key": "almalinux 9.5 (teal serval)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.6": "9"
+      },
+      "key": "almalinux 9.6 (sage margay)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.7": "9"
+      },
+      "key": "almalinux 9.7 (moss jungle cat)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "9.8": "9"
+      },
+      "key": "almalinux 9.8 (olive jaguar)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_9 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.0": "10"
+      },
+      "key": "almalinux 10.0 (purple lion)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_10 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.1": "10"
+      },
+      "key": "almalinux 10.1 (heliotrope lion)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_10 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10.2": "10"
+      },
+      "key": "almalinux 10.2 (lavender lion)",
+      "match": "exact",
+      "note": "os-release PRETTY_NAME; the minor and codename are one row of the source table, the name form in captured files https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/alma_10 and https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "almalinux",
+      "publisher": [
+        "almalinux"
+      ],
+      "source": "https://wiki.almalinux.org/release-notes/",
+      "version_from": "version"
+    },
+    {
+      "build_map": {
+        "10": "10",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9"
+      },
+      "key": "oracle linux server",
+      "match": "exact",
+      "note": "os-release NAME of Oracle Linux (the catalog title is Oracle Linux); also in the captured Oracle Linux 8.4 image file at https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. Rows with a blank publisher are not matched.",
+      "product": "oracle-linux",
+      "publisher": [
+        "oracle"
+      ],
+      "source": "https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/oracle_8",
+      "version_from": "version"
+    },
+    {
+      "key": "oracle linux server",
+      "match": "prefix",
+      "note": "os-release PRETTY_NAME of Oracle Linux (Oracle Linux Server 8.7); also in the captured Oracle Linux 8.4 image file at https://gist.github.com/SwooshyCueb/4905ac15e3b5658f6c6907d9562af479. The version is read from the name. Rows with a blank publisher are not matched.",
+      "product": "oracle-linux",
+      "publisher": [
+        "oracle"
+      ],
+      "source": "https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/oracle_8",
+      "version_from": "name"
     }
   ],
   "format": 1

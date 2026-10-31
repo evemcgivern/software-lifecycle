@@ -191,22 +191,23 @@ artifact attestation, check it online before you use the release:
 - Coverage is partial. In the data release bundled when this was written
   (the weekly job can change the counts), the tool can match 452 of the 485
   products in `data/eol/`. Most are matched by the product's title from endoflife.date
-  (`data/products.json`). `data/aliases.json` adds 94 aliases for
-  19 products (mssqlserver, windows-server, windows, office,
+  (`data/products.json`). `data/aliases.json` adds 155 aliases for
+  24 products (mssqlserver, windows-server, windows, office,
   python, nodejs, ubuntu, eclipse-temurin, windows-powershell, mysql,
   bellsoft-liberica, msexchange, sharepoint, visual-studio, dotnet,
-  dotnetfx, debian, macos, sles). `data/curation.json` adds hand-kept vendor names for
+  dotnetfx, debian, macos, sles, powershell, rhel, rocky-linux,
+  almalinux, oracle-linux). `data/curation.json` adds hand-kept vendor names for
   72 products and a short list of one-word product names. A further list
   of coined one-word titles matches a row with no publisher when the name
   carries a version that decides the cycle (`Kibana 8.15.3`). The other 33
   products are devices, products left out on purpose, or one-word titles
   with no vendor to check, and never match.
 - That is a count of products, not a hit rate. On the project's own
-  benchmark (the 1,768 hand-written and catalog rows in
-  `tests/benchmark/gold.csv`), 827 rows should match a product. 549 of them
-  are scored correct: 427 with the right cycle, and 122 rightly with the
-  product and no cycle. Of the 691 rows that need a cycle, 427 get one. The other 941 rows are
-  traps that should stay unmatched, and all 941 do. It is a benchmark, not a
+  benchmark (the 2,025 hand-written and catalog rows in
+  `tests/benchmark/gold.csv`), 1,035 rows should match a product. 751 of them
+  are scored correct: 597 with the right cycle, and 154 rightly with the
+  product and no cycle. Of the 867 rows that need a cycle, 597 get one. The other 990 rows are
+  traps that should stay unmatched, and all 990 do. It is a benchmark, not a
   real estate. The rate on a real estate is unknown.
 - No wrong lifecycle claim was found on the benchmark. That is not proof for
   other inventories: unknown in general.

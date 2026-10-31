@@ -239,3 +239,29 @@ SUSE Linux Enterprise Server 15 SP7,15.7,sles,15.7,https://endoflife.date/sles,S
 SUSE Linux Enterprise Server 15 SP7,15.6,,NONE,https://endoflife.date/sles,SUSE
 macOS Tahoe,15.1,,NONE,https://support.apple.com/en-us/109033,Apple Inc.
 SUSE Linux Enterprise Server 12 SP4,12.3,,NONE,https://endoflife.date/sles,SUSE
+Microsoft Exchange Server 2019 Cumulative Update 14,15.2.1544.4,msexchange,2019,https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates,Microsoft Corporation
+Microsoft Exchange Server 2016 Cumulative Update 23,15.2.1544.4,,NONE,https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates,Microsoft Corporation
+Microsoft Exchange Server 2019 Cumulative Update 14 Language Pack,15.2.1544.4,,NONE,https://learn.microsoft.com/en-us/exchange/new-features/build-numbers-and-release-dates,Microsoft Corporation
+PowerShell 7-x64,7.4.6.0,powershell,7.4,https://github.com/PowerShell/PowerShell/issues/27993,Microsoft Corporation
+PowerShell 7-x64,5.1.19041.4648,,NONE,https://github.com/PowerShell/PowerShell/issues/27993,Microsoft Corporation
+PowerShell 7-x64,7.4.6.0,,NONE,https://github.com/PowerShell/PowerShell/issues/27993,
+Red Hat Enterprise Linux Server,7.9,rhel,7,https://www.postgresql.org/message-id/attachment/164600/os_info.txt,"Red Hat, Inc."
+Red Hat Enterprise Linux Server,8.10,,NONE,https://www.postgresql.org/message-id/attachment/164600/os_info.txt,"Red Hat, Inc."
+Red Hat Enterprise Linux Server 7.9 (Maipo),7.9,rhel,7,https://www.postgresql.org/message-id/attachment/164600/os_info.txt,"Red Hat, Inc."
+Red Hat Enterprise Linux Server 7.9 (Ootpa),7.9,,NONE,https://access.redhat.com/articles/3078,"Red Hat, Inc."
+Red Hat Enterprise Linux 8.10 (Ootpa),8.10,rhel,8,https://access.redhat.com/articles/3078,"Red Hat, Inc."
+Red Hat Enterprise Linux 8.10 (Ootpa),9.4,,NONE,https://access.redhat.com/articles/3078,"Red Hat, Inc."
+Red Hat Enterprise Linux 9.4 (Plow),9.4,rhel,9,https://access.redhat.com/solutions/6973382,Red Hat
+Red Hat Enterprise Linux 8.10 (Plow),8.10,,NONE,https://access.redhat.com/solutions/6973382,"Red Hat, Inc."
+Rocky Linux 8.9 (Green Obsidian),8.9,rocky-linux,8,https://docs.rockylinux.org/9/release_notes/,Rocky Enterprise Software Foundation
+Rocky Linux 9.4 (Green Obsidian),9.4,,NONE,https://docs.rockylinux.org/9/release_notes/,Rocky Enterprise Software Foundation
+Rocky Linux 9.3 (Blue Onyx),9.3,rocky-linux,9,https://docs.rockylinux.org/9/release_notes/,Rocky Enterprise Software Foundation
+Rocky Linux 9.3 (Blue Onyx),9.3,,NONE,https://docs.rockylinux.org/9/release_notes/,Red Hat
+AlmaLinux,10.0,almalinux,10,https://wiki.almalinux.org/release-notes/,AlmaLinux OS Foundation
+AlmaLinux,7.9,,NONE,https://wiki.almalinux.org/release-notes/,AlmaLinux OS Foundation
+AlmaLinux 9.6 (Sage Margay),9.6,almalinux,9,https://wiki.almalinux.org/release-notes/,AlmaLinux OS Foundation
+AlmaLinux 9.4 (Sage Margay),9.4,,NONE,https://wiki.almalinux.org/release-notes/,AlmaLinux OS Foundation
+Oracle Linux Server,9.1,oracle-linux,9,https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/oracle_9,Oracle America
+Oracle Linux Server,8.9,,NONE,https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/oracle_8,
+Oracle Linux Server 8.7,8.7,oracle-linux,8,https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/oracle_8,Oracle
+Oracle Linux Server 8.7,9.1,,NONE,https://github.com/chef/os_release/blob/b447b494255f53e3eee659a7e00c4dfa6ba871d3/oracle_8,Oracle
