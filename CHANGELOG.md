@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- `report.md` shows the KEV list under the heading "In CISA KEV, past or
+  near end of life" instead of "Review urgently" (issue #29). "Urgently"
+  set a priority the tool cannot back: the match is on vendor and
+  product, never version. The JSON list key `review_urgently` and the
+  `--fail-on` name keep their names; `schema_version` stays 1.
+- `report.md` says its counts are inventory rows, not installs: the
+  summary line reads "(inventory rows, not installs)" and each item's
+  "Rows" label is now "Inventory rows". JSON keys are unchanged. Docs say
+  the same in README, `docs/usage.md`, `docs/sop.md` and
+  `docs/report-schema.md`.
+- CI has an informational Windows test job (`test-windows`, Python 3.12,
+  `continue-on-error`). It is not a required check and does not rename
+  the five `test` checks.
 - Docs say plainly that an item ID is an unsalted, truncated hash of
   publisher, name and version: it keeps names out of counts and findings,
   but a guessed product can be confirmed against it, so IDs need the same

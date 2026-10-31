@@ -34,7 +34,7 @@ records which date is right for a product.
 
 Mark old software whose vendor and product appear in CISA KEV, so a person
 reviews it first. It is a reference for prioritization. Implemented by the
-"Review urgently" list. It matches vendor and product only, never version,
+"In CISA KEV, past or near end of life" list. It matches vendor and product only, never version,
 and says "needs review". It does not say any version is affected.
 
 ## XW-031: Risk acceptance with expiry and independent approval

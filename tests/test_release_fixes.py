@@ -69,8 +69,8 @@ class ReportWordingTests(unittest.TestCase):
         md = markdown_for([["Zzz Unknown Tool", "1.0", "Nobody", ""],
                            ["Other Tool", "2", "Nobody", "carol"]])
         self.assertIn("Owners: none listed. This item cannot be actioned "
-                      "until an owner is named. Rows: 1", md)
-        self.assertIn("Owners: carol. Rows: 1", md)
+                      "until an owner is named. Inventory rows: 1", md)
+        self.assertIn("Owners: carol. Inventory rows: 1", md)
 
     def test_one_day_is_singular(self):
         # Exact dates in a fixture data folder: KEV 1 day old, end of life

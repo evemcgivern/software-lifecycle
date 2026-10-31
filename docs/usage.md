@@ -28,7 +28,7 @@ screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
 | `--governable-only` | Leave components and bundle members out of `report.md` and `report.csv`. Prints "N items hidden: M components, K bundle members". `report.json` and `--fail-on` are unchanged, and `unknown` items are never hidden. Default off. | `--governable-only --out ../swlc-out` |
-| `--fail-on LIST` | Exit with code 10 if any named list has items. Names: `past_eol`, `ends_soon`, `review_urgently`, `dates_disagree`, `unmatched`. Comma separated. | `--fail-on past_eol,review_urgently` |
+| `--fail-on LIST` | Exit with code 10 if any named list has items. Names: `past_eol`, `ends_soon`, `review_urgently`, `dates_disagree`, `unmatched`. Comma separated. The name `review_urgently` is kept for stability; `report.md` shows that list as "In CISA KEV, past or near end of life". | `--fail-on past_eol,review_urgently` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
 | `-h`, `--help` | Show help. | `--help` |
 
@@ -592,7 +592,8 @@ stays complete, and `unknown` items are never hidden.
 It prints:
 
 - the checked-on date and whether the KEV data is current;
-- the number of items and rows, and the count in each state;
+- the number of items and rows (inventory rows, not installs or machines),
+  and the count in each state;
 - the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - the count of names to review (`ambiguous_review N`), with no names;
 - each list with its count and the item IDs.
