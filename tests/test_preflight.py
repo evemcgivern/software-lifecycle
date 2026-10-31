@@ -288,6 +288,27 @@ class OutputTests(Base):
                                "exit_code": 3,
                                "error": "input file is empty"})
 
+    def test_json_error_on_bad_arguments(self):
+        code, out, err = self.pre("--json", "--nope")
+        self.assertEqual(code, cli.EXIT_USAGE)
+        self.assertEqual(json.loads(out)["exit_code"], cli.EXIT_USAGE)
+        self.assertFalse(json.loads(out)["ok"])
+
+    def test_json_error_on_unknown_profile(self):
+        path = self.inv(["Name", "Version"], [["a", "1"]])
+        code, res, err = self.pre_json(path, "--profile", "nope")
+        self.assertEqual(code, cli.EXIT_USAGE)
+        self.assertIn("unknown profile", res["error"])
+        self.assertIn("unknown profile", err)
+
+    def test_json_error_on_unexpected_error(self):
+        path = self.inv(["Name", "Version"], [["a", "1"]])
+        with mock.patch.object(preflight, "inspect",
+                               side_effect=RuntimeError("x")):
+            code, res, err = self.pre_json(path)
+        self.assertEqual(code, cli.EXIT_UNEXPECTED)
+        self.assertEqual(res["error"], "RuntimeError")
+
     def test_output_is_deterministic(self):
         path = self.inv(["Product", "Publisher", "Version", "Owner"],
                         SECRET_ROWS)

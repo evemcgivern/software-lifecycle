@@ -372,25 +372,52 @@ def _check(args) -> int:
 
 
 def _preflight(args) -> int:
-    try:
-        profiles = load_profiles(BUNDLED_DATA)
-        if args.profile is not None:
-            _known_profile(profiles, args.profile)
-        extra = _read_columns(args.columns) if args.columns else None
-        result = preflight.inspect(args.inventory, profiles, args.profile,
-                                   args.columns, extra, args.encoding)
-    except (UsageError, InputError, DataError) as exc:
-        if args.json:
-            code = (EXIT_USAGE if isinstance(exc, UsageError) else
-                    EXIT_INPUT if isinstance(exc, InputError) else EXIT_DATA)
-            sys.stdout.write(preflight.error_json(str(exc), code))
-        raise
+    profiles = load_profiles(BUNDLED_DATA)
+    if args.profile is not None:
+        _known_profile(profiles, args.profile)
+    extra = _read_columns(args.columns) if args.columns else None
+    result = preflight.inspect(args.inventory, profiles, args.profile,
+                               args.columns, extra, args.encoding)
     sys.stdout.write(preflight.render_json(result) if args.json
                      else preflight.render_text(result))
     return EXIT_OK if result["ok"] else EXIT_INPUT
 
 
 def main(argv: list | None = None) -> int:
+    words = sys.argv[1:] if argv is None else list(argv)
+    if words[:1] == ["preflight"] and "--json" in words:
+        return _preflight_json(words)
+    return _main(argv)
+
+
+def _preflight_json(words: list) -> int:
+    """preflight --json: every failure also prints a JSON error object on
+    stdout. Argument errors give a fixed text, since argparse's own message
+    can repeat an argument."""
+    try:
+        return _preflight(_parser().parse_args(words))
+    except SystemExit as exc:
+        code = exc.code if isinstance(exc.code, int) else EXIT_USAGE
+        if code:
+            sys.stdout.write(preflight.error_json(
+                "bad arguments; run preflight --help", code))
+        return code
+    except (UsageError, InputError, DataError) as exc:
+        code = (EXIT_USAGE if isinstance(exc, UsageError) else
+                EXIT_INPUT if isinstance(exc, InputError) else EXIT_DATA)
+        sys.stdout.write(preflight.error_json(str(exc), code))
+        print("%s: %s" % ("Usage error" if code == EXIT_USAGE else
+                          "Input error" if code == EXIT_INPUT else
+                          "Data check failed", exc), file=sys.stderr)
+        return code
+    except Exception as exc:
+        sys.stdout.write(preflight.error_json(type(exc).__name__,
+                                              EXIT_UNEXPECTED))
+        print(type(exc).__name__, file=sys.stderr)
+        return EXIT_UNEXPECTED
+
+
+def _main(argv: list | None) -> int:
     quiet = False
     try:
         args = _parser().parse_args(argv)
