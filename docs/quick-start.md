@@ -6,44 +6,83 @@ in [usage.md](usage.md). The words in the report are in
 
 ## Before you start
 
-You need Python 3.9 or newer. There is nothing to install: download or
-clone the repo and run every command from the repo root (the folder that
-holds `software_lifecycle.py`).
+**Windows is not a supported platform yet:** no one has run the tool on a
+real Windows export. You can still try it there with the Windows steps
+below.
 
-- **macOS and Linux:** type the commands as shown, starting with
-  `python3`.
-- **Windows:** Windows is not a supported platform yet: no one has run
-  the tool on a real Windows export. To try it, type `py` (or `python`)
-  in place of `python3`, for example
-  `py software_lifecycle.py preflight inventory.csv`.
+1. **Open a command window.**
+   - macOS: press Command and Space, type `Terminal`, press Return.
+   - Windows: open the Start menu, type `PowerShell`, open
+     "Windows PowerShell".
+2. **Check Python.** Type this and press Return:
+   - macOS and Linux: `python3 --version`
+   - Windows: `py --version` (or `python --version`)
 
-Use a short output folder next to the repo, such as `../swlc-out`, not a
-folder inside it. Real inventories are confidential, and so are the
-reports made from them.
+   It must print Python 3.9 or newer. If it does not, install Python from
+   <https://www.python.org/downloads/> and open a new window.
+3. **Put the files in place.** There is nothing to install. Download or
+   clone the repo and put it next to your export, for example in your
+   Documents folder:
+
+       Documents/
+         software-lifecycle/   the tool (holds software_lifecycle.py)
+         inventory.csv         your export
+         swlc-out/             the report (the tool makes this folder)
+
+   Keep the export and the report outside the tool's folder. Real
+   inventories are confidential, and so are the reports made from them.
+   You do not need to make `swlc-out`: the check creates it.
+4. **Go into the tool's folder.** Run every command from there.
+   - macOS and Linux: `cd ~/Documents/software-lifecycle`
+   - Windows: `cd $HOME\Documents\software-lifecycle`
+
+The commands below start with `python3`. On Windows, type `py` (or
+`python`) in its place, for example
+`py software_lifecycle.py preflight ../inventory.csv`.
 
 ## Try the demo first
 
 The demo inventory is made up and runs against synthetic test data, so it
-gives the same report every time:
+gives the same report every time. This command writes the report into a
+`swlc-demo` folder next to the tool's folder.
 
-    python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --out ../swlc-demo
+macOS and Linux:
 
-Open `../swlc-demo/report.md`. With the demo's four sample files added
-(the full command is in [examples/README.md](../examples/README.md)) the
-report is the same as the committed
+    python3 software_lifecycle.py check examples/software-inventory.csv \
+      --data tests/fixtures/data \
+      --as-of 2026-10-24 \
+      --golden examples/golden-sources.csv \
+      --exceptions examples/exceptions.csv \
+      --tracking examples/tracking.csv \
+      --support-records examples/support-records.csv \
+      --out ../swlc-demo
+
+Windows PowerShell:
+
+    py software_lifecycle.py check examples/software-inventory.csv `
+      --data tests/fixtures/data `
+      --as-of 2026-10-24 `
+      --golden examples/golden-sources.csv `
+      --exceptions examples/exceptions.csv `
+      --tracking examples/tracking.csv `
+      --support-records examples/support-records.csv `
+      --out ../swlc-demo
+
+Open `../swlc-demo/report.md`. It is the same as the committed
 [sample report](../examples/sample-report.md).
 
 ## 1. Get an export
 
-Export your software inventory as a CSV file with a header row. It needs
-a name column and a version column; publisher, owner and count columns
-help. The headings the tool accepts are in the [README](../README.md),
-and export steps for some platforms are in
+Export your software inventory as a CSV file with a header row and save it
+as `inventory.csv` next to the tool's folder (see the layout above). It
+needs a name column and a version column; publisher, owner and count
+columns help. The headings the tool accepts are in the
+[README](../README.md), and export steps for some platforms are in
 [platform-guide.md](platform-guide.md).
 
 ## 2. Run preflight first
 
-    python3 software_lifecycle.py preflight inventory.csv
+    python3 software_lifecycle.py preflight ../inventory.csv
 
 `preflight` reads the file and writes nothing. It prints your column
 titles and numbers only, never a cell value. Read its output:
@@ -56,12 +95,12 @@ titles and numbers only, never a cell value. Read its output:
 
 ## 3. Run the check
 
-    python3 software_lifecycle.py check inventory.csv --out ../swlc-out
+    python3 software_lifecycle.py check ../inventory.csv --out ../swlc-out
 
-The tool writes `report.md`, `report.json` and `report.csv` into
-`../swlc-out` and prints one line naming them.
+The tool creates `../swlc-out` if it is not there, writes `report.md`,
+`report.json` and `report.csv` into it, and prints one line naming them.
 
-## 4. Open report.md
+## 4. Open the report
 
 Open `../swlc-out/report.md` in any text editor or Markdown viewer. The
 top says the checked-on date and the age of the data. Then come the lists:
@@ -69,6 +108,10 @@ past end of life, ends within the lookahead window, dates disagree,
 couldn't match, names to review, in CISA KEV, accepted risk, ownerless
 and golden source overrides. An item can be on more than one list. Each
 term is explained in [glossary.md](glossary.md).
+
+`report.csv` holds the same items as a table and opens in Excel, Numbers
+or Google Sheets. Cells that a spreadsheet could read as a formula are
+neutralized, so the spreadsheet does not run them.
 
 ## 5. Names to review and couldn't match
 
@@ -84,18 +127,28 @@ term is explained in [glossary.md](glossary.md).
 
 ## 6. If the report says "KEV overlay is not current"
 
-The KEV data the run used is more than 7 days older than the checked-on
-date, so the "In CISA KEV" list may be out of date. The end-of-life dates
-still come from their own snapshot, with their own age shown at the top.
+The KEV snapshot the run used is more than 7 days older than the
+checked-on date, or is dated more than a day after it. The "In CISA KEV"
+list may then be out of date. The end-of-life dates come from their own
+snapshot, with their own age shown at the top.
 
-The bundled data's dates are `kev_date` and `eol_date` in
-`data/manifest.json`. To fix it, get a newer data release, verify it, and
-point the check at it with `--data DIR`; the steps are in "Data and
-release verification" in the [README](../README.md) and step 1 of
-[sop.md](sop.md). `refresh_data.py` is the only file in the project that
-uses the network: it builds data releases and is run by the project's data
-workflows, so run it yourself only with your organisation's OK (see
-[SECURITY.md](../SECURITY.md)).
+The data ships inside the tool's folder. Its dates are `kev_date` and
+`eol_date` in `data/manifest.json`. What to do:
+
+1. Get a newer copy of the tool (download it again, or `git pull`) and
+   check `kev_date` in its `data/manifest.json`. If the date is newer, run
+   the check again with that copy.
+2. A data release published on its own can be used with `--data DIR`
+   after you verify it; see "Data and release verification" in the
+   [README](../README.md) and step 1 of [sop.md](sop.md). The README says
+   the daily release workflow is disabled while the repository is
+   private, so a newer release may not exist.
+3. `refresh_data.py` is the only file in the project that uses the
+   network: it builds data releases and is run by the project's data
+   workflows, so run it yourself only with your organisation's OK (see
+   [SECURITY.md](../SECURITY.md)).
+
+If no newer data is available, the KEV list may miss recent entries.
 
 ## Next
 

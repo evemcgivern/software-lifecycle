@@ -8,8 +8,8 @@ made from the made-up demo inventory.
 ## The lists
 
 **Past end of life.** The item's end-of-life date is on or before the
-checked-on date at the top of the report. Each item needs a decision: replace, upgrade, retire, or
-request risk acceptance.
+checked-on date at the top of the report. Each item needs a decision:
+replace, upgrade, retire, or request risk acceptance.
 
 **Ends soon** (the report heading is "Ends within the lookahead window").
 The item's end-of-life date falls after the checked-on date and inside the
@@ -28,7 +28,8 @@ item gives the reason: no known product fits the name (`NO_ALIAS`), the
 product is known but no cycle fits the version (`NO_CYCLE`), no version
 was given (`NO_VERSION`), or the name fits more than one product
 (`AMBIGUOUS`). Parts with a parent are listed in their own section. What
-to do with these is in "Handle Couldn't match" in [sop.md](sop.md).
+to do with these is in step 9, "Handle "Couldn't match"", of
+[sop.md](sop.md).
 
 **Names to review.** Rows the tool left unmatched on purpose. The name
 looks like a product in the catalog, but there is not enough evidence to
@@ -72,12 +73,12 @@ and they are this tool's own terms, not terms from a standard:
 - **Governable**: a standalone application, server, database, operating
   system, browser, security agent or directly used developer tool, and
   standalone runtimes such as a JDK, .NET, Node.js or Python.
-- **Component**: a piece of something else with no known parent, such as
-  a library, redistributable, driver, language pack, operating system
-  patch, font, codec, extension or plugin.
+- **Component**: a library, redistributable, driver, language pack,
+  operating system patch, font, codec, extension, plugin, `lib*` or `-dev`
+  package, with no known parent.
 - **Bundle member**: a part with a named parent, such as a suite member, a
-  runtime inside an app, or an operating system patch of the operating
-  system item. A bundle member may show its parent's date under "Parent's
+  runtime inside an app, a driver pack, or an operating system patch of
+  the operating system item. A bundle member may show its parent's date under "Parent's
   date (inherited, not this item's own)". That date is the parent's. It
   never puts the part on "Past end of life" or "Ends soon".
 - **Unknown**: the tool cannot tell. This is a valid answer and the
@@ -108,8 +109,7 @@ item shows "Decision needed: The risk exception has expired."
 
 **KEV data "not current".** The KEV snapshot the run used is more than 7
 days older than the checked-on date, or is dated more than a day after
-it. The
-report then says "KEV overlay is not current." and gives the snapshot's
+it. The report then says "KEV overlay is not current." and gives the snapshot's
 age. The KEV list may be out of date: an empty "In CISA KEV" section then
 reads "None listed. KEV overlay is not current, so this does not show
 there are none." A snapshot more than 3 days old already gives a warning.
