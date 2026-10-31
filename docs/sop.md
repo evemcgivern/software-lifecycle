@@ -38,6 +38,8 @@ who holds each role.
 
    If an AI agent runs it, use `--counts-only` and keep the output folder
    out of the agent's reach. No model should read the full report.
+   The counts are items and inventory rows. A row count is not an install
+   count or a machine count.
 4. **Read the "Changes since the previous report" section** to see what is
    new, gone or changed. The first run after an upgrade that adds matching
    by product title shows a long state-changed list (`diff.changed_state`):
@@ -49,7 +51,7 @@ who holds each role.
    each item, the owner chooses: replace, upgrade, retire, or request risk
    acceptance (step 8).
    **Decision needed:** the owner's choice for each item.
-6. **Work "Review urgently".** These items are past or near end of life and
+6. **Work "In CISA KEV, past or near end of life".** These items are past or near end of life and
    their vendor and product appear in CISA KEV. This does not mean your
    version is affected. A person checks the version against the KEV entries
    and decides the priority. `kev: false` means "no match under those rules", not

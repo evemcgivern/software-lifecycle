@@ -169,7 +169,7 @@ class MarkdownTests(Base):
     def test_section_order(self):
         heads = ["## Past end of life", "## Ends within the lookahead window",
                  "## Dates disagree", "## Couldn't match",
-                 "## Review urgently", "## Accepted risk", "## Ownerless",
+                 "## In CISA KEV, past or near end of life", "## Accepted risk", "## Ownerless",
                  "## Golden source overrides", "```findings"]
         pos = [self.md.index(h) for h in heads]
         self.assertEqual(pos, sorted(pos))
@@ -305,7 +305,7 @@ class StaleKevTests(Base):
         for it in result["items"]:
             it["kev"] = None
         md = report.render_markdown(result, self.meta)
-        sec = md.split("## Review urgently")[1].split("## ")[0]
+        sec = md.split("## In CISA KEV, past or near end of life")[1].split("## ")[0]
         self.assertIn("not current", sec)
         self.assertNotIn("None found", sec)
 

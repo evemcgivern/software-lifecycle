@@ -47,7 +47,7 @@ inventory, so keep it as private as the inventory.
 | Key | Meaning |
 |---|---|
 | `items` | Number of items. |
-| `rows` | Number of inventory rows. |
+| `rows` | Number of inventory rows. This is rows in the export, not installs or machines. |
 | `states` | Count of items in each state. |
 | `lists` | Count of item IDs in each list. |
 | `classification` | Count of items in each class. See `counts.classification`. |
@@ -126,7 +126,7 @@ confirmed against it, so treat IDs with the same care as the inventory.
 | `id` | The stable item ID. |
 | `name`, `version`, `publisher` | As in the inventory. |
 | `owners` | Sorted list of distinct owners. |
-| `rows` | How many inventory rows made this item. |
+| `rows` | How many inventory rows made this item. This is not an install or machine count. |
 | `product` | The endoflife.date product. `null` only when no product matched (`NO_ALIAS`, or `AMBIGUOUS` across products). Set when the product is known but no cycle matched (`NO_VERSION`, `NO_CYCLE`, or `AMBIGUOUS` between cycles). |
 | `match_source` | How the product was found: `curated` (an alias in `aliases.json`), `generated` (the name equals the product's title in `products.json`, under the rules in `docs/usage.md`), or `null` when `product` is `null`. Set also when the product is known but no cycle matched (the item then stays `unmatched` with `product` set and `cycle` `null`). With a format 1 data folder it is `curated` or `null`. |
 | `cycle` | The matched cycle label, or `null`. |
@@ -312,6 +312,10 @@ is listed. Publisher only confirms a curated entry and never decides a class.
 ## Lists
 
 `lists` maps each name to a sorted list of item IDs.
+
+The list `review_urgently` keeps its old name for stability: renaming a key
+would change the schema. `report.md` shows it under the heading "In CISA KEV,
+past or near end of life".
 
 | List | Item is on it when |
 |---|---|

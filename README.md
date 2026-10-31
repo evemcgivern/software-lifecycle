@@ -51,7 +51,7 @@ The report has these lists. An item can be on more than one.
   cycle. The tool claims no date for these.
   Names it refused on purpose (a product title on a row with no
   publisher) are listed again under "Names to review": not a finding.
-- Review urgently: the item is past or near end of life and its vendor and
+- In CISA KEV, past or near end of life: the item is past or near end of life and its vendor and
   product appear in CISA KEV. The wording is "needs review". KEV matches
   vendor and product only, never version. The tool never says "vulnerable".
   The report prints this line: The vendor and product appear in CISA KEV. This does not mean your version is affected.
@@ -87,7 +87,8 @@ means no parent. See "The Parent column" in [docs/usage.md](docs/usage.md).
 
 The `count` and `export_support` headings are accepted but not used in
 this version: the tool reads them and does nothing with them. `rows` in the
-report counts inventory rows, not installs.
+report counts inventory rows, not installs or machines. `report.md` says so in
+its summary line and labels each item's count "Inventory rows".
 
 If a required heading is missing, the tool stops and names the field. If
 two columns map to one field, it stops too. `--columns FILE` adds your own

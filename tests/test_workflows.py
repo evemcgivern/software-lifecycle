@@ -419,8 +419,17 @@ class CiWorkflowTests(unittest.TestCase):
         self.assertEqual(job_key(jobs(read("ci.yml"))["test"], "runs-on"),
                          "ubuntu-24.04")
 
+    def test_windows_job_is_informational(self):
+        job = jobs(read("ci.yml"))["test-windows"]
+        self.assertEqual(job_key(job, "runs-on"), "windows-latest")
+        self.assertEqual(job_key(job, "continue-on-error"), "true")
+        body = "\n".join(job)
+        self.assertIn("run: python -B -m unittest discover -s tests", body)
+        self.assertNotIn("matrix", body)
+
     def test_timeouts(self):
-        expected = {"test": "10", "sbom": "10", "upstream-format": "15"}
+        expected = {"test": "10", "test-windows": "15", "sbom": "10",
+                    "upstream-format": "15"}
         found = {n: job_key(b, "timeout-minutes")
                  for n, b in jobs(read("ci.yml")).items()}
         self.assertEqual(found, expected)

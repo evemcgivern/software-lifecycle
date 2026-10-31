@@ -79,7 +79,7 @@ SECTIONS = (
     ("ends_soon", "Ends within the lookahead window", "ends_soon"),
     ("dates_disagree", "Dates disagree", "dates_disagree"),
     ("unmatched", "Couldn't match", "unmatched"),
-    ("review_urgently", "Review urgently", "review_urgently"),
+    ("review_urgently", "In CISA KEV, past or near end of life", "review_urgently"),
     ("accepted_risk", "Accepted risk", None),
     ("ownerless", "Ownerless", None),
     ("golden_overrides", "Golden source overrides", None),
@@ -309,10 +309,10 @@ def _item_block(it: dict, eol_snap: str, by_id: dict) -> list:
         sub.append("Product %s." % SOURCE_TEXT[it["match_source"]])
     owners = ", ".join(_disp(o) for o in it["owners"])
     if owners:
-        sub.append("Owners: %s. Rows: %d" % (owners, it["rows"]))
+        sub.append("Owners: %s. Inventory rows: %d" % (owners, it["rows"]))
     else:
         sub.append("Owners: none listed. This item cannot be actioned until "
-                   "an owner is named. Rows: %d" % it["rows"])
+                   "an owner is named. Inventory rows: %d" % it["rows"])
     if it["state"] == "unmatched":
         sub.append(_unmatched_line(it))
     sub.extend(_date_lines(it, eol_snap))
@@ -388,7 +388,7 @@ def render_markdown(result: dict, meta: dict,
     for warning in result["warnings"]:
         out += ["", "Warning: %s" % _disp(warning)]
     ambiguous = [it["id"] for it in result["items"] if it["ambiguity"]]
-    out += ["", "Items: %d (rows: %d). %s; %s %d." % (
+    out += ["", "Items: %d (rows: %d; inventory rows, not installs). %s; %s %d." % (
         result["counts"]["items"], result["counts"]["rows"],
         "; ".join("%s %d" % (h.lower(), counts[name])
                   for name, h, _ in SECTIONS),
