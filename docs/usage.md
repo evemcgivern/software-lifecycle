@@ -50,7 +50,8 @@ Run it once on a new export, before `check`. It reads the file offline,
 writes nothing, and prints:
 
 - whether the file is readable, its encoding, a byte order mark and its
-  line endings;
+  line endings (`CRLF`, `LF`, `CR`, `mixed`, or `unknown` for UTF-16 and
+  UTF-32);
 - the number of data rows and the file size, beside the row and size
   limits;
 - which profile fits best (`flexera`, `servicenow-mbs`, `rapid7` or

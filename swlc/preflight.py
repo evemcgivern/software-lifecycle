@@ -54,7 +54,28 @@ FIX_TEXT = {
 BLOCKING = ("NO_ROWS", "NO_NAME", "NO_VERSION")
 
 
-def _sniff(path: str) -> dict:
+_WIDE_BOMS = (b"\xff\xfe", b"\xfe\xff")
+
+
+def _line_endings(head: bytes, encoding: str | None, more: bool) -> str:
+    """CRLF, LF, CR, mixed or none; unknown when the bytes are not
+    ASCII-compatible (UTF-16, UTF-32), where a byte count would be wrong."""
+    try:
+        wide = encoding is not None and "\r\n".encode(encoding) != b"\r\n"
+    except (LookupError, UnicodeError):
+        wide = True
+    if wide or b"\x00" in head or head.startswith(_WIDE_BOMS):
+        return "unknown"
+    if more and head.endswith(b"\r"):
+        head = head[:-1]  # its LF may be just past the sample
+    crlf = head.count(b"\r\n")
+    kinds = [name for name, n in (("CRLF", crlf),
+                                  ("LF", head.count(b"\n") - crlf),
+                                  ("CR", head.count(b"\r") - crlf)) if n]
+    return "mixed" if len(kinds) > 1 else kinds[0] if kinds else "none"
+
+
+def _sniff(path: str, encoding: str | None) -> dict:
     try:
         info = os.stat(path)
     except OSError as exc:
@@ -70,12 +91,9 @@ def _sniff(path: str) -> dict:
     except OSError as exc:
         raise InputError(
             "cannot read input file (%s)" % exc.strerror) from None
-    crlf = head.count(b"\r\n")
-    lf = head.count(b"\n") - crlf
-    endings = ("mixed" if crlf and lf else "CRLF" if crlf
-               else "LF" if lf else "none")
     return {"bytes": size, "bom": head.startswith(b"\xef\xbb\xbf"),
-            "line_endings": endings}
+            "line_endings": _line_endings(head, encoding,
+                                          size > len(head))}
 
 
 def _score(headers: list, profiles: dict, extra: dict | None) -> dict:
@@ -131,7 +149,7 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
             encoding: str | None = None) -> dict:
     """Return the preflight result. Raises InputError when the file cannot
     be read as a CSV with a header; its text never holds file content."""
-    sniff = _sniff(path)
+    sniff = _sniff(path, encoding)
     rows, headers = read_rows(path, encoding, max_rows=inputs.MAX_ROWS,
                               max_bytes=inputs.MAX_BYTES, allow_empty=True)
     scores = _score(headers, profiles, extra)

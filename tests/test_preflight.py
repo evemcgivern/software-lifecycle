@@ -195,6 +195,26 @@ class FileTests(Base):
         self.assertFalse(res["file"]["bom"])
         self.assertEqual(res["file"]["line_endings"], "LF")
 
+    def test_line_ending_kinds(self):
+        cases = {b"Product,Version\ra,1\r": "CR",
+                 b"Product,Version\r\na,1\n": "mixed",
+                 b"Product,Version\na,1": "LF"}
+        for raw, expected in cases.items():
+            with self.subTest(expected):
+                path = self.root / "e.csv"
+                path.write_bytes(raw)
+                code, res, err = self.pre_json(str(path))
+                self.assertEqual(code, 0, err)
+                self.assertEqual(res["file"]["line_endings"], expected)
+
+    def test_utf16_line_endings_are_unknown(self):
+        path = self.root / "u16.csv"
+        path.write_bytes("Product,Version\r\na,1\r\n".encode("utf-16"))
+        code, res, err = self.pre_json(str(path), "--encoding", "utf-16")
+        self.assertEqual(code, 0, err)
+        self.assertEqual(res["file"]["line_endings"], "unknown")
+        self.assertEqual(res["file"]["rows"], 1)
+
     def test_empty_file_exits_3(self):
         path = self.root / "empty.csv"
         path.write_bytes(b"")
