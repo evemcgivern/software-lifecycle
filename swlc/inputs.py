@@ -49,8 +49,10 @@ def _line_of(data: bytes, offset: int) -> int:
 
 
 def _show(text: str, limit: int = 60) -> str:
-    """Header text for an error message, cut to a bounded length."""
+    """Header text for a message: one line, control and other
+    non-printable characters shown as "?", cut to a bounded length."""
     text = " ".join(text.split())
+    text = "".join(c if c.isprintable() else "?" for c in text)
     return text if len(text) <= limit else text[:limit] + "..."
 
 

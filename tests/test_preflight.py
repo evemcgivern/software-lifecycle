@@ -131,6 +131,24 @@ class ColumnTests(Base):
         self.assertEqual(res["formula_cells"], 1)
         self.assertEqual(res["other_columns"], {"owner": "Owner"})
 
+    def test_control_characters_in_a_header_are_not_printed(self):
+        path = self.inv(["\x1bName\x07", "Product", "Version"],
+                        [["a", "b", "1"]])
+        code, out, err = self.pre(path)
+        self.assertEqual(code, cli.EXIT_INPUT)
+        self.assertIn("'?Name?'", err)
+        code, out, err = self.pre(path, "--json")
+        for text in (out, err):
+            self.assertNotIn("\x1b", text)
+            self.assertNotIn("\x07", text)
+            self.assertNotIn("\\u001b", text)
+        path = self.inv(["\x1bName", "Version"], [["a", "1"]], "ok.csv")
+        code, res, err = self.pre_json(path)
+        self.assertEqual(code, 0, err)
+        self.assertEqual(res["columns"]["name"], "?Name")
+        _, out, _ = self.pre(path)
+        self.assertNotIn("\x1b", out)
+
     def test_header_conflict_is_bad_input(self):
         path = self.inv(["Name", "Product", "Version"], [["a", "b", "1"]])
         code, out, err = self.pre(path)

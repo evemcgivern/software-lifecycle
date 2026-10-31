@@ -53,11 +53,6 @@ FIX_TEXT = {
 BLOCKING = ("NO_ROWS", "NO_NAME", "NO_VERSION")
 
 
-def _header(text: str) -> str:
-    """A column title for display: printable, one line, bounded."""
-    return _show("".join(c if c.isprintable() else "?" for c in text))
-
-
 def _sniff(path: str) -> dict:
     try:
         size = os.path.getsize(path)
@@ -181,9 +176,9 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
                    "within": True},
         "profile": {"best": best, "how": how, "used": used,
                     "status": status, "scores": scores},
-        "columns": {f: (_header(colmap[f]) if f in colmap else None)
+        "columns": {f: (_show(colmap[f]) if f in colmap else None)
                     for f in FIELDS},
-        "other_columns": {f: _header(colmap[f]) for f in sorted(colmap)
+        "other_columns": {f: _show(colmap[f]) for f in sorted(colmap)
                           if f not in FIELDS},
         "blank_cells": dict(sorted(blank.items())),
         "placeholder_cells": placeholder,
