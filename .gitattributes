@@ -1,0 +1,20 @@
+# Check every text file out with LF line endings on all platforms.
+# data/manifest.json records the size and hash of each bundled data file,
+# so a CRLF checkout (the Windows default) breaks verification.
+* text=auto eol=lf
+
+*.json text eol=lf
+*.csv text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.txt text eol=lf
+
+# Binary files: never convert.
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
