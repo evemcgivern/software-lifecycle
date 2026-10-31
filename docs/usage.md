@@ -483,8 +483,12 @@ entry cites its evidence and the benchmark must not get worse.
 
 An inventory row can be an application someone owns, a piece of something
 else, or a member of a bundle. Each row gets one of four classes. These are
-policy lines. ISO/IEC 19770-1 requires an inventory and lifecycle control but
-does not define "component", "bundle" or "governable". ISO/IEC 19770-2 (SWID)
+policy lines, not terms from a standard. ISO/IEC 19770-1 (IT asset
+management) is the relevant standard; the clause that covers inventory and
+lifecycle control is Not found / Unverified, because no public source
+checked shows its clause text. Refer to the official ISO/IEC 19770-1
+documentation for its wording. The terms "component", "bundle" and
+"governable" are this tool's own. ISO/IEC 19770-2 (SWID)
 has parent and child links; its clause references are Unverified until
 checked.
 

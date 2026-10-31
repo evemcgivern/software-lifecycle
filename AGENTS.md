@@ -41,7 +41,7 @@ No install step. Run from the repo root.
   `eol/`.
 - `examples/`: the synthetic demo estate.
 - `docs/`: usage, report schema, procedure, checklist, platform guide,
-  themes, crosswalk.
+  themes, crosswalk, maintainer notes.
 - `templates/`: blank input and override files.
 - `tests/`: the suite. `tests/fixtures/` is generated.
 - `tests/benchmark/`: the gold benchmark (`gold.csv`, `floor.json`) scored

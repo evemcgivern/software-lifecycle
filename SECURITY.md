@@ -1,6 +1,6 @@
 # Security
 
-Runs locally with no network by default; built to enterprise security practices; not independently assessed.
+Runs locally with no network by default; not independently assessed.
 
 > This repository is currently private. This policy and process apply when
 > it is public.
@@ -52,7 +52,6 @@ Out of scope:
 
 - It runs locally and makes no network calls by default. A test in the
   repository blocks network access and runs the tool.
-- It is built to enterprise security practices.
 - It uses only the Python standard library.
 
 ## Supply chain

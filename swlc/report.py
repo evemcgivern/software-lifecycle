@@ -21,8 +21,8 @@ MAX_DISPLAY = 120
 
 KEV_LINE = ("The vendor and product appear in CISA KEV. This does not mean "
             "your version is affected.")
-CLAIMS_LINE = ("Runs locally with no network by default; built to "
-               "enterprise security practices; not independently assessed.")
+CLAIMS_LINE = ("Runs locally with no network by default; not "
+               "independently assessed.")
 # Fixed text, printed once in report.md under the summary counts.
 MATCH_CAVEAT = ("Matches rest on name and publisher only. Rows we could not "
                 "tell apart are listed as unmatched. Check the source and "

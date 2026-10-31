@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Docs wording before publication (issue #36): the claims line is now
+  "Runs locally with no network by default; not independently assessed."
+  in the README, SECURITY.md and `report.md`. The BOD 26-04 sentence cites
+  its cisa.gov page. The go-public checklist moved to
+  `docs/maintaining.md`. The README says who the tool is for and when not
+  to use it, and that the `count` column is read but not used to rank or
+  filter findings. `docs/sop.md` step 5 makes renewing a support record
+  the contract owner's decision, with dates from the contract. The
+  ISO/IEC 19770-1 sentence in `docs/usage.md` no longer claims what the
+  standard requires and marks its clause Not found / Unverified.
+
 - Windows (issue #31): `.gitattributes` checks text files out with LF, so
   the bundled data matches `data/manifest.json` after a Windows clone. The
   informational `test-windows` job passes, with POSIX-only checks skipped.

@@ -19,8 +19,8 @@ from swlc.cli import build
 AS_OF = date(2026, 10, 24)
 KEV_LINE = ("The vendor and product appear in CISA KEV. This does not mean "
             "your version is affected.")
-CLAIMS = ("Runs locally with no network by default; built to enterprise "
-          "security practices; not independently assessed.")
+CLAIMS = ("Runs locally with no network by default; not independently "
+          "assessed.")
 CAVEAT = ("Matches rest on name and publisher only. Rows we could not tell "
           "apart are listed as unmatched. Check the source and cycle before "
           "relying on any row.")

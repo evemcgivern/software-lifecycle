@@ -13,6 +13,8 @@ who holds each role.
 - **Independent approver**: signs off too, and is not the person who
   requested the acceptance.
 - **ITAM lead**: settles every "dates disagree" item.
+- **Contract owner**: decides whether to renew or end each support
+  record, using the dates in the contract.
 
 ## Cadence
 
@@ -55,14 +57,16 @@ who holds each role.
    paying for extended support against migrating. The tool does not
    check that a record was paid for or is current, and extended support
    may include only some fixes or editions. Then read the "Support
-   records" section: renew or end the records that end within the
-   window, and check each record not matched to a dated item in this
-   inventory. That includes a product
+   records" section. For each record that ends within the window, the
+   contract owner decides whether to renew it or let it end. Notice and
+   renewal dates come from the contract, not from the tool. Check each
+   record not matched to a dated item in this inventory. That includes a product
    that is in the inventory without a decided cycle or version, and
    discovery coverage is unknown, so the product may still be in use.
    After a data refresh, a record whose product ID was renamed or removed
    stops the run; fix the row's product ID.
-   **Decision needed:** the owner's choice for each item.
+   **Decision needed:** the owner's choice for each item, and the
+   contract owner's renew-or-end choice for each support record.
 6. **Work "In CISA KEV, past or near end of life".** These items are past or near end of life and
    their vendor and product appear in CISA KEV. This does not mean your
    version is affected. A person checks the version against the KEV entries
@@ -133,7 +137,10 @@ record its reference in `tracking.csv` (step 11).
 published standards as a reference. Some cells are secondary-sourced and
 marked in `unverified_columns`. See [themes.md](themes.md). The KEV overlay
 is a reference for prioritization. It does not show compliance with any
-standard. CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01. It is a reference only. It binds federal civilian agencies only. This tool does not implement it or its deadlines. Details are not reviewed here (Unverified).
+standard. CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01 (source:
+<https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk>).
+It is a reference only. It binds federal civilian agencies only. This tool
+does not implement it or its deadlines.
 
 **What is the support level?** Maintained as time allows, best effort, no
 SLA. This is an experiment with a review date of 2027-01-31. On that date the maintainer decides whether to keep it, archive it, or fold it into another project.
