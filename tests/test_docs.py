@@ -557,6 +557,22 @@ class BannedWordTests(unittest.TestCase):
                     self.assertIn("never", s.lower(), path.name)
 
 
+class ReaderDocsTests(unittest.TestCase):
+    def test_quick_start_commands_parse(self):
+        body = text(DOCS / "quick-start.md")
+        commands = re.findall(r"^    python3 software_lifecycle\.py (.+)$",
+                              body, re.M)
+        self.assertGreaterEqual(len(commands), 3)
+        for command in commands:
+            args = cli._parser().parse_args(command.split())
+            self.assertIn(args.command, ("check", "preflight"), command)
+            self.assertNotIn("/tmp", command)
+
+    def test_glossary_quotes_the_kev_line(self):
+        flat = " ".join(text(DOCS / "glossary.md").split())
+        self.assertIn(KEV_LINE, flat)
+
+
 class PlatformGuideTests(unittest.TestCase):
     def test_sources_section(self):
         body = text(DOCS / "platform-guide.md")

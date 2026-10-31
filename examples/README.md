@@ -9,5 +9,6 @@ Run it from the repo root:
 
     python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo
 
-To regenerate the inventory, answer key, tracking file and support-records file, run `python3 examples/generate.py`. A fixed seed gives the same bytes every time.
-`tests/test_e2e.py` checks the run against the answer key.
+`sample-report.md` is the `report.md` that command writes. It is synthetic data only.
+To regenerate the inventory, answer key, tracking file, support-records file and sample report, run `python3 examples/generate.py`. A fixed seed gives the same bytes every time.
+`tests/test_e2e.py` checks the run against the answer key and checks that `sample-report.md` is the run's `report.md`, byte for byte.

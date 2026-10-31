@@ -1,6 +1,7 @@
 # Run checklist
 
-One page. The full procedure is in [sop.md](sop.md).
+One page. The full procedure is in [sop.md](sop.md). The words in the
+report are in [glossary.md](glossary.md).
 
 ## Before
 
@@ -9,10 +10,12 @@ One page. The full procedure is in [sop.md](sop.md).
 - [ ] `python3 software_lifecycle.py verify-data` passes.
 - [ ] A newer data release, if used, passed `gh attestation verify` online.
 - [ ] The inventory export is on the machine that runs the tool.
+- [ ] `python3 software_lifecycle.py preflight inventory.csv` was run on
+      the export, and what it lists under "What to fix" is fixed.
 - [ ] Heading check: the export has name and version columns the tool
       accepts (or you have a `--columns` file).
 - [ ] Override files are current: `golden-sources.csv`, `exceptions.csv`,
-      `tracking.csv`.
+      `tracking.csv`, `support-records.csv`.
 - [ ] Last run's `report.json` is at hand for `--previous`.
 - [ ] If an AI agent runs it: `--counts-only`, and the output folder is out
       of its reach.
@@ -22,11 +25,15 @@ One page. The full procedure is in [sop.md](sop.md).
 - [ ] The run exits with code 0 (or 10 if you used `--fail-on`).
 - [ ] No unexpected warnings in the report.
 - [ ] Past end of life and ends-soon items each have a decision.
-- [ ] Review-urgently items are checked by a person against the KEV entries.
+- [ ] "In CISA KEV, past or near end of life" items are checked by a
+      person against the KEV entries.
 - [ ] Dates-disagree items are settled by the ITAM lead.
 - [ ] Accepted risk has a risk owner and an independent approver.
 - [ ] Couldn't-match items are checked; product names (only) go to an
       unmatched-product issue.
+- [ ] Support records that end within the window each have a renew-or-end
+      decision from the contract owner, and records not matched to a dated
+      item are checked.
 
 ## After
 

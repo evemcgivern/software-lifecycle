@@ -3,6 +3,12 @@
 Purpose: find software past or near end of life, decide what to do about
 each item, and keep a record of the decisions.
 
+Matching covers only the products endoflife.date lists, so the report is
+not a complete view of the inventory and not a licence position.
+
+New to the tool? Start with [quick-start.md](quick-start.md). The words in
+the report are explained in [glossary.md](glossary.md).
+
 ## Roles
 
 The tool names roles. It never assigns people. Your organization decides

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Write the synthetic demo estate: inventory, answer key, tracking file
-and support-records file.
+and support-records file, and the sample report made from them.
 
     python3 examples/generate.py [OUTDIR]
 
@@ -9,17 +9,25 @@ All products, publishers and owners are fictional. The planted cases are
 checked against tests/fixtures/data on 2026-10-24 (a 12 month window ends
 2027-10-24), with golden-sources.csv and exceptions.csv from this folder.
 The expected states below are written by hand, not read from the tool.
+sample-report.md is the tool's own report.md for the demo run on that
+date, made from the generated files.
 """
 from __future__ import annotations
 
+import contextlib
 import csv
+import io
 import json
 import random
 import sys
+import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+sys.path.insert(0, str(ROOT))
 
+from swlc.cli import main as swlc_main  # noqa: E402
 from swlc.inputs import item_id  # noqa: E402
 
 SEED = 20261024
@@ -176,7 +184,6 @@ WINDOW = ("2026-10-24", "2027-10-24")
 
 
 def _csv_bytes(rows) -> bytes:
-    import io
     buf = io.StringIO(newline="")
     csv.writer(buf, lineterminator="\n").writerows(rows)
     return buf.getvalue().encode("utf-8")
@@ -193,6 +200,30 @@ def _support_key(ids: dict) -> dict:
             key = label if label == FILLER_LANTERN else ids[label]
             out.setdefault(key, []).append(ref)
     return {k: sorted(v) for k, v in sorted(out.items())}
+
+
+def sample_report(files: dict) -> bytes:
+    """Run the demo check on the generated files (with golden-sources.csv
+    and exceptions.csv from this folder) and return its report.md."""
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        for name in ("software-inventory.csv", "tracking.csv",
+                     "support-records.csv"):
+            (tmp_path / name).write_bytes(files[name])
+        out = tmp_path / "out"
+        argv = ["check", str(tmp_path / "software-inventory.csv"),
+                "--data", str(ROOT / "tests" / "fixtures" / "data"),
+                "--as-of", WINDOW[0],
+                "--golden", str(HERE / "golden-sources.csv"),
+                "--exceptions", str(HERE / "exceptions.csv"),
+                "--tracking", str(tmp_path / "tracking.csv"),
+                "--support-records", str(tmp_path / "support-records.csv"),
+                "--out", str(out)]
+        with contextlib.redirect_stdout(io.StringIO()):
+            code = swlc_main(argv)
+        if code != 0:
+            raise SystemExit("demo check failed with exit code %d" % code)
+        return (out / "report.md").read_bytes()
 
 
 def build() -> dict:
@@ -264,17 +295,19 @@ def build() -> dict:
                 in SUPPORT_RECORDS]
     tracking = [["schema_version", "item_id", "change_ref", "problem_ref"]]
     tracking += [["1", ids[label], chg, prb] for label, chg, prb in TRACKING]
-    return {
+    files = {
         "software-inventory.csv": _csv_bytes([HEADER] + rows),
         "answer-key.json": (json.dumps(key, sort_keys=True, indent=2)
                             + "\n").encode("ascii"),
         "tracking.csv": _csv_bytes(tracking),
         "support-records.csv": _csv_bytes(support),
     }
+    files["sample-report.md"] = sample_report(files)
+    return files
 
 
 def main(argv: list) -> int:
-    dest = Path(argv[1]) if len(argv) > 1 else Path(__file__).resolve().parent
+    dest = Path(argv[1]) if len(argv) > 1 else HERE
     for name, data in build().items():
         (dest / name).write_bytes(data)
     return 0

@@ -25,6 +25,9 @@ the commands below from the repo root with `python3 software_lifecycle.py`.
 
 ## Quick start
 
+New to the tool? Start with [docs/quick-start.md](docs/quick-start.md):
+one page for macOS, Linux and Windows, from an export to a report.
+
 Run these from the repo root.
 
 1. Try the demo. The demo inventory is made up and runs against synthetic
@@ -72,6 +75,13 @@ The report has these lists. An item can be on more than one.
 
 The report files are `report.json`, `report.md` and `report.csv`. Their
 fields are in [docs/report-schema.md](docs/report-schema.md).
+
+### What a report looks like
+
+[examples/sample-report.md](examples/sample-report.md) is the `report.md`
+the demo run above writes, from made-up data only. A test keeps it the
+same as the real output. The words it uses are explained in
+[docs/glossary.md](docs/glossary.md).
 
 ## Your input file
 
