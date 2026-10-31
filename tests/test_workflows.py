@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -701,6 +702,8 @@ if __name__ == "__main__":
 
 
 @unittest.skipUnless(shutil.which("bash"), "needs bash")
+@unittest.skipIf(sys.platform == "win32",
+                 "bash on Windows is the WSL launcher, not POSIX bash")
 class WeeklyManifestTests(unittest.TestCase):
     """Run the weekly workflow's own manifest step on a scratch copy of the
     data, then run the data checks against that copy."""
@@ -750,6 +753,8 @@ class WeeklyManifestTests(unittest.TestCase):
 
 
 @unittest.skipUnless(shutil.which("bash"), "needs bash")
+@unittest.skipIf(sys.platform == "win32",
+                 "bash on Windows is the WSL launcher, not POSIX bash")
 class GuardBehaviourTests(unittest.TestCase):
     """Run the guard scripts with stubs, and prove the checks catch edits."""
 
