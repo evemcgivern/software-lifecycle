@@ -31,7 +31,9 @@ who holds each role.
    `gh attestation verify` (command in the [README](../README.md)). Then
    run `python3 software_lifecycle.py verify-data --data DIR`.
 2. **Export the inventory.** Use [platform-guide.md](platform-guide.md) or
-   your own source. Real inventories are Confidential: keep them on the
+   your own source. Run `python3 software_lifecycle.py preflight
+   inventory.csv` on a new export to see which columns it found and what
+   to fix. Real inventories are Confidential: keep them on the
    machine that runs the tool.
 3. **Run the check locally.** Pass your override files and last quarter's
    report:

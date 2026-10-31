@@ -11,7 +11,8 @@ from datetime import date
 from pathlib import Path
 
 from .assess import LISTS, MAX_LOOKAHEAD_MONTHS, assess
-from .data import load_data, tool_version, verify_data
+from . import preflight
+from .data import load_data, load_profiles, tool_version, verify_data
 from .errors import DataError, InputError
 from .inputs import GENERIC_ALIASES, group_rows, map_columns, read_rows
 from .overrides import file_hash, load_exceptions, load_golden, load_tracking
@@ -114,6 +115,13 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
     return result, meta
 
 
+def _known_profile(profiles: dict, profile: str) -> None:
+    if profile != "generic" and profile not in profiles:
+        raise UsageError(
+            "unknown profile; available: generic%s"
+            % "".join(", " + name for name in sorted(profiles)))
+
+
 def _build(inventory_path: str, *, as_of: date, data: str | None,
            lookahead_months: int, profile: str, columns: str | None,
            golden: str | None, exceptions: str | None, tracking: str | None,
@@ -122,13 +130,10 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
     """As build, plus the loaded support records (None when no file),
     which report.md needs for its "Support records" section."""
     loaded = load_data(data or BUNDLED_DATA, as_of)
+    _known_profile(loaded.profiles, profile)
     if profile == "generic":
         columns_map, status = None, None
     else:
-        if profile not in loaded.profiles:
-            raise UsageError(
-                "unknown profile; available: generic%s"
-                % "".join(", " + name for name in sorted(loaded.profiles)))
         entry = loaded.profiles[profile]
         columns_map = entry["columns"]
         status = entry.get("status") or "Unverified"
@@ -235,6 +240,21 @@ def _parser() -> argparse.ArgumentParser:
                             + ", ".join(FAIL_ON_NAMES))
     check.add_argument("--encoding", metavar="NAME",
                        help="text encoding of the inventory if not UTF-8")
+    pre = sub.add_parser("preflight",
+                         help="say whether check can use an inventory CSV; "
+                              "prints column titles and counts, never a "
+                              "cell")
+    pre.add_argument("inventory", metavar="INVENTORY",
+                     help="the inventory CSV export, with a header row")
+    pre.add_argument("--profile", metavar="NAME",
+                     help="use this profile instead of the best fit: "
+                          "generic, flexera, servicenow-mbs or rapid7")
+    pre.add_argument("--columns", metavar="FILE",
+                     help="JSON file that adds column headings")
+    pre.add_argument("--encoding", metavar="NAME",
+                     help="text encoding of the inventory if not UTF-8")
+    pre.add_argument("--json", action="store_true",
+                     help="print the result as JSON")
     verify = sub.add_parser("verify-data", help="verify the data directory")
     verify.add_argument("--data", metavar="DIR",
                         help="data folder to verify (default: bundled data)")
@@ -351,13 +371,61 @@ def _check(args) -> int:
     return EXIT_OK
 
 
+def _preflight(args) -> int:
+    profiles = load_profiles(BUNDLED_DATA)
+    if args.profile is not None:
+        _known_profile(profiles, args.profile)
+    extra = _read_columns(args.columns) if args.columns else None
+    result = preflight.inspect(args.inventory, profiles, args.profile,
+                               args.columns, extra, args.encoding)
+    sys.stdout.write(preflight.render_json(result) if args.json
+                     else preflight.render_text(result))
+    return EXIT_OK if result["ok"] else EXIT_INPUT
+
+
 def main(argv: list | None = None) -> int:
+    words = sys.argv[1:] if argv is None else list(argv)
+    if words[:1] == ["preflight"] and "--json" in words:
+        return _preflight_json(words)
+    return _main(argv)
+
+
+def _preflight_json(words: list) -> int:
+    """preflight --json: every failure also prints a JSON error object on
+    stdout. Argument errors give a fixed text, since argparse's own message
+    can repeat an argument."""
+    try:
+        return _preflight(_parser().parse_args(words))
+    except SystemExit as exc:
+        code = exc.code if isinstance(exc.code, int) else EXIT_USAGE
+        if code:
+            sys.stdout.write(preflight.error_json(
+                "bad arguments; run preflight --help", code))
+        return code
+    except (UsageError, InputError, DataError) as exc:
+        code = (EXIT_USAGE if isinstance(exc, UsageError) else
+                EXIT_INPUT if isinstance(exc, InputError) else EXIT_DATA)
+        sys.stdout.write(preflight.error_json(str(exc), code))
+        print("%s: %s" % ("Usage error" if code == EXIT_USAGE else
+                          "Input error" if code == EXIT_INPUT else
+                          "Data check failed", exc), file=sys.stderr)
+        return code
+    except Exception as exc:
+        sys.stdout.write(preflight.error_json(type(exc).__name__,
+                                              EXIT_UNEXPECTED))
+        print(type(exc).__name__, file=sys.stderr)
+        return EXIT_UNEXPECTED
+
+
+def _main(argv: list | None) -> int:
     quiet = False
     try:
         args = _parser().parse_args(argv)
         quiet = bool(getattr(args, "counts_only", False))
         if args.command == "verify-data":
             return verify_data(args.data or BUNDLED_DATA)
+        if args.command == "preflight":
+            return _preflight(args)
         return _check(args)
     except SystemExit as exc:
         return exc.code if isinstance(exc.code, int) else EXIT_USAGE

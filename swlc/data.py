@@ -616,6 +616,13 @@ def _parse_all(blobs: dict) -> tuple:
     return aliases, kev, products, profiles, catalog, curation
 
 
+def load_profiles(data_dir: str) -> dict:
+    """Verify the data folder, then parse only profiles.json."""
+    _manifest, blobs = _verify(data_dir)
+    return _wrap("profiles.json", _validate_profiles,
+                 _parse(blobs["profiles.json"], "profiles.json"))
+
+
 def load_data(data_dir: str, as_of: date) -> Data:
     """Verify the manifest and files first, then parse. Raises DataError."""
     manifest, blobs = _verify(data_dir)

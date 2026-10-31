@@ -42,7 +42,10 @@ Run these from the repo root.
    first. Running the demo inventory against the bundled data lists every
    item as "couldn't match", because the demo names are made up.
 
-All commands and flags are in [docs/usage.md](docs/usage.md).
+Before the first check of a new export, `python3 software_lifecycle.py
+preflight YOUR-INVENTORY.csv` says which columns it found and what to fix,
+without printing any row. All commands and flags are in
+[docs/usage.md](docs/usage.md).
 
 ## What you get
 
