@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import sys
 import tempfile
 import unittest
@@ -349,7 +350,7 @@ class OutputTests(Base):
         _, res, _ = self.pre_json(path)
         self.assertEqual(res["next_command"],
                          "python3 software_lifecycle.py check %s --out "
-                         "../swlc-out" % path)
+                         "../swlc-out" % shlex.quote(path))
 
     def test_no_cell_value_on_success(self):
         path = self.inv(["Product", "Publisher", "Version", "Owner"],
