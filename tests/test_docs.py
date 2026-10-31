@@ -315,15 +315,16 @@ class UsageTests(unittest.TestCase):
     def test_flag_table_matches_parser(self):
         body = text(DOCS / "usage.md")
         documented = set()
-        for cell in table_cells(body, "check"):
-            documented |= set(re.findall(r"`(--[a-z-]+)", cell))
+        for heading in ("check", "preflight"):
+            for cell in table_cells(body, heading):
+                documented |= set(re.findall(r"`(--[a-z-]+)", cell))
         real = {f for f in parser_flags() if f.startswith("--")}
         self.assertIn("--counts-only", real)
         self.assertEqual(documented, real)
 
     def test_commands_documented(self):
         body = text(DOCS / "usage.md")
-        for name in ("check", "verify-data"):
+        for name in ("check", "preflight", "verify-data"):
             self.assertIn("## " + name, body)
 
 

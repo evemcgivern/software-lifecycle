@@ -9,6 +9,8 @@ from .errors import DataError, InputError
 from .normalize import normalize_name
 
 REQUIRED = ("name", "version")
+MAX_ROWS = 200_000
+MAX_BYTES = 256 * 1024 * 1024
 OPTIONAL = ("publisher", "owner", "count", "export_eol", "export_support",
             "parent")
 
@@ -84,9 +86,9 @@ def _decode(data: bytes, encoding: str | None) -> str:
 
 
 def read_rows(path: str, encoding: str | None = None,
-              max_rows: int = 200_000,
+              max_rows: int = MAX_ROWS,
               max_field: int = 65_536,
-              max_bytes: int = 256 * 1024 * 1024,
+              max_bytes: int = MAX_BYTES,
               allow_empty: bool = False) -> tuple[list[dict], list[str]]:
     """Read a CSV into (rows, headers). Errors name line numbers only.
 
@@ -149,11 +151,14 @@ def read_rows(path: str, encoding: str | None = None,
 
 
 def map_columns(headers: list[str], profile: dict | None,
-                extra_aliases: dict | None) -> dict[str, str]:
+                extra_aliases: dict | None,
+                require: bool = True) -> dict[str, str]:
     """Map canonical field names to header names. Never guesses.
 
     ``profile`` is a profile's ``columns`` dict (canonical name to alias
     list); ``extra_aliases`` has the same shape. Both add to the generic list.
+    With ``require`` False a missing required field is left out instead of
+    raising.
     """
     lookup: dict[str, set[str]] = {}
     for source in (GENERIC_ALIASES, profile or {}, extra_aliases or {}):
@@ -177,7 +182,7 @@ def map_columns(headers: list[str], profile: dict | None,
                        _show(header)))
             found[canon] = header
             where[canon] = pos
-    for canon in REQUIRED:
+    for canon in REQUIRED if require else ():
         if canon not in found:
             raise InputError(
                 "no column found for required field '%s'; columns seen: %s"

@@ -22,6 +22,7 @@ No install step. Run from the repo root.
 - `software_lifecycle.py`: entry point.
 - `swlc/cli.py`: flags, exit codes, `run()`.
 - `swlc/inputs.py`: CSV reading, column aliases, item IDs.
+- `swlc/preflight.py`: the `preflight` command's checks and output.
 - `swlc/matching.py`: names to product and cycle.
 - `swlc/catalog_match.py`: matching by endoflife.date product title.
 - `swlc/normalize.py`: name and version cleanup.
