@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import shlex
+import stat
 
 from . import inputs
 from .classify import _PLACEHOLDERS
@@ -55,7 +56,15 @@ BLOCKING = ("NO_ROWS", "NO_NAME", "NO_VERSION")
 
 def _sniff(path: str) -> dict:
     try:
-        size = os.path.getsize(path)
+        info = os.stat(path)
+    except OSError as exc:
+        raise InputError(
+            "cannot read input file (%s)" % exc.strerror) from None
+    # Before any open: a FIFO would block and /dev/zero never ends.
+    if not stat.S_ISREG(info.st_mode):
+        raise InputError("input is not a regular file")
+    size = info.st_size
+    try:
         with open(path, "rb") as fh:
             head = fh.read(SNIFF_BYTES)
     except OSError as exc:

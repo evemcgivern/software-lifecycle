@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -215,6 +216,25 @@ class FileTests(Base):
         code, out, err = self.pre(str(self.root / "nope.csv"))
         self.assertEqual(code, cli.EXIT_INPUT)
         self.assertIn("cannot read input file", err)
+
+    def test_directory_is_not_a_regular_file(self):
+        code, out, err = self.pre(str(self.root))
+        self.assertEqual(code, cli.EXIT_INPUT)
+        self.assertIn("input is not a regular file", err)
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "no FIFOs on this platform")
+    def test_fifo_is_refused_without_blocking(self):
+        fifo = self.root / "pipe.csv"
+        os.mkfifo(str(fifo))
+        code, out, err = self.pre(str(fifo))
+        self.assertEqual(code, cli.EXIT_INPUT)
+        self.assertIn("input is not a regular file", err)
+
+    @unittest.skipUnless(os.path.exists("/dev/zero"), "no /dev/zero")
+    def test_device_is_refused(self):
+        code, out, err = self.pre("/dev/zero")
+        self.assertEqual(code, cli.EXIT_INPUT)
+        self.assertIn("input is not a regular file", err)
 
     def test_oversize_file_exits_3(self):
         path = self.inv(["Product", "Version"], [["a", "1"]] * 20)
