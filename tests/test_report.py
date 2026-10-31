@@ -124,7 +124,7 @@ class ClassViewTests(PartsBase):
 
     def test_csv_appends_columns_in_order(self):
         cols = report.CSV_COLUMNS
-        self.assertEqual(len(cols), 33)
+        self.assertEqual(len(cols), 34)
         self.assertEqual(cols[:29], (
             "id", "name", "version", "publisher", "owners", "rows", "state",
             "reason", "product", "cycle", "eol_used", "eol_source",
@@ -135,7 +135,8 @@ class ClassViewTests(PartsBase):
             "problem_ref", "lists", "match_source"))
         self.assertEqual(cols[29:], ("classification", "parent_ref",
                                      report.INHERITED_HEADING,
-                                     "Review reason"))
+                                     "Review reason",
+                                     "Support records (from your file)"))
         rows = list(csv.DictReader(io.StringIO(
             report.render_csv(self.result))))
         by = {r["name"]: r for r in rows}

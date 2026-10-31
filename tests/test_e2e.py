@@ -26,7 +26,8 @@ EXAMPLES = ROOT / "examples"
 DATA = ROOT / "tests" / "fixtures" / "data"
 EXPECTED = ROOT / "tests" / "fixtures" / "expected-report.json"
 AS_OF = "2026-10-24"
-DEMO_FILES = ("software-inventory.csv", "answer-key.json", "tracking.csv")
+DEMO_FILES = ("software-inventory.csv", "answer-key.json", "tracking.csv",
+              "support-records.csv")
 
 
 def check_args(out: Path, *extra) -> list:
@@ -35,6 +36,7 @@ def check_args(out: Path, *extra) -> list:
             "--golden", str(EXAMPLES / "golden-sources.csv"),
             "--exceptions", str(EXAMPLES / "exceptions.csv"),
             "--tracking", str(EXAMPLES / "tracking.csv"),
+            "--support-records", str(EXAMPLES / "support-records.csv"),
             "--out", str(out), *extra]
 
 
@@ -123,6 +125,20 @@ class AnswerKeyTests(DemoBase):
         self.assertEqual(flagged, ids)
         self.assertEqual(self.report["counts"]["ambiguous_review"], 1)
         self.assertIn("## Names to review (1)", self.md)
+
+    def test_support_records_match_the_key(self):
+        key = self.key["support_records"]
+        filler = key.pop("filler:lanternviewer")
+        self.assertEqual(self.report["counts"]["support_records"],
+                         self.key["counts"]["support_records"])
+        for it in self.report["items"]:
+            refs = sorted(e["record_ref"] for e in it["support_records"])
+            if it["product"] == "lanternviewer" and it["cycle"]:
+                want = filler
+            else:
+                want = key.get(it["id"], [])
+            self.assertEqual(refs, want, it["id"])
+        self.assertIn("## Support records", self.md)
 
     def test_case_names_are_unique(self):
         names = [c["case"] for c in self.key["cases"].values()]

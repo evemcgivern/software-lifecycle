@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Write the synthetic demo estate: inventory, answer key and tracking file.
+"""Write the synthetic demo estate: inventory, answer key, tracking file
+and support-records file.
 
     python3 examples/generate.py [OUTDIR]
 
@@ -146,6 +147,29 @@ FILLER = [
 TRACKING = [("exception_active", "CHG-1001", "PRB-2001"),
             ("past_eol_date", "CHG-1002", "")]
 
+# Support records: (record_ref, product, scope, kind, ends_on, owner_role,
+# planted cases the record fits). Fictional references. A record never
+# changes a state or a list; the answer key says which items it is shown on.
+FILLER_LANTERN = "filler:lanternviewer"
+SUPPORT_RECORDS = [
+    ("SR-1001", "tidewatersuite", "4", "extended support", "2027-06-30",
+     "Application owner", ["past_eol_date"]),
+    ("SR-1002", "examplesql", "14", "extended support", "2026-06-30", "",
+     ["past_eol_flag"]),
+    ("SR-1003", "tidewatersuite", "5.0", "vendor support", "2028-03-31",
+     "ITAM lead", ["ends_within_12_months"]),
+    ("SR-1004", "northwindgateway", "", "vendor support", "2029-01-31",
+     "Infrastructure lead",
+     ["kev_alias_pair_past_eol", "kev_alias_pair_supported_no_overlay"]),
+    ("SR-1005", "copperfieldnotes", "9", "extended support", "2027-01-31",
+     "", []),
+    ("SR-1006", "brightlineeditor", "9.0", "vendor support", "2028-12-31",
+     "", []),
+    ("SR-1007", "lanternviewer", "", "vendor support", "2027-12-31",
+     "Desktop lead", [FILLER_LANTERN]),
+]
+WINDOW = ("2026-10-24", "2027-10-24")
+
 
 def _csv_bytes(rows) -> bytes:
     import io
@@ -156,6 +180,15 @@ def _csv_bytes(rows) -> bytes:
 
 def _key(c) -> tuple:
     return (c["publisher"], c["name"], c["version"])
+
+
+def _support_key(ids: dict) -> dict:
+    out: dict = {}
+    for ref, _p, _s, _k, _e, _r, fits in SUPPORT_RECORDS:
+        for label in fits:
+            key = label if label == FILLER_LANTERN else ids[label]
+            out.setdefault(key, []).append(ref)
+    return {k: sorted(v) for k, v in sorted(out.items())}
 
 
 def build() -> dict:
@@ -198,8 +231,22 @@ def build() -> dict:
             or c["classification"] is not None}
             for c in CASES},
         "counts": {"inherited_attention": sum(
-            1 for c in CASES if c["inherited_state"] in INHERITED_STATES)},
+            1 for c in CASES if c["inherited_state"] in INHERITED_STATES),
+            "support_records": {
+                "listed": sum(1 for r in SUPPORT_RECORDS if r[6]),
+                "ending_soon": sum(1 for r in SUPPORT_RECORDS
+                                   if WINDOW[0] < r[4] <= WINDOW[1]),
+                "not_matched": sum(1 for r in SUPPORT_RECORDS
+                                   if not r[6])}},
+        # Planted item ID -> record refs shown on it. FILLER_LANTERN means
+        # every Lantern Viewer filler item.
+        "support_records": _support_key(ids),
     }
+    support = [["schema_version", "record_ref", "product", "scope", "kind",
+                "ends_on", "owner_role"]]
+    support += [["1", ref, product, scope, kind, ends, role]
+                for ref, product, scope, kind, ends, role, _fits
+                in SUPPORT_RECORDS]
     tracking = [["schema_version", "item_id", "change_ref", "problem_ref"]]
     tracking += [["1", ids[label], chg, prb] for label, chg, prb in TRACKING]
     return {
@@ -207,6 +254,7 @@ def build() -> dict:
         "answer-key.json": (json.dumps(key, sort_keys=True, indent=2)
                             + "\n").encode("ascii"),
         "tracking.csv": _csv_bytes(tracking),
+        "support-records.csv": _csv_bytes(support),
     }
 
 

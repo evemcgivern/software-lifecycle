@@ -28,7 +28,9 @@ CIS Controls v8.1; ISO/IEC 27001:2022.
 Know which installed software the vendor no longer supports, or soon will
 not. Implemented by the "Past end of life", "Ends within the lookahead
 window" and "Couldn't match" lists, and by the golden-sources file, which
-records which date is right for a product.
+records which date is right for a product. The optional support-records
+file shows the owner's own support records beside those dates, as a
+renewal aid; it adds no list and changes no state.
 
 ## XW-030: Known-exploited vulnerability overlay on the software inventory
 

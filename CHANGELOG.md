@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- New optional `--support-records FILE` (issue #32): a hand-kept CSV of
+  the support records you hold (your reference, an endoflife.date product
+  ID, an optional cycle or version, a kind and an end date). `report.md`
+  shows a line on past and near end-of-life items that have one and a
+  "Support records" section; `report.csv` always has a new last column,
+  empty without the flag, so "Review reason" is no longer last;
+  `report.json` adds the item key `support_records` (always present, empty
+  by default) and `counts.support_records`; `--counts-only` prints one
+  count line, and `meta.override_hashes` gains the file's hash when the
+  flag is used. The file holds at most 2,000 rows and 25 records per
+  product. A lifecycle and renewal aid, not a licence or audit
+  position. A record never changes a state, a list or `--fail-on`, and
+  the tool does not check that it was paid for or is current.
+  `schema_version` stays 1.
 - `report.md` shows the KEV list under the heading "In CISA KEV, past or
   near end of life" instead of "Review urgently" (issue #29). "Urgently"
   set a priority the tool cannot back: the match is on vendor and

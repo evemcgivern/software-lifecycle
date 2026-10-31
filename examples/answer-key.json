@@ -407,7 +407,12 @@
     }
   },
   "counts": {
-    "inherited_attention": 2
+    "inherited_attention": 2,
+    "support_records": {
+      "ending_soon": 2,
+      "listed": 5,
+      "not_matched": 2
+    }
   },
   "format": 1,
   "lists": {
@@ -461,5 +466,25 @@
       "f3d465853a7a"
     ]
   },
-  "lookahead_months": 12
+  "lookahead_months": 12,
+  "support_records": {
+    "0a668be21645": [
+      "SR-1002"
+    ],
+    "588512447e35": [
+      "SR-1004"
+    ],
+    "8e099c3b6863": [
+      "SR-1001"
+    ],
+    "c3756f7f9c32": [
+      "SR-1004"
+    ],
+    "ffc50ca894b4": [
+      "SR-1003"
+    ],
+    "filler:lanternviewer": [
+      "SR-1007"
+    ]
+  }
 }
