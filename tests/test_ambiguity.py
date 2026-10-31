@@ -484,8 +484,9 @@ class ViewTests(unittest.TestCase):
         self.assertEqual(reasons["Synthetic Thing"], "")
         for it in self.amb:
             self.assertEqual(reasons[it["name"]], it["ambiguity"]["reason"])
-        self.assertEqual(list(self.csv[0])[-2:], [
-            "Review reason", "Support records (from your file)"])
+        self.assertEqual(list(self.csv[0])[-3:], [
+            "Review reason", "Support records (from your file)",
+            "Count (from your file)"])
 
     def test_counts_only_line_has_no_names(self):
         code, text, _out = self.check("--counts-only", out="counts")

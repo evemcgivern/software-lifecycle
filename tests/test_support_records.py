@@ -486,8 +486,8 @@ class DemoViews(Base):
         _c, _o, _e, out = self.run_demo("e")
         rows = list(csv.DictReader(io.StringIO(
             self.files(out)["report.csv"])))
-        self.assertEqual(list(rows[0])[-1], report.SUPPORT_COLUMN)
-        self.assertEqual(list(rows[0])[:-1], list(report.CSV_COLUMNS[:-1]))
+        self.assertEqual(list(rows[0])[-2], report.SUPPORT_COLUMN)
+        self.assertEqual(list(rows[0]), list(report.CSV_COLUMNS))
         cells = {r["id"]: r[report.SUPPORT_COLUMN] for r in rows}
         rep = json.loads(self.files(out)["report.json"])
         for it in rep["items"]:

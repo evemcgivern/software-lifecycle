@@ -134,6 +134,16 @@ SUPPORT_COUNTS_LEAD = (
 SUPPORT_COUNTS = ("Listed against dated items in this inventory: %d. Ending "
                   "within the lookahead window: %d. " + NOT_MATCHED_LABEL
                   + ": %d.")
+COUNT_COLUMN = "Count (from your file)"
+COUNT_LINE = COUNT_COLUMN + ": %d"
+# Printed once in report.md, under the match caveat, when any item has a
+# count.
+COUNT_ORDER_LINE = ("Items in each section are ordered by the count from "
+                    "your file, largest first, then items with no count. "
+                    "The count is the sum of your file's count column, not "
+                    "discovered installs.")
+COUNT_INVALID_LINE = ("Count cells ignored: %d. A count cell is used only "
+                      "when it is a whole number from 0 to 1000000000.")
 # Item sections whose items get a support-record note line.
 SUPPORT_SECTIONS = ("past_eol", "ends_soon")
 CSV_COLUMNS = (
@@ -144,7 +154,7 @@ CSV_COLUMNS = (
     "exception_expired", "decision_needed", "kev", "kev_stale",
     "change_ref", "problem_ref", "lists", "match_source",
     "classification", "parent_ref", INHERITED_HEADING, REVIEW_COLUMN,
-    SUPPORT_COLUMN)
+    SUPPORT_COLUMN, COUNT_COLUMN)
 
 _MD_SPECIAL = "\\`*_[]()#|~!"
 
@@ -430,6 +440,8 @@ def _item_block(it: dict, eol_snap: str, by_id: dict,
     else:
         sub.append("Owners: none listed. This item cannot be actioned until "
                    "an owner is named. Inventory rows: %d" % it["rows"])
+    if it.get("install_count") is not None:
+        sub.append(COUNT_LINE % it["install_count"])
     if it["state"] == "unmatched":
         sub.append(_unmatched_line(it))
     sub.extend(_date_lines(it, eol_snap))
@@ -517,6 +529,10 @@ def render_markdown(result: dict, meta: dict,
                   for name, h, _ in SECTIONS),
         REVIEW_HEADING.lower(), len(ambiguous))]
     out += ["", MATCH_CAVEAT]
+    if any(it.get("install_count") is not None for it in result["items"]):
+        out += ["", COUNT_ORDER_LINE]
+    if result["counts"].get("count_invalid_cells"):
+        out += ["", COUNT_INVALID_LINE % result["counts"]["count_invalid_cells"]]
     if governable_only:
         out += ["", hidden_line(result)]
 
@@ -647,6 +663,7 @@ def render_csv(result: dict, governable_only: bool = False) -> str:
         row[INHERITED_HEADING] = _inherited_cell(it)
         row[REVIEW_COLUMN] = (it["ambiguity"] or {}).get("reason")
         row[SUPPORT_COLUMN] = _support_cell(it, result["as_of"])
+        row[COUNT_COLUMN] = it.get("install_count")
         row["owners"] = "; ".join(it["owners"])
         row["decision_needed"] = "; ".join(it["decision_needed"])
         row["lists"] = "; ".join(sorted(member.get(it["id"], [])))

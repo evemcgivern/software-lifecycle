@@ -220,6 +220,7 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "publisher": group["publisher"],
         "owners": sorted(group["owners"]),
         "rows": group["rows"],
+        "install_count": group.get("install_count"),
         "product": match.product,
         "cycle": cycle.get("cycle") if cycle else None,
         "state": state,
@@ -266,6 +267,19 @@ def _lists(items: list) -> dict:
                 and it["state_endoflife"] != it["state"]:
             out["golden_overrides"].append(it["id"])
     return {k: sorted(v) for k, v in out.items()}
+
+
+def _rank(items: list, lists: dict) -> None:
+    """Order items and each list by install_count, largest first, items
+    with no count last, then by ID (the order without counts). Only the
+    order changes; with no counts at all it is the ID order."""
+    def key(it):
+        count = it["install_count"]
+        return (count is None, -(count or 0), it["id"])
+    items.sort(key=key)
+    place = {it["id"]: n for n, it in enumerate(items)}
+    for name in lists:
+        lists[name].sort(key=place.__getitem__)
 
 
 def _previous_states(previous) -> dict | None:
@@ -328,6 +342,7 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     lists = _lists(items)
     support_counts = attach_support(items, support_records, as_of,
                                     window_end)
+    _rank(items, lists)
 
     warnings = list(data.warnings)
     if not data.kev_current and not any("not current" in w for w in warnings):
@@ -394,6 +409,11 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             # Records from the support-records file. Counts only; a record
             # never changes a state, a list or --fail-on.
             "support_records": support_counts,
+            # Count cells that were not a whole number from 0 to
+            # 1,000,000,000 (see inputs.count_cell); they add nothing to
+            # install_count.
+            "count_invalid_cells": sum(
+                g.get("count_invalid_cells", 0) for g in groups.values()),
         },
         "diff": _diff(items, before),
     }

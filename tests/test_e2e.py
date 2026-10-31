@@ -75,8 +75,27 @@ class AnswerKeyTests(DemoBase):
     def test_every_list_equals_the_key(self):
         self.assertEqual(sorted(self.key["lists"]), sorted(LISTS))
         for name in LISTS:
-            self.assertEqual(self.report["lists"][name],
+            self.assertEqual(sorted(self.report["lists"][name]),
                              sorted(self.key["lists"][name]), name)
+
+    def test_lists_are_ordered_by_the_key_counts(self):
+        cases = self.key["cases"]
+
+        def rank(gid):
+            count = cases[gid]["install_count"]
+            return (count is None, -(count or 0), gid)
+        for name in LISTS:
+            self.assertEqual(self.report["lists"][name],
+                             sorted(self.key["lists"][name], key=rank), name)
+
+    def test_install_counts_match_the_key(self):
+        items = {it["id"]: it for it in self.report["items"]}
+        for gid, case in self.key["cases"].items():
+            self.assertEqual(items[gid]["install_count"],
+                             case["install_count"], case["case"])
+        self.assertEqual(self.report["counts"]["count_invalid_cells"],
+                         self.key["counts"]["count_invalid_cells"])
+        self.assertGreater(self.key["counts"]["count_invalid_cells"], 0)
 
     def test_every_planted_case(self):
         items = {it["id"]: it for it in self.report["items"]}

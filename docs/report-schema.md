@@ -13,9 +13,9 @@ row." It is not a key and is not in `report.json` or `report.csv`.
 "Review reason" column, both made from the item key `ambiguity`
 (see below).
 
-`report.csv` always has a last column "Support records (from your
-file)", made from the item key `support_records` (see below), so "Review
-reason" is no longer the last column. A run without `--support-records`
+`report.csv` always has a column "Support records (from your
+file)", made from the item key `support_records` (see below), after
+"Review reason". A run without `--support-records`
 gets the column with every cell empty. With `--support-records`,
 `report.md` adds a support-record line to items in "Past end of life"
 and "Ends within the lookahead window" and a "Support records" section.
@@ -26,6 +26,19 @@ first, nearest end date first, then ended ones, most recently ended
 first. `report.json` keeps them all, sorted by end date and reference.
 The tool does not check that a record was paid for or is current.
 Record references are confidential, like item IDs.
+
+`report.csv` always has a last column "Count (from your file)", after
+"Support records (from your file)", made from the item key
+`install_count` (see below); it is empty for an item with no count.
+When at least one item has a count, `items`, each list in `lists`, each
+section of `report.md` and the rows of `report.csv` are ordered by
+`install_count`, largest first, then items with no count, then by item
+ID. With no count, the order is by item ID, as before. `report.md` adds
+"Count (from your file): N" to each item with a count. The count is the
+sum of your file's count column, not discovered installs. It never
+changes a state, a list's members, a class, an ID or `--fail-on`.
+`--counts-only` prints `count_total N` when the count column has a
+filled cell, and keeps its list IDs in ID order.
 
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.
@@ -67,6 +80,7 @@ inventory, so keep it as private as the inventory.
 | `classification` | Count of items in each class. See `counts.classification`. |
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
 | `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
+| `count_invalid_cells` | Number of count cells ignored because they are not a whole number from 0 to 1000000000: digits, optionally in comma groups of three (`1,234`), optionally ending in a decimal point and zeros only (`12.0`). A sign, another decimal (`1.234`), another separator (`1 234`), text or a formula is ignored. Blank cells are not counted. `0` with no count column. |
 | `support_records` | Counts from the support-records file. See `counts.support_records`. Zeros when no file is given. A count only: a record never changes a state, a list or `--fail-on`. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 
@@ -155,6 +169,7 @@ confirmed against it, so treat IDs with the same care as the inventory.
 | `name`, `version`, `publisher` | As in the inventory. |
 | `owners` | Sorted list of distinct owners. |
 | `rows` | How many inventory rows made this item. This is not an install or machine count. |
+| `install_count` | Always present: the sum of the item's valid count cells from your file's count column, or `null` when there is no count column or no valid cell. A count from your file, not discovered installs. It sets the order of items and lists and changes no other key. |
 | `product` | The endoflife.date product. `null` only when no product matched (`NO_ALIAS`, or `AMBIGUOUS` across products). Set when the product is known but no cycle matched (`NO_VERSION`, `NO_CYCLE`, or `AMBIGUOUS` between cycles). |
 | `match_source` | How the product was found: `curated` (an alias in `aliases.json`), `generated` (the name equals the product's title in `products.json`, under the rules in `docs/usage.md`), or `null` when `product` is `null`. Set also when the product is known but no cycle matched (the item then stays `unmatched` with `product` set and `cycle` `null`). With a format 1 data folder it is `curated` or `null`. |
 | `cycle` | The matched cycle label, or `null`. |
@@ -485,7 +500,10 @@ they add no state, list, reason code or decision code. The item key
 `meta.override_hashes.support_records` (only with the flag) and the
 `support_records` keyword of `swlc.cli.run` were added the same way: optional keys only, no
 new state, list, reason code or decision code. A report with them and a
-report without them read each other with `--previous`. The `ambiguity`
+report without them read each other with `--previous`. The item key
+`install_count` and `counts.count_invalid_cells` were added the same way;
+with a count they change only the order of `items` and of the IDs in each
+list, never which IDs a list holds. The `ambiguity`
 codes follow the reason-code rule: adding one bumps `schema_version`.
 The keyword arguments of `swlc.cli.run` follow
 the same rule. The tool only reads a `--previous` report of its own schema

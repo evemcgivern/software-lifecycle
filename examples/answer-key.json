@@ -7,6 +7,7 @@
       "dates_disagree": null,
       "decision_needed": [],
       "inherited_state": null,
+      "install_count": 172,
       "lists": [
         "unmatched"
       ],
@@ -19,6 +20,7 @@
       "case": "past_eol_flag",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 91,
       "lists": [
         "past_eol"
       ],
@@ -31,6 +33,7 @@
       "case": "no_alias",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 32,
       "lists": [
         "unmatched"
       ],
@@ -43,6 +46,7 @@
       "case": "eol_on_check_date",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 372,
       "lists": [
         "past_eol"
       ],
@@ -57,6 +61,7 @@
       "decision_needed": [
         "GOLDEN_EXPIRED"
       ],
+      "install_count": 258,
       "lists": [
         "dates_disagree",
         "ends_soon"
@@ -72,6 +77,7 @@
       "decision_needed": [
         "NO_ENDOFLIFE_DATE"
       ],
+      "install_count": 99,
       "lists": [
         "dates_disagree"
       ],
@@ -84,6 +90,7 @@
       "case": "build_number_mapped",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 388,
       "lists": [
         "past_eol"
       ],
@@ -96,6 +103,7 @@
       "case": "window_edge_in",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 158,
       "lists": [
         "ends_soon"
       ],
@@ -108,6 +116,7 @@
       "case": "golden_active_moves_state",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 314,
       "lists": [
         "golden_overrides",
         "past_eol"
@@ -123,6 +132,7 @@
       "dates_disagree": null,
       "decision_needed": [],
       "inherited_state": "past_eol",
+      "install_count": 189,
       "lists": [
         "unmatched"
       ],
@@ -137,6 +147,7 @@
       "decision_needed": [
         "EXCEPTION_EXPIRED"
       ],
+      "install_count": null,
       "lists": [
         "past_eol"
       ],
@@ -149,6 +160,7 @@
       "case": "kev_alias_pair_supported_no_overlay",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 174,
       "lists": [],
       "name": "Northwind Gateway",
       "reason": null,
@@ -159,6 +171,7 @@
       "case": "hostile_pipe_backtick",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 137,
       "lists": [
         "unmatched"
       ],
@@ -171,6 +184,7 @@
       "case": "dates_differ",
       "dates_disagree": "DIFFERENT_DATE",
       "decision_needed": [],
+      "install_count": 10,
       "lists": [
         "dates_disagree",
         "ends_soon"
@@ -184,6 +198,7 @@
       "case": "build_number_supported",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 90,
       "lists": [],
       "name": "Quillbase Database",
       "reason": null,
@@ -194,6 +209,7 @@
       "case": "hostile_markup",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 299,
       "lists": [
         "unmatched"
       ],
@@ -208,6 +224,7 @@
       "decision_needed": [
         "EXPORT_DATES_CONFLICT"
       ],
+      "install_count": 664,
       "lists": [
         "dates_disagree"
       ],
@@ -220,6 +237,7 @@
       "case": "window_edge_out",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 333,
       "lists": [],
       "name": "Tidewater Suite",
       "reason": null,
@@ -230,6 +248,7 @@
       "case": "ownerless",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 82,
       "lists": [
         "ownerless"
       ],
@@ -244,6 +263,7 @@
       "dates_disagree": null,
       "decision_needed": [],
       "inherited_state": "past_eol",
+      "install_count": 147,
       "lists": [
         "unmatched"
       ],
@@ -256,6 +276,7 @@
       "case": "support_true_supported",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 223,
       "lists": [],
       "name": "Brightline Editor",
       "reason": null,
@@ -266,6 +287,7 @@
       "case": "past_eol_date",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 302,
       "lists": [
         "past_eol"
       ],
@@ -278,6 +300,7 @@
       "case": "kev_product_ends_soon",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 263,
       "lists": [
         "ends_soon",
         "review_urgently"
@@ -291,6 +314,7 @@
       "case": "kev_product_supported_no_overlay",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 334,
       "lists": [],
       "name": "Example SQL",
       "reason": null,
@@ -301,6 +325,7 @@
       "case": "no_version",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 336,
       "lists": [
         "unmatched"
       ],
@@ -313,6 +338,7 @@
       "case": "no_cycle",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 381,
       "lists": [
         "unmatched"
       ],
@@ -325,6 +351,7 @@
       "case": "kev_alias_pair_past_eol",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 45,
       "lists": [
         "past_eol",
         "review_urgently"
@@ -338,6 +365,7 @@
       "case": "support_false_mainstream_ended",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 243,
       "lists": [],
       "name": "Brightline Editor",
       "reason": null,
@@ -348,6 +376,7 @@
       "case": "names_to_review",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 131,
       "lists": [
         "unmatched"
       ],
@@ -360,6 +389,7 @@
       "case": "hostile_formula",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 250,
       "lists": [
         "unmatched"
       ],
@@ -372,6 +402,7 @@
       "case": "ambiguous",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 287,
       "lists": [
         "unmatched"
       ],
@@ -384,6 +415,7 @@
       "case": "exception_active",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 383,
       "lists": [
         "accepted_risk",
         "past_eol"
@@ -397,6 +429,7 @@
       "case": "ends_within_12_months",
       "dates_disagree": null,
       "decision_needed": [],
+      "install_count": 39,
       "lists": [
         "ends_soon"
       ],
@@ -407,6 +440,7 @@
     }
   },
   "counts": {
+    "count_invalid_cells": 1,
     "inherited_attention": 2,
     "support_records": {
       "ending_soon": 2,

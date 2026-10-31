@@ -38,6 +38,11 @@ GENERIC_ALIASES: dict[str, list[str]] = {
 }
 
 _HEADER_JUNK = re.compile(r"[^0-9a-z]+")
+# Digits, or digits in strict comma groups of three ("1,234"), with an
+# optional all-zero decimal part ("12.0", "1,234.00").
+_WHOLE = re.compile(r"([0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?:\.0+)?")
+# Largest count cell accepted. A bigger number is treated as a mistake.
+MAX_COUNT_CELL = 10**9
 
 
 def _norm_header(text: str) -> str:
@@ -192,6 +197,21 @@ def map_columns(headers: list[str], profile: dict | None,
     return found
 
 
+def count_cell(text: str):
+    """A count cell as an int, or None when it is not a whole number from
+    0 to MAX_COUNT_CELL. Comma groups of three and a decimal part of only
+    zeros are read; signs, other decimals, other separators, text and
+    formulas are not. Blank cells are the caller's to skip."""
+    m = _WHOLE.fullmatch(text)
+    if not m:
+        return None
+    digits = m.group(1).replace(",", "").lstrip("0") or "0"
+    if len(digits) > len(str(MAX_COUNT_CELL)):
+        return None
+    value = int(digits)
+    return value if value <= MAX_COUNT_CELL else None
+
+
 def item_id(publisher: str, name: str, version: str) -> str:
     parts = "\x1f".join(normalize_name(p) for p in (publisher, name, version))
     return hashlib.sha256(parts.encode("utf-8")).hexdigest()[:12]
@@ -219,7 +239,9 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         if grp is None:
             grp = groups[gid] = {"id": gid, "rows": 0, "owners": [],
                                  "export_eols": [], "publisher": pub,
-                                 "name": name, "version": ver}
+                                 "name": name, "version": ver,
+                                 "install_count": None,
+                                 "count_invalid_cells": 0}
             owners[gid] = set()
             eols[gid] = set()
             parents[gid] = set()
@@ -233,6 +255,13 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         parent = cell(row, "parent")
         if parent:
             parents[gid].add(parent)
+        count = cell(row, "count")
+        if count:
+            value = count_cell(count)
+            if value is None:
+                grp["count_invalid_cells"] += 1
+            else:
+                grp["install_count"] = (grp["install_count"] or 0) + value
     for gid, grp in groups.items():
         grp["owners"] = sorted(owners[gid])
         grp["export_eols"] = sorted(eols[gid])
