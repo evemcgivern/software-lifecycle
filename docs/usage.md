@@ -615,32 +615,56 @@ demo has `examples/support-records.csv`. The columns are in
 - `kind` is a short label, up to 40 characters, such as `extended
   support`. `ends_on` is the record's end date. `owner_role` is a role,
   not a person, and may be empty.
+- The file holds at most 2,000 data rows and at most 25 records per
+  product. A larger file stops the run with an error that names the row
+  and the limit.
 - The file has no quantity, licence metric, cost or vendor column. Other
   columns are ignored, as in every override file, and never reach the
   report.
 
+When a data refresh renames or removes an endoflife.date product ID, a
+support-records file that still names the old ID stops the run (exit
+code 3) with an error naming the data row. To fix it, change that row's
+`product` to the new ID (listed in `data/products.json`, or on
+endoflife.date), or delete the row if the product is gone.
+
 What it does:
 
-- An item gets the record when the item matched a product and cycle, the
-  product is the record's product, and the record's scope (if any) is the
-  item's cycle label or version. Unmatched items never get a record.
-- `report.md` adds one line to each item in "Past end of life" and "Ends
+- An item gets the record when the item is a dated item (it matched a
+  product and cycle), the product is the record's product, and the
+  record's scope (if any) is the item's cycle label or version.
+  Unmatched items never get a record.
+- `report.md` adds a line to each item in "Past end of life" and "Ends
   within the lookahead window" that has a record: "A support record is
-  listed in your file: REF, KIND, ends on DATE." When DATE is before the
-  checked-on date it says "ended on DATE". Items in other sections get no
-  line.
+  listed in your file: REF, KIND, ends on DATE (scope: any cycle of this
+  product)." or "(scope: CYCLE)". A date on or before the checked-on
+  date reads "ended on DATE", the same rule as an item's state. The next
+  line says "The tool does not check that this record is current." At
+  most 10 records print per item, then "and N more in report.json". Items
+  in other sections get no line.
 - `report.md` adds a "Support records" section, after the item sections,
   when a file is given. It lists the records that end within the
-  lookahead window (from the checked-on date to the window end, both
-  included) and the records that name nothing found in this inventory,
-  with the reference, product, kind and date only. Without a file the
-  section is left out.
-- `report.csv` adds a last column, "Support records (from your file)".
-  `report.json` adds the item key `support_records` and
-  `counts.support_records` (`listed`, `ending_soon`, `nothing_found`).
+  lookahead window (after the checked-on date, up to and including the
+  window end) and the records not matched to a dated item in this
+  inventory, with the reference, product, scope, kind and date only.
+  Without a file the section is left out.
+- `report.csv` adds a last column, "Support records (from your file)",
+  with at most 10 records per item and then "and N more in report.json".
+  `report.json` adds the item key `support_records` (every record, no
+  cap), `counts.support_records` (`listed`, `ending_soon`, `not_matched`)
+  and, only when the flag is used, `meta.override_hashes.support_records`.
 - `--counts-only` prints one line,
-  `support_records listed=N ending_soon=M nothing_found=K`, with no
+  `support_records listed=N ending_soon=M not_matched=K`, with no
   references, products or dates.
+
+The three counts: `listed` is the records that fit at least one dated
+item; `not_matched` is the records that fit none, and this includes a
+product that appears in the inventory without a decided cycle or
+version (for example an unmatched row of that product); `listed` and
+`not_matched` add up to the records in the file. `ending_soon` counts
+records from either group that end within the lookahead window, so the
+counts overlap: one record can be in `ending_soon` and in `listed` or
+`not_matched`.
 
 What it does not do:
 
@@ -649,19 +673,18 @@ What it does not do:
   parent links or any other count.
 - The tool does not check that a record was paid for or is current.
 - Discovery coverage is unknown: software missing from the inventory may
-  still be in use, so "nothing found in this inventory" is not proof that
-  a product is not in use.
+  still be in use, so "not matched to a dated item in this inventory" is
+  not proof that a product is not in use.
 - Extended support may cover only some fixes or editions. Read the
   record itself.
 - It does not compare what is installed with what is owned.
 - Record references are confidential, like item IDs and the inventory.
 
 The report words a record only as "a support record is listed in your
-file" or "nothing found in this inventory". An item with no line has no
-record listed in the file given; that is all it means. The tool never
-claims an item is in or out of entitlement. Words the tool never uses about a record: covered, licensed,
-unlicensed, shelfware, compliant, non-compliant, audit-ready,
-over-licensed.
+file" or "not matched to a dated item in this inventory". An item with
+no line has no record listed in the file given; that is all it means.
+Words the tool never uses about a record: covered, licensed, unlicensed,
+shelfware, compliant, non-compliant, audit-ready, over-licensed.
 
 ## Counts-only mode
 
@@ -675,7 +698,7 @@ It prints:
 - the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - the count of names to review (`ambiguous_review N`), with no names;
 - the support-record counts
-  (`support_records listed=N ending_soon=M nothing_found=K`), with no
+  (`support_records listed=N ending_soon=M not_matched=K`), with no
   references, products or dates;
 - each list with its count and the item IDs.
 

@@ -206,6 +206,33 @@ class LoaderTests(Base):
         self.assert_quiet_error(HEADER + row(kind=SECRET * 10000),
                                 "longer than")
 
+    def test_row_limit(self):
+        from swlc.support import MAX_ROWS
+        products = {"p%d" % i for i in range(200)}
+        body = "".join(row(record_ref="SR-%d" % i, product="p%d" % (i % 200))
+                       for i in range(MAX_ROWS))
+        self.assertEqual(len(load_support_records(
+            self.write(HEADER + body), products)), MAX_ROWS)
+        extra = body + row(record_ref="SR-X", product="p1")
+        with self.assertRaises(InputError) as cm:
+            load_support_records(self.write(HEADER + extra), products)
+        text = str(cm.exception)
+        self.assertIn("more than %d data rows" % MAX_ROWS, text)
+        self.assertIn("data row %d" % (MAX_ROWS + 1), text)
+        self.assertNotIn(SECRET, text)
+
+    def test_per_product_limit(self):
+        from swlc.support import MAX_PER_PRODUCT
+        body = "".join(row(record_ref="SR-%d" % i)
+                       for i in range(MAX_PER_PRODUCT))
+        body += row(record_ref="SR-OTHER", product="examplesql")
+        self.assertEqual(len(load_support_records(
+            self.write(HEADER + body), PRODUCTS)), MAX_PER_PRODUCT + 1)
+        self.assert_quiet_error(
+            HEADER + body + row(record_ref="SR-LAST"),
+            "data row %d" % (MAX_PER_PRODUCT + 2),
+            "more than %d records for one product" % MAX_PER_PRODUCT)
+
     def test_formula_characters_are_kept_as_text(self):
         data = HEADER + row(record_ref="=SUM(1)", kind="@cmd",
                             owner_role="+x")
@@ -276,6 +303,7 @@ class FitTests(Base):
         entry = self.items[("Tidewater Suite", "5.1")]["support_records"][0]
         self.assertEqual(entry, {"record_ref": "SR-V51",
                                  "kind": "extended support",
+                                 "scope": "5.1",
                                  "ends_on": "2026-01-31",
                                  "owner_role": "ITAM lead"})
 
@@ -287,36 +315,59 @@ class FitTests(Base):
     def test_counts(self):
         self.assertEqual(self.report["counts"]["support_records"],
                          {"listed": 5, "ending_soon": 3,
-                          "nothing_found": 2})
+                          "not_matched": 2})
 
-    def test_window_edges_are_inclusive(self):
+    def test_window_edges_follow_the_item_state_rule(self):
         recs = [("SR-TODAY", "tidewatersuite", "", "k", "2026-10-24", ""),
                 ("SR-END", "tidewatersuite", "", "k", "2027-10-24", ""),
                 ("SR-AFTER", "tidewatersuite", "", "k", "2027-10-25", ""),
                 ("SR-BEFORE", "tidewatersuite", "", "k", "2026-10-23", "")]
         r = cli.run(self.inv, data=str(DATA), as_of=AS_OF,
                     support_records=self.records_file(recs, "edge.csv"))
-        self.assertEqual(r["counts"]["support_records"]["ending_soon"], 2)
+        # The checked-on date itself has ended, as for an item's state.
+        self.assertEqual(r["counts"]["support_records"]["ending_soon"], 1)
         r6 = cli.run(self.inv, data=str(DATA), as_of=AS_OF,
                      lookahead_months=13,
                      support_records=self.records_file(recs, "edge.csv"))
-        self.assertEqual(r6["counts"]["support_records"]["ending_soon"], 3)
+        self.assertEqual(r6["counts"]["support_records"]["ending_soon"], 2)
+        item = [it for it in r["items"] if it["version"] == "4.2"][0]
+        refs = {e["record_ref"]: e for e in item["support_records"]}
+        self.assertEqual(set(refs), {"SR-TODAY", "SR-END", "SR-AFTER",
+                                     "SR-BEFORE"})
+        code, _o, err = run_main(["check", self.inv, "--data", str(DATA),
+                                  "--as-of", "2026-10-24", "--out",
+                                  str(self.dir / "edge"),
+                                  "--support-records",
+                                  self.records_file(recs, "edge.csv")])
+        self.assertEqual(code, 0, err)
+        md = (self.dir / "edge" / "report.md").read_text("utf-8")
+        self.assertIn("SR-TODAY, k, ended on 2026-10-24", md)
+        self.assertIn("SR-BEFORE, k, ended on 2026-10-23", md)
+        self.assertIn("SR-END, k, ends on 2027-10-24", md)
+        soon = md.split("Ending within the lookahead window (1):")[1]
+        soon = soon.split(report.NOT_MATCHED_LABEL)[0]
+        self.assertEqual(re.findall(r"SR-[A-Z]+", soon), ["SR-END"])
 
     def test_nothing_else_changes(self):
         stripped = copy.deepcopy(self.report)
         for it in stripped["items"]:
             del it["support_records"]
         del stripped["counts"]["support_records"]
+        self.assertEqual(
+            len(stripped["meta"]["override_hashes"].pop("support_records")),
+            64)
         plain = copy.deepcopy(self.plain)
         for it in plain["items"]:
             self.assertEqual(it.pop("support_records"), [])
         self.assertEqual(plain["counts"].pop("support_records"),
-                         {"listed": 0, "ending_soon": 0, "nothing_found": 0})
+                         {"listed": 0, "ending_soon": 0, "not_matched": 0})
         self.assertEqual(stripped, plain)
 
     def test_key_present_on_every_item_without_a_file(self):
         self.assertTrue(all(it["support_records"] == []
                             for it in self.plain["items"]))
+        self.assertEqual(sorted(self.plain["meta"]["override_hashes"]),
+                         ["exceptions", "golden", "tracking"])
 
 
 class DemoViews(Base):
@@ -354,21 +405,33 @@ class DemoViews(Base):
         items = {it["id"]: it for it in rep["items"]}
         lines = [l for l in md.split("\n")
                  if "A support record is listed in your file" in l]
+        caveats = [l for l in md.split("\n")
+                   if l == "  - " + report.SUPPORT_CAVEAT]
         want = []
         for name in report.SUPPORT_SECTIONS:
             for gid in rep["lists"][name]:
                 want += items[gid]["support_records"]
         self.assertEqual(len(lines), len(want))
         self.assertGreater(len(lines), 0)
+        # Each item with records has one caveat line right after them.
+        self.assertEqual(len(caveats), len(lines))
+        flat = md.split("\n")
+        for i, l in enumerate(flat):
+            if "A support record is listed in your file" in l:
+                self.assertEqual(flat[i + 1], "  - " + report.SUPPORT_CAVEAT)
         for name, heading, _f in report.SECTIONS:
             sec = self.section(md, heading)
             has = "A support record is listed in your file" in sec
             if name not in report.SUPPORT_SECTIONS:
                 self.assertFalse(has, heading)
         self.assertIn("  - A support record is listed in your file: SR-1002, "
-                      "extended support, ended on 2026-06-30.", md)
+                      "extended support, ended on 2026-06-30 (scope: 14).",
+                      md)
         self.assertIn("  - A support record is listed in your file: SR-1001, "
-                      "extended support, ends on 2027-06-30.", md)
+                      "extended support, ends on 2027-06-30 (scope: 4).", md)
+        self.assertIn("  - A support record is listed in your file: SR-1004, "
+                      "vendor support, ends on 2029-01-31 (scope: any cycle "
+                      "of this product).", md)
         # A supported item's record is in the CSV and JSON, not in report.md.
         self.assertNotIn("SR-1007", md)
 
@@ -382,16 +445,24 @@ class DemoViews(Base):
                      "Extended support may cover only some fixes or "
                      "editions.", "Record references are confidential"):
             self.assertIn(line, sec)
-        self.assertIn("Listed against items in this inventory: 5. Ending "
-                      "within the lookahead window: 2. Nothing found in "
-                      "this inventory: 2.", sec)
+        self.assertIn(report.SUPPORT_COUNTS_LEAD, sec)
+        for line in ("this includes a product that appears in this "
+                     "inventory without a decided cycle or version",
+                     "so the counts overlap"):
+            self.assertIn(line, sec)
+        self.assertIn("Listed against dated items in this inventory: 5. "
+                      "Ending within the lookahead window: 2. Not matched "
+                      "to a dated item in this inventory: 2.", sec)
         soon = sec.split("Ending within the lookahead window (2):")[1]
-        soon = soon.split("Nothing found")[0]
+        soon = soon.split("Not matched")[0]
         self.assertEqual(re.findall(r"SR-\d+", soon), ["SR-1005", "SR-1001"])
-        none = sec.split("Nothing found in this inventory (2):")[1]
+        none = sec.split("Not matched to a dated item in this inventory "
+                         "(2):")[1]
         self.assertEqual(re.findall(r"SR-\d+", none), ["SR-1005", "SR-1006"])
-        self.assertIn("- SR-1006, product brightlineeditor, vendor support, "
-                      "ends on 2028-12-31.", none)
+        # The product is in the inventory, but only as an unmatched row.
+        self.assertIn("- SR-1006, product brightlineeditor, scope 9.0, "
+                      "vendor support, ends on 2028-12-31.", none)
+        self.assertNotIn("othing found", md)
         for name in ("Tidewater", "Copperfield", "Brightline", "Finance"):
             self.assertNotIn(name, sec)
         self.assertLess(md.index("## Golden source overrides"),
@@ -425,7 +496,36 @@ class DemoViews(Base):
         lantern = [c for gid, c in cells.items() if "SR-1007" in c]
         self.assertTrue(lantern)
         self.assertEqual(lantern[0], "SR-1007, vendor support, ends on "
-                         "2027-12-31, owner role Desktop lead")
+                         "2027-12-31, scope any cycle of this product, "
+                         "owner role Desktop lead")
+        self.assertTrue(any(
+            "SR-1001, extended support, ends on 2027-06-30, scope 4" in c
+            for c in cells.values()))
+
+    def test_at_most_ten_records_per_item_in_md_and_csv(self):
+        recs = [("SR-%02d" % i, "tidewatersuite", "4", "k",
+                 "2027-01-%02d" % i, "") for i in range(1, 13)]
+        out = self.dir / "cap"
+        code, _o, err = run_main(["check", self.inventory(), "--data",
+                                  str(DATA), "--as-of", "2026-10-24",
+                                  "--out", str(out), "--support-records",
+                                  self.records_file(recs, "cap.csv")])
+        self.assertEqual(code, 0, err)
+        md = (out / "report.md").read_text("utf-8")
+        notes = re.findall(r"listed in your file: (SR-\d+)", md)
+        self.assertEqual(notes, ["SR-%02d" % i for i in range(1, 11)])
+        self.assertIn("  - and 2 more in report.json.\n  - "
+                      + report.SUPPORT_CAVEAT_MANY, md)
+        rows = list(csv.DictReader(io.StringIO(
+            (out / "report.csv").read_text("utf-8"))))
+        cell = [r for r in rows if r["version"] == "4.2"][0][
+            report.SUPPORT_COLUMN]
+        self.assertEqual(re.findall(r"SR-\d+", cell),
+                         ["SR-%02d" % i for i in range(1, 11)])
+        self.assertTrue(cell.endswith("; and 2 more in report.json"), cell)
+        rep = json.loads((out / "report.json").read_text("utf-8"))
+        item = [it for it in rep["items"] if it["version"] == "4.2"][0]
+        self.assertEqual(len(item["support_records"]), 12)
 
     def test_csv_and_md_guard_record_text(self):
         inv = self.inventory()
@@ -449,9 +549,9 @@ class DemoViews(Base):
         self.assertEqual(code, 0, stderr)
         lines = stdout.split("\n")
         self.assertIn("support_records listed=5 ending_soon=2 "
-                      "nothing_found=2", lines)
+                      "not_matched=2", lines)
         at = lines.index("support_records listed=5 ending_soon=2 "
-                         "nothing_found=2")
+                         "not_matched=2")
         self.assertTrue(lines[at - 1].startswith("ambiguous_review "))
         with open(EXAMPLES / "support-records.csv", encoding="utf-8",
                   newline="") as fh:
@@ -466,7 +566,7 @@ class DemoViews(Base):
         _c, stdout, _e, _o = self.run_demo("g2", "--counts-only",
                                            records=False)
         self.assertIn("support_records listed=0 ending_soon=0 "
-                      "nothing_found=0\n", stdout)
+                      "not_matched=0\n", stdout)
 
     def test_counts_only_error_leaves_out_file_content(self):
         bad = self.write(HEADER + row(product="no" + SECRET), "bad.csv")

@@ -51,13 +51,16 @@ who holds each role.
    each item, the owner chooses: replace, upgrade, retire, or request risk
    acceptance (step 8). If a support record is listed in your file, the
    item shows it ("A support record is listed in your file: REF, KIND,
-   ends on DATE."); use it to weigh paying for extended support against
-   migrating. The tool does not check that a record was paid for or is
-   current, and extended support may cover only some fixes or editions.
-   Then read the "Support records" section: renew or end the records that
-   end within the window, and check each record that names nothing found
-   in this inventory (discovery coverage is unknown, so the product may
-   still be in use).
+   ends on DATE (scope: ...)."); use it to weigh paying for extended
+   support against migrating. The tool does not check that a record was
+   paid for or is current, and extended support may cover only some
+   fixes or editions. Then read the "Support records" section: renew or
+   end the records that end within the window, and check each record not
+   matched to a dated item in this inventory. That includes a product
+   that is in the inventory without a decided cycle or version, and
+   discovery coverage is unknown, so the product may still be in use.
+   After a data refresh, a record whose product ID was renamed or removed
+   stops the run; fix the row's product ID.
    **Decision needed:** the owner's choice for each item.
 6. **Work "In CISA KEV, past or near end of life".** These items are past or near end of life and
    their vendor and product appear in CISA KEV. This does not mean your

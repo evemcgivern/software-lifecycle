@@ -17,6 +17,8 @@ MAX_REF = 64
 MAX_KIND = 40
 MAX_SCOPE = 64
 MAX_ROLE = 80
+MAX_ROWS = 2000
+MAX_PER_PRODUCT = 25
 _LIMITS = (("record_ref", MAX_REF), ("scope", MAX_SCOPE), ("kind", MAX_KIND),
            ("owner_role", MAX_ROLE))
 
@@ -33,7 +35,12 @@ def load_support_records(path: str | None, products) -> list | None:
         return None
     out: list = []
     refs: set = set()
+    per_product: dict = {}
     for n, r in _read(path, COLUMNS):
+        if n > MAX_ROWS:
+            raise InputError(
+                "more than %d data rows; stopped at data row %d (not "
+                "counting the header)" % (MAX_ROWS, n))
         for col in ("record_ref", "product", "kind", "ends_on"):
             _require(r, col, n)
         for col, limit in _LIMITS:
@@ -45,6 +52,11 @@ def load_support_records(path: str | None, products) -> list | None:
             raise InputError(
                 "product in data row %d (not counting the header) is not an "
                 "endoflife.date product id in the loaded data" % n)
+        per_product[r["product"]] = per_product.get(r["product"], 0) + 1
+        if per_product[r["product"]] > MAX_PER_PRODUCT:
+            raise InputError(
+                "data row %d (not counting the header) is more than %d "
+                "records for one product" % (n, MAX_PER_PRODUCT))
         ref_key = _who(r["record_ref"])
         if ref_key in refs:
             raise InputError("data row %d (not counting the header) repeats "
@@ -69,8 +81,10 @@ def _fits(record: dict, item: dict) -> bool:
 
 
 def ending_soon(record: dict, as_of: date, window_end: date) -> bool:
-    """ends_on from the checked-on date up to the window end, inclusive."""
-    return as_of <= record["ends_on"] <= window_end
+    """ends_on after the checked-on date, up to the window end inclusive.
+    The same rule as an item's state: a date on or before the checked-on
+    date has ended (see assess._state)."""
+    return as_of < record["ends_on"] <= window_end
 
 
 def attach(items: list, records: list | None, as_of: date,
@@ -81,7 +95,7 @@ def attach(items: list, records: list | None, as_of: date,
     """
     for it in items:
         it["support_records"] = []
-    counts = {"listed": 0, "ending_soon": 0, "nothing_found": 0}
+    counts = {"listed": 0, "ending_soon": 0, "not_matched": 0}
     by_product: dict = {}
     for it in items:
         if it["product"] is not None and it["cycle"] is not None:
@@ -93,9 +107,10 @@ def attach(items: list, records: list | None, as_of: date,
                 hit = True
                 it["support_records"].append({
                     "record_ref": rec["record_ref"], "kind": rec["kind"],
+                    "scope": rec["scope"] or None,
                     "ends_on": rec["ends_on"].isoformat(),
                     "owner_role": rec["owner_role"]})
-        counts["listed" if hit else "nothing_found"] += 1
+        counts["listed" if hit else "not_matched"] += 1
         if ending_soon(rec, as_of, window_end):
             counts["ending_soon"] += 1
     for it in items:

@@ -393,7 +393,9 @@ class SchemaTests(unittest.TestCase):
             "counts.support_records": set(r["counts"]["support_records"]),
             "meta": set(r["meta"]),
             "meta.data_release": set(r["meta"]["data_release"]),
-            "meta.override_hashes": set(r["meta"]["override_hashes"]),
+            # support_records is there only with --support-records.
+            "meta.override_hashes": set(r["meta"]["override_hashes"])
+            | {"support_records"},
             "meta.profile": set(r["meta"]["profile"]),
             "Items": item_keys,
             "diff": set(r["diff"]),

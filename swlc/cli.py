@@ -156,6 +156,10 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
         "profile": {"name": profile, "status": status},
         "encoding": encoding or "utf-8",
     }
+    if support_records is not None:
+        # Only with the flag, so a run without it keeps the old meta.
+        meta["override_hashes"]["support_records"] = file_hash(
+            support_records)
     return result, meta, records
 
 
@@ -303,7 +307,7 @@ def _counts_text(result: dict) -> str:
              "ambiguous_review %d" % counts["ambiguous_review"],
              "support_records " + " ".join(
                  "%s=%d" % (k, counts["support_records"][k])
-                 for k in ("listed", "ending_soon", "nothing_found"))]
+                 for k in ("listed", "ending_soon", "not_matched"))]
     for name in LISTS:
         ids = result["lists"][name]
         lines.append("%s %d%s" % (name, len(ids),

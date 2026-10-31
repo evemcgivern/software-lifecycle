@@ -9,7 +9,9 @@
   "Support records" section; `report.csv` adds a last column;
   `report.json` adds the item key `support_records` (always present, empty
   by default) and `counts.support_records`; `--counts-only` prints one
-  count line. A lifecycle and renewal aid, not a licence or audit
+  count line, and `meta.override_hashes` gains the file's hash when the
+  flag is used. The file holds at most 2,000 rows and 25 records per
+  product. A lifecycle and renewal aid, not a licence or audit
   position. A record never changes a state, a list or `--fail-on`, and
   the tool does not check that it was paid for or is current.
   `schema_version` stays 1.

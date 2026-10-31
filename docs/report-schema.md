@@ -18,7 +18,8 @@ in "Past end of life" and "Ends within the lookahead window" and a
 "Support records" section, and `report.csv` a last column "Support
 records (from your file)", made from the item key `support_records` (see
 below). `--counts-only` prints `support_records listed=N ending_soon=M
-nothing_found=K`. The tool does not check that a record was paid for or
+not_matched=K`. report.md and report.csv show at most 10 records per item,
+then "and N more in report.json"; `report.json` keeps them all. The tool does not check that a record was paid for or
 is current. Record references are confidential, like item IDs.
 
 The file is UTF-8 JSON with sorted keys. It contains text from your
@@ -93,9 +94,13 @@ not be matched". The warning "N parts whose parent is not in this inventory"
 
 | Key | Meaning |
 |---|---|
-| `listed` | Records that fit at least one matched item in this inventory. |
-| `ending_soon` | Records whose `ends_on` is from `as_of` to the end of the lookahead window, both included, whether or not they fit an item. |
-| `nothing_found` | Records that fit no matched item: nothing found in this inventory. `listed` and `nothing_found` add up to the records in the file. |
+| `listed` | Records that fit at least one dated item (an item with a `product` and `cycle`) in this inventory. |
+| `ending_soon` | Records whose `ends_on` is after `as_of` and on or before the end of the lookahead window, whether or not they fit an item. A date on or before `as_of` has ended, the same rule as an item's state. |
+| `not_matched` | Records that fit no dated item: not matched to a dated item in this inventory. This includes a product that appears in the inventory without a decided cycle or version (an unmatched row). `listed` and `not_matched` add up to the records in the file. |
+
+The counts overlap: `ending_soon` counts records from both `listed` and
+`not_matched`, so one record can be in `ending_soon` and in one of the
+other two.
 
 ### meta
 
@@ -103,7 +108,7 @@ not be matched". The warning "N parts whose parent is not in this inventory"
 |---|---|
 | `tool_version` | The tool's version. |
 | `data_release` | The release ID and `file_hashes`. |
-| `override_hashes` | SHA-256 of the `golden`, `exceptions` and `tracking` files; empty text when a file was not given. |
+| `override_hashes` | SHA-256 of the `golden`, `exceptions` and `tracking` files; empty text when a file was not given. With `--support-records`, also `support_records`. |
 | `profile` | `name`, and `status` (`Unverified` for a profile; `null` for `generic`). |
 | `encoding` | The inventory encoding (`utf-8` unless `--encoding` was used). |
 
@@ -121,6 +126,7 @@ not be matched". The warning "N parts whose parent is not in this inventory"
 | `golden` | SHA-256 of the golden-sources file; empty text if not given. |
 | `exceptions` | SHA-256 of the exceptions file; empty text if not given. |
 | `tracking` | SHA-256 of the tracking file; empty text if not given. |
+| `support_records` | SHA-256 of the support-records file. Present only when `--support-records` is given, so a report made without it is unchanged. |
 
 ### meta.profile
 
@@ -217,6 +223,7 @@ A record never changes `state`, never puts an item on a list, and
 |---|---|
 | `record_ref` | Your reference, as in the file. |
 | `kind` | The kind, as in the file, for example `extended support`. |
+| `scope` | The scope from the file, or `null` for any cycle of the product. |
 | `ends_on` | The record's end date, `YYYY-MM-DD`. |
 | `owner_role` | The role from the file, or `null`. |
 
@@ -455,6 +462,12 @@ licence metric, cost or vendor column.
 | `ends_on` | Required date. |
 | `owner_role` | Optional. A role, not a person, up to 80 characters. |
 
+At most 2,000 data rows and at most 25 records per product; a larger file
+stops the run with an error that names the row and the limit. When a data
+refresh renames or removes a product ID, a file that still names the old
+ID stops the run (exit code 3, naming the data row): change the row to
+the new ID or delete it.
+
 ## Stability
 
 Within a `schema_version`, keys are never removed or renamed and never
@@ -463,8 +476,9 @@ they do not know. Adding a state, a list name, a reason code or a decision
 code bumps `schema_version`. The item key `ambiguity` and
 `counts.ambiguous_review` were added within schema version 1 as new keys;
 they add no state, list, reason code or decision code. The item key
-`support_records`, `counts.support_records` and the `support_records`
-keyword of `swlc.cli.run` were added the same way: optional keys only, no
+`support_records`, `counts.support_records`,
+`meta.override_hashes.support_records` (only with the flag) and the
+`support_records` keyword of `swlc.cli.run` were added the same way: optional keys only, no
 new state, list, reason code or decision code. A report with them and a
 report without them read each other with `--previous`. The `ambiguity`
 codes follow the reason-code rule: adding one bumps `schema_version`.

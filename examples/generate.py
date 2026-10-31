@@ -235,9 +235,9 @@ def build() -> dict:
             "support_records": {
                 "listed": sum(1 for r in SUPPORT_RECORDS if r[6]),
                 "ending_soon": sum(1 for r in SUPPORT_RECORDS
-                                   if WINDOW[0] <= r[4] <= WINDOW[1]),
-                "nothing_found": sum(1 for r in SUPPORT_RECORDS
-                                     if not r[6])}},
+                                   if WINDOW[0] < r[4] <= WINDOW[1]),
+                "not_matched": sum(1 for r in SUPPORT_RECORDS
+                                   if not r[6])}},
         # Planted item ID -> record refs shown on it. FILLER_LANTERN means
         # every Lantern Viewer filler item.
         "support_records": _support_key(ids),

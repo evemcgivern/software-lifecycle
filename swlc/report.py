@@ -104,7 +104,17 @@ REVIEW_LEAD = ("Unmatched on purpose, not a finding. Each name looks like a "
                "\"Couldn't match\".")
 SUPPORT_HEADING = "Support records"
 SUPPORT_COLUMN = "Support records (from your file)"
-SUPPORT_NOTE = "A support record is listed in your file: %s, %s, %s on %s."
+SUPPORT_NOTE = ("A support record is listed in your file: %s, %s, %s on %s "
+                "(scope: %s).")
+SUPPORT_ANY_SCOPE = "any cycle of this product"
+SUPPORT_CAVEAT = "The tool does not check that this record is current."
+SUPPORT_CAVEAT_MANY = ("The tool does not check that these records are "
+                       "current.")
+# At most this many records per item in report.md and report.csv;
+# report.json keeps them all.
+SUPPORT_SHOWN = 10
+SUPPORT_MORE = "and %d more in report.json"
+NOT_MATCHED_LABEL = "Not matched to a dated item in this inventory"
 SUPPORT_LEAD = (
     "From your support-records file, shown beside the vendor's dates. A "
     "record never changes an item's state, never puts an item on a list "
@@ -113,9 +123,17 @@ SUPPORT_LEAD = (
     "missing from this inventory may still be in use. Extended support may "
     "cover only some fixes or editions. Record references are "
     "confidential; keep this report as private as the file.")
-SUPPORT_COUNTS = ("Listed against items in this inventory: %d. Ending "
-                  "within the lookahead window: %d. Nothing found in this "
-                  "inventory: %d.")
+SUPPORT_COUNTS_LEAD = (
+    "Listed: records that fit at least one dated item (an item with a "
+    "product and cycle). Not matched to a dated item: records that fit "
+    "none; this includes a product that appears in this inventory without "
+    "a decided cycle or version. Listed and not matched add up to the "
+    "records in the file. Ending within the lookahead window counts "
+    "records from either group that end after the checked-on date and by "
+    "the end of the window, so the counts overlap.")
+SUPPORT_COUNTS = ("Listed against dated items in this inventory: %d. Ending "
+                  "within the lookahead window: %d. " + NOT_MATCHED_LABEL
+                  + ": %d.")
 # Item sections whose items get a support-record note line.
 SUPPORT_SECTIONS = ("past_eol", "ends_soon")
 CSV_COLUMNS = (
@@ -313,38 +331,71 @@ def _parent_lines(it: dict, by_id: dict) -> list:
 
 
 def _ends_word(ends_on: str, as_of: str) -> str:
-    return "ended" if ends_on < as_of else "ends"
+    """The item-state rule: a date on or before the checked-on date has
+    ended (see assess._state)."""
+    return "ended" if ends_on <= as_of else "ends"
+
+
+def _shown(it: dict) -> tuple:
+    """(entries to print, how many more are only in report.json)."""
+    entries = it.get("support_records") or []
+    return entries[:SUPPORT_SHOWN], max(0, len(entries) - SUPPORT_SHOWN)
 
 
 def _support_lines(it: dict, as_of: str) -> list:
-    return [SUPPORT_NOTE % (_disp(e["record_ref"]), _disp(e["kind"]),
-                            _ends_word(e["ends_on"], as_of), e["ends_on"])
-            for e in it.get("support_records") or ()]
+    entries, more = _shown(it)
+    if not entries:
+        return []
+    out = [SUPPORT_NOTE % (_disp(e["record_ref"]), _disp(e["kind"]),
+                           _ends_word(e["ends_on"], as_of), e["ends_on"],
+                           _disp(e["scope"]) if e["scope"]
+                           else SUPPORT_ANY_SCOPE)
+           for e in entries]
+    if more:
+        out.append(SUPPORT_MORE % more + ".")
+    out.append(SUPPORT_CAVEAT if len(entries) == 1 and not more
+               else SUPPORT_CAVEAT_MANY)
+    return out
+
+
+def _support_cell(it: dict, as_of: str) -> str:
+    entries, more = _shown(it)
+    parts = ["%s, %s, %s on %s, scope %s%s" % (
+        e["record_ref"], e["kind"], _ends_word(e["ends_on"], as_of),
+        e["ends_on"], e["scope"] or SUPPORT_ANY_SCOPE,
+        ", owner role " + e["owner_role"] if e["owner_role"] else "")
+        for e in entries]
+    if more:
+        parts.append(SUPPORT_MORE % more)
+    return "; ".join(parts)
 
 
 def _record_line(rec: dict, as_of: str) -> str:
     ends_on = rec["ends_on"].isoformat()
-    return "- %s, product %s, %s, %s on %s." % (
-        _disp(rec["record_ref"]), _disp(rec["product"]), _disp(rec["kind"]),
-        _ends_word(ends_on, as_of), ends_on)
+    return "- %s, product %s, scope %s, %s, %s on %s." % (
+        _disp(rec["record_ref"]), _disp(rec["product"]),
+        _disp(rec["scope"]) if rec["scope"] else SUPPORT_ANY_SCOPE,
+        _disp(rec["kind"]), _ends_word(ends_on, as_of), ends_on)
 
 
 def _support_section(result: dict, records: list) -> list:
     """The "Support records" section: records ending within the window and
-    records that fit nothing here. Record fields only, no inventory text."""
+    records that fit no dated item here. Record fields only, no inventory
+    text."""
     as_of = result["as_of"]
     end = add_months(date.fromisoformat(as_of), result["lookahead_months"])
     listed = {e["record_ref"] for it in result["items"]
               for e in it.get("support_records") or ()}
     soon = [r for r in records
-            if as_of <= r["ends_on"].isoformat() <= end.isoformat()]
+            if as_of < r["ends_on"].isoformat() <= end.isoformat()]
     none = [r for r in records if r["record_ref"] not in listed]
     counts = result["counts"]["support_records"]
     out = ["", "## %s" % SUPPORT_HEADING, "", SUPPORT_LEAD, "",
+           SUPPORT_COUNTS_LEAD, "",
            SUPPORT_COUNTS % (counts["listed"], counts["ending_soon"],
-                             counts["nothing_found"]), ""]
+                             counts["not_matched"]), ""]
     for label, chosen in (("Ending within the lookahead window", soon),
-                          ("Nothing found in this inventory", none)):
+                          (NOT_MATCHED_LABEL, none)):
         out += ["%s (%d):" % (label, len(chosen)), ""]
         out += [_record_line(r, as_of) for r in chosen] or ["None."]
         out.append("")
@@ -587,12 +638,7 @@ def render_csv(result: dict, governable_only: bool = False) -> str:
         row["parent_ref"] = _parent_cell(it, by_id)
         row[INHERITED_HEADING] = _inherited_cell(it)
         row[REVIEW_COLUMN] = (it["ambiguity"] or {}).get("reason")
-        row[SUPPORT_COLUMN] = "; ".join(
-            "%s, %s, %s on %s%s" % (
-                e["record_ref"], e["kind"],
-                _ends_word(e["ends_on"], result["as_of"]), e["ends_on"],
-                ", owner role " + e["owner_role"] if e["owner_role"] else "")
-            for e in it.get("support_records") or ())
+        row[SUPPORT_COLUMN] = _support_cell(it, result["as_of"])
         row["owners"] = "; ".join(it["owners"])
         row["decision_needed"] = "; ".join(it["decision_needed"])
         row["lists"] = "; ".join(sorted(member.get(it["id"], [])))

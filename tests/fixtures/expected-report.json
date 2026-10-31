@@ -31,7 +31,7 @@
     "support_records": {
       "ending_soon": 2,
       "listed": 5,
-      "nothing_found": 2
+      "not_matched": 2
     },
     "unmatched_breakdown": {
       "needs_review": 8,
@@ -164,7 +164,8 @@
           "ends_on": "2026-06-30",
           "kind": "extended support",
           "owner_role": null,
-          "record_ref": "SR-1002"
+          "record_ref": "SR-1002",
+          "scope": "14"
         }
       ],
       "version": "14"
@@ -471,7 +472,8 @@
           "ends_on": "2027-12-31",
           "kind": "vendor support",
           "owner_role": "Desktop lead",
-          "record_ref": "SR-1007"
+          "record_ref": "SR-1007",
+          "scope": null
         }
       ],
       "version": "11.4"
@@ -704,7 +706,8 @@
           "ends_on": "2029-01-31",
           "kind": "vendor support",
           "owner_role": "Infrastructure lead",
-          "record_ref": "SR-1004"
+          "record_ref": "SR-1004",
+          "scope": null
         }
       ],
       "version": "5.0"
@@ -838,7 +841,8 @@
           "ends_on": "2027-12-31",
           "kind": "vendor support",
           "owner_role": "Desktop lead",
-          "record_ref": "SR-1007"
+          "record_ref": "SR-1007",
+          "scope": null
         }
       ],
       "version": "11.1"
@@ -1448,7 +1452,8 @@
           "ends_on": "2027-06-30",
           "kind": "extended support",
           "owner_role": "Application owner",
-          "record_ref": "SR-1001"
+          "record_ref": "SR-1001",
+          "scope": "4"
         }
       ],
       "version": "4.2"
@@ -1836,7 +1841,8 @@
           "ends_on": "2029-01-31",
           "kind": "vendor support",
           "owner_role": "Infrastructure lead",
-          "record_ref": "SR-1004"
+          "record_ref": "SR-1004",
+          "scope": null
         }
       ],
       "version": "4.1"
@@ -1972,7 +1978,8 @@
           "ends_on": "2027-12-31",
           "kind": "vendor support",
           "owner_role": "Desktop lead",
-          "record_ref": "SR-1007"
+          "record_ref": "SR-1007",
+          "scope": null
         }
       ],
       "version": "11.5"
@@ -2021,7 +2028,8 @@
           "ends_on": "2027-12-31",
           "kind": "vendor support",
           "owner_role": "Desktop lead",
-          "record_ref": "SR-1007"
+          "record_ref": "SR-1007",
+          "scope": null
         }
       ],
       "version": "11.3"
@@ -2282,7 +2290,8 @@
           "ends_on": "2028-03-31",
           "kind": "vendor support",
           "owner_role": "ITAM lead",
-          "record_ref": "SR-1003"
+          "record_ref": "SR-1003",
+          "scope": "5.0"
         }
       ],
       "version": "5.0"
@@ -2369,6 +2378,7 @@
     "override_hashes": {
       "exceptions": "ea685b612f8e8f15bc0b63f4852e5290c70f0ab03eb53029c55a809ed90947ac",
       "golden": "7173c2e82bd5ef9a66a2ecf0d987c470784aacfbcad162244ac434e402f33107",
+      "support_records": "e0a51a33a9e7f585a193fda758d01785bd82c4e952e1415ae46d11d5367ece4e",
       "tracking": "55bacb9fd5602e8d9e4a7a8e610a5f1170328f816a1b39814d1aeda0c19a34aa"
     },
     "profile": {

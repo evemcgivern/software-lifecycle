@@ -124,7 +124,7 @@ You own these files. The tool never changes them.
   reference, an endoflife.date product ID, an optional cycle, a kind such
   as extended support, and an end date). The report shows them beside the
   vendor's dates and lists records that end within the window or name
-  nothing found in this inventory. It is a lifecycle and renewal aid, not
+  no dated item in this inventory. It is a lifecycle and renewal aid, not
   a licence or audit position: the tool does not check that a record was
   paid for or is current, and a record never changes a state, a list or
   `--fail-on`. See "Support records" in [docs/usage.md](docs/usage.md).
