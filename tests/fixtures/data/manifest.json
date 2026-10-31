@@ -77,7 +77,7 @@
   },
   "kev_catalog_version": "2026.10.22",
   "kev_date": "2026-10-22",
-  "min_tool_version": "0.3.0",
+  "min_tool_version": "0.4.0",
   "release_id": "fixture-1",
   "upstream_commit": "0000000000000000000000000000000000000000"
 }

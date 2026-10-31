@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 - 2026-10-30
 
 - Names to review (issue #12): an unmatched row whose name is a one-word
   product title and no publisher, refused because nothing confirms the
