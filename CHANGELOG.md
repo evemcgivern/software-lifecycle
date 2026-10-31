@@ -28,6 +28,12 @@
   ISO/IEC 19770-1 sentence in `docs/usage.md` no longer claims what the
   standard requires and marks its clause Not found / Unverified.
 
+- New `preflight INVENTORY` command (issue #38): reads an export offline
+  and says whether it is readable, its row count, which profile fits best
+  and how, which name, publisher, version, count and parent columns were
+  found, blank and placeholder cell counts, and what to fix, with the
+  `check` command to run next. `--json` prints the same result. It prints
+  column titles and numbers only, never a cell value, and writes nothing.
 - Windows (issue #31): `.gitattributes` checks text files out with LF, so
   the bundled data matches `data/manifest.json` after a Windows clone. The
   informational `test-windows` job passes, with POSIX-only checks skipped.

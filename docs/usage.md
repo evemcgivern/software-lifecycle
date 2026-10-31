@@ -1,7 +1,7 @@
 # Usage
 
-There are two commands: `check` and `verify-data`. Run them from the repo
-root with `python3 software_lifecycle.py`. Python 3.9 or newer.
+There are three commands: `check`, `preflight` and `verify-data`. Run them
+from the repo root with `python3 software_lifecycle.py`. Python 3.9 or newer.
 
 ## check
 
@@ -41,6 +41,47 @@ A file with only its header row is a valid empty file. Their columns are in
 Full example, the demo:
 
     python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo
+
+## preflight
+
+    python3 software_lifecycle.py preflight INVENTORY [flags]
+
+Run it once on a new export, before `check`. It reads the file offline,
+writes nothing, and prints:
+
+- whether the file is readable, its encoding, a byte order mark and its
+  line endings (`CRLF`, `LF`, `CR`, `mixed`, or `unknown` for UTF-16 and
+  UTF-32);
+- the number of data rows and the file size, beside the row and size
+  limits;
+- which profile fits best (`flexera`, `servicenow-mbs`, `rapid7` or
+  `generic`) and how it decided: a profile fits when its own headings for
+  name, publisher and version all match, and the fit that matches the most
+  fields wins;
+- for name, publisher, version, count and parent: the column title found,
+  or "not found";
+- the number of blank cells in each recognised column, of Parent cells
+  that hold a placeholder (`n/a`, `none`, `unknown` and the like, which
+  `check` reads as no parent) and of cells that start like a spreadsheet
+  formula. A name or version of `n/a` is not a placeholder: `check` matches
+  it as written;
+- a "What to fix" list in fixed wording, and the `check` command to run
+  next.
+
+It prints your column titles and numbers only, never a cell value or a
+name from a row, so its output is safe to show an AI agent. A missing
+name or version column, or a file with no data rows, exits 3. A missing
+publisher, count or parent column is listed in "What to fix" and exits 0.
+An unreadable file exits 3 with the same error text as `check`.
+
+| Flag | What it does | Example |
+|---|---|---|
+| `--profile NAME` | Use this profile instead of the best fit: `generic`, `flexera`, `servicenow-mbs` or `rapid7`. | `--profile flexera` |
+| `--columns FILE` | JSON file that adds column headings, as for `check`. | `--columns my-columns.json` |
+| `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
+| `--json` | Print the same result as JSON. On an error it prints `ok`, `exit_code` and `error` only. | `--json` |
+
+    python3 software_lifecycle.py preflight examples/software-inventory.csv
 
 ## verify-data
 
