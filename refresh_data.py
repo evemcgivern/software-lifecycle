@@ -68,7 +68,7 @@ PRODUCTS_MAX = 5000
 # this script writes into kev.json, and the daily gate checks it is there.
 LICENCE_NOTE = "CC0 1.0"
 DATA_FORMAT = 2
-MIN_TOOL_VERSION = "0.3.0"
+MIN_TOOL_VERSION = "0.4.0"
 COUNT_TOLERANCE = 0.20
 MAX_TEXT = 200
 ADDED_MIN, ADDED_SHARE = 50, 0.10      # a normal day adds a handful
