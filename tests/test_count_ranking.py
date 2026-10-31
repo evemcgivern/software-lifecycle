@@ -75,11 +75,19 @@ class CountCellTests(unittest.TestCase):
         self.assertEqual(count_cell("42"), 42)
         self.assertEqual(count_cell("007"), 7)
         self.assertEqual(count_cell(str(MAX_COUNT_CELL)), MAX_COUNT_CELL)
+        self.assertEqual(count_cell("1,234"), 1234)
+        self.assertEqual(count_cell("1,000,000,000"), MAX_COUNT_CELL)
+        self.assertEqual(count_cell("12.0"), 12)
+        self.assertEqual(count_cell("1,234.00"), 1234)
+        self.assertEqual(count_cell("0.00"), 0)
 
     def test_everything_else_is_refused(self):
-        for text in ("-5", "+5", "1.5", "1.0", "1,000", "1 000", "abc",
-                     "=1+1", "@SUM(A1)", "1e3", "١٢",
-                     str(MAX_COUNT_CELL + 1), "9" * 5000):
+        for text in ("-5", "+5", "-1.0", "1.5", "1.234", "1.", ".0",
+                     "1 000", "1 234", "12,34", "1234,567", "1,234.",
+                     "1,234.5", ",123", "abc", "=1+1", "@SUM(A1)", "1e3",
+                     "١٢", "١,٢٣٤",
+                     str(MAX_COUNT_CELL + 1), "1,000,000,001",
+                     "9" * 5000, "1" + ",000" * 2000):
             self.assertIsNone(count_cell(text), text)
 
 
@@ -221,6 +229,29 @@ class ViewTests(unittest.TestCase):
                          report.render_markdown(rep, meta))
         for r in csv.DictReader(io.StringIO(a["report.csv"])):
             self.assertEqual(r[report.COUNT_COLUMN], "")
+
+    def test_governable_only_keeps_count_order(self):
+        header = HEADER + ["Parent"]
+        rows = [r + ("",) for r in ROWS] + [
+            ("Mystery Tool Plugin", "1.0", "Nobody Inc", "Desk",
+             "900", "Mystery Tool")]
+        _c, _o, _e, files = self.run_views(rows, header, "--governable-only")
+        rep = json.loads(files["report.json"])
+        parts = ("component", "bundle_member")
+        shown = [it for it in rep["items"]
+                 if it["classification"] not in parts]
+        hidden = [it["name"] for it in rep["items"]
+                  if it["classification"] in parts]
+        self.assertEqual(hidden, ["Mystery Tool Plugin"])
+        self.assertEqual(rep["items"], sorted(rep["items"], key=rank))
+        csv_ids = [r["id"] for r in
+                   csv.DictReader(io.StringIO(files["report.csv"]))]
+        self.assertEqual(csv_ids, [it["id"] for it in shown])
+        md = files["report.md"]
+        self.assertNotIn("Count (from your file): 900", md)
+        past = md.split("## Past end of life")[1].split("## ")[0]
+        self.assertLess(past.index("Tidewater Suite** 1.0"),
+                        past.index("Tidewater Suite** 4.2"))
 
     def test_fail_on_unaffected(self):
         flags = ("--fail-on", "past_eol,ends_soon,unmatched")

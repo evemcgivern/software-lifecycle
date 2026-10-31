@@ -700,9 +700,11 @@ The optional `count` column (headings such as "Install Count", "Qty" or
 discovered installs. The tool does not check it.
 
 - An item's `install_count` is the sum of the valid count cells in its
-  rows. A valid cell is a whole number from 0 to 1000000000, digits only:
-  no sign, decimal point, separator, text or formula. A blank cell adds
-  nothing. Any other cell is ignored and counted in
+  rows. A valid cell is a whole number from 0 to 1000000000 in ASCII
+  digits. It may use commas in strict groups of three (`1,234`) and may
+  end in a decimal point and zeros only (`12.0`, `1,234.00`). A sign, any
+  other decimal (`1.234`, `1.5`), any other separator (`1 234`, `12,34`),
+  text or a formula is not valid. A blank cell adds nothing. Any other cell is ignored and counted in
   `counts.count_invalid_cells`. An item with no valid cell has
   `install_count` `null`.
 - Each list in `report.json`, each section in `report.md` and the rows of

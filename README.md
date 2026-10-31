@@ -92,11 +92,12 @@ as the suite a part belongs to. A blank or placeholder cell (`n/a`, `none`)
 means no parent. See "The Parent column" in [docs/usage.md](docs/usage.md).
 
 The `export_support` heading is accepted but not used in this version.
-The `count` column orders each list, largest first: an item's count is the
-sum of its rows' count cells, a count from your file, not discovered
-installs; see "The count column" in [docs/usage.md](docs/usage.md). `rows` in the
-report counts inventory rows, not installs or machines. `report.md` says so in
-its summary line and labels each item's count "Inventory rows".
+The `count` column orders each list, largest first: an item's count is
+the sum of its rows' count cells, a count from your file, not discovered
+installs; see "The count column" in [docs/usage.md](docs/usage.md).
+`rows` in the report counts inventory rows, not installs or machines.
+`report.md` says so in its summary line and labels each item's count
+"Inventory rows".
 
 If a required heading is missing, the tool stops and names the field. If
 two columns map to one field, it stops too. `--columns FILE` adds your own

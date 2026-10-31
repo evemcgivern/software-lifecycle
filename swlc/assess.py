@@ -410,7 +410,8 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             # never changes a state, a list or --fail-on.
             "support_records": support_counts,
             # Count cells that were not a whole number from 0 to
-            # 1,000,000,000; they add nothing to install_count.
+            # 1,000,000,000 (see inputs.count_cell); they add nothing to
+            # install_count.
             "count_invalid_cells": sum(
                 g.get("count_invalid_cells", 0) for g in groups.values()),
         },

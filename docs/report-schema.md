@@ -80,7 +80,7 @@ inventory, so keep it as private as the inventory.
 | `classification` | Count of items in each class. See `counts.classification`. |
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
 | `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
-| `count_invalid_cells` | Number of count cells ignored because they are not a whole number from 0 to 1000000000 (a sign, decimal point, separator, text or formula). Blank cells are not counted. `0` with no count column. |
+| `count_invalid_cells` | Number of count cells ignored because they are not a whole number from 0 to 1000000000: digits, optionally in comma groups of three (`1,234`), optionally ending in a decimal point and zeros only (`12.0`). A sign, another decimal (`1.234`), another separator (`1 234`), text or a formula is ignored. Blank cells are not counted. `0` with no count column. |
 | `support_records` | Counts from the support-records file. See `counts.support_records`. Zeros when no file is given. A count only: a record never changes a state, a list or `--fail-on`. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 

@@ -4,8 +4,10 @@
 
 - The inventory's `count` column now orders the findings (issue #37).
   Each item gets `install_count`, the sum of its rows' count cells: a
-  count from your file, not discovered installs. A cell that is not a
-  whole number from 0 to 1000000000 is ignored and counted in
+  count from your file, not discovered installs. A cell must be a whole
+  number from 0 to 1000000000; comma groups of three (`1,234`) and a
+  decimal part of zeros only (`12.0`) are read. Any other cell is ignored
+  and counted in
   `counts.count_invalid_cells`. Each list in `report.json`, each section
   of `report.md` and the rows of `report.csv` go largest count first,
   then items with no count, then by item ID. `report.md` shows "Count

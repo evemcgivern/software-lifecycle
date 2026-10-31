@@ -36,7 +36,9 @@ GENERIC_ALIASES: dict[str, list[str]] = {
 }
 
 _HEADER_JUNK = re.compile(r"[^0-9a-z]+")
-_WHOLE = re.compile(r"[0-9]+")
+# Digits, or digits in strict comma groups of three ("1,234"), with an
+# optional all-zero decimal part ("12.0", "1,234.00").
+_WHOLE = re.compile(r"([0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?:\.0+)?")
 # Largest count cell accepted. A bigger number is treated as a mistake.
 MAX_COUNT_CELL = 10**9
 
@@ -190,11 +192,13 @@ def map_columns(headers: list[str], profile: dict | None,
 
 def count_cell(text: str):
     """A count cell as an int, or None when it is not a whole number from
-    0 to MAX_COUNT_CELL (negatives, decimals, separators, text, formulas).
-    Blank cells are the caller's to skip."""
-    if not _WHOLE.fullmatch(text):
+    0 to MAX_COUNT_CELL. Comma groups of three and a decimal part of only
+    zeros are read; signs, other decimals, other separators, text and
+    formulas are not. Blank cells are the caller's to skip."""
+    m = _WHOLE.fullmatch(text)
+    if not m:
         return None
-    digits = text.lstrip("0") or "0"
+    digits = m.group(1).replace(",", "").lstrip("0") or "0"
     if len(digits) > len(str(MAX_COUNT_CELL)):
         return None
     value = int(digits)
