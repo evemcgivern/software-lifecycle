@@ -13,7 +13,7 @@ from pathlib import Path
 from .catalog_match import build_index, tokens
 from .classify import CURATED_CLASSES
 from .errors import DataError
-from .matching import _check as _check_alias
+from .matching import AliasTable, _check as _check_alias
 from .normalize import normalize_name
 
 SUPPORTED_DATA_FORMATS = (1, 2)
@@ -170,7 +170,7 @@ def _validate_aliases(obj) -> list:
         raise DataError("expected an object with an 'aliases' list")
     for pos, entry in enumerate(obj["aliases"], 1):
         _check_alias(entry, pos)
-    return obj["aliases"]
+    return AliasTable(obj["aliases"])
 
 
 def _validate_profiles(obj) -> dict:
