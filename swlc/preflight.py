@@ -42,8 +42,8 @@ FIX_TEXT = {
                   "matched; fill them in or drop them.",
     "BLANK_VERSION": "Some rows have a blank version cell. Those rows cannot "
                      "be matched to a cycle; fill them in where you can.",
-    "PLACEHOLDER": "Some cells hold a placeholder such as n/a, none or "
-                   "unknown. Those rows are read as having no value there.",
+    "PLACEHOLDER": "Some Parent cells hold a placeholder such as n/a, none "
+                   "or unknown. check reads those as no parent.",
     "FORMULA": "Some cells start like a spreadsheet formula (=, +, -, @). "
                "report.csv neutralizes them; check the export if you did "
                "not expect them.",
@@ -132,7 +132,8 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
                          profiles[used]["columns"] if used != "generic"
                          else None, extra, require=False)
     blank = {f: 0 for f in colmap}
-    placeholder = {f: 0 for f in FIELDS if f in colmap}
+    # Only the Parent column treats placeholders as blank in check.
+    placeholder = {"parent": 0} if "parent" in colmap else {}
     formula = 0
     for row in rows:
         for field, col in colmap.items():
@@ -231,7 +232,8 @@ def render_text(result: dict) -> str:
         lines.append("  %s: found \"%s\"" % (field, header))
     lines += ["", "Blank cells, by column"]
     lines += ["  %s: %d" % kv for kv in result["blank_cells"].items()]
-    lines += ["", "Placeholder cells (n/a, none, unknown and the like)"]
+    lines += ["", "Placeholder Parent cells (n/a, none, unknown and the "
+              "like)"]
     lines += ["  %s: %d" % kv for kv in result["placeholder_cells"].items()]
     lines += ["", "Cells that start like a spreadsheet formula: %d"
               % result["formula_cells"], "", "What to fix"]

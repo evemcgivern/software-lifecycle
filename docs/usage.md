@@ -59,9 +59,11 @@ writes nothing, and prints:
   fields wins;
 - for name, publisher, version, count and parent: the column title found,
   or "not found";
-- the number of blank cells in each recognised column, of placeholder cells
-  (`n/a`, `none`, `unknown` and the like) and of cells that start like a
-  spreadsheet formula;
+- the number of blank cells in each recognised column, of Parent cells
+  that hold a placeholder (`n/a`, `none`, `unknown` and the like, which
+  `check` reads as no parent) and of cells that start like a spreadsheet
+  formula. A name or version of `n/a` is not a placeholder: `check` matches
+  it as written;
 - a "What to fix" list in fixed wording, and the `check` command to run
   next.
 

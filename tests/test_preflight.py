@@ -126,10 +126,20 @@ class ColumnTests(Base):
         self.assertEqual(code, 0)
         self.assertEqual(res["file"]["rows"], 3)
         self.assertEqual(res["blank_cells"]["version"], 1)
-        self.assertEqual(res["placeholder_cells"],
-                         {"name": 1, "publisher": 1, "version": 0})
+        # n/a as a name is matched as written, so it is not counted.
+        self.assertEqual(res["placeholder_cells"], {})
         self.assertEqual(res["formula_cells"], 1)
         self.assertEqual(res["other_columns"], {"owner": "Owner"})
+
+    def test_placeholders_count_for_the_parent_column(self):
+        path = self.inv(["Product", "Version", "Parent"],
+                        [["n/a", "1", "n/a"], ["a", "1", "None"],
+                         ["b", "1", "Suite"], ["c", "1", ""]])
+        code, res, _ = self.pre_json(path)
+        self.assertEqual(code, 0)
+        self.assertEqual(res["placeholder_cells"], {"parent": 2})
+        self.assertEqual(res["blank_cells"]["parent"], 1)
+        self.assertIn("PLACEHOLDER", [f["code"] for f in res["fix"]])
 
     def test_control_characters_in_a_header_are_not_printed(self):
         path = self.inv(["\x1bName\x07", "Product", "Version"],
