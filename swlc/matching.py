@@ -321,21 +321,85 @@ def _curated(name: str, version: str, aliases: list[dict],
     'publisher' list the row's publisher does not satisfy does not hit, but
     its product goes in blocked so generated matching cannot find it."""
     norm = normalize_name(name or "")
+    hits, blocked = _alias_hits(norm, aliases, publisher)
+    if not hits:
+        return False, MatchResult(None, None, NO_ALIAS), blocked
+    return True, _decide(norm, version, hits, products), blocked
+
+
+def _alias_hits(norm: str, aliases: list[dict], publisher: str) -> tuple:
+    """(hits, blocked) for a normalized name, in alias table order. An
+    AliasTable gives only the entries that can hit; a plain list is
+    scanned in full."""
+    if isinstance(aliases, AliasTable):
+        candidates = aliases.candidates(norm)
+    else:
+        candidates = _keyed(aliases)
     hits: list[tuple[str, dict]] = []
     blocked = set()
-    for pos, entry in enumerate(aliases, 1):
-        _check_once(entry, pos)
-        key = _norm_key(entry["key"])
+    for key, entry in candidates:
         if not _hits(norm, key, entry["match"]):
             continue
         if _publisher_ok(entry, publisher):
             hits.append((key, entry))
         else:
             blocked.add(entry["product"])
-    blocked = frozenset(blocked)
-    if not hits:
-        return False, MatchResult(None, None, NO_ALIAS), blocked
-    return True, _decide(norm, version, hits, products), blocked
+    return hits, frozenset(blocked)
+
+
+def _keyed(aliases: list[dict]):
+    """(normalized key, entry) for each entry, checked first, in order."""
+    for pos, entry in enumerate(aliases, 1):
+        _check_once(entry, pos)
+        yield _norm_key(entry["key"]), entry
+
+
+def _first_word(text: str) -> str:
+    return text.partition(" ")[0]
+
+
+class AliasTable(list):
+    """The alias list of one loaded data folder. A plain list that also
+    groups its entries by the first word of their normalized key, built
+    on first use and dropped when the list changes. _hits needs the name
+    to equal the key or to start with the key and a space, so a name can
+    only hit keys with the same first word: a row looks at one group, not
+    the whole table. Entries keep table order within a group. Each
+    entry's key is read once, when the groups are built: changing an
+    entry in place after first use is not supported. Neither is changing
+    the list through list's own methods (list.append(table, x)), which
+    bypass the reset."""
+
+    _groups = None
+
+    def candidates(self, norm: str) -> list:
+        if self._groups is None:
+            groups: dict = {}
+            for key, entry in _keyed(self):
+                if key:  # an empty key never hits
+                    groups.setdefault(_first_word(key), []).append(
+                        (key, entry))
+            self._groups = groups
+        return self._groups.get(_first_word(norm), [])
+
+    def __reduce_ex__(self, protocol):
+        # Copies and pickles are plain lists, without the groups.
+        return list, (list(self),)
+
+
+def _changes(name: str):
+    method = getattr(list, name)
+
+    def change(self, *args, **kwargs):
+        self._groups = None
+        return method(self, *args, **kwargs)
+    return change
+
+
+for _name in ("__init__", "__setitem__", "__delitem__", "__iadd__",
+              "__imul__", "append", "extend", "insert", "pop", "remove", "clear",
+              "sort", "reverse"):
+    setattr(AliasTable, _name, _changes(_name))
 
 
 # Alias entries already checked, by id. The entry itself is kept as the

@@ -953,7 +953,10 @@ class AssessTests(unittest.TestCase):
 
 # --- the bundled data: speed -----------------------------------------------
 
-MAX_SECONDS_100K = 20.0   # measured 6.3 s (3.15) and 8.2 s (3.9) here
+# Measured best of 3 with the alias index (issue #23): 1.3 s (3.15) and
+# 1.4 s (3.9) with 155 aliases, 1.3 s and 1.5 s with 300, 1.4 s and 1.5 s
+# with 600. The full scan took 3.9 s and 4.6 s with 155 on the same run.
+MAX_SECONDS_100K = 10.0
 
 
 def synthetic_rows(catalog: dict, count: int, seed: int = 11):

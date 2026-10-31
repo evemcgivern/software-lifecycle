@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Matching looks up only the aliases whose key starts with the name's
+  first word, instead of testing every alias on every row (issue #23).
+  The lookup is built once per loaded data folder. Results are
+  unchanged. Matching 100,000 rows (best of 3) took 3.9 s before and
+  1.3 s after on Python 3.15, and 4.6 s and 1.4 s on Python 3.9, with
+  155 aliases. With 600 made-up aliases it stays at 1.4 s and 1.5 s.
+  The test limit drops from 20 s to 10 s.
+
 ## 0.4.0 - 2026-10-30
 
 - Names to review (issue #12): an unmatched row whose name is a one-word
