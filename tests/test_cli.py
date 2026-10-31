@@ -50,6 +50,21 @@ class CheckTests(CliBase):
             if sys.platform != "win32":  # no POSIX file modes on Windows
                 self.assertEqual(path.stat().st_mode & 0o777, 0o600)
 
+    def test_crlf_inventory_gives_the_same_items(self):
+        text = Path(self.inv).read_bytes().replace(b"\r\n", b"\n")
+        lf = self.root / "inv-lf.csv"
+        lf.write_bytes(text)
+        crlf = self.root / "inv-crlf.csv"
+        crlf.write_bytes(text.replace(b"\n", b"\r\n"))
+        self.assertNotIn(b"\r", lf.read_bytes())
+        self.assertIn(b"\r\n", crlf.read_bytes())
+        self.check("--out", str(self.root / "lf"), inv=str(lf))
+        self.check("--out", str(self.root / "crlf"), inv=str(crlf))
+        lf = json.loads((self.root / "lf" / "report.json").read_text("utf-8"))
+        cr = json.loads((self.root / "crlf" / "report.json").read_text("utf-8"))
+        self.assertEqual(lf["items"], cr["items"])
+        self.assertEqual(lf["counts"], cr["counts"])
+
     def test_two_runs_byte_identical(self):
         self.check("--out", str(self.root / "a"))
         self.check("--out", str(self.root / "b"))

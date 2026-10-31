@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Windows (issue #31): `.gitattributes` checks text files out with LF, so
+  the bundled data matches `data/manifest.json` after a Windows clone. The
+  informational `test-windows` job passes, with POSIX-only checks skipped.
+  A test shows a CRLF inventory gives the same items as an LF one. README
+  says Windows is not a supported platform yet.
 - New optional `--support-records FILE` (issue #32): a hand-kept CSV of
   the support records you hold (your reference, an endoflife.date product
   ID, an optional cycle or version, a kind and an end date). `report.md`

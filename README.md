@@ -256,8 +256,12 @@ artifact attestation, check it online before you use the release:
 - The profiles are Unverified until run on a real export.
 - Data is a snapshot and can be out of date.
 - CI runs the tests on Python 3.9 to 3.13. The tool was tested on macOS
-  and Linux. Windows is untested; the quick-start paths and the `python3`
-  command assume Unix.
+  and Linux. The test suite also runs on Windows (Python 3.12) in an
+  informational CI job, with a few POSIX-only checks skipped. The
+  quick-start paths and the `python3` command assume Unix; on Windows use
+  `py` or `python`. A Windows export with CRLF line endings reads the
+  same as an LF one. Windows is not a supported platform yet: no one has
+  run the tool on a real Windows export.
 
 ## Maintaining
 
