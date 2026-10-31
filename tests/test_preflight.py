@@ -149,6 +149,14 @@ class ColumnTests(Base):
         _, out, _ = self.pre(path)
         self.assertNotIn("\x1b", out)
 
+    def test_duplicate_header_names_positions_only(self):
+        path = self.root / "dup.csv"
+        path.write_text("Product,product,Version\na,b,1\n", encoding="utf-8")
+        code, out, err = self.pre(str(path))
+        self.assertEqual(code, cli.EXIT_INPUT)
+        self.assertIn("duplicate column name at positions 1 and 2", err)
+        self.assertNotIn("roduct", err)
+
     def test_header_conflict_is_bad_input(self):
         path = self.inv(["Name", "Product", "Version"], [["a", "b", "1"]])
         code, out, err = self.pre(path)
@@ -290,6 +298,14 @@ class OutputTests(Base):
         quote.write_text('Product,Version\n"%s,1\n' % SECRETS[1],
                          encoding="utf-8")
         cases.append(str(quote))
+        # No header row: the first data row has a repeated value.
+        nohead = self.root / "e.csv"
+        nohead.write_text("%s,%s\n1,2\n" % (SECRETS[0], SECRETS[0]),
+                          encoding="utf-8")
+        cases.append(str(nohead))
+        dup = self.inv([SECRETS[3], SECRETS[3].upper(), "Version"],
+                       [["a", "b", "1"]], "f.csv")
+        cases.append(dup)
         for path in cases:
             for argv in ([path], [path, "--json"]):
                 with self.subTest(path=Path(path).name, argv=argv):

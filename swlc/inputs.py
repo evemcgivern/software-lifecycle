@@ -130,9 +130,9 @@ def read_rows(path: str, encoding: str | None = None,
                     key = h.casefold()
                     if key in seen:
                         raise InputError(
-                            "duplicate column name '%s' at positions %d and %d "
+                            "duplicate column name at positions %d and %d "
                             "in header at line %d"
-                            % (_show(h), seen[key], pos, line))
+                            % (seen[key], pos, line))
                     seen[key] = pos
                 continue
             if len(record) > len(headers):
