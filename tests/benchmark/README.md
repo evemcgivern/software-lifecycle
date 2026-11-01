@@ -137,27 +137,29 @@ Each row gets the first rule that fits:
 2. `catalog`: not hand-written, and the name was seen in a fetched public
    catalog (winget, Debian or Ubuntu packages, Homebrew). Most catalog rows
    carry a plausible real version for that package (a test checks that a
-   number in a package name agrees with the version). 82 do not: they are
+   number in a package name agrees with the version). 78 do not: they are
    constructed traps that pair a catalog name with an invented version, to
-   test that no cycle is guessed. 64 have notes starting `trap=nocycle` (a
+   test that no cycle is guessed. 60 have notes starting `trap=nocycle` (a
    version that fits no cycle, such as `SQLite 10.0.0`), and 18 start
    `trap=conflict` (the name and the version column disagree, such as
-   `MySQL 26.7.0` with version `5.5.63`). 37 of the 82 carry the invented
-   version in the name itself, so that name is not the catalog's. All 82
-   expect the product with no cycle, and 74 of them are scored correct and
-   count toward the hand and catalog floor. The other 274 catalog rows (226
-   expecting a cycle, 48 expecting `NONE`) carry no invented-version trap.
+   `MySQL 26.7.0` with version `5.5.63`). 37 of the 78 carry the invented
+   version in the name itself, so that name is not the catalog's. All 78
+   expect the product with no cycle, and 69 of them are scored correct and
+   count toward the hand and catalog floor. The other 278 catalog rows (226
+   expecting a cycle, 4 expecting any cycle, 48 expecting `NONE`) carry no
+   invented-version trap; the 4 were `trap=nocycle` rows until upstream
+   added their cycles (issue #74, under "Judgment calls built into gold").
 3. `generated`: everything else. Built by program from upstream titles and
    per-cycle latest versions, or generated traps.
 
-Counts (product with a cycle, product with no cycle, `NONE`):
+Counts (product with a cycle or any cycle, product with no cycle, `NONE`):
 
 | stratum | cycle | none | NONE | total |
 | --- | --- | --- | --- | --- |
 | hand | 642 | 92 | 944 | 1678 |
-| catalog | 226 | 82 | 48 | 356 |
+| catalog | 230 | 78 | 48 | 356 |
 | generated | 828 | 193 | 29 | 1050 |
-| all | 1696 | 367 | 1021 | 3084 |
+| all | 1700 | 363 | 1021 | 3084 |
 
 The research set marked 610 rows as seen in a catalog. About 254 of those are
 also hand-written, so they count as `hand` and `catalog` holds 356.
@@ -334,5 +336,23 @@ See the numbers with `SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tes
   Explorer rows wait for issue #21. The hand and catalog floor rose from
   549 to 751 and the classification floor from 297 to 299 in the same
   change.
+- Issue #74, the maintainer's decision (2026-11-01): four catalog
+  `trap=nocycle` rows, `LibreOffice|The Document Foundation|6.0.1`,
+  `MySQL|Oracle Corporation|4.0.1`, `Notepad++|Notepad++ Team|6.0.1` and
+  `PHP|The PHP Group|4.0.1`, were relabelled from cycle `none` to an
+  empty cycle (the product, any cycle). The data changed, not the rule:
+  upstream endoflife.date added the old cycles LibreOffice 6.0, MySQL
+  4.0, Notepad++ 6.0 and PHP 4.0 (upstream pull requests #11479,
+  #11473, #11475 and #11488, and #11472, merged 2026-10-31 to
+  2026-11-01; all present at upstream commit 38b1896e, which the weekly
+  run used). These versions now fit a real cycle, and the weekly job
+  scored them hard wrong (hand and catalog 754 against the floor of
+  758). The exact new cycle would fail on the bundled data, which lacks
+  those cycles; an empty cycle is correct on both. An empty cycle also
+  accepts a wrong cycle: `libreoffice` 7.4 for 6.0.1 would score
+  correct. So these four rows test only the product until each is
+  tightened to its exact cycle (6.0 or 4.0) after the weekly data
+  merges (follow-up issue to be filed). The hand and catalog count stays
+  758; no floor changed.
 
 Sources are in `SOURCES.md`.
