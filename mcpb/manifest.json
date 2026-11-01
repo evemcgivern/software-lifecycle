@@ -1,0 +1,35 @@
+{
+  "manifest_version": "0.4",
+  "name": "software-lifecycle",
+  "display_name": "software-lifecycle (counts only)",
+  "description": "Checks one software inventory CSV on this computer, offline, and returns summary counts only: no names, versions, publishers, owners or item IDs.",
+  "author": {
+    "name": "Eve McGivern"
+  },
+  "server": {
+    "type": "uv",
+    "entry_point": "swlc_mcp.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": ["run", "--directory", "${__dirname}", "swlc_mcp.py"]
+    }
+  },
+  "tools": [
+    {
+      "name": "preflight",
+      "description": "Says whether the check can use one inventory CSV on this computer."
+    },
+    {
+      "name": "check_counts",
+      "description": "Runs the software-lifecycle check on one inventory CSV on this computer, offline, and returns summary counts only: no names, versions, publishers, owners or item IDs."
+    }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "python": ">=3.9"
+    }
+  },
+  "keywords": ["software", "end-of-life", "inventory", "offline"],
+  "license": "MIT"
+}
