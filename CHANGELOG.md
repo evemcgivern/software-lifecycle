@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Added `swlc_mcp.py`, an optional local MCP server for desktop chat apps
+  (part of issue #52). It offers two tools, `preflight` and
+  `check_counts`, each taking only the path to a `.csv` file. It returns
+  only fixed labels and numbers: no cell text, column titles or item IDs.
+  It refuses symlinks, folders, non-CSV paths and files over the tool's
+  size limit. `docs/mcp-setup.md` explains how to add it to the ChatGPT
+  desktop app and, untested, to Claude Desktop, and what it does not
+  protect. The one-click Claude Desktop package is not built yet.
 - Added `docs/assistant-setup.md`: which AI assistants can run the tool,
   the privacy rule, and a copy-paste prompt for each kind of assistant. The
   README now opens with a "Start here" chooser. `AGENTS.md` gains rules for

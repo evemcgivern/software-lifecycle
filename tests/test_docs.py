@@ -62,6 +62,7 @@ def public_files() -> list:
     out += [p for p in sorted((ROOT / "examples").rglob("*"))
             if p.is_file() and p.suffix in TEXT_SUFFIXES]
     out += sorted((ROOT / "swlc").glob("*.py"))
+    out += [ROOT / "swlc_mcp.py"]
     return out
 
 
@@ -700,6 +701,63 @@ class AssistantSetupTests(unittest.TestCase):
     def test_claude_md_imports_agents_md(self):
         lines = text(ROOT / "CLAUDE.md").split("\n")
         self.assertIn("@AGENTS.md", lines)
+
+
+MCP_SETUP = DOCS / "mcp-setup.md"
+
+
+class McpSetupDocTests(unittest.TestCase):
+    def test_links_resolve_and_entry_points_link_once(self):
+        link = re.compile(r"\]\(([^)\s]+)\)")
+        for target in link.findall(text(MCP_SETUP)):
+            if re.match(r"[a-z]+:", target) or target.startswith("#"):
+                continue
+            self.assertTrue((DOCS / target.split("#")[0]).exists(), target)
+        start = text(README).split("## Start here", 1)[1].split("\n## ", 1)[0]
+        self.assertEqual(start.count("(docs/mcp-setup.md)"), 1)
+        row = [r for r in start.split("\n") if "mcp-setup" in r][0]
+        self.assertIn("optional, advanced", row)
+        self.assertIn("Unverified", row)
+        rows = {r.split("|")[1].strip(): r for r in
+                text(ASSISTANT_SETUP).split("\n") if r.startswith("| ")}
+        for name in ("Claude Desktop chat", "ChatGPT desktop app"):
+            self.assertEqual(rows[name].count("(mcp-setup.md)"), 1, name)
+            self.assertIn("Optional, advanced", rows[name])
+            self.assertIn("Unverified", rows[name])
+
+    def test_says_counts_only_and_what_is_not_protected(self):
+        flat = " ".join(text(MCP_SETUP).split())
+        for phrase in (
+                "It never returns item IDs, names, versions, publishers or "
+                "owners.",
+                "The counts, and the path you type, still go to the company "
+                "that runs the chat app",
+                "Other tools in the same app can still read files.",
+                "Do not attach, upload or paste your inventory or a report "
+                "into the chat.",
+                "is **not built yet** and is untested",
+                "**Unverified**",
+                "never runs `refresh_data.py`"):
+            self.assertIn(phrase, flat)
+        self.assertIn("--counts-only", flat)
+
+    def test_config_keys_and_tool_names_match_the_server(self):
+        import swlc_mcp
+        body = text(MCP_SETUP)
+        names = [t["name"] for t in swlc_mcp.TOOLS]
+        self.assertIn('enabled_tools = ["%s"]' % '", "'.join(
+            sorted(names, reverse=True)), body)
+        self.assertIn('default_tools_approval_mode = "prompt"', body)
+        for code in preflight_codes():
+            self.assertIn("`%s`" % code, body)
+        self.assertIn(str(swlc_mcp.MAX_CSV_BYTES), body)
+        self.assertIn(str(swlc_mcp.MAX_PATH_CHARS), body)
+        self.assertIn("after %d seconds" % swlc_mcp.TIMEOUT_SECONDS, body)
+
+
+def preflight_codes() -> list:
+    from swlc import preflight
+    return list(preflight.FIX_TEXT)
 
 
 class ReaderDocsTests(unittest.TestCase):

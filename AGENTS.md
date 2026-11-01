@@ -41,6 +41,8 @@ No install step. Run from the repo root.
 ## Layout
 
 - `software_lifecycle.py`: entry point.
+- `swlc_mcp.py`: the counts-only MCP server for desktop chat apps (two
+  tools, standard library only). See `docs/mcp-setup.md`.
 - `swlc/cli.py`: flags, exit codes, `run()`.
 - `swlc/inputs.py`: CSV reading, column aliases, item IDs.
 - `swlc/preflight.py`: the `preflight` command's checks and output.

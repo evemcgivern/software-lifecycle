@@ -14,6 +14,7 @@ Pick the row that fits you.
 | I want to... | Go to |
 |---|---|
 | Have an AI assistant run it for me (Claude Code, Codex, ChatGPT desktop app, GitHub Copilot, or a chat assistant that guides me) | [docs/assistant-setup.md](docs/assistant-setup.md) |
+| Let Claude Desktop or the ChatGPT desktop app run only the counts, through a small local server (optional, advanced; Unverified with those apps) | [docs/mcp-setup.md](docs/mcp-setup.md) |
 | Run it myself in a terminal | [docs/quick-start.md](docs/quick-start.md) |
 | Understand a report as an analyst or consultant | [examples/sample-report.md](examples/sample-report.md) shows a report. [docs/glossary.md](docs/glossary.md) explains the words. [docs/usage.md](docs/usage.md) has the details. [docs/sop.md](docs/sop.md) and [docs/checklist.md](docs/checklist.md) cover the quarterly review. |
 | Export from Flexera, ServiceNow or Rapid7 | [docs/platform-guide.md](docs/platform-guide.md) |
