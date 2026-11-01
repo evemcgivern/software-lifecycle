@@ -14,7 +14,7 @@ Pick the row that fits you.
 | I want to... | Go to |
 |---|---|
 | Have an AI assistant run it for me (Claude Code, Codex, ChatGPT desktop app, GitHub Copilot, or a chat assistant that guides me) | [docs/assistant-setup.md](docs/assistant-setup.md) |
-| Let Claude Desktop or the ChatGPT desktop app run only the counts, through a small local server (optional, advanced; Unverified with those apps) | [docs/mcp-setup.md](docs/mcp-setup.md) |
+| Let Claude Desktop or the ChatGPT desktop app run only the counts, through a small local server (optional, advanced; tested once on one Mac, 2026-11-01, with parts Unverified). Use the full path to Python, allow only the `preflight` and `check_counts` tools, ask before each run, and in ChatGPT's `config.toml` set a 300 second timeout. The ChatGPT approval prompt and those safety settings are not tested; the `.mcpb` one-click package is not built | [docs/mcp-setup.md](docs/mcp-setup.md) |
 | Run it myself in a terminal | [docs/quick-start.md](docs/quick-start.md) |
 | Understand a report as an analyst or consultant | [examples/sample-report.md](examples/sample-report.md) shows a report. [docs/glossary.md](docs/glossary.md) explains the words. [docs/usage.md](docs/usage.md) has the details. [docs/sop.md](docs/sop.md) and [docs/checklist.md](docs/checklist.md) cover the quarterly review. |
 | Export from Flexera, ServiceNow or Rapid7 | [docs/platform-guide.md](docs/platform-guide.md) |
@@ -119,8 +119,9 @@ goes beyond it.
   folder out of its reach.
 - The optional MCP server (`swlc_mcp.py`) for desktop chat apps enforces
   counts-only in its code: it returns only fixed labels and numbers, with
-  no item IDs. What it does not protect is in
-  [docs/mcp-setup.md](docs/mcp-setup.md).
+  no item IDs. It was tested by hand once, on one Mac, in both apps
+  (2026-11-01); what is and is not tested, and what it does not protect,
+  is in [docs/mcp-setup.md](docs/mcp-setup.md).
 - An item ID is a 12-character hash of publisher, name and version, with
   no secret in it. It keeps names out of counts and findings, but anyone
   who holds a guess ("publisher, name, version") can hash it and confirm

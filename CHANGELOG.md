@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Recorded the by-hand test of the counts-only MCP server in Claude
+  Desktop and the ChatGPT desktop app (issue #59). One Mac, 2026-11-01,
+  synthetic demo inventory. Both tools ran and returned only counts. The
+  ChatGPT approval prompt, the three safety settings and a bare `python3`
+  command in Claude Desktop are still Unverified. `docs/mcp-setup.md` now
+  has a "Tested so far" section and recommends the full path to Python;
+  the README and `docs/assistant-setup.md` point to it. The `.mcpb` package
+  is not built (issue #66). Docs and tests only.
 - Internet Explorer 11 rows now get the product `internet-explorer` with
   no cycle, date or state, and are listed under "Names to review" with the
   new review code `shared_support_lines` (issue #21). IE 11 follows the

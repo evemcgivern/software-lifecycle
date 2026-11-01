@@ -39,6 +39,64 @@ It gives the chat app exactly two tools:
 Each tool takes one thing: the full path to your inventory `.csv` file.
 The server takes no other options, so the app cannot pass extra flags.
 
+## Tested so far
+
+The maintainer tested the server by hand on 2026-11-01, on one Mac
+(macOS 27.2), with the synthetic demo inventory from `examples/` copied
+to a folder outside the repo. App versions were not recorded. Nothing
+else was tested: every other detail on this page stays **Unverified**.
+
+**Claude Desktop.**
+
+- Set up through `claude_desktop_config.json` (**Settings**,
+  **Developer**, **Edit Config**), with the full path to Python
+  (`/opt/homebrew/bin/python3`, a Homebrew install) as the command and the
+  full path to `swlc_mcp.py` as the argument. No working directory was
+  set.
+- The server showed as a connector named `software-lifecycle` with both
+  tools.
+- The app lists `preflight` under **Read-only tools** and `check_counts`
+  under **Write/delete tools**. `check_counts` is there because it writes
+  the report folder. Both are listed as **Needs approval** by default. That
+  default was read from the connector's settings screen. No approval
+  prompt was answered.
+- Both tools ran and returned only counts: no names, versions, publishers,
+  column titles or item IDs.
+- Not tested: a bare `python3` as the command. Whether Claude Desktop finds
+  `python3` by itself is **Unverified**; the tested setup used the full
+  path.
+
+**ChatGPT desktop app.**
+
+- The app saved the server in `~/.codex/config.toml` as
+  `[mcp_servers.software-lifecycle]` with `enabled`, `command` (the full
+  path to Python) and `args`. No working directory was needed; leave it
+  blank.
+- Both tools ran and returned only the same counts.
+- That test ran with ChatGPT set to **Full Access**, so the approval
+  prompt was not tested: **Unverified**.
+- The three safety settings (`enabled_tools`,
+  `default_tools_approval_mode = "prompt"` and `tool_timeout_sec = 300`)
+  were added to `config.toml` after the test and have not been tested.
+  They are the keys OpenAI documents. This page does not claim they work.
+
+**What both apps returned on the demo inventory** (bundled data, that day's
+date): 60 rows, 50 items, a count total of 11,791, all 50 items unmatched,
+and a classification of 48 `unknown`, 1 `bundle_member` and 1
+`component`. All 50 are unmatched because the demo uses made-up product
+names that only match the test data. The repo's own demo command uses
+`--data tests/fixtures/data --as-of 2026-10-24` for that reason. This is
+expected, not a fault.
+
+**Treat the chat's guesses about causes as unverified.** A chat app sees
+only counts, so its explanation of why a result looks as it does can be
+wrong. In one test the chat guessed that the empty end-of-life column
+caused the unmatched items; that was wrong. The report folder holds the
+facts.
+
+Not built: the one-click `.mcpb` package for Claude Desktop (issue #66,
+labelled later).
+
 ## What it protects, and what it does not
 
 The rules are in the server's code, not in a prompt:
@@ -120,15 +178,26 @@ for the full advice.
    line starting with `swlc_mcp: started` and waits. Press Ctrl+C (on
    Windows, Ctrl+Z then Enter) to stop it.
 
-In the settings below, replace `/path/to/software-lifecycle` with the full
-path of your repo folder. On Windows, use the command `py`, the
+5. Find the full path to Python: run `which python3` (on Windows,
+   `where py`). Use that full path as the command in both apps, for
+   example `/opt/homebrew/bin/python3` for a Homebrew install. Apps you
+   start from the Dock or Start menu may not search the same folders as
+   your terminal, so they may not find a bare `python3` (Homebrew's Python
+   lives outside the system folders). The full path avoids that. Leave the
+   working directory blank.
+
+In the settings below, replace `/path/to/python3` with that full path and
+`/path/to/software-lifecycle` with the full path of your repo folder. On
+Windows, use the command `py`, the
 arguments `-3` and the path, and write each backslash in a path twice in
 JSON (`C:\\tools\\software-lifecycle\\swlc_mcp.py`).
 
 ## ChatGPT desktop app
 
 Source: <https://learn.chatgpt.com/docs/extend/mcp?surface=desktop>
-(no last-updated date shown). Not tested with this server:
+(no last-updated date shown). Both tools ran once on one Mac on
+2026-11-01 with ChatGPT set to **Full Access**; see
+[Tested so far](#tested-so-far). The approval prompt was not tested:
 **Unverified**.
 
 In the app:
@@ -136,16 +205,21 @@ In the app:
 1. Open **Settings**, then select **MCP servers**.
 2. Select **Add server**.
 3. Enter a name (for example `software-lifecycle`), choose **STDIO**, and
-   give the command `python3` with the argument
-   `/path/to/software-lifecycle/swlc_mcp.py`.
+   give the full path to Python as the command and the argument
+   `/path/to/software-lifecycle/swlc_mcp.py`. Leave the working directory
+   blank.
 4. Save the server, then select **Restart**.
 
-Or add it to `~/.codex/config.toml`, which the desktop app, the Codex CLI
-and the IDE extension share. These key names are from OpenAI's page:
+The app saved the server in `~/.codex/config.toml`, which the desktop app,
+the Codex CLI and the IDE extension share. You can also edit that file
+yourself. The first four lines below are what the app wrote in the test.
+The last three are the safety settings. They were added after the test and
+have not been tested; they are the key names from OpenAI's page:
 
 ```toml
 [mcp_servers.software-lifecycle]
-command = "python3"
+enabled = true
+command = "/path/to/python3"
 args = ["/path/to/software-lifecycle/swlc_mcp.py"]
 enabled_tools = ["preflight", "check_counts"]
 default_tools_approval_mode = "prompt"
@@ -168,22 +242,26 @@ The one-click package for Claude Desktop (a `.mcpb` file) is **not built
 yet** and is untested. Whether Claude Desktop can find a Python already
 installed on your computer for such a package is not confirmed.
 
-A manual route is documented for local servers in general:
+The manual route below is documented for local servers in general:
 <https://modelcontextprotocol.io/docs/develop/connect-local-servers>.
-It has not been tested with this server: **Unverified**.
+It worked once with this server on one Mac on 2026-11-01; see
+[Tested so far](#tested-so-far). Other computers and app versions:
+**Unverified**.
 
 1. In the Claude menu (the menu bar, not the chat window), choose
    **Settings...**, then **Developer**, then **Edit Config**.
 2. That opens `claude_desktop_config.json`: on macOS in
    `~/Library/Application Support/Claude/`, on Windows in
    `%APPDATA%\Claude\`.
-3. Add the server under `mcpServers`, with full paths, not relative ones:
+3. Add the server under `mcpServers`, with full paths, not relative ones.
+   Use the full path to Python as the command, and set no working
+   directory:
 
 ```json
 {
   "mcpServers": {
     "software-lifecycle": {
-      "command": "python3",
+      "command": "/path/to/python3",
       "args": ["/path/to/software-lifecycle/swlc_mcp.py"]
     }
   }
@@ -194,9 +272,15 @@ It has not been tested with this server: **Unverified**.
 
 If the server does not show up, the page above says the logs are in
 `~/Library/Logs/Claude` on macOS and `%APPDATA%\Claude\logs` on Windows.
-Whether Claude Desktop finds `python3` on its own: **Unverified**. If it
-does not, give the full path to Python as the command (run `which
-python3` on macOS, or `where py` on Windows, to find it).
+Whether Claude Desktop finds a bare `python3` on its own: **Unverified**;
+the tested setup used the full path to Python (run `which python3` on
+macOS, or `where py` on Windows, to find it).
+
+In the connector's settings Claude Desktop sorts the tools by what they
+do. `preflight` is listed under **Read-only tools**. `check_counts` is
+listed under **Write/delete tools**, because it writes the report folder
+next to your CSV. Both are listed as **Needs approval** by default. Keep
+that, so you see the path before each run.
 
 The same page says a local server runs with your user account's
 permissions. This server only runs the two commands above, but other
