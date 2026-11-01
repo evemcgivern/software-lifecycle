@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `preflight` now ends with a second command line for an AI assistant:
+  the same `check` command with `--counts-only`, which prints counts only
+  (issue #54). `preflight --json` has one new optional key,
+  `next_command_counts_only`. `next_command` and `preflight_version` (1)
+  are unchanged.
 - Docs and tests now describe the public repository (issue #47).
   SECURITY.md, CONTRIBUTING.md, the README and the quick start no longer
   say the repository is private or that scheduled workflows are paused.
