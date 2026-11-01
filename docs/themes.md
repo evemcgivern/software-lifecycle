@@ -10,8 +10,9 @@ Editions used: ISO/IEC 19770-1:2017; NIST SP 800-53 Rev 5; NIST CSF 2.0;
 CIS Controls v8.1; ISO/IEC 27001:2022.
 
 - ISO/IEC 19770-1 cells hold clause numbers, checked against the contents
-  page of a public preview. Clause 8.3 (core data management, p.22) was
-  read in the standard itself.
+  page of a public preview, which shows a heading exists, not that it
+  supports the mapping. Only clause 8.3 (core data management, p.22) was
+  read in the standard itself, so `iso19770_1` stays Unverified.
 - ITIL 4 cells hold practice names. ITIL 4 has no clause numbers.
 - The CIS cells (2.1, 2.2, 7.1, 7.2) were checked against the CIS Controls
   v8.1 guide (June 2024) text, and the NIST 800-53 cells SA-22, CM-8,
@@ -22,15 +23,15 @@ CIS Controls v8.1; ISO/IEC 27001:2022.
   cited practice is a direct match. The 2018 text cites NIST 800-53
   Rev 5 (Draft) and CIS v6.1, and a newer COBIT 2019 publication date is
   Unverified. APO03, BAI03 and the MEA objectives were not checked. Cells
-  hold practice IDs; page numbers below are printed pages.
+  hold practice IDs where one fits, otherwise the objective; page numbers below are printed pages.
 - The `unverified_columns` column lists, per row, the columns not checked
   against the standard text. Treat those as leads, not citations:
-  - XW-029: `itil4`, `iso20000_1`, `nist_csf2`, `iso27001`
-  - XW-030: `itil4`, `iso20000_1`, `nist_800_53` (RA-5, SI-5, PM-16),
+  - XW-029: `iso19770_1`, `itil4`, `iso20000_1`, `nist_csf2`, `iso27001`
+  - XW-030: `iso19770_1`, `itil4`, `iso20000_1`, `nist_800_53` (RA-5, SI-5, PM-16),
     `nist_csf2`, `iso27001`
-  - XW-031: `itil4`, `iso20000_1`, `nist_800_53` (RA-7, CA-5, AC-5),
+  - XW-031: `iso19770_1`, `itil4`, `iso20000_1`, `nist_800_53` (RA-7, CA-5, AC-5),
     `nist_csf2`, `iso27001`
-  - XW-032: `itil4`, `iso20000_1`, `nist_800_53` (CA-7), `nist_csf2`,
+  - XW-032: `iso19770_1`, `itil4`, `iso20000_1`, `nist_800_53` (CA-7), `nist_csf2`,
     `iso27001`
   Also Unverified: the ISO/IEC 19770-2 platform elements (SWID), CSDM, and
   the clause numbers of ITIL and ISO/IEC 20000-1.
@@ -63,8 +64,7 @@ reviews it first. It is a reference for prioritization. Implemented by the
 "In CISA KEV, past or near end of life" list. It matches vendor and product only, never version,
 and says "needs review". It does not say any version is affected.
 
-COBIT 2019 (Partial): DSS05 (p.257) is primary, DSS05.07 (p.261) and
-DSS05.01 act. 5. APO12 (p.131) is weak and secondary.
+COBIT 2019 (Partial): DSS05 (p.257) is primary, DSS05.07 (p.261). APO12 (p.131) is weak and secondary.
 
 ## XW-031: Risk acceptance with expiry and independent approval
 

@@ -164,8 +164,22 @@ class CrosswalkTests(unittest.TestCase):
         themes = " ".join(text(DOCS / "themes.md").split())
         self.assertIn("CSAM p.165", themes)
         self.assertIn("Do not use it for cycle logic", themes)
-        self.assertIn("monthly", themes)
-        self.assertIn("quarterly", themes)
+        _, rows = self.rows()
+        summary = rows[0]["summary"]
+        self.assertIn("monthly", summary)
+        self.assertIn("quarterly", summary)
+
+    def test_cis_title_hedge_removed(self):
+        themes = " ".join(text(DOCS / "themes.md").split())
+        self.assertNotIn("same in v8 and v8.1", themes)
+        self.assertNotIn("matching titles", themes)
+
+    def test_iso19770_1_stays_unverified(self):
+        _, rows = self.rows()
+        for r in rows:
+            self.assertIn("iso19770_1", r["unverified_columns"].split(";"))
+        self.assertNotIn("DSS05.01", text(DOCS / "themes.md"))
+        self.assertEqual(rows[3]["cis_v8"], "")
 
     def test_no_table_a1(self):
         self.assertNotIn("Table A.1", text(DOCS / "crosswalk.csv"))
