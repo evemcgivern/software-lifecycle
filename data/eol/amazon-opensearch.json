@@ -1,5 +1,11 @@
 [
   {
+    "cycle": "3.7",
+    "eol": false,
+    "extendedSupport": true,
+    "releaseDate": "2026-07-30"
+  },
+  {
     "cycle": "3.5",
     "eol": false,
     "extendedSupport": true,

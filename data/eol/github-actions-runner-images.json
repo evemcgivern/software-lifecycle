@@ -1,5 +1,11 @@
 [
   {
+    "cycle": "xcode-27",
+    "eol": false,
+    "releaseDate": "2026-10-15",
+    "support": true
+  },
+  {
     "cycle": "ubuntu-26.04-arm64",
     "eol": false,
     "releaseDate": "2026-09-17",
