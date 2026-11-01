@@ -47,7 +47,9 @@ who holds each role.
        python3 software_lifecycle.py check inventory.csv --golden golden-sources.csv --exceptions exceptions.csv --tracking tracking.csv --support-records support-records.csv --previous last-quarter/report.json --out ../swlc-this-quarter
 
    If an AI agent runs it, use `--counts-only` and keep the output folder
-   out of the agent's reach. No model should read the full report.
+   out of the agent's reach. No model should read the full report. A
+   desktop chat app can use the optional counts-only server instead (see
+   [mcp-setup.md](mcp-setup.md)).
    The counts are items and inventory rows. A row count is not an install
    count or a machine count.
 4. **Read the "Changes since the previous report" section** to see what is

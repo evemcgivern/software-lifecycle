@@ -2,7 +2,8 @@
 
 One page, from an inventory export to a report you can read. Every flag is
 in [usage.md](usage.md). The words in the report are in
-[glossary.md](glossary.md).
+[glossary.md](glossary.md). Using a desktop chat app instead? See
+[mcp-setup.md](mcp-setup.md).
 
 ## Before you start
 

@@ -29,6 +29,9 @@ ones are not patched.
 In scope:
 
 - the tool (`swlc/` and `software_lifecycle.py`);
+- the optional MCP server (`swlc_mcp.py`), for example a way to make it
+  return file content, item IDs or anything beyond its fixed counts, or
+  to run something other than its two fixed commands;
 - the refresh script (`refresh_data.py`);
 - the GitHub workflows;
 - the data pipeline that builds and publishes data releases;
@@ -76,6 +79,17 @@ Out of scope:
   reviews.
 - Every GitHub Action is pinned to a commit SHA, and Dependabot proposes
   updates.
+
+## What the MCP server protects
+
+`swlc_mcp.py` returns only fixed labels and numbers, rebuilt from the
+tool's output: no cell text, column titles or item IDs. It takes only a
+path to a `.csv` file and runs two fixed commands. It does not stop the
+counts and the path from going to the chat app's provider, other tools in
+the same app from reading files, or the full report (written next to the
+CSV) from reaching a synced folder. Someone who can change files on the
+computer while a check runs is out of scope. Details are in
+[docs/mcp-setup.md](docs/mcp-setup.md).
 
 ## What the tool does not claim
 

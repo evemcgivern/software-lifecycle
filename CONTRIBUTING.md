@@ -44,6 +44,14 @@ form works for any module:
 
 If you have Python 3.9, run the suite on it too. The floor is 3.9.
 
+The MCP server's tests run the real server against the demo inventory:
+
+    python3 -B -m unittest discover -s tests -p 'test_mcp.py'
+
+Any change to what `swlc_mcp.py` returns must keep its allow-list (fixed
+labels and numbers only, no item IDs or file content) and the tests that
+prove it.
+
 ## Ground rules
 
 - Standard library only. No third-party runtime or test dependencies.
