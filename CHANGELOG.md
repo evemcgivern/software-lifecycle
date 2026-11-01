@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 - 2026-11-01
 
 - Added `swlc_mcp.py`, an optional local MCP server for desktop chat apps
   (part of issue #52). It offers two tools, `preflight` and
