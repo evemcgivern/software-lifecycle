@@ -1,32 +1,50 @@
 # software-lifecycle
 
 `software_lifecycle.py` reads a software inventory export and lists what is
-past end of life or close to it. It also adds a KEV overlay: an extra
-flag that marks items whose vendor and product appear in CISA's list of
-known exploited vulnerabilities (the KEV catalog), so a person can review
-them first.
+past end of life or close to it. It also flags items whose vendor and
+product appear in CISA's Known Exploited Vulnerabilities (KEV) catalog, so a
+person can review them first.
 
 Runs locally with no network by default; not independently assessed.
 
-Who this is for: teams that have an inventory export but no commercial
-software catalog; security and platform teams that use `--fail-on` as an
-offline gate; and one-off reviews of an estate. When not to use it: shops
-that already run Flexera, ServiceNow or Rapid7 likely have wider catalogs,
-and this tool covers only the products endoflife.date lists.
-Dates come from endoflife.date unless a golden-sources file overrides them.
+## Start here
 
-It needs Python 3.9 or newer and nothing else. It uses only the standard
-library.
+Pick the row that fits you.
+
+| I want to... | Go to |
+|---|---|
+| Have an AI assistant run it for me (Claude Code, Codex, ChatGPT desktop app, GitHub Copilot, or a chat assistant that guides me) | [docs/assistant-setup.md](docs/assistant-setup.md) |
+| Run it myself in a terminal | [docs/quick-start.md](docs/quick-start.md) |
+| Understand a report as an analyst or consultant | [examples/sample-report.md](examples/sample-report.md) shows a report. [docs/glossary.md](docs/glossary.md) explains the words. [docs/usage.md](docs/usage.md) has the details. [docs/sop.md](docs/sop.md) and [docs/checklist.md](docs/checklist.md) cover the quarterly review. |
+| Export from Flexera, ServiceNow or Rapid7 | [docs/platform-guide.md](docs/platform-guide.md) |
+| Contribute | [CONTRIBUTING.md](CONTRIBUTING.md). Report a security problem through [SECURITY.md](SECURITY.md). |
+
+Real inventories are confidential. Whoever runs the tool, read "Privacy and
+security" below first.
+
+## Who this is for
+
+Teams that have an inventory export but no commercial software catalog;
+security and platform teams that use `--fail-on` as an offline gate; and
+one-off reviews of an estate.
+
+When not to use it: shops that already run Flexera, ServiceNow or Rapid7
+likely have wider catalogs, and this tool covers only the products
+endoflife.date lists. Dates come from endoflife.date unless a golden-sources
+file overrides them.
 
 ## Install
 
-There is nothing to install. Clone the repo or download a release, then run
-the commands below from the repo root with `python3 software_lifecycle.py`.
+There is nothing to install. It needs Python 3.9 or newer and nothing else:
+it uses only the standard library. Clone the repo or download a release,
+then run the commands below from the repo root with
+`python3 software_lifecycle.py` (on Windows, `py`).
 
 ## Quick start
 
-New to the tool? Start with [docs/quick-start.md](docs/quick-start.md):
-one page for macOS, Linux and Windows, from an export to a report.
+For a step-by-step page for macOS, Linux and Windows, use
+[docs/quick-start.md](docs/quick-start.md). To have an AI assistant run it,
+use [docs/assistant-setup.md](docs/assistant-setup.md).
 
 Run these from the repo root.
 
@@ -37,7 +55,7 @@ Run these from the repo root.
 
 2. Open `../swlc-demo/report.md`. `report.json` and `report.csv` are in
    the same folder.
-3. Run your own inventory against the bundled real data:
+3. Check your own inventory against the bundled real data:
 
        python3 software_lifecycle.py check YOUR-INVENTORY.csv --out ../swlc-out
 
@@ -82,6 +100,39 @@ fields are in [docs/report-schema.md](docs/report-schema.md).
 the demo run above writes, from made-up data only. A test keeps it the
 same as the real output. The words it uses are explained in
 [docs/glossary.md](docs/glossary.md).
+
+## Privacy and security
+
+The claims line at the top of this file is the whole claim. Nothing here
+goes beyond it.
+
+- Real inventories are Confidential. Run them only through the local
+  script, or through an AI agent in `--counts-only` mode. To set up an
+  agent, see [docs/assistant-setup.md](docs/assistant-setup.md).
+- In `--counts-only` mode the tool prints only counts, item IDs, the
+  checked-on date and the `kev_current` flag; the full report is written to
+  a file. An agent can still read that file:
+  nothing technical stops it. Tell the agent not to, and keep the output
+  folder out of its reach.
+- An item ID is a 12-character hash of publisher, name and version, with
+  no secret in it. It keeps names out of counts and findings, but anyone
+  who holds a guess ("publisher, name, version") can hash it and confirm
+  that the item is in the estate. Treat item IDs with the same care as
+  the inventory; do not post them where the inventory would not go.
+- No model should read the full report. Letting an AI read the CSV
+  directly is not a mode of the tool. Do it only with synthetic or
+  non-sensitive inventories.
+- The default keeps no run history. Keeping evidence is your choice. See
+  [docs/sop.md](docs/sop.md).
+- The tool prints roles (asset owner, risk owner, approver, ITAM lead). It
+  never assigns people.
+- Details of the supply chain are in [SECURITY.md](SECURITY.md). See it for
+  how to report a security problem.
+
+CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01 (source:
+<https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk>).
+It is a reference only. It binds federal civilian agencies only. This tool
+does not implement it or its deadlines.
 
 ## Your input file
 
@@ -154,38 +205,6 @@ You own these files. The tool never changes them.
 Blank copies are in `templates/`. The column rules are in
 [docs/report-schema.md](docs/report-schema.md). The quarterly process is in
 [docs/sop.md](docs/sop.md).
-
-## Privacy and security
-
-The claims line at the top of this file is the whole claim. Nothing here
-goes beyond it.
-
-- Real inventories are Confidential. Run them only through the local
-  script, or through an AI agent in `--counts-only` mode.
-- In `--counts-only` mode the tool prints only counts, item IDs, the
-  checked-on date and the `kev_current` flag; the full report is written to
-  a file. An agent can still read that file:
-  nothing technical stops it. Tell the agent not to, and keep the output
-  folder out of its reach.
-- An item ID is a 12-character hash of publisher, name and version, with
-  no secret in it. It keeps names out of counts and findings, but anyone
-  who holds a guess ("publisher, name, version") can hash it and confirm
-  that the item is in the estate. Treat item IDs with the same care as
-  the inventory; do not post them where the inventory would not go.
-- No model should read the full report. Letting an AI read the CSV
-  directly is not a mode of the tool. Do it only with synthetic or
-  non-sensitive inventories.
-- The default keeps no run history. Keeping evidence is your choice. See
-  [docs/sop.md](docs/sop.md).
-- The tool prints roles (asset owner, risk owner, approver, ITAM lead). It
-  never assigns people.
-- Details of the supply chain are in [SECURITY.md](SECURITY.md). See it for
-  how to report a security problem.
-
-CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01 (source:
-<https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk>).
-It is a reference only. It binds federal civilian agencies only. This tool
-does not implement it or its deadlines.
 
 ## Data and release verification
 
