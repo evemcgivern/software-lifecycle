@@ -174,15 +174,48 @@ class CrosswalkTests(unittest.TestCase):
         self.assertNotIn("same in v8 and v8.1", themes)
         self.assertNotIn("matching titles", themes)
 
-    def test_iso19770_1_stays_unverified(self):
+    def test_iso19770_1_is_checked_but_itil_and_20000_are_not(self):
         _, rows = self.rows()
         for r in rows:
-            self.assertIn("iso19770_1", r["unverified_columns"].split(";"))
+            cols = r["unverified_columns"].split(";")
+            for checked in ("iso27001", "iso19770_1", "nist_csf2", "nist_800_53"):
+                self.assertNotIn(checked, cols, r["id"])
+            for unchecked in ("itil4", "iso20000_1"):
+                self.assertIn(unchecked, cols, r["id"])
+            self.assertEqual(r["verified"].strip(), "", r["id"])
         self.assertNotIn("DSS05.01", text(DOCS / "themes.md"))
         self.assertEqual(rows[3]["cis_v8"], "")
 
-    def test_no_table_a1(self):
-        self.assertNotIn("Table A.1", text(DOCS / "crosswalk.csv"))
+    def test_dropped_citations_are_gone_from_the_csv(self):
+        raw = text(DOCS / "crosswalk.csv")
+        for dropped in ("A.5.33", "GV.RM-02", "PM-16"):
+            self.assertNotIn(dropped, raw)
+
+    def test_added_citations_are_in_the_csv(self):
+        raw = text(DOCS / "crosswalk.csv")
+        for added in ("A.5.2", "CA-6", "RA-3", "6.2.4"):
+            self.assertIn(added, raw)
+
+    def test_themes_gives_the_itil_secondary_source_reason(self):
+        themes = " ".join(text(DOCS / "themes.md").split())
+        self.assertIn("secondary book, not the official practice guides", themes)
+        self.assertIn("NIST.CSWP.40", themes)
+        self.assertIn("Amendment 1 (2024)", themes)
+
+    def test_retirement_cell_text(self):
+        _, rows = self.rows()
+        self.assertIn("Annex A Retirement (Table A.1)", rows[0]["iso19770_1"])
+
+    def test_amendment_1_caveat_sentence(self):
+        themes = " ".join(text(DOCS / "themes.md").split())
+        self.assertIn("Amendment 1 (2024) was not opened: Unverified.", themes)
+
+    def test_no_verdict_cell_says_added(self):
+        themes = text(DOCS / "themes.md")
+        table = [ln for ln in themes.splitlines() if ln.startswith("| ")]
+        self.assertGreater(len(table), 30)
+        for ln in table:
+            self.assertNotIn("Added", ln.split("|")[-2], ln)
 
 
 class LinkTests(unittest.TestCase):
