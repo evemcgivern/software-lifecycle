@@ -1,8 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Report a security problem
+  - name: Report a security problem privately
+    url: https://github.com/evemcgivern/software-lifecycle/security/advisories/new
+    about: Use private vulnerability reporting, and see SECURITY.md. Do not open a public issue for a security problem.
+  - name: Security policy
     url: https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md
-    about: See SECURITY.md for how to report a security problem. Do not open a public issue.
+    about: How to report a security problem. Do not open a public issue.
   - name: Contributing guide
     url: https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md
     about: How to report an unmatched product, propose a change, and run the tests.

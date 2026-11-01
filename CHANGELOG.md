@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Reworded the three issue forms and added three more (issue #72): a
+  test of an assistant or the MCP server, a column-name problem with an
+  export (headers only), and a mistake in the docs or crosswalk. Every
+  form opens with a warning not to paste inventory data and has a
+  required checkbox. The issue-form config now links private
+  vulnerability reporting. The forms use `assistant-setup` and
+  `export-profile`, which do not exist yet. Docs and tests only.
+
 ## 0.7.0 - 2026-11-01
 
 - Recorded the maintainer's install test of the `.mcpb` package (issue

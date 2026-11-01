@@ -1,0 +1,48 @@
+name: Report a mistake in the docs or the framework crosswalk
+description: A page is wrong, unclear or cites a source incorrectly.
+title: "docs: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public. Do not paste your inventory, report files
+        (report.md, report.csv, report.json), real item IDs, host names,
+        owner names or any employer data.** Use made-up examples. The tool
+        never needs them.
+
+        For a source, give its title, edition and page, and a short quote
+        at most. Do not paste copyrighted text.
+  - type: input
+    id: page
+    attributes:
+      label: Page or file
+      description: For example docs/usage.md or docs/crosswalk.csv.
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What is wrong
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: The public source that shows it
+      description: Title, edition, page. A short quote at most.
+    validations:
+      required: false
+  - type: textarea
+    id: should_say
+    attributes:
+      label: What you think it should say
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Your data
+      options:
+        - label: I have not included my own inventory data
+          required: true

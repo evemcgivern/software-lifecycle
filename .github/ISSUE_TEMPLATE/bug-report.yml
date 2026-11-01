@@ -6,11 +6,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        **This issue is public. Do not paste inventory rows, report files,
-        owner names, internal application names, host names, or any
-        confidential data.** If you need to show input, make a few
-        synthetic rows with made-up names. For a security problem, use
-        the private Security tab instead.
+        **This issue is public. Do not paste your inventory, report files
+        (report.md, report.csv, report.json), real item IDs, host names,
+        owner names or any employer data.** Use made-up examples. The tool
+        never needs them.
+        For a security problem, do not open an issue. Use
+        [private reporting](https://github.com/evemcgivern/software-lifecycle/security/advisories/new).
+        If you need to show input, make a few rows with made-up names.
   - type: textarea
     id: what_happened
     attributes:
@@ -28,7 +30,7 @@ body:
     id: steps
     attributes:
       label: Steps to reproduce
-      description: The command you ran, and synthetic input if it helps.
+      description: The command you ran, and made-up input if it helps.
     validations:
       required: true
   - type: input
@@ -54,7 +56,7 @@ body:
   - type: checkboxes
     id: confirm
     attributes:
-      label: Confidential data
+      label: Your data
       options:
-        - label: This issue holds no inventory rows, owner names, internal application names or other confidential data.
+        - label: I have not included my own inventory data
           required: true
