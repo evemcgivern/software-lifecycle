@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 - 2026-10-31
 
 - Ease-of-use fixes (issue #45). `preflight` now checks the owner column
   (a missing column puts every item on "Ownerless"; blank owner cells are
