@@ -1,8 +1,5 @@
 # Contributing
 
-> This repository is currently private. This policy and process apply when
-> it is public.
-
 Thanks for helping. This project is maintained as time allows. Reviews are
 best effort, with no promised response time.
 
@@ -110,7 +107,8 @@ If you have Python 3.9, run the suite on it too. The floor is 3.9.
 
 Be respectful and specific. No harassment or personal attacks. The
 maintainer may edit, close or lock a thread. To raise a concern privately,
-use GitHub private reporting when the repository is public (see
+use GitHub private vulnerability reporting: open the repository's
+**Security** tab and choose **Report a vulnerability** (see
 [SECURITY.md](SECURITY.md)), or contact the repo owner on GitHub.
 
 ## Labels the forms apply

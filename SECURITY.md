@@ -2,18 +2,12 @@
 
 Runs locally with no network by default; not independently assessed.
 
-> This repository is currently private. This policy and process apply when
-> it is public.
-
 ## Reporting a vulnerability
 
-When the repository is public, private vulnerability reporting is
-turned on. Open the repository's **Security** tab and choose **Report a
-vulnerability**. Do not open a public issue for a security problem. Do not
-include real inventory data in a report.
-
-While the repository is private, GitHub does not offer it. Contact the
-repository owner on GitHub instead.
+Reporters can use private vulnerability reporting. Open the
+repository's **Security** tab and choose **Report a vulnerability**. Do
+not open a public issue for a security problem. Do not include real
+inventory data in a report.
 
 This project is maintained as time allows. Support is best effort, with no
 service level. There is no promised response time. A report is read and
@@ -22,12 +16,11 @@ answered when the maintainer can.
 ## Supported versions
 
 Only the latest release and the latest data release are supported. Older
-ones are not patched. No tool release exists yet, so the tool's supported
-version is `main` until the first release.
+ones are not patched.
 
 | What | Supported |
 |---|---|
-| The tool: the latest release, or `main` until the first tool release | Yes, best effort |
+| The tool: the latest release | Yes, best effort |
 | The data: the latest data release | Yes, best effort |
 | Anything older | No |
 
@@ -60,10 +53,9 @@ Out of scope:
   it loads its data. This catches a damaged or partly replaced data folder.
   It does not prove who made the files: someone who changes both a data
   file and the manifest is not caught by this check.
-- When the repository is public, each data release (`data-YYYY.MM.DD.N`)
-  carries a GitHub artifact attestation made by the release workflow on
-  main. Release attestations on a private repository need GitHub
-  Enterprise Cloud. Check one online before use, naming the workflow and
+- Each data release (`data-YYYY.MM.DD.N`) made while the repository is
+  public carries a GitHub artifact attestation made by the release
+  workflow on main. Check one online before use, naming the workflow and
   the branch that must have made it:
 
       gh attestation verify data.zip --repo evemcgivern/software-lifecycle --signer-workflow evemcgivern/software-lifecycle/.github/workflows/kev-daily.yml --source-ref refs/heads/main
@@ -75,7 +67,7 @@ Out of scope:
 - Only main can publish a data release. The publish job runs only for
   `refs/heads/main` and uses the GitHub environment `data-release`, which
   allows deployment from main only. The scheduled workflows run when they
-  are enabled; they are disabled while the repository is private.
+  are enabled.
 - Data releases are never changed or re-tagged. A fix is a new, higher
   release.
 - Only `refresh_data.py`, run by the data workflows, opens network

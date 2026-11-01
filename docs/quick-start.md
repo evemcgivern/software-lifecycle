@@ -142,9 +142,7 @@ The data ships inside the tool's folder. Its dates are `kev_date` and
    the check again with that copy.
 2. A data release published on its own can be used with `--data DIR`
    after you verify it; see "Data and release verification" in the
-   [README](../README.md) and step 1 of [sop.md](sop.md). The README says
-   the daily release workflow is disabled while the repository is
-   private, so a newer release may not exist.
+   [README](../README.md) and step 1 of [sop.md](sop.md).
 3. `refresh_data.py` is the only file in the project that uses the
    network: it builds data releases and is run by the project's data
    workflows, so run it yourself only with your organisation's OK (see

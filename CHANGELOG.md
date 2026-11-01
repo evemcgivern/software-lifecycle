@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Docs and tests now describe the public repository (issue #47).
+  SECURITY.md, CONTRIBUTING.md, the README and the quick start no longer
+  say the repository is private or that scheduled workflows are paused.
+  `docs/maintaining.md` has a go-public day checklist for the owner. The
+  hashed banned-term scan now also covers `CHANGELOG.md`,
+  `THIRD-PARTY.md`, `examples/` and `swlc/`.
 - Refreshed the bundled CISA KEV snapshot (issue #48): catalog 2026.10.23
   to 2026.10.30, 1756 to 1766 entries (10 added, none removed). End-of-life
   data is unchanged.

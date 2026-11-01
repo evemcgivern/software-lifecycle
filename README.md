@@ -217,11 +217,9 @@ directory that holds a verified data release to use one.
 The tool checks a SHA-256 manifest every time it loads data
 (`verify-data` runs only that check). That catches a damaged data folder.
 It does not prove who made the files. The tool never claims to verify
-attestations offline. The first data release was attested on 2026-10-25,
-while the repository was public. The daily release workflow is disabled
-while the repository is private, and GitHub attestations on a private
-repository need GitHub Enterprise Cloud. When a release carries a GitHub
-artifact attestation, check it online before you use the release:
+attestations offline. Data releases made while the repository is public
+carry a GitHub artifact attestation. Check it online before you use the
+release:
 
     gh attestation verify data.zip --repo evemcgivern/software-lifecycle --signer-workflow evemcgivern/software-lifecycle/.github/workflows/kev-daily.yml --source-ref refs/heads/main
 
@@ -312,7 +310,7 @@ Already set up (as of 2026-10-25):
   (one issue, opened or updated when the weekly update stops). Create it
   once by hand; the job also creates it if it is missing.
 
-The steps for taking the repository public again are in
+The go-public day checklist is in
 [docs/maintaining.md](docs/maintaining.md).
 
 Run the tests from the repo root:
