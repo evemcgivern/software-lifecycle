@@ -49,10 +49,8 @@ PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
 PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1 "
                     "and 2; no diff")
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
-GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row for their product "
-                      "that was not applied: the version fits more than one "
-                      "support line, so the item has no cycle. See \"Names "
-                      "to review\".")
+GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row that was not "
+                      "applied: no cycle, see Names to review.")
 # Item "ambiguity" codes: a row the matcher refused on purpose, for a person
 # to review. Fixed text, never row data. Not a state, list or reason code.
 # shared_support_lines keeps its product; the others have none.

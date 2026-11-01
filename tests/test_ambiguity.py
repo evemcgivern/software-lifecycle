@@ -674,6 +674,37 @@ class SharedSupportLinesTests(unittest.TestCase):
         self.assertFalse(any("golden-source row" in w
                              for w in out["warnings"]))
 
+    def test_golden_warning_is_whole_in_report_md(self):
+        import io
+        import tempfile
+        from contextlib import redirect_stderr, redirect_stdout
+        from swlc import cli
+        from swlc.report import MAX_DISPLAY
+        self.assertLessEqual(len(assess_mod.GOLDEN_NOT_APPLIED % 999999),
+                             MAX_DISPLAY)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            inv = tmp / "inventory.csv"
+            inv.write_text("Software Name,Publisher,Version,Owner\n"
+                           "Internet Explorer 11,Microsoft Corporation,"
+                           "11.0.9600.19596,ops\n", encoding="utf-8")
+            gold = tmp / "golden.csv"
+            gold.write_text(
+                "schema_version,product,source,manual_eol,reason,set_by,"
+                "set_on,review_by\n1,internet-explorer,manual,2031-10-14,"
+                "Server line,lead,2026-01-01,2027-01-01\n", encoding="utf-8")
+            with redirect_stdout(io.StringIO()), \
+                    redirect_stderr(io.StringIO()):
+                cli.main(["check", str(inv), "--as-of", VIEW_DATE,
+                          "--golden", str(gold), "--out", str(tmp / "out")])
+            md = (tmp / "out" / "report.md").read_text("utf-8")
+        lines = [line for line in md.split("\n")
+                 if line.startswith("Warning: 1 item")]
+        self.assertEqual(len(lines), 1, md)
+        self.assertTrue(lines[0].endswith(
+            "not applied: no cycle, see Names to review."), lines[0])
+        self.assertNotIn("...", lines[0])
+
     def test_csv_review_column(self):
         from swlc.report import REVIEW_COLUMN
         reasons = [row[REVIEW_COLUMN] for row in self.csv

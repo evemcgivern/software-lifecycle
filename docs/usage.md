@@ -313,7 +313,8 @@ so; it does not hide them.
   `Internet Explorer 11`), gets `internet-explorer` with no cycle, date or
   state, and the review code `shared_support_lines` under "Names to
   review". IE 11 follows the support of the Windows it runs on: the
-  desktop app is past end of life on some Windows 10 versions, but still
+  desktop app is past end of life on some Windows 10 versions
+  (2022-06-15 per Microsoft; the catalog lists 2022-06-14), but still
   supported on Windows Server, LTSB, LTSC and embedded editions, and
   Windows builds are shared across editions (14393 is Windows 10 2016
   LTSB and Server 2016, 17763 is 2019 LTSC and Server 2019, 9600 is
@@ -536,9 +537,8 @@ Golden sources do not apply to unmatched items. They do not apply to an
 item with the review code `shared_support_lines` either, because it has
 no cycle and its Windows is not known; when a golden-source row names
 such an item's product, the report adds the warning "N item(s) have a
-golden-source row for their product that was not applied: the version
-fits more than one support line, so the item has no cycle. See "Names
-to review"." Add the alias first, and
+golden-source row that was not applied: no cycle, see Names to review."
+Add the alias first, and
 then a golden source if you need one. If you want the bundled table to
 cover a product, open the "Product the tool could not match" issue form
 with names only.

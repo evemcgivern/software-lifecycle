@@ -435,7 +435,7 @@ Says which end-of-life date is right for a product.
 | Column | Rule |
 |---|---|
 | `schema_version` | `1`. |
-| `product` | Required. An endoflife.date product ID, or a product name. One row per product. If an item matches both a product-ID row (for example `nodejs`) and a name row (for example `node.js`), the product-ID row is used and the report adds this warning: "N item(s) matched two golden-source rows; the product-id row was used." A row is not applied to an item with the `ambiguity` code `shared_support_lines` (it has no cycle); the report then adds: "N item(s) have a golden-source row for their product that was not applied: the version fits more than one support line, so the item has no cycle. See "Names to review"." |
+| `product` | Required. An endoflife.date product ID, or a product name. One row per product. If an item matches both a product-ID row (for example `nodejs`) and a name row (for example `node.js`), the product-ID row is used and the report adds this warning: "N item(s) matched two golden-source rows; the product-id row was used." A row is not applied to an item with the `ambiguity` code `shared_support_lines` (it has no cycle); the report then adds: "N item(s) have a golden-source row that was not applied: no cycle, see Names to review." |
 | `source` | Required. `export`, `endoflife.date` or `manual`. |
 | `manual_eol` | A date. Required when `source` is `manual`; not allowed otherwise. |
 | `reason` | Why. Free text. |

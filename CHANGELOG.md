@@ -11,7 +11,9 @@
   used. A version that names its line (`11-ltsc`, `11-server`) keeps that
   line's cycle. Internet Explorer 9 and 10 are unchanged. A golden-source
   row is not applied to a flagged item (it has no cycle), and the report
-  warns when one names such an item's product. A `--previous` report of
+  warns when one names such an item's product ("N item(s) have a
+  golden-source row that was not applied: no cycle, see Names to
+  review."). A `--previous` report of
   an unsupported version now gets a warning that names the version.
   The new hand-kept `curation.json` key `review_versions` lists the
   version prefixes. `report.json` `schema_version` is now 2; `--previous`
