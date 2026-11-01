@@ -5,6 +5,27 @@ that finds software past or near end of life in an inventory export. It
 adds a CISA KEV "needs review" flag. Experiment status, maintained as time
 allows.
 
+## If a user asks you to run the tool on their inventory
+
+The inventory is confidential. Follow these rules:
+
+- Do not open, read, print, summarise or quote the inventory, or the files
+  `report.md`, `report.csv` and `report.json`. Do not upload or attach them.
+  Tell the user where the report files are and let them read the files.
+- Run no networked command. Run `refresh_data.py` only if the user asks
+  for it by name.
+- Say "Not found" or "Unverified" instead of guessing.
+- Check Python is 3.9 or newer (`python3 --version`, or `py --version` on
+  Windows). Install nothing.
+- Run these two commands from the repo root, with the inventory and the
+  output folder outside the repo (on Windows, use `py` for `python3`):
+  1. `python3 software_lifecycle.py preflight ../inventory.csv`
+  2. `python3 software_lifecycle.py check ../inventory.csv --counts-only --out ../swlc-out`
+- Give the user only the counts. Do not list the item IDs back.
+
+Full steps, ready-made prompts and privacy notes are in
+[docs/assistant-setup.md](docs/assistant-setup.md).
+
 ## Commands
 
 No install step. Run from the repo root.

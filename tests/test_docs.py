@@ -572,6 +572,136 @@ class BannedWordTests(unittest.TestCase):
                     self.assertIn("never", s.lower(), path.name)
 
 
+ASSISTANT_SETUP = DOCS / "assistant-setup.md"
+
+
+def prompt_blocks(body: str) -> list:
+    """The copy-paste prompts: fenced blocks tagged `text`."""
+    return re.findall(r"^```text\n(.*?)^```", body, re.M | re.S)
+
+
+class AssistantSetupTests(unittest.TestCase):
+    def test_start_here_links_resolve(self):
+        link = re.compile(r"\]\(([^)\s]+)\)")
+        for path in (README, ASSISTANT_SETUP):
+            targets = link.findall(text(path))
+            self.assertTrue(targets, path.name)
+            for target in targets:
+                if re.match(r"[a-z]+:", target) or target.startswith("#"):
+                    continue
+                self.assertTrue(
+                    (path.parent / target.split("#")[0]).exists(),
+                    "%s -> %s" % (path.name, target))
+
+    def test_readme_routes_each_reader(self):
+        body = text(README)
+        start = body.split("## Start here", 1)[1].split("\n## ", 1)[0]
+        for target in ("docs/assistant-setup.md", "docs/quick-start.md",
+                       "docs/glossary.md", "docs/usage.md", "docs/sop.md",
+                       "CONTRIBUTING.md"):
+            self.assertIn("(%s)" % target, start, target)
+
+    def test_each_prompt_keeps_the_inventory_closed(self):
+        blocks = prompt_blocks(text(ASSISTANT_SETUP))
+        self.assertEqual(len(blocks), 3)
+        runners, guide = blocks[:2], blocks[2]
+        for block in runners:
+            flat = " ".join(block.split())
+            self.assertIn("Do not open, read, print, summarise or quote "
+                          "my inventory.", flat)
+            self.assertIn("report.md, report.csv or report.json", flat)
+            self.assertIn("Do not repeat the item IDs back to me", flat)
+            self.assertIn("Do not run anything that uses the network", flat)
+            self.assertNotIn("clone https", flat)
+        flat = " ".join(guide.split())
+        self.assertIn("Never ask me to paste, attach or upload my "
+                      "inventory or the files report.md, report.csv or "
+                      "report.json.", flat)
+        self.assertIn("Never ask me to paste item IDs", flat)
+        self.assertIn("leave out every line that lists item IDs", flat)
+        for block in blocks:
+            flat = " ".join(block.split())
+            self.assertIn("--counts-only", flat)
+            self.assertIn("confidential", flat)
+            self.assertIn("refresh_data.py", flat)
+            self.assertIn("Not found", flat)
+            self.assertIn("python3 --version", flat)
+            # Every command in a prompt parses with the real parser.
+            for command in re.findall(
+                    r"`python3 software_lifecycle\.py ([^`]+)`", flat):
+                args = cli._parser().parse_args(command.split())
+                self.assertIn(args.command, ("check", "preflight"))
+
+    def test_fallback_section_withholds_item_ids(self):
+        body = text(ASSISTANT_SETUP)
+        section = body.split("## If your assistant cannot run commands",
+                             1)[1].split("\n## ", 1)[0]
+        flat = " ".join(section.split())
+        self.assertIn("Leave out every line that lists item IDs", flat)
+        for name in ("checked_on", "kev_current", "count_total"):
+            self.assertIn("`%s`" % name, flat)
+
+    def test_summary_line_names_are_real(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = subprocess.run(
+                [sys.executable, "-B", str(ROOT / "software_lifecycle.py"),
+                 "check", str(DEMO), "--data", str(FIXTURE_DATA),
+                 "--as-of", "2026-10-24", "--counts-only", "--out", tmp],
+                capture_output=True, text=True, check=True).stdout
+        firsts = {line.split()[0] for line in out.splitlines()}
+        flat = " ".join(text(ASSISTANT_SETUP).split())
+        for name in ("checked_on", "kev_current", "items", "states",
+                     "classification", "ambiguous_review",
+                     "support_records", "count_total"):
+            self.assertIn(name, firsts)
+            self.assertIn("`%s`" % name, flat)
+
+    def test_runner_prompts_name_both_commands(self):
+        blocks = prompt_blocks(text(ASSISTANT_SETUP))
+        for block in blocks[:2]:
+            self.assertIn("preflight ../inventory.csv", block)
+            self.assertIn("check ../inventory.csv --counts-only "
+                          "--out ../swlc-out", block)
+
+    def test_privacy_rule_is_stated(self):
+        flat = " ".join(text(ASSISTANT_SETUP).split())
+        self.assertIn("Anything an assistant opens goes to the company that "
+                      "runs it.", flat)
+        self.assertIn("That is a request. Nothing technical stops an "
+                      "assistant from ignoring it.", flat)
+        self.assertIn("Never attach or paste the inventory", flat)
+        self.assertIn("checked on 2026-11-01", flat)
+
+    def test_chat_only_products_never_get_yes(self):
+        rows = [line for line in text(ASSISTANT_SETUP).split("\n")
+                if line.startswith("| ")]
+        by_name = {r.split("|")[1].strip(): r.split("|")[2].strip()
+                   for r in rows}
+        for name in ("Claude Desktop chat", "Perplexity",
+                     "Any other chat assistant"):
+            self.assertIn(name, by_name)
+            self.assertTrue(by_name[name].startswith("No."), name)
+            self.assertNotIn("yes", by_name[name].lower(), name)
+        for name in ("Claude Code", "Codex (CLI or IDE extension)",
+                     "ChatGPT desktop app",
+                     "GitHub Copilot (CLI and VS Code agent mode)"):
+            self.assertTrue(by_name[name].startswith("Yes"), name)
+        cloud = by_name["Copilot coding agent, Codex cloud, hosted sandboxes"]
+        self.assertIn("Do not use with a real inventory", cloud)
+
+    def test_agents_md_tells_agents_to_use_counts_only(self):
+        body = text(ROOT / "AGENTS.md")
+        self.assertIn("--counts-only", body)
+        self.assertIn("docs/assistant-setup.md", body)
+        self.assertIn("Do not open, read, print, summarise or quote",
+                      " ".join(body.split()))
+        self.assertIn("Do not list the item IDs back", " ".join(body.split()))
+
+    def test_claude_md_imports_agents_md(self):
+        lines = text(ROOT / "CLAUDE.md").split("\n")
+        self.assertIn("@AGENTS.md", lines)
+
+
 class ReaderDocsTests(unittest.TestCase):
     def test_quick_start_commands_parse(self):
         body = text(DOCS / "quick-start.md")
