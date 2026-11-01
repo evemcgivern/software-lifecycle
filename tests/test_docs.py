@@ -39,6 +39,7 @@ def text(path: Path) -> str:
 ROOT_MD = ["README.md", "CONTRIBUTING.md", "SECURITY.md", "AGENTS.md",
            "CLAUDE.md"]
 GITHUB = ROOT / ".github"
+TEXT_SUFFIXES = (".csv", ".md", ".json", ".py", ".txt")
 
 
 def github_files() -> list:
@@ -57,6 +58,10 @@ def public_files() -> list:
     out += github_files()
     out += [p for p in sorted((ROOT / "tests" / "benchmark").iterdir())
             if p.is_file() and p.suffix in (".csv", ".md", ".json")]
+    out += [ROOT / "CHANGELOG.md", ROOT / "THIRD-PARTY.md"]
+    out += [p for p in sorted((ROOT / "examples").rglob("*"))
+            if p.is_file() and p.suffix in TEXT_SUFFIXES]
+    out += sorted((ROOT / "swlc").glob("*.py"))
     return out
 
 
@@ -213,12 +218,14 @@ class NewFilesTests(unittest.TestCase):
             self.assertIn("Do not paste inventory rows",
                           " ".join(first.split()), name)
 
-    def test_private_status_note_and_phrases(self):
-        note = ("This repository is currently private. This policy and "
-                "process apply when it is public.")
+    def test_public_status_and_reporting_pointer(self):
         for name in ("SECURITY.md", "CONTRIBUTING.md"):
             flat = " ".join(text(ROOT / name).replace("> ", " ").split())
-            self.assertIn(note, flat, name)
+            self.assertNotIn("currently private", flat.lower(), name)
+            self.assertIn("**Security** tab", flat, name)
+            self.assertIn("**Report a vulnerability**", flat, name)
+            self.assertIn("private vulnerability reporting", flat.lower(),
+                          name)
 
     def test_agents_blocked_rule(self):
         flat = " ".join(text(ROOT / "AGENTS.md").split())

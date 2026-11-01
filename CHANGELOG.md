@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Docs and tests now describe the public repository (issue #47).
+  SECURITY.md, CONTRIBUTING.md, the README and the quick start no longer
+  say the repository is private or that scheduled workflows are paused.
+  `docs/maintaining.md` has a go-public day checklist for the owner. The
+  hashed banned-term scan now also covers `CHANGELOG.md`,
+  `THIRD-PARTY.md`, `examples/` and `swlc/`.
 - Ease-of-use fixes (issue #45). `preflight` now checks the owner column
   (a missing column puts every item on "Ownerless"; blank owner cells are
   named) and the export end-of-life date column (cells not in
