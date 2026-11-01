@@ -200,6 +200,12 @@
   https://endoflife.date/ruby, https://endoflife.date/splunk,
   https://endoflife.date/spring-boot, https://endoflife.date/spring-framework,
   https://endoflife.date/tomcat and https://endoflife.date/windows-server
+- endoflife.date product pages for the four rows relabelled in issue #74
+  (seen 2026-11-01, upstream commit
+  38b1896e632717895c7896dde8f42b918a58103d, which added the historical
+  cycles LibreOffice 6.0, MySQL 4.0, Notepad++ 6.0 and PHP 4.0):
+  https://endoflife.date/libreoffice, https://endoflife.date/mysql,
+  https://endoflife.date/notepad-plus-plus and https://endoflife.date/php
 
 ## Where each row came from
 
@@ -212,9 +218,10 @@
   The traps are written by hand to look like a product and not be one.
 - Catalog rows (stratum `catalog`): the exact name was found in one of the
   fetched catalogs (winget, Debian or Ubuntu packages, Homebrew). About 120
-  of them matched the catalog only after dropping punctuation. 82 of them
+  of them matched the catalog only after dropping punctuation. 78 of them
   are constructed traps with invented versions (notes `trap=nocycle` and
-  `trap=conflict`); see the README.
+  `trap=conflict`); four more were `trap=nocycle` rows until upstream
+  added their cycles (issue #74); see the README.
 - Generated rows (stratum `generated`): built by program from the upstream
   title, the per-cycle latest version, a package name, a vendor plus title,
   or an architecture suffix. Generated traps use versions that fit no cycle,

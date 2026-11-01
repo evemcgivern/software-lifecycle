@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Relabelled four benchmark gold rows by the maintainer's decision
+  (issue #74): LibreOffice 6.0.1, MySQL 4.0.1, Notepad++ 6.0.1 and PHP
+  4.0.1 now expect the product with any cycle, not cycle `none`.
+  Upstream endoflife.date added those old cycles, which stopped the
+  weekly data job. The hand and catalog count stays 758 on the bundled
+  data and on the new cycles. `docs/sop.md` gives this as an example.
+  Tests and docs only.
+
 ## 0.7.0 - 2026-11-01
 
 - Recorded the maintainer's install test of the `.mcpb` package (issue

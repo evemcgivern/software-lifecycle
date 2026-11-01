@@ -182,6 +182,14 @@ pull request and opens or updates one issue labelled `eol-weekly-failed`.
    - Never lower `tests/benchmark/floor.json` and never edit a gold row
      to make a test pass, unless the maintainer has recorded the decision
      and its reason in the commit and in `tests/benchmark/README.md`.
+   - Example (issue #74): upstream added old cycles (LibreOffice 6.0,
+     MySQL 4.0, Notepad++ 6.0, PHP 4.0), so gold rows that expected the
+     product with cycle `none` (no cycle in the snapshot) now got a real
+     cycle and scored hard wrong. The rows' premise was out of date, and
+     the maintainer approved relabelling them. Main still has the old
+     data, so the exact new cycle would fail there; the rows were set to
+     an empty cycle (any cycle is fine), which is correct on both, and
+     can be tightened to the exact cycle after the weekly data is merged.
 4. **Run it again.** After the fix is on main, run "endoflife.date weekly
    pull request" by hand from the Actions tab, or wait for the next weekly
    run. Close the issue once a pull request opens.
