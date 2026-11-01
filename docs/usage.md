@@ -586,9 +586,10 @@ An inventory row can be an application someone owns, a piece of something
 else, or a member of a bundle. Each row gets one of four classes. These are
 policy lines, not terms from a standard. ISO/IEC 19770-1 (IT asset
 management) is the relevant standard; clause 8.3 (core data management,
-p.22 of ISO/IEC 19770-1:2017) was read and is the clause the crosswalk
-cites for inventory and lifecycle control. Other clauses are checked
-against a contents page only, so they are Unverified. Refer to the official ISO/IEC 19770-1
+p.22 of ISO/IEC 19770-1:2017) is the clause the crosswalk cites for
+inventory and lifecycle control. The crosswalk cells for that standard
+were checked against the standard text; Amendment 1 (2024) was not
+opened, so it is Unverified. Refer to the official ISO/IEC 19770-1
 documentation for its wording. The terms "component", "bundle" and
 "governable" are this tool's own. ISO/IEC 19770-2 (SWID)
 has parent and child links; its clause references are Unverified until

@@ -25,6 +25,13 @@
   that were read are no longer hedged; the rest stay Unverified.
   `docs/usage.md` now agrees with the crosswalk on ISO/IEC 19770-1
   clause 8.3. Docs and tests only.
+- Updated the crosswalk from the newly checked framework text (issue
+  #64). The ISO/IEC 27001, ISO/IEC 19770-1, NIST CSF 2.0 and NIST SP
+  800-53 cells are now checked against the standard text and no longer
+  listed as Unverified. Dropped 27001 A.5.33, CSF GV.RM-02 and 800-53
+  PM-16; added 27001 A.5.2, 19770-1 6.2.4, 8.5 and 10.1 and Annex A
+  Retirement, and 800-53 CA-6 and RA-3. `itil4` and `iso20000_1` stay
+  Unverified, with the reasons in `docs/themes.md`. Docs and tests only.
 
 ## 0.6.0 - 2026-11-01
 

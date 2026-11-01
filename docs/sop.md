@@ -144,8 +144,8 @@ process. The tool does not create tickets. You raise the change, then
 record its reference in `tracking.csv` (step 11).
 
 **Does it follow a standard?** `docs/crosswalk.csv` maps the themes to
-published standards as a reference. Some cells are secondary-sourced and
-marked in `unverified_columns`. See [themes.md](themes.md). The KEV overlay
+published standards as a reference. The ITIL 4 and ISO/IEC 20000-1 cells are
+not checked against the official text and are marked in `unverified_columns`. See [themes.md](themes.md). The KEV overlay
 is a reference for prioritization. It does not show compliance with any
 standard. CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01 (source:
 <https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk>).
