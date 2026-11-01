@@ -1,0 +1,51 @@
+name: Report a column-name problem with an export
+description: The tool did not recognise the column names in an export. Headers only.
+title: "profile: "
+labels: ["export-profile"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public. Do not paste your inventory, report files
+        (report.md, report.csv, report.json), real item IDs, host names,
+        owner names or any employer data.** Use made-up examples. The tool
+        never needs them.
+
+        **Never paste data rows.** Paste the column headers only: one
+        header row, nothing else. The built-in export profiles have not
+        been checked against real exports, so your report helps.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool and version that made the export
+      description: For example Flexera, ServiceNow, Rapid7 or another tool, and its version.
+    validations:
+      required: true
+  - type: textarea
+    id: preflight
+    attributes:
+      label: Output of the tool's preflight command
+      description: Counts and fix codes only. Run python3 software_lifecycle.py preflight on your file and paste the output. Do not paste rows or names.
+    validations:
+      required: true
+  - type: textarea
+    id: headers
+    attributes:
+      label: Column headers only
+      description: A single header row, nothing else.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: Which column should have been found as name, publisher or version, for example.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Your data
+      options:
+        - label: I have not included my own inventory data
+          required: true

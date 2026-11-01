@@ -6,9 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        **This issue is public. Do not paste inventory rows, report files,
-        owner names, internal application names, host names, or any
-        confidential data.**
+        **This issue is public. Do not paste your inventory, report files
+        (report.md, report.csv, report.json), real item IDs, host names,
+        owner names or any employer data.** Use made-up examples. The tool
+        never needs them.
 
         What this tool is not: it is not a vulnerability scanner, it gives
         no CVE severity, it is not a hosted service, and it never sends
@@ -37,7 +38,7 @@ body:
   - type: checkboxes
     id: confirm
     attributes:
-      label: Confidential data
+      label: Your data
       options:
-        - label: This issue holds no inventory rows, owner names, internal application names or other confidential data.
+        - label: I have not included my own inventory data
           required: true

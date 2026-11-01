@@ -355,6 +355,9 @@ match" issue form. Give the public product name, the publisher and the
 version format. Names only: never paste inventory rows, owner names or
 reports into a public issue.
 
+Other forms: a test of an assistant or the MCP server, a column-name
+problem with an export (headers only), and a mistake in the docs.
+
 The crosswalk to standards is in `docs/crosswalk.csv`; how to read it is in
 [docs/themes.md](docs/themes.md).
 

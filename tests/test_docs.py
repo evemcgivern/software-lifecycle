@@ -270,8 +270,58 @@ def parse_form(path: Path) -> dict:
             "text": body}
 
 
+# Labels an issue form may name: the labels that exist in the repository,
+# plus assistant-setup and export-profile, which the maintainer has yet to
+# create. GitHub ignores a form label that does not exist. Keep this list
+# in step with the repository's labels.
+FORM_LABEL_ALLOW = {"bug", "enhancement", "alias-request", "documentation",
+                    "assistant-setup", "export-profile"}
+FORM_WARNING = "Do not paste your inventory"
+FORM_CHECKBOX = "I have not included my own inventory data"
+ADVISORY_URL = ("https://github.com/evemcgivern/software-lifecycle/"
+                "security/advisories/new")
+FORM_BANNED = ("covered", "licensed", "unlicensed", "shelfware",
+               "compliant", "audit-ready", "over-licensed", "installs",
+               "vulnerable")
+
+
+def form_names() -> list:
+    return sorted(p.name for p in (GITHUB / "ISSUE_TEMPLATE").glob("*.yml")
+                  if p.name != "config.yml")
+
+
+def form_problems(name: str, body: str) -> list:
+    """Reasons a form breaks the rules, from plain text checks."""
+    out = []
+    for key in ("name:", "description:", "body:"):
+        if not re.search(r"^%s" % key, body, re.M):
+            out.append("%s: missing %s" % (name, key))
+    first = body.split("\nbody:\n", 1)[-1].split("\n  - type:")[0]
+    flat = " ".join(first.split())
+    if "type: markdown" not in first or FORM_WARNING not in flat:
+        out.append("%s: warning is not the first body element" % name)
+    check = re.search(r"- label: %s\n\s+required: true" % FORM_CHECKBOX,
+                      body)
+    if not check:
+        out.append("%s: no required checkbox" % name)
+    low = body.lower()
+    for word in FORM_BANNED:
+        if re.search(r"\b%s\b" % word, low):
+            out.append("%s: banned wording %s" % (name, word))
+    return out
+
+
+def form_block(body: str, field_id: str) -> str:
+    """The text of one form field, from its id line to the next field."""
+    m = re.search(r"^    id: %s$(.*?)(?=^  - type:|\Z)" % field_id, body,
+                  re.M | re.S)
+    return m.group(1) if m else ""
+
+
 class NewFilesTests(unittest.TestCase):
-    FORMS = ("bug-report.yml", "feature-request.yml", "unmatched-product.yml")
+    FORMS = ("bug-report.yml", "feature-request.yml", "unmatched-product.yml",
+             "assistant-setup-report.yml", "export-profile-report.yml",
+             "docs-correction.yml")
 
     def test_files_exist(self):
         for rel in ("SECURITY.md", "CONTRIBUTING.md", "AGENTS.md",
@@ -296,20 +346,61 @@ class NewFilesTests(unittest.TestCase):
             self.assertIn("markdown", form["types"], name)
             self.assertIn("checkboxes", form["types"], name)
             flat = " ".join(form["text"].split())
-            self.assertIn("Do not paste inventory rows", flat, name)
+            self.assertIn(FORM_WARNING, flat, name)
             self.assertIn("required: true", flat, name)
-        self.assertEqual(labels, {"bug", "enhancement", "alias-request"})
+        self.assertTrue(labels <= FORM_LABEL_ALLOW, labels - FORM_LABEL_ALLOW)
         contributing = text(ROOT / "CONTRIBUTING.md")
         for label in labels:
             self.assertIn("`%s`" % label, contributing)
+
+    def test_every_form_file_follows_the_rules(self):
+        self.assertEqual(set(form_names()), set(self.FORMS))
+        for name in form_names():
+            body = text(GITHUB / "ISSUE_TEMPLATE" / name)
+            self.assertEqual(form_problems(name, body), [], name)
+
+    def test_form_check_fails_when_the_warning_is_removed(self):
+        body = text(GITHUB / "ISSUE_TEMPLATE" / "bug-report.yml")
+        self.assertEqual(form_problems("x.yml", body), [])
+        cut = body.replace(FORM_WARNING, "Please be careful")
+        self.assertIn("x.yml: warning is not the first body element",
+                      form_problems("x.yml", cut))
+        cut = body.replace(FORM_CHECKBOX, "I agree")
+        self.assertIn("x.yml: no required checkbox",
+                      form_problems("x.yml", cut))
+        bad = body + "\n# this is shelfware\n"
+        self.assertTrue(form_problems("x.yml", bad))
+
+    def test_new_forms_ask_for_headers_and_counts_only(self):
+        export = text(GITHUB / "ISSUE_TEMPLATE" / "export-profile-report.yml")
+        self.assertIn("Never paste data rows", " ".join(export.split()))
+        self.assertIn("id: headers", export)
+        setup = text(GITHUB / "ISSUE_TEMPLATE" / "assistant-setup-report.yml")
+        for key in ("id: prereqs", "id: approval", "id: came_back",
+                    "id: errors"):
+            self.assertIn(key, setup)
+        self.assertIn("Full Access", setup)
+        self.assertIn("chat transcripts", form_block(setup, "errors"))
+        docs = text(GITHUB / "ISSUE_TEMPLATE" / "docs-correction.yml")
+        self.assertIn("required: true", form_block(docs, "source"))
+        self.assertNotIn("required: false", form_block(docs, "source"))
+
+    def test_block_checks_fail_when_reverted(self):
+        setup = text(GITHUB / "ISSUE_TEMPLATE" / "assistant-setup-report.yml")
+        docs = text(GITHUB / "ISSUE_TEMPLATE" / "docs-correction.yml")
+        cut = setup.replace("chat transcripts", "chats")
+        self.assertNotIn("chat transcripts", form_block(cut, "errors"))
+        loose = docs.replace("id: source", "id: source", 1)
+        loose = re.sub(r"(id: source.*?required: )true", r"\1false", loose,
+                       flags=re.S)
+        self.assertIn("required: false", form_block(loose, "source"))
 
     def test_warning_is_the_first_body_element(self):
         for name in self.FORMS:
             body = text(GITHUB / "ISSUE_TEMPLATE" / name)
             first = body.split("\nbody:\n", 1)[1].split("\n  - type:")[0]
             self.assertIn("type: markdown", first, name)
-            self.assertIn("Do not paste inventory rows",
-                          " ".join(first.split()), name)
+            self.assertIn(FORM_WARNING, " ".join(first.split()), name)
 
     def test_public_status_and_reporting_pointer(self):
         for name in ("SECURITY.md", "CONTRIBUTING.md"):
@@ -347,6 +438,8 @@ class NewFilesTests(unittest.TestCase):
         config = text(GITHUB / "ISSUE_TEMPLATE" / "config.yml")
         self.assertIn("blank_issues_enabled: false", config)
         self.assertIn("/blob/main/SECURITY.md", config)
+        self.assertIn(ADVISORY_URL, config)
+        self.assertIn("Do not open a public issue", config)
 
     def test_claude_md_is_a_pointer(self):
         path = ROOT / "CLAUDE.md"

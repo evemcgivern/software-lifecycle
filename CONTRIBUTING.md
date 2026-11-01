@@ -16,6 +16,15 @@ Use the bug report or feature request form. Use made-up (synthetic) rows if
 you need to show input. For a security problem, do not open an issue. See
 [SECURITY.md](SECURITY.md).
 
+Three more forms:
+
+- "Report a test of an assistant or the MCP server": how a setup worked on
+  your machine, counts and settings only.
+- "Report a column-name problem with an export": column headers only,
+  never data rows.
+- "Report a mistake in the docs or the framework crosswalk": give the
+  public source, with a short quote at most.
+
 ## Propose a code or docs change
 
 1. Open or find an issue first. Its number is `NNNN` below.
@@ -123,8 +132,10 @@ use GitHub private vulnerability reporting: open the repository's
 
 ## Labels the forms apply
 
-The issue forms apply these labels, which exist in the repository: `bug`, `enhancement` and
-`alias-request`.
+The issue forms apply these labels: `bug`, `enhancement`, `alias-request`
+and `documentation`, which exist in the repository, and `assistant-setup`
+and `export-profile`, which the maintainer creates once. GitHub ignores a
+form label that does not exist yet.
 
 The weekly end-of-life workflow opens or updates one issue labelled
 `eol-weekly-failed` when it stops. The maintainer creates that label once;

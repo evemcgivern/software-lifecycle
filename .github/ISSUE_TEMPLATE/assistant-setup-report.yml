@@ -1,0 +1,87 @@
+name: Report a test of an assistant or the MCP server
+description: Tell us how a setup worked on your machine. Counts and settings only.
+title: "assistant: "
+labels: ["assistant-setup"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public. Do not paste your inventory, report files
+        (report.md, report.csv, report.json), real item IDs, host names,
+        owner names or any employer data.** Use made-up examples. The tool
+        never needs them.
+
+        This form is also a privacy report: if anything that looked like a
+        name, version, publisher or item ID came back in a chat, say so
+        below, but do not copy it here.
+  - type: input
+    id: assistant
+    attributes:
+      label: Assistant or app, and its version
+      description: For example the name of the app and the version from its About page.
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system and version
+    validations:
+      required: true
+  - type: dropdown
+    id: setup
+    attributes:
+      label: How you set it up
+      options:
+        - Assistant prompt (from docs/assistant-setup.md)
+        - MCP server set up by hand
+        - The .mcpb package
+        - Other (say how below)
+    validations:
+      required: true
+  - type: dropdown
+    id: prereqs
+    attributes:
+      label: Were uv and Python 3.9 or newer installed before you started?
+      description: This tells us whether the setup works on a clean machine.
+      options:
+        - Both were already installed
+        - Only Python 3.9 or newer
+        - Only uv
+        - Neither
+        - I am not sure
+    validations:
+      required: true
+  - type: textarea
+    id: approval
+    attributes:
+      label: Did an approval prompt show the path before each tool ran?
+      description: "Was the app in Full Access or an approval mode? Say what the prompt showed and what you chose (for example Allow once, Always allow, Deny). If the app was in Full Access, say so."
+    validations:
+      required: true
+  - type: textarea
+    id: came_back
+    attributes:
+      label: What came back
+      description: Counts only, or did anything look like a name, version, publisher or item ID? Describe it; do not copy it.
+    validations:
+      required: true
+  - type: textarea
+    id: errors
+    attributes:
+      label: Error text or log lines
+      description: "Paste only the error message, a few lines at most. Remove user names and folder paths. Never paste report files, the report folder contents, chat transcripts, or tool output that lists items. To find the app's log, see the logs notes in docs/mcp-setup.md."
+    validations:
+      required: false
+  - type: textarea
+    id: change
+    attributes:
+      label: What you would like changed
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Your data
+      options:
+        - label: I have not included my own inventory data
+          required: true
