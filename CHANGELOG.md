@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.0 - 2026-10-31
+## Unreleased
 
 - Ease-of-use fixes (issue #45). `preflight` now checks the owner column
   (a missing column puts every item on "Ownerless"; blank owner cells are
@@ -17,6 +17,9 @@
   under its title that the Hostile Corp rows are planted tests of how the
   tool handles unsafe text; a real run's `report.md` has no such note.
   The demo writes to `../swlc-demo` in every doc.
+
+## 0.5.0 - 2026-10-31
+
 - Docs for report readers (issue #42): `docs/quick-start.md`, one page
   for macOS, Linux and Windows (preflight first, a short output folder,
   what "KEV overlay is not current" means); `docs/glossary.md`, plain
