@@ -1,6 +1,6 @@
 {
-  "catalogVersion": "2026.10.23",
-  "dateReleased": "2026-10-23",
+  "catalogVersion": "2026.10.30",
+  "dateReleased": "2026-10-30",
   "entries": [
     {
       "cveID": "CVE-2002-0367",
@@ -9507,6 +9507,18 @@
       "vendorProject": "EG Secure Solutions"
     },
     {
+      "cveID": "CVE-2026-109618",
+      "dateAdded": "2026-10-26",
+      "product": "PHP",
+      "vendorProject": "PHP Group"
+    },
+    {
+      "cveID": "CVE-2026-109619",
+      "dateAdded": "2026-10-26",
+      "product": "PHP",
+      "vendorProject": "PHP Group"
+    },
+    {
       "cveID": "CVE-2026-110447",
       "dateAdded": "2026-10-23",
       "product": "Collabora Online \u2013 Built-in CODE Server",
@@ -9519,6 +9531,18 @@
       "vendorProject": "Siemens"
     },
     {
+      "cveID": "CVE-2026-111357",
+      "dateAdded": "2026-10-30",
+      "product": "Connect Secure",
+      "vendorProject": "Ivanti"
+    },
+    {
+      "cveID": "CVE-2026-111497",
+      "dateAdded": "2026-10-27",
+      "product": "Brotli",
+      "vendorProject": "Google"
+    },
+    {
       "cveID": "CVE-2026-114625",
       "dateAdded": "2026-10-23",
       "product": "VeloCloud Orchestrator",
@@ -9529,6 +9553,12 @@
       "dateAdded": "2026-06-09",
       "product": "Chromium V8",
       "vendorProject": "Google"
+    },
+    {
+      "cveID": "CVE-2026-118527",
+      "dateAdded": "2026-10-30",
+      "product": "Connect Secure",
+      "vendorProject": "Ivanti"
     },
     {
       "cveID": "CVE-2026-12569",
@@ -9969,6 +9999,12 @@
       "vendorProject": "Microsoft"
     },
     {
+      "cveID": "CVE-2026-41709",
+      "dateAdded": "2026-10-28",
+      "product": "VMware ESX",
+      "vendorProject": "Broadcom"
+    },
+    {
       "cveID": "CVE-2026-41940",
       "dateAdded": "2026-04-30",
       "product": "cPanel & WHM and WP2 (WordPress Squared)",
@@ -10029,6 +10065,12 @@
       "vendorProject": "Microsoft"
     },
     {
+      "cveID": "CVE-2026-46300",
+      "dateAdded": "2026-10-28",
+      "product": "Kernel",
+      "vendorProject": "Linux"
+    },
+    {
       "cveID": "CVE-2026-46817",
       "dateAdded": "2026-07-15",
       "product": "E-Business Suite",
@@ -10050,6 +10092,12 @@
       "cveID": "CVE-2026-48282",
       "dateAdded": "2026-07-07",
       "product": "ColdFusion",
+      "vendorProject": "Adobe"
+    },
+    {
+      "cveID": "CVE-2026-48356",
+      "dateAdded": "2026-10-27",
+      "product": "Commerce and Magento",
       "vendorProject": "Adobe"
     },
     {
@@ -10311,6 +10359,12 @@
       "vendorProject": "Adobe"
     },
     {
+      "cveID": "CVE-2026-76418",
+      "dateAdded": "2026-10-29",
+      "product": "Secure Firewall ASA Software and Cisco Secure FTD Software",
+      "vendorProject": "Cisco"
+    },
+    {
       "cveID": "CVE-2026-76460",
       "dateAdded": "2026-09-16",
       "product": "Identity Services Engine",
@@ -10537,6 +10591,12 @@
       "dateAdded": "2026-10-13",
       "product": "Windows",
       "vendorProject": "Microsoft"
+    },
+    {
+      "cveID": "CVE-2026-97229",
+      "dateAdded": "2026-10-29",
+      "product": "Community Edition and Enterprise Edition",
+      "vendorProject": "GitLab"
     }
   ],
   "license": "CC0 1.0"

@@ -8,6 +8,10 @@
   `docs/maintaining.md` has a go-public day checklist for the owner. The
   hashed banned-term scan now also covers `CHANGELOG.md`,
   `THIRD-PARTY.md`, `examples/` and `swlc/`.
+- Refreshed the bundled CISA KEV snapshot (issue #48): catalog 2026.10.23
+  to 2026.10.30, 1756 to 1766 entries (10 added, none removed). End-of-life
+  data is unchanged.
+
 - Ease-of-use fixes (issue #45). `preflight` now checks the owner column
   (a missing column puts every item on "Ownerless"; blank owner cells are
   named) and the export end-of-life date column (cells not in
