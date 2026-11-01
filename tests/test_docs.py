@@ -227,6 +227,14 @@ class NewFilesTests(unittest.TestCase):
             self.assertIn("private vulnerability reporting", flat.lower(),
                           name)
 
+    def test_private_era_claims_are_gone(self):
+        for name in ("README.md", "SECURITY.md", "docs/quick-start.md"):
+            low = " ".join(text(ROOT / name).split()).lower()
+            for phrase in ("disabled while the repository is private",
+                           "enterprise cloud", "until the first release",
+                           "paused"):
+                self.assertNotIn(phrase, low, "%s: %s" % (name, phrase))
+
     def test_agents_blocked_rule(self):
         flat = " ".join(text(ROOT / "AGENTS.md").split())
         self.assertIn("If a hook, a test, a guard or branch protection "
