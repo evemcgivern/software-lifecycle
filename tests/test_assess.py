@@ -11,6 +11,7 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from helpers import make_data_dir
+from swlc import assess as assess_mod
 from swlc.assess import add_months, assess
 from swlc.data import Data, load_data
 from swlc.errors import InputError
@@ -546,7 +547,7 @@ class Shape(unittest.TestCase):
         self.assertEqual(sorted(out), sorted([
             "schema_version", "as_of", "lookahead_months", "data_release",
             "kev_current", "warnings", "items", "lists", "counts", "diff"]))
-        self.assertEqual(out["schema_version"], 1)
+        self.assertEqual(out["schema_version"], 2)
         self.assertEqual(out["as_of"], "2026-10-24")
         self.assertEqual(out["data_release"]["id"], "data-2026.10.24.1")
         self.assertEqual(out["data_release"]["kev_catalog_version"],
@@ -649,8 +650,51 @@ class Diff(unittest.TestCase):
         self.assertEqual(d, {"available": True, "new": [], "resolved": [],
                              "changed_state": []})
 
+    def test_version_1_previous_gives_a_diff(self):
+        # Schema 2 only added the ambiguity code shared_support_lines; a
+        # version 1 report has the same states, so --previous reads it.
+        prev = json.loads(json.dumps(run([row("1"), row("5", owner="y")])))
+        prev["schema_version"] = 1
+        by = {it["version"]: it["id"] for it in prev["items"]}
+        now = run([row("1"), row("3", owner="z")], previous=prev)
+        d = now["diff"]
+        self.assertTrue(d["available"])
+        self.assertEqual(d["resolved"], [by["5"]])
+        self.assertEqual(len(d["new"]), 1)
+        self.assertFalse(any("previous" in w for w in now["warnings"]))
+
+    def test_previous_versions_accepted(self):
+        self.assertEqual(assess_mod.PREVIOUS_SCHEMA_VERSIONS, (1, 2))
+        self.assertIn(assess_mod.SCHEMA_VERSION,
+                      assess_mod.PREVIOUS_SCHEMA_VERSIONS)
+
+    def test_unsupported_previous_version_is_named(self):
+        cases = (({"schema_version": 3, "items": []}, "3"),
+                 ({"schema_version": 0, "items": []}, "0"),
+                 ({"schema_version": -4, "items": []}, "-4"),
+                 ({"schema_version": "3", "items": []}, "unreadable"),
+                 ({"schema_version": True, "items": []}, "unreadable"),
+                 ({"schema_version": 1.0, "items": []}, "unreadable"),
+                 ({"schema_version": 10 ** 40, "items": []}, "unreadable"),
+                 ({"schema_version": "Zqxv secret", "items": []},
+                  "unreadable"))
+        for prev, shown in cases:
+            with self.subTest(prev=prev):
+                out = run([row("1")], previous=prev)
+                self.assertFalse(out["diff"]["available"])
+                self.assertIn("previous run uses schema_version %s; this "
+                              "tool reads 1 and 2; no diff" % shown,
+                              out["warnings"])
+                self.assertFalse(any("Zqxv" in w for w in out["warnings"]))
+        # A supported version with bad items keeps the general warning.
+        for prev in ({"schema_version": 1, "items": [{"no": "id"}]},
+                     {"items": []}, []):
+            out = run([row("1")], previous=prev)
+            self.assertIn(assess_mod.PREVIOUS_UNUSABLE, out["warnings"])
+
     def test_unusable_previous(self):
-        for bad in ({"schema_version": 2, "items": []}, {"items": "x"},
+        for bad in ({"schema_version": 3, "items": []},
+                    {"schema_version": 0, "items": []}, {"items": "x"},
                     {"schema_version": True, "items": []},
                     {"schema_version": 1.0, "items": []},
                     {"schema_version": 1, "items": [{"no": "id"}]}, []):

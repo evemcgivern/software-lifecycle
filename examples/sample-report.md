@@ -258,7 +258,7 @@ Names to review: 1 of these were left unmatched on purpose; see "Names to review
 
 ## Names to review (1)
 
-Unmatched on purpose, not a finding. Each name looks like a catalog product, but there is not enough evidence to match it, so no product, cycle, date or state is claimed. To settle one, add a publisher that names the vendor, ask for a curated alias, or record that it is a different product. These items are also counted under "Couldn't match".
+Unmatched on purpose, not a finding. Each name looks like a catalog product, but there is not enough evidence to match it to one support line, so no cycle, date or state is claimed, and no product unless one is shown. To settle a title, add a publisher that names the vendor, ask for a curated alias, or record that it is a different product. To settle a version that fits several support lines, check which platform the item runs on and that line's date with the vendor. These items are also counted under "Couldn't match".
 
 - **Quillbase** 2019 (id `cc1211feace1`)
   - Review: The name is a product title, but the row has no publisher to confirm the product.

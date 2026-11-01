@@ -29,3 +29,11 @@ set once the repository is public.
    as an admin, because CI does not run on pull requests opened by the
    job token.
 
+
+## Release steps
+
+When a release adds a data key an older tool rejects (for example
+`curation.json` `review_versions`), raise `MIN_TOOL_VERSION` in
+`refresh_data.py` and the pin in `tests/test_bundled_data.py` to that
+release's version in the same release PR, and keep kev-daily off until
+that release is published.

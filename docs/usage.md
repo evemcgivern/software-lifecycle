@@ -307,10 +307,21 @@ so; it does not hide them.
   exact name whose number and codename are one pair on the vendor's list
   (`Rocky Linux 9.4 (Blue Onyx)`), and the version column must be that
   release.
-- Internet Explorer 11 is held for issue #21. `Internet Explorer` and
-  `Internet Explorer 11` match by title and take the generic cycle `11`
-  for any 11.x version, so IE 11 on a Windows Server, LTSB or LTSC build
-  takes the generic cycle, not that build's own cycle. Office "Home and Business" and "Home
+- Internet Explorer 11 gets the product with no cycle. `Internet
+  Explorer` and `Internet Explorer 11` match by title, and a version that
+  starts with 11, in the column or in the name (an empty version with
+  `Internet Explorer 11`), gets `internet-explorer` with no cycle, date or
+  state, and the review code `shared_support_lines` under "Names to
+  review". IE 11 follows the support of the Windows it runs on: the
+  desktop app is past end of life on some Windows 10 versions
+  (2022-06-15 per Microsoft; the catalog lists 2022-06-14), but still
+  supported on Windows Server, LTSB, LTSC and embedded editions, and
+  Windows builds are shared across editions (14393 is Windows 10 2016
+  LTSB and Server 2016, 17763 is 2019 LTSC and Server 2019, 9600 is
+  Windows 8.1 and Server 2012 R2). The row does not say which Windows it
+  runs on. A version that names its line (`11-ltsc`, `11-server`) keeps
+  that line's cycle and gets no code. Internet Explorer 9 and 10 keep
+  their cycles. Office "Home and Business" and "Home
   and Student" names are unmatched too, and so is `Microsoft ASP.NET Core
   8.0.1 - Shared Framework (x64)`.
 - `Microsoft .NET SDK 8.0.101 (x64)` and `Microsoft Windows Desktop
@@ -353,17 +364,18 @@ so; it does not hide them.
 ## Names to review
 
 Some unmatched rows were refused on purpose: the name looks like a
-catalog product, but there is not enough evidence to match it. They are
-unmatched on purpose, not a finding. `report.md` lists them in a "Names
-to review" section, after "Couldn't match", with the name, version,
-publisher and a one-line reason. The section never shows a product,
-cycle, date or state for them. They are still counted in "Couldn't
+catalog product, but there is not enough evidence to match it to one
+support line. They are unmatched on purpose, not a finding. `report.md`
+lists them in a "Names to review" section, after "Couldn't match", with
+the name, version, publisher and a one-line reason. The section never
+shows a cycle, date or state for them, and shows a product only for
+`shared_support_lines`. They are still counted in "Couldn't
 match" and in `lists.unmatched`, they never feed `--fail-on`, and
 `--governable-only` never hides them (they are never parts). The item key
 is `ambiguity` and the count is `counts.ambiguous_review`; see
 `docs/report-schema.md`.
 
-There are two reasons:
+There are three reasons:
 
 - `title_needs_publisher`: the name is a one-word product title (`Redmine`
   with version `5.1.2`) and the publisher is empty. When a version is
@@ -374,13 +386,22 @@ There are two reasons:
   fits one cycle, and the title is not on the version-in-name list (a
   short title, an ordinary word, a title another product, package or
   extension shares, or a product not yet reviewed).
+- `shared_support_lines`: the name matched a product, but its version
+  starts with a prefix listed in the curated `review_versions`, because
+  that version fits more than one support line. Today this is Internet
+  Explorer 11 (`Internet Explorer 11` with `11.0.17763.0`, or with no
+  version), which follows the Windows it runs on (desktop, Server, LTSB or
+  LTSC). The item keeps `product` `internet-explorer` and gets no cycle,
+  date or state; the generic cycle `11` is never used.
 
-To settle one, add a publisher that names the vendor, ask the maintainer
+To settle a `shared_support_lines` row, check which Windows the item runs
+on and that support line's date with the vendor. To settle one of the
+other two, add a publisher that names the vendor, ask the maintainer
 for a curated alias, or record that it is a different product. The tool
-never promotes such a row to a match. A row with a publisher is not
-listed here: a publisher that does not confirm the product is often a
-different product (an editor extension, a mobile app), and an alias for
-it would invite a wrong match. A row refused by an exclusion (Moodle,
+never promotes such a row to a match. For these two codes, a row with a
+publisher is not listed: a publisher that does not confirm the product is
+often a different product (an editor extension, a mobile app), and an
+alias for it would invite a wrong match. A row refused by an exclusion (Moodle,
 Mattermost, Nextcloud), a device or `generated_off` product, a version
 that is given but fits no cycle, and a name that hits no title are not
 listed here either.
@@ -439,7 +460,10 @@ an object of `phrases`, a sorted list of lowercase vendor phrases, `reason`,
 publisher)
 `generated_off` (a sorted list of product ids) and, optionally,
 `no_cycle_versions` (a product id to an object of `prefixes`, a sorted list
-of version prefixes such as `21.3`, `reason` and `source`). Three more keys
+of version prefixes such as `21.3`, `reason` and `source`) and
+`review_versions` (a product id to an object of `prefixes`, a sorted list
+of version prefixes such as `11`, `code`, the review code
+`shared_support_lines`, `reason`, `source` and `gold`). Three more keys
 are optional and set what kind of item a row is: `classification_rows` (a
 sorted list of `name`, a normalized name, `publisher`, one lowercase word or
 empty, `class`, `reason`, `source` and `gold`), `classification_products` (a
@@ -509,7 +533,12 @@ the data folder. Do not edit `data/` in place.
 4. Check it: `python3 software_lifecycle.py verify-data --data ../my-data`.
 5. Run with it: `python3 software_lifecycle.py check INVENTORY --data ../my-data --out ../swlc-out`.
 
-Golden sources do not apply to unmatched items. Add the alias first, and
+Golden sources do not apply to unmatched items. They do not apply to an
+item with the review code `shared_support_lines` either, because it has
+no cycle and its Windows is not known; when a golden-source row names
+such an item's product, the report adds the warning "N item(s) have a
+golden-source row that was not applied: no cycle, see Names to review."
+Add the alias first, and
 then a golden source if you need one. If you want the bundled table to
 cover a product, open the "Product the tool could not match" issue form
 with names only.
@@ -538,6 +567,15 @@ rules in "The data folder".
   title match whose version, in the column or in the name, starts with a
   listed prefix gets the product with no cycle. Give the `prefixes`, a
   `reason` and a `source`. Curated aliases are not affected.
+- `review_versions` names version prefixes that fit more than one support
+  line of a product. Internet Explorer 11 follows the Windows it runs on,
+  and its builds are shared by desktop, Server, LTSB and LTSC editions. A
+  title match whose version, in the column or in the name, starts with a
+  listed prefix gets the product with no cycle and the entry's review
+  `code` (`shared_support_lines`), so it is listed under "Names to
+  review". Give the `prefixes`, the `code`, a `reason`, a `source` and a
+  `gold` row (`name|publisher|version`). Curated aliases are not
+  affected.
 
 For the bundled file, the rules in `CONTRIBUTING.md` also apply: every
 entry cites its evidence and the benchmark must not get worse.

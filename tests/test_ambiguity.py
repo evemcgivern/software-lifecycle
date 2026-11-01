@@ -19,7 +19,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from swlc import assess as assess_mod  # noqa: E402
 from swlc.assess import AMBIGUITY_REASONS, assess  # noqa: E402
 from swlc.catalog_match import (  # noqa: E402
-    TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST, build_index)
+    SHARED_SUPPORT_LINES, TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST,
+    build_index)
 from swlc.data import Data  # noqa: E402
 from swlc.inputs import group_rows  # noqa: E402
 from swlc.matching import NO_ALIAS, match_noted, match_product  # noqa: E402
@@ -290,6 +291,7 @@ class ReportKeyTests(unittest.TestCase):
         # Pinned literals: swapping the code strings or the texts fails.
         self.assertEqual(TITLE_NEEDS_PUBLISHER, "title_needs_publisher")
         self.assertEqual(TITLE_NOT_ON_LIST, "title_not_on_list")
+        self.assertEqual(SHARED_SUPPORT_LINES, "shared_support_lines")
         self.assertEqual(AMBIGUITY_REASONS, {
             "title_needs_publisher": (
                 "The name is a product title, but the row has no publisher "
@@ -297,6 +299,10 @@ class ReportKeyTests(unittest.TestCase):
             "title_not_on_list": (
                 "The name is a product title and a version, but that title "
                 "is not on the reviewed list for rows with no publisher."),
+            "shared_support_lines": (
+                "The name and version fit more than one support line "
+                "(desktop, Server, LTSB or LTSC); the row does not say "
+                "which Windows it runs on."),
         })
         for text in AMBIGUITY_REASONS.values():
             for claim in ("cycle", "date", "end of life", "supported"):
@@ -308,7 +314,8 @@ class ReportKeyTests(unittest.TestCase):
             for name, _v, _p, _parent in ROWS:
                 self.assertNotIn(name, text)
         self.assertEqual(set(AMBIGUITY_REASONS),
-                         {TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST})
+                         {TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST,
+                          SHARED_SUPPORT_LINES})
 
     def test_count_and_breakdown(self):
         counts = self.out["counts"]
@@ -331,7 +338,7 @@ class ReportKeyTests(unittest.TestCase):
         self.assertEqual(set(self.out["lists"]), set(assess_mod.LISTS))
 
     def test_no_new_state_list_or_schema(self):
-        self.assertEqual(self.out["schema_version"], 1)
+        self.assertEqual(self.out["schema_version"], 2)
         self.assertEqual(set(self.out["counts"]["states"]),
                          set(assess_mod.STATES))
 
@@ -362,7 +369,11 @@ class GoldUnchangedTests(unittest.TestCase):
             flagged += bool(a["ambiguity"])
             if a["ambiguity"]:
                 self.assertEqual(a["state"], "unmatched")
-                self.assertIsNone(a["product"])
+                self.assertIsNone(a["cycle"])
+                if a["ambiguity"]["code"] == SHARED_SUPPORT_LINES:
+                    self.assertEqual(a["product"], "internet-explorer")
+                else:
+                    self.assertIsNone(a["product"])
             a, b = dict(a), dict(b)
             a.pop("ambiguity")
             b.pop("ambiguity")
@@ -519,6 +530,188 @@ class ViewTests(unittest.TestCase):
         for name in ("past_eol", "ends_soon", "review_urgently",
                      "dates_disagree"):
             self.assertEqual(self.report["lists"][name], [])
+
+
+# --- shared_support_lines (issue #21): bundled data, review_versions -------
+
+IE_ROWS = (
+    # (name, publisher, version, review code, cycle)
+    ("Internet Explorer 11", "Microsoft Corporation", "11.0.9600.19596",
+     SHARED_SUPPORT_LINES, None),
+    ("Internet Explorer 11", "Microsoft Corporation", "11.0.14393.0",
+     SHARED_SUPPORT_LINES, None),
+    ("Internet Explorer", "Microsoft Corporation", "11.0.17763.0",
+     SHARED_SUPPORT_LINES, None),
+    ("Internet Explorer", "", "11.0.19041.1", SHARED_SUPPORT_LINES, None),
+    ("Internet Explorer 11", "Microsoft Corporation", "",
+     SHARED_SUPPORT_LINES, None),
+    # The name says 11 and the version says 10: the name version counts.
+    ("Internet Explorer 11", "Microsoft Corporation", "10.0.9200.16384",
+     SHARED_SUPPORT_LINES, None),
+    # A version that names its support line keeps that line's cycle.
+    ("Internet Explorer", "Microsoft Corporation", "11-ltsc", None,
+     "11-ltsc"),
+    ("Internet Explorer", "Microsoft Corporation", "11-server", None,
+     "11-server"),
+    ("Internet Explorer 10", "Microsoft Corporation", "10.0.9200.16384",
+     None, "10"),
+    ("Internet Explorer 9", "Microsoft Corporation", "9.0.8112.16421",
+     None, "9"),
+)
+
+
+class SharedSupportLinesTests(unittest.TestCase):
+    """An Internet Explorer 11 row keeps its product, gets no cycle, date
+    or state, and is listed under "Names to review"."""
+
+    @classmethod
+    def setUpClass(cls):
+        import csv
+        import io
+        import tempfile
+        from contextlib import redirect_stderr, redirect_stdout
+        from swlc import cli
+        cls.tmp = tempfile.TemporaryDirectory()
+        tmp = Path(cls.tmp.name)
+        inv = tmp / "inventory.csv"
+        with open(inv, "w", encoding="utf-8", newline="") as fh:
+            writer = csv.writer(fh)
+            writer.writerow(["Software Name", "Publisher", "Version",
+                             "Owner"])
+            for name, pub, ver, _code, _cycle in IE_ROWS:
+                writer.writerow([name, pub, ver, "ops"])
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+            cli.main(["check", str(inv), "--as-of", VIEW_DATE, "--out",
+                      str(tmp / "out")])
+        out = tmp / "out"
+        cls.report = json.loads((out / "report.json").read_text("utf-8"))
+        cls.md = (out / "report.md").read_text("utf-8")
+        cls.csv = list(csv.DictReader(io.StringIO(
+            (out / "report.csv").read_text("utf-8"))))
+        cls.items = {(it["name"], it["publisher"], it["version"]): it
+                     for it in cls.report["items"]}
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_codes_and_cycles(self):
+        for name, pub, ver, code, cycle in IE_ROWS:
+            with self.subTest(name=name, ver=ver):
+                it = self.items[(name, pub, ver)]
+                self.assertEqual(it["product"], "internet-explorer")
+                self.assertEqual(it["cycle"], cycle)
+                self.assertEqual((it["ambiguity"] or {}).get("code"), code)
+        self.assertEqual(self.report["counts"]["ambiguous_review"], 6)
+        self.assertEqual(self.report["schema_version"], 2)
+
+    def test_no_date_or_state_from_cycle_11(self):
+        for it in self.report["items"]:
+            if not it["ambiguity"]:
+                continue
+            self.assertEqual(it["state"], "unmatched")
+            self.assertIn(it["id"], self.report["lists"]["unmatched"])
+            self.assertNotIn(it["id"], self.report["lists"]["past_eol"])
+            for key in ("cycle", "eol_used", "eol_endoflife", "support",
+                        "extended_support", "state_endoflife", "kev"):
+                self.assertIsNone(it[key], key)
+            self.assertNotEqual(it["eol_used"], "2022-06-14")
+
+    def test_markdown_lists_the_product_and_the_reason(self):
+        start = self.md.index("\n## Names to review (")
+        sec = self.md[start:self.md.index("\n## ", start + 1)]
+        self.assertIn("## Names to review (6)", sec)
+        self.assertIn("  - Product: internet-explorer (no cycle)", sec)
+        self.assertIn("Review: " + AMBIGUITY_REASONS[SHARED_SUPPORT_LINES],
+                      sec)
+        for claim in ("2022-06-14", "State:", "past end of life"):
+            self.assertNotIn(claim, sec)
+
+    def test_named_lines_never_carry_the_review_text(self):
+        from swlc.report import REVIEW_COLUMN
+        text = AMBIGUITY_REASONS[SHARED_SUPPORT_LINES]
+        for ver in ("11-ltsc", "11-server"):
+            with self.subTest(ver=ver):
+                it = self.items[("Internet Explorer", "Microsoft Corporation",
+                                 ver)]
+                self.assertIsNone(it["ambiguity"])
+                self.assertEqual(it["eol_endoflife"], "2031-10-14")
+                self.assertNotIn(it["id"], self.md.split(
+                    "\n## Names to review (", 1)[1].split("\n## ", 1)[0])
+                rows = [r for r in self.csv if r["version"] == ver]
+                self.assertEqual(len(rows), 1)
+                self.assertNotEqual(rows[0][REVIEW_COLUMN], text)
+                self.assertEqual(rows[0]["cycle"], ver)
+
+    def test_golden_source_is_not_applied_and_a_warning_says_so(self):
+        from swlc.data import load_data
+        data = load_data(str(ROOT / "data"), date.fromisoformat(VIEW_DATE))
+        golden = Golden({"internet-explorer": {
+            "product": "internet-explorer", "source": "manual",
+            "manual_eol": date(2031, 10, 14), "reason": "r",
+            "set_by": "lead", "set_on": date(2026, 1, 1),
+            "review_by": date(2027, 1, 1)}})
+        rows = [{"name": n, "version": v, "publisher": p, "owner": "ops",
+                 "parent": ""}
+                for n, p, v in (("Internet Explorer 11",
+                                 "Microsoft Corporation", "11.0.9600.19596"),
+                                ("Internet Explorer", "Microsoft Corporation",
+                                 "11-server"))]
+        out = assess(group_rows(rows, COLMAP), data, golden, Exceptions(),
+                     {}, date.fromisoformat(VIEW_DATE))
+        items = {it["version"]: it for it in out["items"]}
+        flagged = items["11.0.9600.19596"]
+        self.assertEqual(flagged["ambiguity"]["code"], SHARED_SUPPORT_LINES)
+        self.assertIsNone(flagged["golden_applied"])
+        self.assertIsNone(flagged["eol_used"])
+        self.assertNotIn(flagged["id"], out["lists"]["golden_overrides"])
+        self.assertIn(assess_mod.GOLDEN_NOT_APPLIED % 1, out["warnings"])
+        # The row that names its line still takes the golden source.
+        self.assertEqual(items["11-server"]["golden_applied"], "manual")
+        # No golden row, no warning.
+        out = assess(group_rows(rows, COLMAP), data, Golden(), Exceptions(),
+                     {}, date.fromisoformat(VIEW_DATE))
+        self.assertFalse(any("golden-source row" in w
+                             for w in out["warnings"]))
+
+    def test_golden_warning_is_whole_in_report_md(self):
+        import io
+        import tempfile
+        from contextlib import redirect_stderr, redirect_stdout
+        from swlc import cli
+        from swlc.report import MAX_DISPLAY
+        self.assertLessEqual(len(assess_mod.GOLDEN_NOT_APPLIED % 999999),
+                             MAX_DISPLAY)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            inv = tmp / "inventory.csv"
+            inv.write_text("Software Name,Publisher,Version,Owner\n"
+                           "Internet Explorer 11,Microsoft Corporation,"
+                           "11.0.9600.19596,ops\n", encoding="utf-8")
+            gold = tmp / "golden.csv"
+            gold.write_text(
+                "schema_version,product,source,manual_eol,reason,set_by,"
+                "set_on,review_by\n1,internet-explorer,manual,2031-10-14,"
+                "Server line,lead,2026-01-01,2027-01-01\n", encoding="utf-8")
+            with redirect_stdout(io.StringIO()), \
+                    redirect_stderr(io.StringIO()):
+                cli.main(["check", str(inv), "--as-of", VIEW_DATE,
+                          "--golden", str(gold), "--out", str(tmp / "out")])
+            md = (tmp / "out" / "report.md").read_text("utf-8")
+        lines = [line for line in md.split("\n")
+                 if line.startswith("Warning: 1 item")]
+        self.assertEqual(len(lines), 1, md)
+        self.assertTrue(lines[0].endswith(
+            "not applied: no cycle, see Names to review."), lines[0])
+        self.assertNotIn("...", lines[0])
+
+    def test_csv_review_column(self):
+        from swlc.report import REVIEW_COLUMN
+        reasons = [row[REVIEW_COLUMN] for row in self.csv
+                   if row[REVIEW_COLUMN]]
+        self.assertEqual(reasons,
+                         [AMBIGUITY_REASONS[SHARED_SUPPORT_LINES]] * 6)
+
 
 
 if __name__ == "__main__":

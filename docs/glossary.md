@@ -33,10 +33,13 @@ to do with these is in step 9, "Handle "Couldn't match"", of
 
 **Names to review.** Rows the tool left unmatched on purpose. The name
 looks like a product in the catalog, but there is not enough evidence to
-match it, often because the row has no publisher. It is not a finding,
-and no product, cycle, date or state is shown. To settle one, add a
-publisher that names the vendor, ask for a curated alias, or record that
-it is a different product. These rows are also counted under "Couldn't
+match it to one support line, often because the row has no publisher.
+It is not a finding, and no cycle, date or state is shown. A product is
+shown only when the version fits more than one support line (Internet
+Explorer 11 on desktop, Server, LTSB or LTSC Windows). To settle one, add
+a publisher that names the vendor, ask for a curated alias, or record that
+it is a different product; for Internet Explorer 11, check which Windows
+it runs on. These rows are also counted under "Couldn't
 match". See "Names to review" in [usage.md](usage.md).
 
 **In CISA KEV, past or near end of life.** The item is past end of life or

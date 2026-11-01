@@ -173,6 +173,23 @@
   - https://services.nvd.nist.gov/rest/json/cpes/2.0?cpeMatchString=cpe:2.3:a:microsoft:exchange_server:2019:cumulative_update_14
     (the NVD CPE title "Microsoft Exchange Server 2019 Cumulative Update
     14")
+- Issue #21 rows (Internet Explorer 9, 10 and 11 names and build numbers;
+  no dates), page fetched on 2026-11-01:
+  - https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge
+    (Internet Explorer follows the support of the Windows it is installed
+    on; IE 11 is the version on Windows 10 LTSB and LTSC, Windows Server
+    2012 to 2022 and embedded editions; the desktop app ended support on
+    some Windows 10 versions on June 15, 2022; the IE 9 line on Windows
+    Server 2008 ESU)
+  - https://learn.microsoft.com/en-us/windows/win32/msi/operating-system-property-values
+    (Windows 8.1 is build 9600 or later)
+  - https://learn.microsoft.com/en-us/windows/security/security-foundations/certification/validations/cc-windows-server-previous
+    (Windows Server 2012 R2 is build 6.3.9600)
+  - https://learn.microsoft.com/en-us/windows/release-health/release-information
+    (Windows 10 2016 LTSB is version 1607, build 14393; 2019 LTSC is version
+    1809, build 17763)
+  - https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+    (Windows Server 2016 is build 14393; Server 2019 is build 17763)
 - endoflife.date product pages: https://endoflife.date/android,
   https://endoflife.date/centos-stream, https://endoflife.date/cockroachdb,
   https://endoflife.date/commvault, https://endoflife.date/django,

@@ -103,7 +103,9 @@ No install step. Run from the repo root.
   and the floor together. `curation.json` is not written by
   `refresh_data.py`. A `bundle_parents` entry (also `classification_rows` and
   `classification_products`) follows the same four steps, with a gold row
-  that carries its `classification` and `expected_parent`.
+  that carries its `classification` and `expected_parent`. A
+  `review_versions` entry follows them too, with a gold row whose
+  `expected_cycle` is `none`.
 - Never hand-edit any other generated file in `data/`, `tests/fixtures/data` or
   `tests/fixtures/expected-report.json`. Regenerate the first with
   `tests/make_fixtures.py` and the second with `UPDATE_GOLDEN=1` (see

@@ -127,6 +127,35 @@ class BundledCatalogTests(unittest.TestCase):
         validate_curation(self.data.curation, set(self.data.catalog))
         validate_curation(read("curation.json"), set(self.data.products))
 
+    def test_review_versions_entries_are_backed(self):
+        # Every review_versions entry (issue #21) names a product with an
+        # eol/ file, prefixes that start more than one of its cycles (the
+        # support lines it cannot tell apart), and a gold row that expects
+        # the product with no cycle.
+        import csv
+        from swlc.normalize import split_version
+        review = read("curation.json").get("review_versions") or {}
+        self.assertTrue(review)
+        gold_path = ROOT / "tests" / "benchmark" / "gold.csv"
+        with open(gold_path, encoding="utf-8", newline="") as fh:
+            gold = {"%s|%s|%s" % (r["name"], r["publisher"], r["version"]): r
+                    for r in csv.DictReader(fh)}
+        for pid, entry in review.items():
+            with self.subTest(product=pid):
+                for key in ("source", "reason", "gold", "code"):
+                    self.assertTrue(entry[key], key)
+                self.assertTrue((DATA / "eol" / ("%s.json" % pid)).is_file())
+                labels = [c["cycle"] for c in read("eol/%s.json" % pid)]
+                self.assertEqual(entry["prefixes"], sorted(entry["prefixes"]))
+                for prefix in entry["prefixes"]:
+                    want = split_version(prefix)
+                    starts = [lb for lb in labels
+                              if split_version(lb)[:len(want)] == want]
+                    self.assertGreater(len(starts), 1, prefix)
+                row = gold[entry["gold"]]
+                self.assertEqual((row["expected_product"],
+                                  row["expected_cycle"]), (pid, "none"))
+
     def test_version_name_titles_are_coined_one_word_titles(self):
         # The version-in-name rule's list (swlc/catalog_match.py). Ids that
         # a weekly update removed are skipped; the others must still be
