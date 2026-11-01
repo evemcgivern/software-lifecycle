@@ -1,0 +1,38 @@
+[
+  {
+    "cycle": "12",
+    "eol": false,
+    "releaseDate": "2026-08-27",
+    "support": true
+  },
+  {
+    "cycle": "11",
+    "eol": false,
+    "releaseDate": "2025-01-20",
+    "support": "2026-08-27"
+  },
+  {
+    "cycle": "10",
+    "eol": true,
+    "releaseDate": "2023-06-15",
+    "support": "2025-01-20"
+  },
+  {
+    "cycle": "9",
+    "eol": true,
+    "releaseDate": "2022-07-08",
+    "support": "2023-06-15"
+  },
+  {
+    "cycle": "8",
+    "eol": true,
+    "releaseDate": "2021-07-07",
+    "support": "2022-07-08"
+  },
+  {
+    "cycle": "7",
+    "eol": true,
+    "releaseDate": "2020-03-13",
+    "support": "2021-07-07"
+  }
+]

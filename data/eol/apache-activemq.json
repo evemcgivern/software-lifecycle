@@ -1,5 +1,10 @@
 [
   {
+    "cycle": "6.4",
+    "eol": false,
+    "releaseDate": "2026-10-22"
+  },
+  {
     "cycle": "6.3",
     "eol": false,
     "releaseDate": "2026-07-24"

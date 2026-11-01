@@ -1,5 +1,20 @@
 [
   {
+    "cycle": "laptop-ultra",
+    "eol": "2032-10-16",
+    "releaseDate": "2026-10-16"
+  },
+  {
+    "cycle": "pro-12-inch-2nd-edition-snapdragon",
+    "eol": "2032-10-13",
+    "releaseDate": "2026-10-13"
+  },
+  {
+    "cycle": "laptop-13-inch-2nd-edition-snapdragon",
+    "eol": "2032-10-13",
+    "releaseDate": "2026-10-13"
+  },
+  {
     "cycle": "pro-12th-edition-snapdragon",
     "eol": "2032-06-16",
     "releaseDate": "2026-06-16"

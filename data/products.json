@@ -1554,6 +1554,13 @@
     },
     {
       "category": "server-app",
+      "id": "geoserver",
+      "namespaces": [],
+      "title": "GeoServer",
+      "vendors": []
+    },
+    {
+      "category": "server-app",
       "id": "gerrit",
       "namespaces": [],
       "title": "Gerrit",
@@ -1567,6 +1574,16 @@
       "namespaces": [],
       "title": "Glasgow Haskell Compiler (GHC)",
       "vendors": []
+    },
+    {
+      "category": "app",
+      "id": "git",
+      "namespaces": [],
+      "title": "Git",
+      "vendors": [
+        "git",
+        "git-scm"
+      ]
     },
     {
       "category": "service",
@@ -2340,6 +2357,15 @@
     },
     {
       "category": "framework",
+      "id": "livewire",
+      "namespaces": [
+        "livewire"
+      ],
+      "title": "Livewire",
+      "vendors": []
+    },
+    {
+      "category": "framework",
       "id": "log4j",
       "namespaces": [
         "log4j",
@@ -2617,6 +2643,15 @@
       "vendors": [
         "neos"
       ]
+    },
+    {
+      "category": "framework",
+      "id": "nestjs",
+      "namespaces": [
+        "nestjs"
+      ],
+      "title": "NestJS",
+      "vendors": []
     },
     {
       "category": "os",
@@ -2986,7 +3021,9 @@
     {
       "category": "server-app",
       "id": "otobo",
-      "namespaces": [],
+      "namespaces": [
+        "rotheross"
+      ],
       "title": "OTOBO",
       "vendors": []
     },

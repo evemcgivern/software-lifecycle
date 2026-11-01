@@ -143,5 +143,20 @@
     "cycle": "6.3",
     "eol": "2003-03-01",
     "releaseDate": "1998-03-01"
+  },
+  {
+    "cycle": "6.2",
+    "eol": true,
+    "releaseDate": "1997-10-02"
+  },
+  {
+    "cycle": "6.1",
+    "eol": true,
+    "releaseDate": "1997-06-08"
+  },
+  {
+    "cycle": "6.0",
+    "eol": true,
+    "releaseDate": "1997-01-29"
   }
 ]

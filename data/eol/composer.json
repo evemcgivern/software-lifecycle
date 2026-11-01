@@ -1,7 +1,12 @@
 [
   {
-    "cycle": "2.10",
+    "cycle": "2.11",
     "eol": false,
+    "releaseDate": "2026-10-29"
+  },
+  {
+    "cycle": "2.10",
+    "eol": "2026-10-29",
     "releaseDate": "2026-05-28"
   },
   {
