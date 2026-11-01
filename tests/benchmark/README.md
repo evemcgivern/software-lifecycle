@@ -341,13 +341,18 @@ See the numbers with `SWLC_BENCH_REPORT=1 python3 -B -m unittest discover -s tes
   `MySQL|Oracle Corporation|4.0.1`, `Notepad++|Notepad++ Team|6.0.1` and
   `PHP|The PHP Group|4.0.1`, were relabelled from cycle `none` to an
   empty cycle (the product, any cycle). The data changed, not the rule:
-  upstream endoflife.date (commit 38b1896e) added the old cycles
-  LibreOffice 6.0, MySQL 4.0, Notepad++ 6.0 and PHP 4.0, so these
-  versions now fit a real cycle and the weekly job scored them hard
-  wrong (hand and catalog 754 against the floor of 758). The exact new
-  cycle would fail on the bundled data, which lacks those cycles; an
-  empty cycle is correct on both. Once the weekly data is merged, each
-  row can be tightened to its exact cycle. The hand and catalog count
-  stays 758; no floor changed.
+  upstream endoflife.date added the old cycles LibreOffice 6.0, MySQL
+  4.0, Notepad++ 6.0 and PHP 4.0 (upstream pull requests #11479,
+  #11473, #11475 and #11488, and #11472, merged 2026-10-31 to
+  2026-11-01; all present at upstream commit 38b1896e, which the weekly
+  run used). These versions now fit a real cycle, and the weekly job
+  scored them hard wrong (hand and catalog 754 against the floor of
+  758). The exact new cycle would fail on the bundled data, which lacks
+  those cycles; an empty cycle is correct on both. An empty cycle also
+  accepts a wrong cycle: `libreoffice` 7.4 for 6.0.1 would score
+  correct. So these four rows test only the product until each is
+  tightened to its exact cycle (6.0 or 4.0) after the weekly data
+  merges (follow-up issue to be filed). The hand and catalog count stays
+  758; no floor changed.
 
 Sources are in `SOURCES.md`.

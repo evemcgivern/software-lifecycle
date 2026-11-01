@@ -201,9 +201,11 @@
   https://endoflife.date/spring-boot, https://endoflife.date/spring-framework,
   https://endoflife.date/tomcat and https://endoflife.date/windows-server
 - endoflife.date product pages for the four rows relabelled in issue #74
-  (seen 2026-11-01, upstream commit
-  38b1896e632717895c7896dde8f42b918a58103d, which added the historical
-  cycles LibreOffice 6.0, MySQL 4.0, Notepad++ 6.0 and PHP 4.0):
+  (seen 2026-11-01; the historical cycles LibreOffice 6.0, MySQL 4.0,
+  Notepad++ 6.0 and PHP 4.0 are present at upstream commit
+  38b1896e632717895c7896dde8f42b918a58103d and were added by upstream
+  pull requests #11479, #11473, #11475 and #11488, and #11472, merged
+  2026-10-31 to 2026-11-01):
   https://endoflife.date/libreoffice, https://endoflife.date/mysql,
   https://endoflife.date/notepad-plus-plus and https://endoflife.date/php
 
