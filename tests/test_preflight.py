@@ -363,7 +363,7 @@ class OutputTests(Base):
             "preflight_version", "ok", "file", "limits", "profile",
             "columns", "other_columns", "blank_cells", "placeholder_cells",
             "formula_cells", "unreadable_date_cells", "fix",
-            "next_command"})
+            "next_command", "next_command_counts_only"})
         self.assertEqual(set(res["file"]), {"readable", "encoding", "bom",
                                             "line_endings", "bytes", "rows"})
         self.assertEqual(set(res["limits"]),
@@ -435,6 +435,29 @@ class OutputTests(Base):
                          "  On Windows, type py instead of python3.")
         _, res, _ = self.pre_json(path)
         self.assertTrue(res["next_command"].startswith("python3 "))
+
+    def test_assistant_line_follows_the_next_command(self):
+        path = self.inv(["Product", "Version"], [["a", "1"]])
+        _, out, _ = self.pre(path)
+        lines = out.splitlines()
+        at = lines.index("Next command")
+        self.assertTrue(lines[at + 1].startswith("  python3 "))
+        self.assertNotIn("--counts-only", lines[at + 1])
+        second = lines[at + 3]
+        self.assertTrue(second.startswith(
+            "  If an AI assistant is running this for you, use this "
+            "instead (prints counts only): python3 "))
+        self.assertIn("--counts-only", second)
+        _, res, _ = self.pre_json(path)
+        self.assertTrue(second.endswith(res["next_command_counts_only"]))
+
+    def test_json_counts_only_command_extends_next_command(self):
+        path = self.inv(["Product", "Version"], [["a", "1"]])
+        _, res, _ = self.pre_json(path)
+        self.assertEqual(res["preflight_version"], 1)
+        self.assertNotIn("--counts-only", res["next_command"])
+        self.assertEqual(res["next_command_counts_only"],
+                         res["next_command"] + " --counts-only")
 
     def test_no_cell_value_on_success(self):
         path = self.inv(["Product", "Publisher", "Version", "Owner"],
