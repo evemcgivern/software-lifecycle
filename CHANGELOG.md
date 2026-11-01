@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- Ease-of-use fixes (issue #45). `preflight` now checks the owner column
+  (a missing column puts every item on "Ownerless"; blank owner cells are
+  named) and the export end-of-life date column (cells not in
+  YYYY-MM-DD form, such as day-first dates, are counted, because they put
+  items on "Dates disagree"). Its JSON gains `columns.owner`,
+  `columns.export_eol` and `unreadable_date_cells`; owner and export_eol
+  no longer appear under `other_columns`. Under "Next command" a line
+  tells Windows users to type `py` instead of `python3`. An unmatched
+  item whose product is known now reads "Product known; version not
+  matched." in `report.md` instead of "Product matched by a curated
+  alias."; `match_source` in `report.json` is unchanged and
+  `schema_version` stays 1. `examples/sample-report.md` carries a note
+  under its title that the Hostile Corp rows are planted tests of how the
+  tool handles unsafe text; a real run's `report.md` has no such note.
+  The demo writes to `../swlc-demo` in every doc.
 - Docs for report readers (issue #42): `docs/quick-start.md`, one page
   for macOS, Linux and Windows (preflight first, a short output folder,
   what "KEV overlay is not current" means); `docs/glossary.md`, plain

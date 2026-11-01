@@ -40,7 +40,7 @@ A file with only its header row is a valid empty file. Their columns are in
 
 Full example, the demo:
 
-    python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo
+    python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo
 
 ## preflight
 
@@ -58,20 +58,27 @@ writes nothing, and prints:
   `generic`) and how it decided: a profile fits when its own headings for
   name, publisher and version all match, and the fit that matches the most
   fields wins;
-- for name, publisher, version, count and parent: the column title found,
-  or "not found";
+- for name, publisher, version, owner, count, export end-of-life date
+  (`export_eol`) and parent: the column title found, or "not found";
 - the number of blank cells in each recognised column, of Parent cells
   that hold a placeholder (`n/a`, `none`, `unknown` and the like, which
   `check` reads as no parent) and of cells that start like a spreadsheet
   formula. A name or version of `n/a` is not a placeholder: `check` matches
   it as written;
+- the number of end-of-life date cells that are not in `YYYY-MM-DD` form,
+  such as day-first dates. `check` cannot read them and lists those items
+  under "Dates disagree";
 - a "What to fix" list in fixed wording, and the `check` command to run
-  next.
+  next. The command starts with `python3`; a line under it tells Windows
+  users to type `py` instead.
 
 It prints your column titles and numbers only, never a cell value or a
 name from a row, so its output is safe to show an AI agent. A missing
 name or version column, or a file with no data rows, exits 3. A missing
-publisher, count or parent column is listed in "What to fix" and exits 0.
+publisher, owner, count, end-of-life date or parent column is listed in
+"What to fix" and exits 0. With no owner column, `check` lists every item
+under "Ownerless". Blank owner cells and unreadable end-of-life dates are
+listed too.
 An unreadable file exits 3 with the same error text as `check`.
 
 | Flag | What it does | Example |

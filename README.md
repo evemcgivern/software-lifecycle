@@ -33,9 +33,9 @@ Run these from the repo root.
 1. Try the demo. The demo inventory is made up and runs against synthetic
    data, so the output never changes with the date:
 
-       python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo
+       python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo
 
-2. Open `/tmp/swlc-demo/report.md`. `report.json` and `report.csv` are in
+2. Open `../swlc-demo/report.md`. `report.json` and `report.csv` are in
    the same folder.
 3. Run your own inventory against the bundled real data:
 

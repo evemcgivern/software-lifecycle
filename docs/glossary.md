@@ -60,6 +60,13 @@ source (below) chose a different date.
 
 ## Words on each item
 
+**Product matched by a curated alias** and **Product matched by product
+title**. How the tool found the product for an item it matched: an alias
+the maintainer keeps, or the name equals the product's title. **Product
+known; version not matched.** On a "Couldn't match" item: the tool knows
+the product, but no single cycle was decided for the version (or no
+version was given), so no date is claimed.
+
 **Inventory rows** and **Count (from your file)**. "Inventory rows: N" is
 how many rows of your export made this item: rows in the export, not
 installs or machines. "Count (from your file): N" is the sum of your

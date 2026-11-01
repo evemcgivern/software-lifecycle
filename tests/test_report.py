@@ -11,8 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from helpers import (EVIL, PARENT_HEADER, PARENT_ROWS, SCRIPT, make_data_dir,
-                     write_inventory)
+from helpers import (EVIL, FIXTURE_ROWS, PARENT_HEADER, PARENT_ROWS, SCRIPT,
+                     make_data_dir, write_inventory)
 from swlc import report
 from swlc.cli import build
 
@@ -342,6 +342,22 @@ class MatchSourceTests(Base):
         block = self.md[self.md.index("**Mystery Tool**"):]
         block = block[:block.index("\n- ")] if "\n- " in block else block
         self.assertNotIn("Product matched by", block)
+
+
+class UnmatchedSourceTests(Base):
+    inv_rows = FIXTURE_ROWS + [["Example SQL", "99", "Example Vendor",
+                                "olga", ""]]
+
+    def test_unmatched_item_with_a_product_says_version_not_matched(self):
+        it = self.item("Example SQL", "99")
+        self.assertEqual(it["state"], "unmatched")
+        self.assertEqual(it["match_source"], "curated")
+        start = self.md.index("(id `%s`)" % it["id"])
+        block = self.md[start:self.md.index("\n- **", start)]
+        self.assertIn("  - Product known; version not matched.\n", block)
+        self.assertNotIn("Product matched by", block)
+        # A decided item keeps the match-source line.
+        self.assertIn("Product matched by a curated alias.", self.md)
 
     def test_csv_adds_match_source_as_the_last_column(self):
         rows = list(csv.reader(io.StringIO(report.render_csv(self.result))))

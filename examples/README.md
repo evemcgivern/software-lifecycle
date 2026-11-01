@@ -7,8 +7,9 @@
 The demo runs against the synthetic data in `tests/fixtures/data`, not the live snapshots, so the output never changes with the date.
 Run it from the repo root:
 
-    python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo
+    python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo
 
-`sample-report.md` is the `report.md` that command writes. It is synthetic data only.
+`sample-report.md` is the `report.md` that command writes, plus one sample note under the title. It is synthetic data only.
+The Hostile Corp rows (a script tag, a spreadsheet formula and a shell command) are planted tests of how the tool handles unsafe text. They are not real software.
 To regenerate the inventory, answer key, tracking file, support-records file and sample report, run `python3 examples/generate.py`. A fixed seed gives the same bytes every time.
-`tests/test_e2e.py` checks the run against the answer key and checks that `sample-report.md` is the run's `report.md`, byte for byte.
+`tests/test_e2e.py` checks the run against the answer key and checks that `sample-report.md` is the run's `report.md`, byte for byte, apart from the sample note. A real run's `report.md` has no sample note.
