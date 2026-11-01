@@ -798,6 +798,39 @@ class CurationSchemaTests(DataCase):
             validate_curation(curation_obj(no_cycle_versions={"gone": good}),
                               ["alpha"])
 
+    def test_review_versions(self):
+        good = {"prefixes": ["11"], "code": "shared_support_lines",
+                "reason": "several support lines",
+                "source": "https://example.com/v", "gold": "a|b|c"}
+        obj = curation_obj(review_versions={"alpha": good})
+        self.assertIs(validate_curation(obj, ["alpha"]), obj)
+        validate_curation(curation_obj(review_versions={}))
+        for entry in (
+                [], dict(good, extra=1),
+                {k: v for k, v in good.items() if k != "source"},
+                {k: v for k, v in good.items() if k != "reason"},
+                {k: v for k, v in good.items() if k != "gold"},
+                {k: v for k, v in good.items() if k != "code"},
+                dict(good, code="title_needs_publisher"),
+                dict(good, code="SHARED_SUPPORT_LINES"), dict(good, code=""),
+                dict(good, prefixes=[]), dict(good, prefixes="11"),
+                dict(good, prefixes=["9", "11"]),
+                dict(good, prefixes=["11", "11"]),
+                dict(good, prefixes=["11.x"]), dict(good, prefixes=[11]),
+                dict(good, reason=""), dict(good, gold="a|b"),
+                dict(good, source="http://example.com/v")):
+            with self.subTest(entry=entry):
+                with self.assertRaises(DataError):
+                    validate_curation(curation_obj(
+                        review_versions={"alpha": entry}))
+        for bad in ([], {"Alpha": good}):
+            with self.assertRaises(DataError):
+                validate_curation(curation_obj(review_versions=bad))
+        # An entry that points at a product not in the catalog.
+        with self.assertRaises(DataError):
+            validate_curation(curation_obj(review_versions={"gone": good}),
+                              ["alpha"])
+
     def test_curation_new_keys_optional(self):
         validate_curation(curation_obj())
         self.assertIs(validate_curation(make_fixtures.CURATION),

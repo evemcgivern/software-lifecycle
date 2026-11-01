@@ -99,10 +99,13 @@ REVIEW_POINTER = ("Names to review: %d of these were left unmatched on "
                   "purpose; see \"%s\" below.")
 REVIEW_LEAD = ("Unmatched on purpose, not a finding. Each name looks like a "
                "catalog product, but there is not enough evidence to match "
-               "it, so no product, cycle, date or state is claimed. To "
-               "settle one, add a publisher that names the vendor, ask for "
-               "a curated alias, or record that it is a different product. "
-               "These items are also counted under "
+               "it to one support line, so no cycle, date or state is "
+               "claimed, and no product unless one is shown. To settle a "
+               "title, add a publisher that names the vendor, ask for a "
+               "curated alias, or record that it is a different product. To "
+               "settle a version that fits several support lines, check "
+               "which platform the item runs on and that line's date with "
+               "the vendor. These items are also counted under "
                "\"Couldn't match\".")
 SUPPORT_HEADING = "Support records"
 SUPPORT_COLUMN = "Support records (from your file)"
@@ -469,15 +472,18 @@ def _item_block(it: dict, eol_snap: str, by_id: dict,
 
 
 def _review_block(it: dict) -> list:
-    """An ambiguous item: name, version, publisher and the fixed reason.
-    No product, cycle, date or state."""
+    """An ambiguous item: name, version, publisher, the product when one
+    was kept (shared_support_lines) and the fixed reason. No cycle, date or
+    state."""
     head = "- **%s**" % _name(it["name"])
     if _disp(it["version"]):
         head += " " + _disp(it["version"])
     if it["publisher"]:
         head += ", publisher %s" % _disp(it["publisher"])
-    return [head + " (id `%s`)" % it["id"],
-            "  - Review: %s" % it["ambiguity"]["reason"]]
+    out = [head + " (id `%s`)" % it["id"]]
+    if it.get("product"):
+        out.append("  - Product: %s (no cycle)" % _disp(it["product"]))
+    return out + ["  - Review: %s" % it["ambiguity"]["reason"]]
 
 
 def _kev_age_text(result: dict) -> str:

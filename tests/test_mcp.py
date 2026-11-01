@@ -273,6 +273,31 @@ class CheckCountsTests(Base):
                 self.assertNotIn(secret, body)
             self.assertIsNone(ITEM_ID.search(text_of(r[rid])))
 
+    def test_review_code_with_a_product_gives_only_allowed_lines(self):
+        # Internet Explorer 11 rows keep their product and get the review
+        # code shared_support_lines (issue #21): only the count comes back.
+        inv = self.root / "ie.csv"
+        inv.write_text(
+            "Name,Version,Publisher,Owner\n"
+            "Internet Explorer 11,11.0.9600.19596,Microsoft Corporation,ops\n"
+            "Internet Explorer,11.0.17763.0,Microsoft Corporation,ops\n"
+            "Internet Explorer 11,,Microsoft Corporation,ops\n",
+            encoding="utf-8")
+        r = replies([INIT, call(2, "check_counts", {"path": str(inv)})])
+        self.assertIs(r[2]["result"]["isError"], False)
+        body = text_of(r[2])
+        self.assertIsNone(ITEM_ID.search(body), body)
+        for line in body.splitlines():
+            self.assertIn(line.split()[0], ALLOWED_FIRST, line)
+        self.assertIn("ambiguous_review 3", body.splitlines())
+        for text in ("Internet Explorer", "internet-explorer",
+                     "shared_support_lines", "11.0.9600", "Windows"):
+            self.assertNotIn(text, json.dumps(r[2]))
+        raw = json.loads((self.root / "swlc-out-ie" / "report.json")
+                         .read_text("utf-8"))
+        self.assertEqual({it["ambiguity"]["code"] for it in raw["items"]},
+                         {"shared_support_lines"})
+
     def test_allow_list_drops_unknown_lines_and_ids(self):
         fake = ("checked_on 2026-11-01\n"
                 "Zqxv Quokkasoft Suite 1.0\n"

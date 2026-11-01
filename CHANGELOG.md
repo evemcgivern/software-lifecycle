@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Internet Explorer 11 rows now get the product `internet-explorer` with
+  no cycle, date or state, and are listed under "Names to review" with the
+  new review code `shared_support_lines` (issue #21). IE 11 follows the
+  Windows it runs on, and its builds are shared by desktop, Server, LTSB
+  and LTSC editions, so the generic cycle 11 (past end of life on
+  2022-06-14) is no longer used. Internet Explorer 9 and 10 are unchanged.
+  The new hand-kept `curation.json` key `review_versions` lists the
+  version prefixes. `report.json` `schema_version` is now 2; `--previous`
+  still accepts a version 1 report. A tool from 0.6.0 or earlier refuses
+  this `curation.json` with a data error.
+
 ## 0.6.0 - 2026-11-01
 
 - Added `swlc_mcp.py`, an optional local MCP server for desktop chat apps

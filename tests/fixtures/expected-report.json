@@ -2438,7 +2438,7 @@
     },
     "tool_version": "0.6.0"
   },
-  "schema_version": 1,
+  "schema_version": 2,
   "warnings": [
     "1 parts whose parent is not in this inventory"
   ]

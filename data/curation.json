@@ -916,6 +916,17 @@
       "source": "https://www.zabbix.com/contact"
     }
   },
+  "review_versions": {
+    "internet-explorer": {
+      "code": "shared_support_lines",
+      "gold": "Internet Explorer|Microsoft Corporation|11",
+      "prefixes": [
+        "11"
+      ],
+      "reason": "Internet Explorer is a Windows component and follows the support of the Windows it is installed on. The Internet Explorer 11 desktop app ended support on some Windows 10 versions on 2022-06-15, but it is still supported on Windows Server, Windows 10 LTSB and LTSC, and embedded editions. These cycles split 11 into 11, 11-ltsb, 11-ltsc, 11-server and 11-embedded, and the version (11.0.9600, 11.0.14393, 11.0.17763, 11.0.19041) is shared across editions, so a row that does not say which Windows it runs on cannot pick one.",
+      "source": "https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge"
+    }
+  },
   "single_word_allowlist": [
     {
       "gold": "Bazel||9.3.1",

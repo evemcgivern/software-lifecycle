@@ -10,7 +10,8 @@ import calendar
 import re
 from datetime import date, datetime
 
-from .catalog_match import TITLE_NEEDS_PUBLISHER, TITLE_NOT_ON_LIST
+from .catalog_match import (SHARED_SUPPORT_LINES, TITLE_NEEDS_PUBLISHER,
+                            TITLE_NOT_ON_LIST)
 from .classify import (CLASSES, PARENT_ABSENT, PART_CLASSES,
                        apply_classification, inherited_states)
 from .data import Data, kev_match
@@ -20,7 +21,10 @@ from .normalize import normalize_name
 from .overrides import Exceptions, Golden
 from .support import attach as attach_support
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+# --previous reads a report of any of these versions. Version 2 added the
+# ambiguity code shared_support_lines; its states are those of version 1.
+PREVIOUS_SCHEMA_VERSIONS = (1, 2)
 STATES = ("supported", "mainstream_ended", "ends_soon", "past_eol",
           "unmatched")
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
@@ -45,6 +49,7 @@ PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 # Item "ambiguity" codes: a row the matcher refused on purpose, for a person
 # to review. Fixed text, never row data. Not a state, list or reason code.
+# shared_support_lines keeps its product; the others have none.
 AMBIGUITY_REASONS = {
     TITLE_NEEDS_PUBLISHER: (
         "The name is a product title, but the row has no publisher to "
@@ -52,6 +57,10 @@ AMBIGUITY_REASONS = {
     TITLE_NOT_ON_LIST: (
         "The name is a product title and a version, but that title is not "
         "on the reviewed list for rows with no publisher."),
+    SHARED_SUPPORT_LINES: (
+        "The name and version fit more than one support line (desktop, "
+        "Server, LTSB or LTSC); the row does not say which Windows it runs "
+        "on."),
 }
 
 # ISO date, optionally followed by a time ("2026-01-15 00:00:00",
@@ -246,7 +255,7 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "problem_ref": refs.get("problem_ref") or None,
         "ambiguity": {"code": ambiguity,
                       "reason": AMBIGUITY_REASONS[ambiguity]}
-        if ambiguity and match.product is None else None,
+        if ambiguity else None,
     }
 
 
@@ -285,7 +294,7 @@ def _rank(items: list, lists: dict) -> None:
 def _previous_states(previous) -> dict | None:
     if not isinstance(previous, dict) \
             or type(previous.get("schema_version")) is not int \
-            or previous["schema_version"] != SCHEMA_VERSION \
+            or previous["schema_version"] not in PREVIOUS_SCHEMA_VERSIONS \
             or not isinstance(previous.get("items"), list):
         return None
     states = {}

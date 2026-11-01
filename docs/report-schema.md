@@ -1,7 +1,7 @@
-# Report schema (version 1)
+# Report schema (version 2)
 
 `report.json` is the full result. `report.md` and `report.csv` are views of
-it. This page lists every key and code in schema version 1. A test in this
+it. This page lists every key and code in schema version 2. A test in this
 repo fails if a key in a real run is missing from this page.
 
 `report.md` also prints one fixed line, once, under the summary counts:
@@ -47,7 +47,7 @@ inventory, so keep it as private as the inventory.
 
 | Key | Meaning |
 |---|---|
-| `schema_version` | The number 1. |
+| `schema_version` | The number 2. |
 | `as_of` | The date checked, `YYYY-MM-DD`. |
 | `lookahead_months` | The window in months (default 12). |
 | `data_release` | Which data was used. See below. |
@@ -249,10 +249,13 @@ A record never changes `state`, never puts an item on a list, and
 
 ### ambiguity
 
-Set only on an unmatched item with no product, whose class is `unknown`
-or `governable`. It changes nothing else: the item keeps `state`
-`unmatched`, its `reason` (`NO_ALIAS`), `product` `null` and no date. It
-never puts the item on another list, and `--fail-on` never reads it.
+Set only on an unmatched item whose class is `unknown` or `governable`.
+It changes nothing else: the item keeps `state` `unmatched` and no cycle
+or date. For `title_needs_publisher` and `title_not_on_list` the item
+keeps its `reason` (`NO_ALIAS`) and `product` `null`; for
+`shared_support_lines` it keeps its `product`, `match_source`
+`generated` and `reason` `NO_CYCLE`. It never puts the item on another
+list, and `--fail-on` never reads it.
 Unmatched on purpose, not a finding. To settle one, a person adds a
 publisher that names the vendor, asks the maintainer for a curated alias,
 or records that it is a different product; the tool never promotes such
@@ -268,9 +271,10 @@ a row to a match.
 | Code | When |
 |---|---|
 | `title_needs_publisher` | The cleaned name is exactly a one-word product title, the publisher is empty, and the match was refused only because no publisher confirms the product. When the version column is not empty, it must decide one cycle of that product; an empty version keeps the code. Reason: "The name is a product title, but the row has no publisher to confirm the product." |
+| `shared_support_lines` | Added in schema version 2. Generated matching picked the product, and the version column or the version in the name starts with a prefix the curated `review_versions` lists for it, because that version fits more than one support line. Today only `internet-explorer` with prefix `11`: Internet Explorer 11 follows the Windows it runs on, and its builds are shared by desktop, Server, LTSB and LTSC editions. The item keeps `product` and gets no cycle, so no date and state `unmatched`. A row a curated alias decided gets no code. Reason: "The name and version fit more than one support line (desktop, Server, LTSB or LTSC); the row does not say which Windows it runs on." |
 | `title_not_on_list` | The name is a one-word product title followed by a version, the publisher is empty, the version would decide one cycle, and the product is not on the reviewed list for rows with no publisher (the version-in-name rule in "How names are matched", `docs/usage.md`). Reason: "The name is a product title and a version, but that title is not on the reviewed list for rows with no publisher." |
 
-No code is set for a row with a publisher (a publisher that does not
+For the two title codes, no code is set for a row with a publisher (a publisher that does not
 confirm the product is often a different product, such as an editor
 extension or a mobile app), a row refused by a curated exclusion (or for
 any product an exclusion names), a device or `generated_off` product, a
@@ -392,7 +396,7 @@ past or near end of life".
 
 | Key | Meaning |
 |---|---|
-| `available` | `true` if `--previous` was a usable report of schema version 1. If not, the report adds a warning and the lists below are empty. |
+| `available` | `true` if `--previous` was a usable report of schema version 1 or 2. If not, the report adds a warning and the lists below are empty. |
 | `new` | Item IDs not in the previous report. |
 | `resolved` | Item IDs in the previous report and not in this one. |
 | `changed_state` | Entries with `id`, `from` and `to`. |
@@ -506,8 +510,18 @@ with a count they change only the order of `items` and of the IDs in each
 list, never which IDs a list holds. The `ambiguity`
 codes follow the reason-code rule: adding one bumps `schema_version`.
 The keyword arguments of `swlc.cli.run` follow
-the same rule. The tool only reads a `--previous` report of its own schema
-version.
+the same rule. The tool reads a `--previous` report of schema version 1 or
+2; any other version gives no diff and a warning.
+
+### Changes in schema version 2
+
+Version 2 adds one `ambiguity` code, `shared_support_lines` (issue #21),
+and lets an item with an `ambiguity` code keep its `product`. No key was
+removed or renamed, and the states, lists, reason codes and decision codes
+are those of version 1. An Internet Explorer 11 row that version 1 gave
+cycle `11` and its date now has no cycle, state `unmatched` and this code.
+`--previous` still reads a version 1 report, so the diff works across the
+upgrade; such a row shows as a changed state.
 
 ## Calling it from Python
 
