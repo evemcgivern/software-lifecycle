@@ -8,9 +8,10 @@ names, versions, publishers, owners or item IDs.
 
 Runs locally with no network by default; not independently assessed.
 
-The package is unsigned, and Claude Desktop may warn when you install it.
-It relies on Claude Desktop's own `uv` support to start Python, and has
-not been tested in Claude Desktop: **Unverified**. It holds no third-party
+The package is unsigned. It was installed and run once on one Mac (see
+`docs/mcp-setup.md`, "Tested so far"); on a Mac without `uv` it is
+**Unverified**. It relies on Claude Desktop's own `uv` support to start
+Python. It holds no third-party
 packages, only the repo's own standard-library code and bundled data.
 
 Setup, limits and what the server does not protect: `docs/mcp-setup.md`

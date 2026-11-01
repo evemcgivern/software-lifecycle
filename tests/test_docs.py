@@ -827,8 +827,8 @@ class McpSetupDocTests(unittest.TestCase):
                 "Other tools in the same app can still read files.",
                 "Do not attach, upload or paste your inventory or a report "
                 "into the chat.",
-                "can be built from the repo, but nobody has installed it "
-                "yet: **Unverified**",
+                "was installed and run once on one Mac on 2026-11-01; "
+                "everything else about it is **Unverified**",
                 "**Unverified**",
                 "never runs `refresh_data.py`"):
             self.assertIn(phrase, flat)
@@ -904,10 +904,11 @@ class McpSetupDocTests(unittest.TestCase):
         sec = " ".join(body.split("## One-click package (Claude Desktop)",
                                   1)[1].split("\n## ", 1)[0].split())
         for phrase in (
-                "**Unverified**: nobody has installed it in Claude Desktop "
-                "yet.",
+                "It was installed and run once on one Mac on 2026-11-01",
+                "anything beyond that is **Unverified**.",
                 "The manual route in [Claude Desktop](#claude-desktop) "
-                "remains the tested one.",
+                "remains the longest-tested one.",
+                "Remove a manual entry of the same name",
                 "python3 tools/build_mcpb.py --out",
                 "The package is unsigned.",
                 "uses the `uv` server type",
@@ -915,7 +916,7 @@ class McpSetupDocTests(unittest.TestCase):
                 "The Python that Claude Desktop's uv picks must be 3.9 or "
                 "newer.",
                 "whether it needs the network to do so: **Unverified**",
-                "`.venv` folder and a `uv.lock` file",
+                "`.venv` folder and a `uv.lock`",
                 "\"No network by default\" is about this project's own "
                 "code.",
                 "~/Library/Logs/Claude"):
@@ -929,6 +930,36 @@ class McpSetupDocTests(unittest.TestCase):
                 contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(build_mcpb.main(args.group(1).split()), 1)
         self.assertEqual(signed_problems(body), [])
+
+    def test_package_install_test_is_recorded(self):
+        body = text(MCP_SETUP)
+        tested = " ".join(
+            body.split("## Tested so far", 1)[1].split("\n## ", 1)[0].split())
+        para = tested.split("**One-click package (Claude Desktop).**", 1)[1]
+        for phrase in ("2026-11-01", "**Unverified**: a Mac without uv",
+                       "already had uv 0.12.1",
+                       "Windows",
+                       "Installing will grant this extension access to "
+                       "everything on your computer. Any developer "
+                       "information shown has not been verified by "
+                       "Anthropic. Ensure you trust the source of this "
+                       "extension before installation."):
+            self.assertIn(phrase, para)
+        for name in ("README", "ASSISTANT"):
+            flat = " ".join(text({"README": README,
+                                  "ASSISTANT": ASSISTANT_SETUP}[name]).split())
+            self.assertIn("installed and run once on one Mac", flat)
+            self.assertNotIn("nobody has installed", flat)
+
+    def test_package_readme_matches_the_install_test(self):
+        flat = " ".join(text(ROOT / "mcpb" / "README.md").split())
+        self.assertIn("installed and run once on one Mac", flat)
+        self.assertIn("The package is unsigned.", flat)
+        self.assertIn("**Unverified**", flat)
+        self.assertNotIn("has not been tested in Claude Desktop", flat)
+        self.assertNotIn("may warn", flat)
+        body = " ".join(text(MCP_SETUP).split())
+        self.assertIn("made from commit `b5e3aea`", body)
 
     def test_claude_desktop_approval_prompt_is_recorded(self):
         body = text(MCP_SETUP)

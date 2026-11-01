@@ -44,7 +44,8 @@ The server takes no other options, so the app cannot pass extra flags.
 The maintainer tested the server by hand on 2026-11-01, on one Mac
 (macOS 27.2), with the synthetic demo inventory from `examples/` copied
 to a folder outside the repo. App versions were not recorded. Nothing
-else was tested: every other detail on this page stays **Unverified**.
+else was tested, except the package described below: every other detail
+on this page stays **Unverified**.
 
 **Claude Desktop.**
 
@@ -101,12 +102,60 @@ expected, not a fault.
 **Treat the chat's guesses about causes as unverified.** A chat app sees
 only counts, so its explanation of why a result looks as it does can be
 wrong. In one test the chat guessed that the empty end-of-life column
-caused the unmatched items; that was wrong. The report folder holds the
+caused the unmatched items; that was wrong. In the package run (below)
+the chat added a "blank publisher" and said the check "ran against the
+generic profile"; the tool reported neither. The report folder holds the
 facts.
 
-Not tested: the one-click `.mcpb` package for Claude Desktop (issue
-#66). It can be built from the repo, but nobody has installed it yet; see
-[One-click package (Claude Desktop)](#one-click-package-claude-desktop).
+**One-click package (Claude Desktop).** The maintainer tested the
+`.mcpb` package (issue #66) on 2026-11-01, on the same Mac (macOS 27.2),
+after removing the manual entry from the config file. It was installed
+and run once. Everything below is what was seen on that one Mac; the
+rest is **Unverified**.
+
+- Built with `python3 tools/build_mcpb.py --out <folder>`: 514 files,
+  366,553 bytes, named `software-lifecycle-0.6.0.mcpb` (the version file
+  said 0.6.0), SHA-256
+  `9decb540eb7a492ea689e7b24dab5e2382ae553b0ce562a67d40c739d28e8c01`.
+  That hash belongs to the build that was tested, made from commit
+  `b5e3aea`. A rebuild from a later commit gives a different hash,
+  because `mcpb/README.md` is inside the package and has since changed.
+- Opening the file in Claude Desktop showed an install dialog: the name
+  "software-lifecycle (counts only)", made by the manifest's author, the MIT
+  license, "All requirements met", and both tools listed. The dialog also
+  showed Claude Desktop's own warning: "Installing will grant this
+  extension access to everything on your computer. Any developer
+  information shown has not been verified by Anthropic. Ensure you trust
+  the source of this extension before installation." After **Install**, the app showed an **Uninstall**
+  button, an **Enabled** toggle (on) and a **Configure** button.
+- The extension was installed in a folder under
+  `~/Library/Application Support/Claude/Claude Extensions/`, named like
+  `local.mcpb.eve-mcgivern.software-lifecycle` (the middle part comes from
+  the manifest author). It holds a
+  `.venv` folder and a `uv.lock` file, which the app's uv created at
+  install (manifest version 0.4, server type `uv`; the venv's
+  `pyvenv.cfg` names uv 0.12.1 and CPython 3.13 from uv's own Python
+  folder).
+- **That Mac already had uv 0.12.1 and a cached CPython 3.13.14 in uv's
+  Python folder from earlier use.** The run was very fast and nothing was
+  noticed about downloading; that does not show that a Mac without uv, or
+  without that Python, works. **Unverified**: a Mac without uv or without
+  a cached Python; whether the app downloads a Python on first run and
+  needs the network to do so; Windows; whether Claude Desktop uses its
+  own uv or the one on the `PATH`.
+- With the demo inventory (copied outside the repo) and the prompt in
+  [A prompt to use](#a-prompt-to-use), each tool showed an approval prompt
+  with the path. **Allow once** was chosen for both. Both tools ran, and
+  the counts matched the manual-config runs exactly: 60 rows, 50 items, a
+  count total of 11,791, all 50 unmatched, and a classification of 48
+  `unknown`, 1 `bundle_member` and 1 `component`. No names, versions,
+  publishers, column titles or item IDs came back. The app's log for the
+  extension shows `initialize` and `tools/list`, and the server's start
+  line.
+- The chat's own commentary on that run held two statements the tool did
+  not support: it added a "blank publisher", and said the check "ran
+  against the generic profile". See the paragraph above on the chat's
+  guesses.
 
 ## What it protects, and what it does not
 
@@ -249,10 +298,11 @@ they appear to be set in `config.toml` only. **Unverified**.
 
 ## Claude Desktop
 
-The one-click package for Claude Desktop (a `.mcpb` file) can be built
-from the repo, but nobody has installed it yet: **Unverified**. See
+The one-click package for Claude Desktop (a `.mcpb` file) was installed
+and run once on one Mac on 2026-11-01; everything else about it is
+**Unverified**. See
 [One-click package (Claude Desktop)](#one-click-package-claude-desktop).
-The manual route below is the tested one.
+The manual route below is the longest-tested one.
 
 The manual route below is documented for local servers in general:
 <https://modelcontextprotocol.io/docs/develop/connect-local-servers>.
@@ -309,9 +359,10 @@ servers you add may do much more.
 The repo can build a Desktop Extension: one `.mcpb` file that holds
 `swlc_mcp.py`, the tool, its bundled data, `LICENSE` and
 `THIRD-PARTY.md`, and nothing else (no tests, examples, docs or CSV
-files). It is **Unverified**: nobody has installed it in Claude Desktop
-yet. The manual route in [Claude Desktop](#claude-desktop) remains the
-tested one.
+files). It was installed and run once on one Mac on 2026-11-01 (see
+[Tested so far](#tested-so-far)); anything beyond that is **Unverified**.
+The manual route in [Claude Desktop](#claude-desktop) remains the
+longest-tested one.
 
 Build it from the repo folder:
 
@@ -334,27 +385,32 @@ confirmed in a doc this page cites, **Unverified**.
 
 What to know first:
 
-- The package is unsigned. Claude Desktop may warn about that when you
-  install it.
+- The package is unsigned. On the tested Mac the install dialog showed
+  Claude Desktop's warning that the extension gets access to everything
+  on your computer (quoted in [Tested so far](#tested-so-far)). Read it
+  before you click **Install**.
 - It uses the `uv` server type from the MCPB manifest spec (manifest
   version 0.4). The spec says the host app manages Python for such a
   package. The package declares no third-party packages. The Python that
-  Claude Desktop's uv picks must be 3.9 or newer. Whether uv downloads
+  Claude Desktop's uv picks must be 3.9 or newer. The tested Mac already had uv and a cached
+  Python, so a download was not seen. Whether uv downloads
   one the first time, and whether it needs the network to do so:
   **Unverified**. Whether your version of Claude Desktop supports the
   `uv` type, and runs this server with it: **Unverified**.
-- uv may write a `.venv` folder and a `uv.lock` file inside the
-  extension folder. A local uv did that in a test outside Claude Desktop;
-  what the app does: **Unverified**.
+- On the tested Mac the app's uv wrote a `.venv` folder and a `uv.lock`
+  file inside the extension folder at install. Other computers:
+  **Unverified**.
 - "No network by default" is about this project's own code. It says nothing
   about what Claude Desktop or its uv does to start Python.
 - It offers the same two tools, with the same limits and the same
   protections as the manual route. Everything in
   [What it protects, and what it does not](#what-it-protects-and-what-it-does-not)
-  still applies. Whether Claude Desktop asks before each tool runs, as it
-  did with the manual route: **Unverified**.
-- Install the package or set up the manual route, not both, so the tools
-  do not show up twice.
+  still applies. On the tested Mac, Claude Desktop asked before each
+  tool ran, as it did with the manual route; other computers and app
+  versions: **Unverified**.
+- Remove a manual entry of the same name (`software-lifecycle`) from
+  `claude_desktop_config.json` before you install the package, to avoid
+  two servers with the same name.
 
 If it fails to install or the tools do not show up, look in the logs in
 `~/Library/Logs/Claude` on macOS (`%APPDATA%\Claude\logs` on Windows),
