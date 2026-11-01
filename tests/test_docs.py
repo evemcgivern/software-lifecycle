@@ -856,6 +856,16 @@ class McpSetupDocTests(unittest.TestCase):
         self.assertIn("**Write/delete tools**", tested)
         self.assertIn("Treat the chat's guesses about causes as unverified",
                       tested)
+        flat = " ".join(body.split())
+        self.assertIn("so the approval prompt was not tested", flat)
+        self.assertIn("reason not confirmed", flat)
+        self.assertNotIn("Needs approval** by default", flat)
+        for bad in ("works in Claude", "works in ChatGPT", "verified in "):
+            self.assertNotIn(bad, flat.replace("Unverified in ", ""))
+        rows = {r.split("|")[1].strip(): r for r in
+                text(ASSISTANT_SETUP).split("\n") if r.startswith("| ")}
+        for name in ("Claude Desktop chat", "ChatGPT desktop app"):
+            self.assertIn("Unverified", rows[name])
         readme = " ".join(text(README).split())
         self.assertIn("(docs/mcp-setup.md)", readme)
         self.assertIn("full path to Python", readme)
