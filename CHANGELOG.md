@@ -15,9 +15,9 @@
   from an allow-list: the counts-only server, the tool, its bundled data,
   `LICENSE` and `THIRD-PARTY.md`. The same files give the same bytes, and
   any other file stops the build. It uses the `uv` server type, declares
-  no third-party packages and is unsigned. `docs/mcp-setup.md` has a new "One-click package (Claude
-  Desktop)" section; the manual route stays the tested one. That page now
-  also records Claude Desktop's approval prompt, seen once on one Mac on
+  no third-party packages and is unsigned. `docs/mcp-setup.md` has a new
+  "One-click package (Claude Desktop)" section; the manual route stays
+  the longest-tested one. That page now also records Claude Desktop's approval prompt, seen once on one Mac on
   2026-11-01, and advises **Allow once**. No change to `swlc_mcp.py` or
   `swlc/`.
 - Recorded the by-hand test of the counts-only MCP server in Claude

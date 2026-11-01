@@ -951,6 +951,16 @@ class McpSetupDocTests(unittest.TestCase):
             self.assertIn("installed and run once on one Mac", flat)
             self.assertNotIn("nobody has installed", flat)
 
+    def test_package_readme_matches_the_install_test(self):
+        flat = " ".join(text(ROOT / "mcpb" / "README.md").split())
+        self.assertIn("installed and run once on one Mac", flat)
+        self.assertIn("The package is unsigned.", flat)
+        self.assertIn("**Unverified**", flat)
+        self.assertNotIn("has not been tested in Claude Desktop", flat)
+        self.assertNotIn("may warn", flat)
+        body = " ".join(text(MCP_SETUP).split())
+        self.assertIn("made from commit `b5e3aea`", body)
+
     def test_claude_desktop_approval_prompt_is_recorded(self):
         body = text(MCP_SETUP)
         tested = " ".join(

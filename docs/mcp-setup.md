@@ -117,24 +117,28 @@ rest is **Unverified**.
   366,553 bytes, named `software-lifecycle-0.6.0.mcpb` (the version file
   said 0.6.0), SHA-256
   `9decb540eb7a492ea689e7b24dab5e2382ae553b0ce562a67d40c739d28e8c01`.
+  That hash belongs to the build that was tested, made from commit
+  `b5e3aea`. A rebuild from a later commit gives a different hash,
+  because `mcpb/README.md` is inside the package and has since changed.
 - Opening the file in Claude Desktop showed an install dialog: the name
-  "software-lifecycle (counts only)", the manifest's author, the MIT
+  "software-lifecycle (counts only)", made by the manifest's author, the MIT
   license, "All requirements met", and both tools listed. The dialog also
   showed Claude Desktop's own warning: "Installing will grant this
   extension access to everything on your computer. Any developer
   information shown has not been verified by Anthropic. Ensure you trust
-  the source of this extension before installation." No other signing
-  prompt was seen. After **Install**, the app showed an **Uninstall**
+  the source of this extension before installation." After **Install**, the app showed an **Uninstall**
   button, an **Enabled** toggle (on) and a **Configure** button.
-- The extension was installed in `~/Library/Application Support/Claude/Claude
-  Extensions/local.mcpb.<author-slug>.software-lifecycle`. It holds a
+- The extension was installed in a folder under
+  `~/Library/Application Support/Claude/Claude Extensions/`, named like
+  `local.mcpb.eve-mcgivern.software-lifecycle` (the middle part comes from
+  the manifest author). It holds a
   `.venv` folder and a `uv.lock` file, which the app's uv created at
   install (manifest version 0.4, server type `uv`; the venv's
   `pyvenv.cfg` names uv 0.12.1 and CPython 3.13 from uv's own Python
   folder).
-- **That Mac already had uv 0.12.1 (`~/.local/bin/uv`) and a cached
-  CPython 3.13.14 in uv's Python folder from earlier use.** So a fast
-  install with no download does not show that a Mac without uv, or
+- **That Mac already had uv 0.12.1 and a cached CPython 3.13.14 in uv's
+  Python folder from earlier use.** The run was very fast and nothing was
+  noticed about downloading; that does not show that a Mac without uv, or
   without that Python, works. **Unverified**: a Mac without uv or without
   a cached Python; whether the app downloads a Python on first run and
   needs the network to do so; Windows; whether Claude Desktop uses its
@@ -405,8 +409,8 @@ What to know first:
   tool ran, as it did with the manual route; other computers and app
   versions: **Unverified**.
 - Remove a manual entry of the same name (`software-lifecycle`) from
-  `claude_desktop_config.json` before you install the package, so the
-  tools do not show up twice.
+  `claude_desktop_config.json` before you install the package, to avoid
+  two servers with the same name.
 
 If it fails to install or the tools do not show up, look in the logs in
 `~/Library/Logs/Claude` on macOS (`%APPDATA%\Claude\logs` on Windows),
