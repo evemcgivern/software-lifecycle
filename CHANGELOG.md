@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 - 2026-10-31
 
 - Docs for report readers (issue #42): `docs/quick-start.md`, one page
   for macOS, Linux and Windows (preflight first, a short output folder,
