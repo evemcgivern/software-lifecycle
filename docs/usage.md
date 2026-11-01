@@ -315,9 +315,12 @@ so; it does not hide them.
   review". IE 11 follows the support of the Windows it runs on: the
   desktop app is past end of life on some Windows 10 versions, but still
   supported on Windows Server, LTSB, LTSC and embedded editions, and
-  builds such as 9600, 14393, 17763 and 19041 are shared across them. The
-  row does not say which Windows it runs on. Internet Explorer 9 and 10
-  keep their cycles. Office "Home and Business" and "Home
+  Windows builds are shared across editions (14393 is Windows 10 2016
+  LTSB and Server 2016, 17763 is 2019 LTSC and Server 2019, 9600 is
+  Windows 8.1 and Server 2012 R2). The row does not say which Windows it
+  runs on. A version that names its line (`11-ltsc`, `11-server`) keeps
+  that line's cycle and gets no code. Internet Explorer 9 and 10 keep
+  their cycles. Office "Home and Business" and "Home
   and Student" names are unmatched too, and so is `Microsoft ASP.NET Core
   8.0.1 - Shared Framework (x64)`.
 - `Microsoft .NET SDK 8.0.101 (x64)` and `Microsoft Windows Desktop
@@ -529,7 +532,13 @@ the data folder. Do not edit `data/` in place.
 4. Check it: `python3 software_lifecycle.py verify-data --data ../my-data`.
 5. Run with it: `python3 software_lifecycle.py check INVENTORY --data ../my-data --out ../swlc-out`.
 
-Golden sources do not apply to unmatched items. Add the alias first, and
+Golden sources do not apply to unmatched items. They do not apply to an
+item with the review code `shared_support_lines` either, because it has
+no cycle and its Windows is not known; when a golden-source row names
+such an item's product, the report adds the warning "N item(s) have a
+golden-source row for their product that was not applied: the version
+fits more than one support line, so the item has no cycle. See "Names
+to review"." Add the alias first, and
 then a golden source if you need one. If you want the bundled table to
 cover a product, open the "Product the tool could not match" issue form
 with names only.

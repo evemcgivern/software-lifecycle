@@ -548,6 +548,11 @@ IE_ROWS = (
     # The name says 11 and the version says 10: the name version counts.
     ("Internet Explorer 11", "Microsoft Corporation", "10.0.9200.16384",
      SHARED_SUPPORT_LINES, None),
+    # A version that names its support line keeps that line's cycle.
+    ("Internet Explorer", "Microsoft Corporation", "11-ltsc", None,
+     "11-ltsc"),
+    ("Internet Explorer", "Microsoft Corporation", "11-server", None,
+     "11-server"),
     ("Internet Explorer 10", "Microsoft Corporation", "10.0.9200.16384",
      None, "10"),
     ("Internet Explorer 9", "Microsoft Corporation", "9.0.8112.16421",
@@ -621,6 +626,53 @@ class SharedSupportLinesTests(unittest.TestCase):
                       sec)
         for claim in ("2022-06-14", "State:", "past end of life"):
             self.assertNotIn(claim, sec)
+
+    def test_named_lines_never_carry_the_review_text(self):
+        from swlc.report import REVIEW_COLUMN
+        text = AMBIGUITY_REASONS[SHARED_SUPPORT_LINES]
+        for ver in ("11-ltsc", "11-server"):
+            with self.subTest(ver=ver):
+                it = self.items[("Internet Explorer", "Microsoft Corporation",
+                                 ver)]
+                self.assertIsNone(it["ambiguity"])
+                self.assertEqual(it["eol_endoflife"], "2031-10-14")
+                self.assertNotIn(it["id"], self.md.split(
+                    "\n## Names to review (", 1)[1].split("\n## ", 1)[0])
+                rows = [r for r in self.csv if r["version"] == ver]
+                self.assertEqual(len(rows), 1)
+                self.assertNotEqual(rows[0][REVIEW_COLUMN], text)
+                self.assertEqual(rows[0]["cycle"], ver)
+
+    def test_golden_source_is_not_applied_and_a_warning_says_so(self):
+        from swlc.data import load_data
+        data = load_data(str(ROOT / "data"), date.fromisoformat(VIEW_DATE))
+        golden = Golden({"internet-explorer": {
+            "product": "internet-explorer", "source": "manual",
+            "manual_eol": date(2031, 10, 14), "reason": "r",
+            "set_by": "lead", "set_on": date(2026, 1, 1),
+            "review_by": date(2027, 1, 1)}})
+        rows = [{"name": n, "version": v, "publisher": p, "owner": "ops",
+                 "parent": ""}
+                for n, p, v in (("Internet Explorer 11",
+                                 "Microsoft Corporation", "11.0.9600.19596"),
+                                ("Internet Explorer", "Microsoft Corporation",
+                                 "11-server"))]
+        out = assess(group_rows(rows, COLMAP), data, golden, Exceptions(),
+                     {}, date.fromisoformat(VIEW_DATE))
+        items = {it["version"]: it for it in out["items"]}
+        flagged = items["11.0.9600.19596"]
+        self.assertEqual(flagged["ambiguity"]["code"], SHARED_SUPPORT_LINES)
+        self.assertIsNone(flagged["golden_applied"])
+        self.assertIsNone(flagged["eol_used"])
+        self.assertNotIn(flagged["id"], out["lists"]["golden_overrides"])
+        self.assertIn(assess_mod.GOLDEN_NOT_APPLIED % 1, out["warnings"])
+        # The row that names its line still takes the golden source.
+        self.assertEqual(items["11-server"]["golden_applied"], "manual")
+        # No golden row, no warning.
+        out = assess(group_rows(rows, COLMAP), data, Golden(), Exceptions(),
+                     {}, date.fromisoformat(VIEW_DATE))
+        self.assertFalse(any("golden-source row" in w
+                             for w in out["warnings"]))
 
     def test_csv_review_column(self):
         from swlc.report import REVIEW_COLUMN

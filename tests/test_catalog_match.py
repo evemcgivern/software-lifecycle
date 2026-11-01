@@ -875,8 +875,7 @@ class ReviewVersionTests(unittest.TestCase):
                           ("Glassview Browser", "11"),
                           ("Glassview Browser 11", ""),
                           ("Glassview Browser 11", "11.0.17763.0"),
-                          ("Glassview Browser 11", "10.0.9200.1"),
-                          ("Glassview Browser", "11-server")):
+                          ("Glassview Browser 11", "10.0.9200.1")):
             with self.subTest(name=name, ver=ver):
                 self.assertEqual(self.m(name, ver), want)
 
@@ -887,6 +886,17 @@ class ReviewVersionTests(unittest.TestCase):
             with self.subTest(name=name, ver=ver):
                 self.assertEqual(self.m(name, ver),
                                  (("glassview", cyc, None, GENERATED), None))
+
+    def test_a_version_that_names_its_line_keeps_that_cycle(self):
+        for ver in ("11-server", "11-ltsc", "11-LTSC"):
+            with self.subTest(ver=ver):
+                cyc = ver.lower()
+                self.assertEqual(self.m("Glassview Browser", ver),
+                                 (("glassview", cyc, None, GENERATED), None))
+        # The name says 11, the version names a line: no cycle (as before
+        # review_versions) and no review code, whose text would be false.
+        self.assertEqual(self.m("Glassview Browser 11", "11-ltsc"),
+                         (("glassview", None, NO_CYCLE, GENERATED), None))
 
     def test_without_the_entry_the_generic_cycle_is_picked(self):
         cur = dict(self.CUR)

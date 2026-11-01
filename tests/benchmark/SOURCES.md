@@ -179,7 +179,17 @@
     (Internet Explorer follows the support of the Windows it is installed
     on; IE 11 is the version on Windows 10 LTSB and LTSC, Windows Server
     2012 to 2022 and embedded editions; the desktop app ended support on
-    some Windows 10 versions)
+    some Windows 10 versions on June 15, 2022; the IE 9 line on Windows
+    Server 2008 ESU)
+  - https://learn.microsoft.com/en-us/windows/win32/msi/operating-system-property-values
+    (Windows 8.1 is build 9600 or later)
+  - https://learn.microsoft.com/en-us/windows/security/security-foundations/certification/validations/cc-windows-server-previous
+    (Windows Server 2012 R2 is build 6.3.9600)
+  - https://learn.microsoft.com/en-us/windows/release-health/release-information
+    (Windows 10 2016 LTSB is version 1607, build 14393; 2019 LTSC is version
+    1809, build 17763)
+  - https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+    (Windows Server 2016 is build 14393; Server 2019 is build 17763)
 - endoflife.date product pages: https://endoflife.date/android,
   https://endoflife.date/centos-stream, https://endoflife.date/cockroachdb,
   https://endoflife.date/commvault, https://endoflife.date/django,

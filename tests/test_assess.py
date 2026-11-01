@@ -668,6 +668,30 @@ class Diff(unittest.TestCase):
         self.assertIn(assess_mod.SCHEMA_VERSION,
                       assess_mod.PREVIOUS_SCHEMA_VERSIONS)
 
+    def test_unsupported_previous_version_is_named(self):
+        cases = (({"schema_version": 3, "items": []}, "3"),
+                 ({"schema_version": 0, "items": []}, "0"),
+                 ({"schema_version": -4, "items": []}, "-4"),
+                 ({"schema_version": "3", "items": []}, "unreadable"),
+                 ({"schema_version": True, "items": []}, "unreadable"),
+                 ({"schema_version": 1.0, "items": []}, "unreadable"),
+                 ({"schema_version": 10 ** 40, "items": []}, "unreadable"),
+                 ({"schema_version": "Zqxv secret", "items": []},
+                  "unreadable"))
+        for prev, shown in cases:
+            with self.subTest(prev=prev):
+                out = run([row("1")], previous=prev)
+                self.assertFalse(out["diff"]["available"])
+                self.assertIn("previous run uses schema_version %s; this "
+                              "tool reads 1 and 2; no diff" % shown,
+                              out["warnings"])
+                self.assertFalse(any("Zqxv" in w for w in out["warnings"]))
+        # A supported version with bad items keeps the general warning.
+        for prev in ({"schema_version": 1, "items": [{"no": "id"}]},
+                     {"items": []}, []):
+            out = run([row("1")], previous=prev)
+            self.assertIn(assess_mod.PREVIOUS_UNUSABLE, out["warnings"])
+
     def test_unusable_previous(self):
         for bad in ({"schema_version": 3, "items": []},
                     {"schema_version": 0, "items": []}, {"items": "x"},

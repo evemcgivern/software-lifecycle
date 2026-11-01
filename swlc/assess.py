@@ -46,7 +46,13 @@ KEV_NOT_CURRENT = ("KEV snapshot is not current; the KEV overlay may be "
 GOLDEN_CLASH = ("%d item(s) matched two golden-source rows; the product-id "
                 "row was used.")
 PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
+PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1 "
+                    "and 2; no diff")
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
+GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row for their product "
+                      "that was not applied: the version fits more than one "
+                      "support line, so the item has no cycle. See \"Names "
+                      "to review\".")
 # Item "ambiguity" codes: a row the matcher refused on purpose, for a person
 # to review. Fixed text, never row data. Not a state, list or reason code.
 # shared_support_lines keeps its product; the others have none.
@@ -307,6 +313,20 @@ def _previous_states(previous) -> dict | None:
     return states
 
 
+def _previous_warning(previous) -> str:
+    """The warning for a --previous report that gives no diff. It names
+    the schema_version only when that is a small whole number the tool
+    does not read; it never echoes other file content."""
+    if not isinstance(previous, dict) or "schema_version" not in previous:
+        return PREVIOUS_UNUSABLE
+    version = previous["schema_version"]
+    if version in PREVIOUS_SCHEMA_VERSIONS and type(version) is int:
+        return PREVIOUS_UNUSABLE
+    if type(version) is int and -10 ** 6 < version < 10 ** 6:
+        return PREVIOUS_VERSION % version
+    return PREVIOUS_VERSION % "unreadable"
+
+
 def _diff(items: list, before: dict | None) -> dict:
     if before is None:
         return {"available": False, "new": [], "resolved": [],
@@ -358,6 +378,16 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
         warnings.append(KEV_NOT_CURRENT)
     if clashes:
         warnings.append(GOLDEN_CLASH % len(clashes))
+    # A golden source needs a cycle; a shared_support_lines item has none,
+    # and its platform is unknown, so the row is not applied to it.
+    skipped = sum(1 for it in items
+                  if (it["ambiguity"] or {}).get("code")
+                  == SHARED_SUPPORT_LINES
+                  and golden.for_product(it["product"],
+                                         normalize_name(it["name"]))
+                  is not None)
+    if skipped:
+        warnings.append(GOLDEN_NOT_APPLIED % skipped)
     absent = sum(1 for it in items
                  if PARENT_ABSENT in it["classification_basis"])
     if absent:
@@ -366,7 +396,7 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     if previous is not None:
         before = _previous_states(previous)
         if before is None:
-            warnings.append(PREVIOUS_UNUSABLE)
+            warnings.append(_previous_warning(previous))
 
     states = {s: 0 for s in STATES}
     for it in items:

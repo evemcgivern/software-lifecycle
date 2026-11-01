@@ -271,7 +271,7 @@ a row to a match.
 | Code | When |
 |---|---|
 | `title_needs_publisher` | The cleaned name is exactly a one-word product title, the publisher is empty, and the match was refused only because no publisher confirms the product. When the version column is not empty, it must decide one cycle of that product; an empty version keeps the code. Reason: "The name is a product title, but the row has no publisher to confirm the product." |
-| `shared_support_lines` | Added in schema version 2. Generated matching picked the product, and the version column or the version in the name starts with a prefix the curated `review_versions` lists for it, because that version fits more than one support line. Today only `internet-explorer` with prefix `11`: Internet Explorer 11 follows the Windows it runs on, and its builds are shared by desktop, Server, LTSB and LTSC editions. The item keeps `product` and gets no cycle, so no date and state `unmatched`. A row a curated alias decided gets no code. Reason: "The name and version fit more than one support line (desktop, Server, LTSB or LTSC); the row does not say which Windows it runs on." |
+| `shared_support_lines` | Added in schema version 2. Generated matching picked the product, and the version column or the version in the name starts with a prefix the curated `review_versions` lists for it, because that version fits more than one support line. Today only `internet-explorer` with prefix `11`: Internet Explorer 11 follows the Windows it runs on, and its builds are shared by desktop, Server, LTSB and LTSC editions. The item keeps `product` and gets no cycle, so no date and state `unmatched`. A row a curated alias decided gets no code, and so does a version that names its line (`11-ltsc`, `11-server`): it keeps that line's cycle. Reason: "The name and version fit more than one support line (desktop, Server, LTSB or LTSC); the row does not say which Windows it runs on." |
 | `title_not_on_list` | The name is a one-word product title followed by a version, the publisher is empty, the version would decide one cycle, and the product is not on the reviewed list for rows with no publisher (the version-in-name rule in "How names are matched", `docs/usage.md`). Reason: "The name is a product title and a version, but that title is not on the reviewed list for rows with no publisher." |
 
 For the two title codes, no code is set for a row with a publisher (a publisher that does not
@@ -435,7 +435,7 @@ Says which end-of-life date is right for a product.
 | Column | Rule |
 |---|---|
 | `schema_version` | `1`. |
-| `product` | Required. An endoflife.date product ID, or a product name. One row per product. If an item matches both a product-ID row (for example `nodejs`) and a name row (for example `node.js`), the product-ID row is used and the report adds this warning: "N item(s) matched two golden-source rows; the product-id row was used." |
+| `product` | Required. An endoflife.date product ID, or a product name. One row per product. If an item matches both a product-ID row (for example `nodejs`) and a name row (for example `node.js`), the product-ID row is used and the report adds this warning: "N item(s) matched two golden-source rows; the product-id row was used." A row is not applied to an item with the `ambiguity` code `shared_support_lines` (it has no cycle); the report then adds: "N item(s) have a golden-source row for their product that was not applied: the version fits more than one support line, so the item has no cycle. See "Names to review"." |
 | `source` | Required. `export`, `endoflife.date` or `manual`. |
 | `manual_eol` | A date. Required when `source` is `manual`; not allowed otherwise. |
 | `reason` | Why. Free text. |
@@ -511,7 +511,9 @@ list, never which IDs a list holds. The `ambiguity`
 codes follow the reason-code rule: adding one bumps `schema_version`.
 The keyword arguments of `swlc.cli.run` follow
 the same rule. The tool reads a `--previous` report of schema version 1 or
-2; any other version gives no diff and a warning.
+2; any other version gives no diff and the warning "previous run uses
+schema_version N; this tool reads 1 and 2; no diff", where N is the
+number found, or `unreadable` when it is not a whole number.
 
 ### Changes in schema version 2
 
