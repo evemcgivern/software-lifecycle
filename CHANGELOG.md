@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Reworded the three issue forms and added three more (issue #72): a
+  test of an assistant or the MCP server, a column-name problem with an
+  export (headers only), and a mistake in the docs or crosswalk. Every
+  form opens with a warning not to paste inventory data and has a
+  required checkbox. The issue-form config now links private
+  vulnerability reporting. The forms use `assistant-setup` and
+  `export-profile`, which do not exist yet. Docs and tests only.
 - Relabelled four benchmark gold rows by the maintainer's decision
   (issue #74): LibreOffice 6.0.1, MySQL 4.0.1, Notepad++ 6.0.1 and PHP
   4.0.1 now expect the product with any cycle, not cycle `none`.
