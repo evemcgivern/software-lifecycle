@@ -2,13 +2,20 @@
 
 ## Unreleased
 
+- Recorded the maintainer's install test of the `.mcpb` package (issue
+  #66). One Mac, 2026-11-01: Claude Desktop showed an install dialog with
+  its own warning, installed the extension, and both tools ran with the
+  same counts as the manual route. That Mac already had uv and a cached
+  Python, so a Mac without them, Windows and other app versions are
+  Unverified. `docs/mcp-setup.md`, the README and
+  `docs/assistant-setup.md` now say the package was installed and run
+  once on one Mac. Docs and tests only.
 - Added a one-click Desktop Extension package (`.mcpb`) for Claude
   Desktop (issue #66). `python3 tools/build_mcpb.py --out DIR` builds it
   from an allow-list: the counts-only server, the tool, its bundled data,
   `LICENSE` and `THIRD-PARTY.md`. The same files give the same bytes, and
   any other file stops the build. It uses the `uv` server type, declares
-  no third-party packages and is unsigned. Nobody has installed it yet:
-  Unverified. `docs/mcp-setup.md` has a new "One-click package (Claude
+  no third-party packages and is unsigned. `docs/mcp-setup.md` has a new "One-click package (Claude
   Desktop)" section; the manual route stays the tested one. That page now
   also records Claude Desktop's approval prompt, seen once on one Mac on
   2026-11-01, and advises **Allow once**. No change to `swlc_mcp.py` or
