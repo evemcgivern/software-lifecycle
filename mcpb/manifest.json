@@ -30,6 +30,10 @@
       "python": ">=3.9"
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evemcgivern/software-lifecycle"
+  },
   "keywords": ["software", "end-of-life", "inventory", "offline"],
   "license": "MIT"
 }

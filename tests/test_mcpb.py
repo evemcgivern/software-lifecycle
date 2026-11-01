@@ -80,6 +80,9 @@ class McpbTests(unittest.TestCase):
         self.assertEqual(m["name"], "software-lifecycle")
         self.assertEqual(m["author"], {"name": "Eve McGivern"})
         self.assertEqual(m["license"], "MIT")
+        self.assertEqual(m["repository"], {
+            "type": "git",
+            "url": "https://github.com/evemcgivern/software-lifecycle"})
         self.assertEqual(m["server"]["type"], "uv")
         self.assertEqual(m["server"]["entry_point"], "swlc_mcp.py")
         self.assertIn(m["server"]["entry_point"], self.names)
@@ -176,6 +179,23 @@ class McpbTests(unittest.TestCase):
                     build_mcpb.build(Path(tmp) / "out", root=src)
                 self.assertFalse((Path(tmp) / "out").exists()
                                  and any((Path(tmp) / "out").iterdir()))
+
+    def test_linked_file_or_folder_stops_the_build(self):
+        for kind in ("folder", "file"):
+            with tempfile.TemporaryDirectory() as tmp:
+                src, elsewhere = Path(tmp) / "src", Path(tmp) / "elsewhere"
+                copy_sources(src)
+                elsewhere.mkdir()
+                (elsewhere / "extra.json").write_text("{}\n",
+                                                      encoding="utf-8")
+                if kind == "folder":
+                    (src / "data" / "more").symlink_to(elsewhere)
+                else:
+                    (src / "data" / "more.json").symlink_to(
+                        elsewhere / "extra.json")
+                with self.assertRaisesRegex(build_mcpb.BuildError,
+                                            "a link"):
+                    build_mcpb.build(Path(tmp) / "out", root=src)
 
     def test_refused_paths_stop_the_build_whatever_the_list_says(self):
         for name, src in (("examples/software-inventory.csv",

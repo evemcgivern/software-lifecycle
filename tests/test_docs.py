@@ -912,6 +912,12 @@ class McpSetupDocTests(unittest.TestCase):
                 "The package is unsigned.",
                 "uses the `uv` server type",
                 "declares no third-party packages",
+                "The Python that Claude Desktop's uv picks must be 3.9 or "
+                "newer.",
+                "whether it needs the network to do so: **Unverified**",
+                "`.venv` folder and a `uv.lock` file",
+                "\"No network by default\" is about this project's own "
+                "code.",
                 "~/Library/Logs/Claude"):
             self.assertIn(phrase, sec)
         args = re.search(r"python3 tools/build_mcpb\.py (--out \S+)", sec)

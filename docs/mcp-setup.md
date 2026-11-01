@@ -338,10 +338,16 @@ What to know first:
   install it.
 - It uses the `uv` server type from the MCPB manifest spec (manifest
   version 0.4). The spec says the host app manages Python for such a
-  package, so you do not need your own Python. The package declares no
-  third-party packages; it needs Python 3.9 or newer. Whether your
-  version of Claude Desktop supports the `uv` type, and runs this server
-  with it: **Unverified**.
+  package. The package declares no third-party packages. The Python that
+  Claude Desktop's uv picks must be 3.9 or newer. Whether uv downloads
+  one the first time, and whether it needs the network to do so:
+  **Unverified**. Whether your version of Claude Desktop supports the
+  `uv` type, and runs this server with it: **Unverified**.
+- uv may write a `.venv` folder and a `uv.lock` file inside the
+  extension folder. A local uv did that in a test outside Claude Desktop;
+  what the app does: **Unverified**.
+- "No network by default" is about this project's own code. It says nothing
+  about what Claude Desktop or its uv does to start Python.
 - It offers the same two tools, with the same limits and the same
   protections as the manual route. Everything in
   [What it protects, and what it does not](#what-it-protects-and-what-it-does-not)

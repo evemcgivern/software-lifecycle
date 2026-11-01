@@ -77,9 +77,12 @@ def collect(root: Path) -> dict:
             rel = path.relative_to(root).as_posix()
             if set(path.relative_to(root).parts) & SKIP_DIRS:
                 continue
+            # Any link stops the build, a linked folder included.
+            if path.is_symlink():
+                raise BuildError("a link, not on the allow-list: %s" % rel)
             if path.is_dir() or path.name in SKIP_FILES:
                 continue
-            if path.is_symlink() or not path.is_file() \
+            if not path.is_file() \
                     or not allowed.fullmatch(rel):
                 raise BuildError("not on the allow-list: %s" % rel)
             files[rel] = path
