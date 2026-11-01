@@ -26,6 +26,8 @@ SNIFF_BYTES = 64 * 1024
 FORMULA_START = ("=", "+", "-", "@", "\t", "\r")
 NEXT_OUT = "../swlc-out"
 WINDOWS_NOTE = "On Windows, type py instead of python3."
+ASSISTANT_LEAD = ("If an AI assistant is running this for you, use this "
+                  "instead (prints counts only): ")
 
 FIX_TEXT = {
     "NO_ROWS": "The file has a header row but no data rows. Export it "
@@ -151,7 +153,7 @@ def _best(scores: dict) -> tuple:
 
 
 def _next_command(path: str, profile: str, columns: str | None,
-                  encoding: str | None) -> str:
+                  encoding: str | None, counts_only: bool = False) -> str:
     parts = ["python3", "software_lifecycle.py", "check", path]
     if profile != "generic":
         parts += ["--profile", profile]
@@ -160,6 +162,8 @@ def _next_command(path: str, profile: str, columns: str | None,
     if encoding:
         parts += ["--encoding", encoding]
     parts += ["--out", NEXT_OUT]
+    if counts_only:
+        parts.append("--counts-only")
     return " ".join(shlex.quote(p) for p in parts)
 
 
@@ -241,6 +245,8 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
         "fix": [{"code": c, "blocking": c in BLOCKING, "text": FIX_TEXT[c]}
                 for c in fix],
         "next_command": _next_command(path, used, columns, encoding),
+        "next_command_counts_only": _next_command(
+            path, used, columns, encoding, counts_only=True),
     }
 
 
@@ -298,5 +304,6 @@ def render_text(result: dict) -> str:
         lines.append("  Nothing.")
     lines += ["", "Next command" if result["ok"]
               else "Next command, after the must-fix items",
-              "  " + result["next_command"], "  " + WINDOWS_NOTE]
+              "  " + result["next_command"], "  " + WINDOWS_NOTE,
+              "  " + ASSISTANT_LEAD + result["next_command_counts_only"]]
     return "\n".join(lines) + "\n"

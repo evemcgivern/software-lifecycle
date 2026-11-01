@@ -70,7 +70,9 @@ writes nothing, and prints:
   under "Dates disagree";
 - a "What to fix" list in fixed wording, and the `check` command to run
   next. The command starts with `python3`; a line under it tells Windows
-  users to type `py` instead.
+  users to type `py` instead. A last line gives the same command with
+  `--counts-only` added, for an AI assistant running it for you: it prints
+  counts only.
 
 It prints your column titles and numbers only, never a cell value or a
 name from a row, so its output is safe to show an AI agent. A missing
@@ -86,9 +88,16 @@ An unreadable file exits 3 with the same error text as `check`.
 | `--profile NAME` | Use this profile instead of the best fit: `generic`, `flexera`, `servicenow-mbs` or `rapid7`. | `--profile flexera` |
 | `--columns FILE` | JSON file that adds column headings, as for `check`. | `--columns my-columns.json` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
-| `--json` | Print the same result as JSON. The owner and export end-of-life date columns are under `columns` (`columns.owner`, `columns.export_eol`), and `unreadable_date_cells` counts dates not in YYYY-MM-DD form. On an error it prints `ok`, `exit_code` and `error` only. | `--json` |
+| `--json` | Print the same result as JSON. The owner and export end-of-life date columns are under `columns` (`columns.owner`, `columns.export_eol`), and `unreadable_date_cells` counts dates not in YYYY-MM-DD form. `next_command` is the `check` command; `next_command_counts_only` is the same command with `--counts-only` added. On an error it prints `ok`, `exit_code` and `error` only. | `--json` |
 
     python3 software_lifecycle.py preflight examples/software-inventory.csv
+
+It ends like this:
+
+    Next command
+      python3 software_lifecycle.py check examples/software-inventory.csv --out ../swlc-out
+      On Windows, type py instead of python3.
+      If an AI assistant is running this for you, use this instead (prints counts only): python3 software_lifecycle.py check examples/software-inventory.csv --out ../swlc-out --counts-only
 
 ## verify-data
 

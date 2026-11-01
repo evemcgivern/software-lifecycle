@@ -10,6 +10,11 @@
   size limit. `docs/mcp-setup.md` explains how to add it to the ChatGPT
   desktop app and, untested, to Claude Desktop, and what it does not
   protect. The one-click Claude Desktop package is not built yet.
+- `preflight` now ends with a second command line for an AI assistant:
+  the same `check` command with `--counts-only`, which prints counts only
+  (issue #54). `preflight --json` has one new optional key,
+  `next_command_counts_only`. `next_command` and `preflight_version` (1)
+  are unchanged.
 - Added `docs/assistant-setup.md`: which AI assistants can run the tool,
   the privacy rule, and a copy-paste prompt for each kind of assistant. The
   README now opens with a "Start here" chooser. `AGENTS.md` gains rules for
