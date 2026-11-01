@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Docs for report readers (issue #42): `docs/quick-start.md`, one page
+  for macOS, Linux and Windows (preflight first, a short output folder,
+  what "KEV overlay is not current" means); `docs/glossary.md`, plain
+  meanings of the report's words; and `examples/sample-report.md`, the
+  demo's real `report.md`, written by `examples/generate.py` and checked
+  byte for byte by `tests/test_e2e.py`. `docs/checklist.md` uses the
+  report heading "In CISA KEV, past or near end of life" and adds
+  preflight and support records. `docs/sop.md` says matching covers only
+  the products endoflife.date lists. The report format is unchanged.
 - The inventory's `count` column now orders the findings (issue #37).
   Each item gets `install_count`, the sum of its rows' count cells: a
   count from your file, not discovered installs. A cell must be a whole

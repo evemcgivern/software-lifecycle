@@ -557,6 +557,39 @@ class BannedWordTests(unittest.TestCase):
                     self.assertIn("never", s.lower(), path.name)
 
 
+class ReaderDocsTests(unittest.TestCase):
+    def test_quick_start_commands_parse(self):
+        body = text(DOCS / "quick-start.md")
+        # Join indented lines continued with " \\" (shell) or " `"
+        # (PowerShell), then keep the commands.
+        joined = re.sub(r" [\\`]\n +", " ", body)
+        commands = re.findall(
+            r"^    (?:python3|py) software_lifecycle\.py (.+)$", joined, re.M)
+        self.assertGreaterEqual(len(commands), 4)
+        demos = []
+        for command in commands:
+            args = cli._parser().parse_args(command.split())
+            self.assertIn(args.command, ("check", "preflight"), command)
+            self.assertNotIn("/tmp", command)
+            if command.startswith("check examples/"):
+                demos.append(args)
+        # Both demo blocks pass every sample file, so the run gives the
+        # committed examples/sample-report.md.
+        self.assertEqual(len(demos), 2)
+        for args in demos:
+            self.assertEqual(str(args.as_of), "2026-10-24")
+            self.assertEqual(
+                (args.data, args.golden, args.exceptions, args.tracking,
+                 args.support_records),
+                ("tests/fixtures/data", "examples/golden-sources.csv",
+                 "examples/exceptions.csv", "examples/tracking.csv",
+                 "examples/support-records.csv"))
+
+    def test_glossary_quotes_the_kev_line(self):
+        flat = " ".join(text(DOCS / "glossary.md").split())
+        self.assertIn(KEV_LINE, flat)
+
+
 class PlatformGuideTests(unittest.TestCase):
     def test_sources_section(self):
         body = text(DOCS / "platform-guide.md")

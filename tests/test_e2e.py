@@ -27,7 +27,7 @@ DATA = ROOT / "tests" / "fixtures" / "data"
 EXPECTED = ROOT / "tests" / "fixtures" / "expected-report.json"
 AS_OF = "2026-10-24"
 DEMO_FILES = ("software-inventory.csv", "answer-key.json", "tracking.csv",
-              "support-records.csv")
+              "support-records.csv", "sample-report.md")
 
 
 def check_args(out: Path, *extra) -> list:
@@ -179,6 +179,12 @@ class MarkdownTests(DemoBase):
         self.assertEqual(self.md.split("\n").count(MATCH_CAVEAT), 1)
         self.assertNotIn(MATCH_CAVEAT, self.report_text)
         self.assertNotIn(MATCH_CAVEAT, self.csv_text)
+
+    def test_sample_report_is_this_run(self):
+        # examples/sample-report.md is the demo's report.md, byte for byte.
+        # Regenerate it with python3 examples/generate.py.
+        self.assertEqual(self.md, (EXAMPLES / "sample-report.md").read_text(
+            encoding="utf-8"))
 
     def test_never_says_vulnerable(self):
         self.assertNotIn("vulnerable", self.md.lower())
