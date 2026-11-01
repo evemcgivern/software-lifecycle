@@ -843,6 +843,35 @@ class McpSetupDocTests(unittest.TestCase):
             self.assertIn(phrase, flat)
         self.assertNotIn("refuses symlinks", flat)
 
+    def test_tested_so_far_section_and_readme_options(self):
+        body = text(MCP_SETUP)
+        self.assertIn("\n## Tested so far\n", body)
+        tested = " ".join(
+            body.split("## Tested so far", 1)[1].split("\n## ", 1)[0].split())
+        self.assertIn("2026-11-01", tested)
+        self.assertIn("one Mac", tested)
+        self.assertIn("Full Access", tested)
+        self.assertIn("approval prompt was not tested: **Unverified**",
+                      tested)
+        self.assertIn("**Write/delete tools**", tested)
+        self.assertIn("Treat the chat's guesses about causes as unverified",
+                      tested)
+        flat = " ".join(body.split())
+        self.assertIn("so the approval prompt was not tested", flat)
+        self.assertIn("reason not confirmed", flat)
+        self.assertNotIn("Needs approval** by default", flat)
+        for bad in ("works in Claude", "works in ChatGPT", "verified in "):
+            self.assertNotIn(bad, flat.replace("Unverified in ", ""))
+        rows = {r.split("|")[1].strip(): r for r in
+                text(ASSISTANT_SETUP).split("\n") if r.startswith("| ")}
+        for name in ("Claude Desktop chat", "ChatGPT desktop app"):
+            self.assertIn("Unverified", rows[name])
+        readme = " ".join(text(README).split())
+        self.assertIn("(docs/mcp-setup.md)", readme)
+        self.assertIn("full path to Python", readme)
+        self.assertIn("Runs locally with no network by default; not "
+                      "independently assessed.", readme)
+
     def test_other_docs_point_to_the_server(self):
         for path in (README, DOCS / "quick-start.md", DOCS / "usage.md",
                      DOCS / "sop.md", DOCS / "glossary.md",
