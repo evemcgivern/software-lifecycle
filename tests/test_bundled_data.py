@@ -86,13 +86,28 @@ class BundledDataTests(unittest.TestCase):
                         "main-eol-YYYY-MM-DD")
 
 
+class MinToolVersionTests(unittest.TestCase):
+    def test_manifest_minimum_matches_refresh_script_and_is_not_above_version(
+            self):
+        import refresh_data
+        current = (ROOT / "VERSION").read_text("utf-8").strip()
+
+        def as_tuple(v):
+            return tuple(int(part) for part in v.split("."))
+
+        self.assertEqual(MANIFEST["min_tool_version"],
+                         refresh_data.MIN_TOOL_VERSION)
+        self.assertLessEqual(as_tuple(MANIFEST["min_tool_version"]),
+                             as_tuple(current))
+
+
 class BundledCatalogTests(unittest.TestCase):
     def setUp(self):
         self.data = load_data(str(DATA), as_of=AS_OF)
 
     def test_manifest_is_format_2_and_lists_the_new_files(self):
         self.assertEqual(MANIFEST["data_format"], 2)
-        self.assertEqual(MANIFEST["min_tool_version"], "0.4.0")
+        self.assertEqual(MANIFEST["min_tool_version"], "0.7.0")
         self.assertIn("products.json", MANIFEST["files"])
         self.assertIn("curation.json", MANIFEST["files"])
         self.assertNotIn(

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.7.0 - 2026-11-01
 
 - Recorded the maintainer's install test of the `.mcpb` package (issue
   #66). One Mac, 2026-11-01: Claude Desktop showed an install dialog with

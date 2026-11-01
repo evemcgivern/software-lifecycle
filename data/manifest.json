@@ -1965,7 +1965,7 @@
   },
   "kev_catalog_version": "2026.10.30",
   "kev_date": "2026-10-30",
-  "min_tool_version": "0.4.0",
+  "min_tool_version": "0.7.0",
   "release_id": "bundled-2026.11.01",
   "upstream_commit": "7cfb122846893f10ee819ab47b615eff261945d0"
 }

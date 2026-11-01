@@ -37,3 +37,5 @@ When a release adds a data key an older tool rejects (for example
 `refresh_data.py` and the pin in `tests/test_bundled_data.py` to that
 release's version in the same release PR, and keep kev-daily off until
 that release is published.
+
+Done for 0.7.0: `MIN_TOOL_VERSION` is 0.7.0 in that release PR.
