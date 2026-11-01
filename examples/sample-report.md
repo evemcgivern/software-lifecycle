@@ -3,7 +3,7 @@
 Sample note: the Hostile Corp rows (a script tag, a spreadsheet formula and a shell command) are planted tests of how the tool handles unsafe text.
 
 Checked on: 2026-10-24. Lookahead: 12 months.
-Tool version: 0.5.0. Data release: fixture-1.
+Tool version: 0.6.0. Data release: fixture-1.
 End-of-life dates: per endoflife.date, snapshot 2026-10-20 (4 days old).
 KEV: CISA KEV catalog 2026.10.22, snapshot 2026-10-22 (2 days old).
 
