@@ -19,6 +19,12 @@
   version prefixes. `report.json` `schema_version` is now 2; `--previous`
   still accepts a version 1 report. A tool from 0.6.0 or earlier refuses
   this `curation.json` with a data error.
+- Fixed the crosswalk and themes against the framework text (issue #61).
+  PM-5 is no longer cited for end of life. COBIT 2019 cells now name
+  practice IDs, all Partial. CIS 2.1, 2.2, 7.1 and 7.2 and the NIST cells
+  that were read are no longer hedged; the rest stay Unverified.
+  `docs/usage.md` now agrees with the crosswalk on ISO/IEC 19770-1
+  clause 8.3. Docs and tests only.
 
 ## 0.6.0 - 2026-11-01
 

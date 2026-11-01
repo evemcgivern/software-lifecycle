@@ -127,6 +127,60 @@ class CrosswalkTests(unittest.TestCase):
                 if col.strip():
                     self.assertIn(col.strip(), CROSSWALK_HEADER)
 
+    def test_pm5_not_cited_for_end_of_life(self):
+        _, rows = self.rows()
+        xw029 = [r for r in rows if r["id"] == "XW-029"][0]
+        self.assertNotIn("PM-5", xw029["nist_800_53"])
+        self.assertIn("SA-22", xw029["nist_800_53"])
+        self.assertIn("CM-8", xw029["nist_800_53"])
+
+    def test_cobit_cells_use_practice_ids(self):
+        _, rows = self.rows()
+        by_id = {r["id"]: r["cobit2019"] for r in rows}
+        self.assertTrue(by_id["XW-029"].startswith("BAI09.01"))
+        self.assertNotIn("APO10", by_id["XW-029"])
+        self.assertIn("DSS05.07", by_id["XW-030"])
+        self.assertIn("BAI09.01", by_id["XW-032"])
+        for r in rows:
+            self.assertNotIn("cobit2019", r["unverified_columns"])
+
+    def test_unverified_columns_match_themes(self):
+        _, rows = self.rows()
+        themes = text(DOCS / "themes.md")
+        for r in rows:
+            m = re.search(re.escape(r["id"]) + r": ((?:`[a-z0-9_]+`(?: \([^)]*\))?,?\s*)+)", themes[themes.index("`unverified_columns`"):])
+            self.assertIsNotNone(m, r["id"])
+            listed = sorted(re.findall(r"`([a-z0-9_]+)`", m.group(1)))
+            self.assertEqual(listed, sorted(r["unverified_columns"].split(";")), r["id"])
+
+    def test_iso19770_clause_8_3_agrees(self):
+        _, rows = self.rows()
+        self.assertIn("8.3", rows[0]["iso19770_1"].split("; "))
+        usage = " ".join(text(DOCS / "usage.md").split())
+        self.assertIn("clause 8.3 (core data management, p.22", usage)
+        self.assertNotIn("Not found / Unverified, because no public source", usage)
+
+    def test_cycle_warning_and_cis_cadence_note(self):
+        themes = " ".join(text(DOCS / "themes.md").split())
+        self.assertIn("CSAM p.165", themes)
+        self.assertIn("Do not use it for cycle logic", themes)
+        _, rows = self.rows()
+        summary = rows[0]["summary"]
+        self.assertIn("monthly", summary)
+        self.assertIn("quarterly", summary)
+
+    def test_cis_title_hedge_removed(self):
+        themes = " ".join(text(DOCS / "themes.md").split())
+        self.assertNotIn("same in v8 and v8.1", themes)
+        self.assertNotIn("matching titles", themes)
+
+    def test_iso19770_1_stays_unverified(self):
+        _, rows = self.rows()
+        for r in rows:
+            self.assertIn("iso19770_1", r["unverified_columns"].split(";"))
+        self.assertNotIn("DSS05.01", text(DOCS / "themes.md"))
+        self.assertEqual(rows[3]["cis_v8"], "")
+
     def test_no_table_a1(self):
         self.assertNotIn("Table A.1", text(DOCS / "crosswalk.csv"))
 
