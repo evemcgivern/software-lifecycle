@@ -86,7 +86,7 @@ An unreadable file exits 3 with the same error text as `check`.
 | `--profile NAME` | Use this profile instead of the best fit: `generic`, `flexera`, `servicenow-mbs` or `rapid7`. | `--profile flexera` |
 | `--columns FILE` | JSON file that adds column headings, as for `check`. | `--columns my-columns.json` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
-| `--json` | Print the same result as JSON. On an error it prints `ok`, `exit_code` and `error` only. | `--json` |
+| `--json` | Print the same result as JSON. The owner and export end-of-life date columns are under `columns` (`columns.owner`, `columns.export_eol`), and `unreadable_date_cells` counts dates not in YYYY-MM-DD form. On an error it prints `ok`, `exit_code` and `error` only. | `--json` |
 
     python3 software_lifecycle.py preflight examples/software-inventory.csv
 
