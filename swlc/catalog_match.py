@@ -92,7 +92,11 @@ its cleaned name equals ANY candidate form of the row (whole, cleaned,
 vendor-dropped, version-split) and, when given, its publisher token is in
 the publisher; exclusions never touch curated aliases. no_cycle_versions
 lists version prefixes of an older numbering per product; swlc/matching.py
-gives such a version no cycle. A name of more than
+gives such a version no cycle. review_versions lists version prefixes that
+fit more than one support line of a product (Internet Explorer 11 on
+desktop, Server, LTSB or LTSC Windows); swlc/matching.py keeps the product,
+gives no cycle and sets the entry's review code (shared_support_lines). A
+name of more than
 MAX_WORDS words is never matched by title.
 """
 from __future__ import annotations
@@ -216,6 +220,10 @@ VERSION_NAME_TITLES = frozenset((
 # codes in report.json; the _REFUSED_* values are internal.
 TITLE_NEEDS_PUBLISHER = "title_needs_publisher"
 TITLE_NOT_ON_LIST = "title_not_on_list"
+# Review code for a matched product whose version fits several support
+# lines (curated review_versions). The product is kept; no cycle is given.
+SHARED_SUPPORT_LINES = "shared_support_lines"
+REVIEW_VERSION_CODES = (SHARED_SUPPORT_LINES,)
 _REFUSED_CURATED = "curated"     # generated_off, device or an exclusion
 _REFUSED_VENDOR = "vendor"       # one-word title, publisher does not confirm
 _REFUSED_NOT_LISTED = "unlisted"  # version-in-name rule: not on the list
@@ -281,6 +289,8 @@ class CatalogIndex:
     version_names: frozenset = frozenset()  # ids the version-in-name
     #                                         rule may match
     excluded: frozenset = frozenset()  # ids named by any exclusion
+    review: MappingProxyType = field(  # id -> (version prefixes, code)
+        default_factory=lambda: MappingProxyType({}))
 
     def phrase_ok(self, pid: str, phrase: tuple, pub: tuple) -> bool:
         """Whether this confirming phrase of pid is in the publisher. A
@@ -492,6 +502,10 @@ def build_index(catalog: dict, curation=None,
         no_cycle=MappingProxyType({
             pid: tuple(tuple(split_version(p)) for p in entry["prefixes"])
             for pid, entry in (cur.get("no_cycle_versions") or {}).items()}),
+        review=MappingProxyType({
+            pid: (tuple(tuple(split_version(p)) for p in entry["prefixes"]),
+                  entry["code"])
+            for pid, entry in (cur.get("review_versions") or {}).items()}),
         excluded=excluded,
         version_names=frozenset(
             pid for pid in frozenset(version_names) & one_word

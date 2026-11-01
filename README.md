@@ -81,7 +81,9 @@ The report has these lists. An item can be on more than one.
 - Couldn't match: the name and version did not map to a known product and
   cycle. The tool claims no date for these.
   Names it refused on purpose (a product title on a row with no
-  publisher) are listed again under "Names to review": not a finding.
+  publisher, or a row whose name and version fit more than one support
+  line, such as Internet Explorer 11) are listed again under "Names to
+  review": not a finding.
 - In CISA KEV, past or near end of life: the item is past or near end of life and its vendor and
   product appear in CISA KEV. The wording is "needs review". KEV matches
   vendor and product only, never version. The tool never says "vulnerable".

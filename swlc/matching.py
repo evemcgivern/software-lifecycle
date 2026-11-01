@@ -162,12 +162,15 @@ def match_noted(name: str, version: str, aliases: list[dict],
     one match_product gives. The code (TITLE_NEEDS_PUBLISHER or
     TITLE_NOT_ON_LIST, see swlc/catalog_match.py) is set only when no
     curated alias hit, generated matching found no product, and the
-    catalog lookup refused the row on purpose. A product whose curated
-    alias was blocked by its publisher guard gives no code. Neither does
-    TITLE_NEEDS_PUBLISHER when the version column is not empty and decides
-    no single cycle of the refused products ("99.9", "banana"): that is a
-    version mismatch, not a missing publisher. An empty version keeps the
-    code."""
+    catalog lookup refused the row on purpose. The other code,
+    SHARED_SUPPORT_LINES (curated review_versions), comes with a product
+    and no cycle: generated matching picked the product, but the version
+    column or the version in the name starts with a listed prefix. A
+    product whose curated alias was blocked by its publisher guard gives
+    no code. Neither does TITLE_NEEDS_PUBLISHER when the version column is
+    not empty and decides no single cycle of the refused products ("99.9",
+    "banana"): that is a version mismatch, not a missing publisher. An
+    empty version keeps the code."""
     return _match(name, version, aliases, products, catalog_index,
                   publisher, True)
 
@@ -201,7 +204,11 @@ def _generated(name: str, version: str, publisher: str, index,
     the name but its publisher guard failed) are never matched here. The version column is used; when it is
     empty, a version token split off the name is used instead. When both
     exist and disagree, the row is not decided: NO_CYCLE, product known.
-    So is a version starting with a curated no_cycle_versions prefix."""
+    So is a version starting with a curated no_cycle_versions prefix. A
+    version column or name version starting with a curated review_versions
+    prefix is not decided either, and also gets that entry's review code,
+    unless the version names one support line (11-ltsc keeps cycle
+    11-ltsc)."""
     fits = _fits(version, index, products)
     if noted:
         pids, tails, note = index.lookup_noted(name, publisher, fits)
@@ -223,7 +230,30 @@ def _generated(name: str, version: str, publisher: str, index,
     product = pids[0]
     cycle, reason = _generated_cycle(product, tails[product], version,
                                      index, products)
+    prefixes, review = index.review.get(product, ((), None))
+    versions = (split_version(version or ""),
+                split_version(tails[product] or ""))
+    if review is not None and _old_numbering(prefixes, versions) \
+            and (cycle is None
+                 or tuple(split_version(cycle.get("cycle", ""))) in prefixes) \
+            and not _names_line(prefixes, versions, products.get(product)):
+        # A version that fits several support lines (curated).
+        return (MatchResult(product, None, NO_CYCLE, source=GENERATED),
+                review if noted else None)
     return MatchResult(product, cycle, reason, source=GENERATED), None
+
+
+def _names_line(prefixes: tuple, versions: tuple, cycles) -> bool:
+    """Whether a version names one support line under a review prefix
+    (11-ltsc, 11-server): it starts with a longer cycle label that starts
+    with the prefix. Such a row is not flagged for review."""
+    for label in (c.get("cycle", "") for c in cycles or ()):
+        parts = tuple(split_version(label))
+        if any(len(parts) > len(p) and parts[:len(p)] == p
+               and tuple(v[:len(parts)]) == parts
+               for p in prefixes for v in versions):
+            return True
+    return False
 
 
 def _fits(version: str, index, products: dict[str, list[dict]]):

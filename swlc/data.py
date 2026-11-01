@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
-from .catalog_match import build_index, tokens
+from .catalog_match import REVIEW_VERSION_CODES, build_index, tokens
 from .classify import CURATED_CLASSES
 from .errors import DataError
 from .matching import AliasTable, _check as _check_alias
@@ -281,7 +281,7 @@ def _https(value, where: str) -> str:
 
 _OPTIONAL_CURATION = frozenset(("no_cycle_versions", "classification_rows",
                                 "classification_products",
-                                "bundle_parents"))
+                                "bundle_parents", "review_versions"))
 _PUB_TOKEN_RE = re.compile(r"[a-z0-9]+")
 _PHRASE_RE = re.compile(r"\S+(?: \S+)*")
 
@@ -460,6 +460,23 @@ def validate_curation(obj, product_ids=None) -> dict:
         _str_list(entry["prefixes"], where, pattern=_PREFIX_RE)
         _text(entry["reason"], where + ".reason")
         _https(entry["source"], where + ".source")
+        named.append(pid)
+
+    review = obj.get("review_versions", {})
+    if not isinstance(review, dict):
+        raise DataError("review_versions: expected an object")
+    for pid, entry in review.items():
+        where = "review_versions entry"
+        _ident(pid, where)
+        _keys(entry, ("prefixes", "code", "reason", "source", "gold"), where)
+        if not isinstance(entry["prefixes"], list) or not entry["prefixes"]:
+            raise DataError("%s: expected a non-empty list" % where)
+        _str_list(entry["prefixes"], where, pattern=_PREFIX_RE)
+        if entry["code"] not in REVIEW_VERSION_CODES:
+            raise DataError("%s.code: expected a known review code" % where)
+        _text(entry["reason"], where + ".reason")
+        _https(entry["source"], where + ".source")
+        _gold_key(entry["gold"], where + ".gold")
         named.append(pid)
 
     named.extend(_classification_curation(obj))

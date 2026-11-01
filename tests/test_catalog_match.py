@@ -17,12 +17,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from helpers import make_data_dir  # noqa: E402
 from swlc.assess import assess  # noqa: E402
 from swlc.catalog_match import (  # noqa: E402
-    build_index, split_tail, strip_arch, tokens)
+    SHARED_SUPPORT_LINES, build_index, split_tail, strip_arch, tokens)
 from swlc.data import Data, load_data  # noqa: E402
 from swlc.inputs import group_rows  # noqa: E402
 from swlc.matching import (  # noqa: E402
     AMBIGUOUS, CURATED, GENERATED, NO_ALIAS, NO_CYCLE, NO_VERSION,
-    MatchResult, match_product)
+    MatchResult, match_noted, match_product)
 from swlc.normalize import normalize_name  # noqa: E402
 from swlc.overrides import Exceptions, Golden  # noqa: E402
 
@@ -846,6 +846,76 @@ class NoCycleVersionTests(unittest.TestCase):
                           ("22", "3")))
 
 
+class ReviewVersionTests(unittest.TestCase):
+    """review_versions (issue #21): a version that fits several support
+    lines keeps the product, gets no cycle and the entry's review code."""
+    CAT = {"glassview": rec("glassview", "Glassview Browser")}
+    CYC = {"glassview": [{"cycle": c} for c in
+                         ("11", "11-server", "11-ltsc", "10", "9")]}
+    CUR = {"format": 1, "publisher_aliases": {}, "single_word_allowlist": [],
+           "exclusions": [], "generated_off": [],
+           "review_versions": {"glassview": {
+               "prefixes": ["11"], "code": SHARED_SUPPORT_LINES,
+               "reason": "several support lines", "gold": "a|b|c",
+               "source": "https://example.com/v"}}}
+
+    def m(self, name, version="", cur=None, aliases=()):
+        index = build_index(self.CAT, self.CUR if cur is None else cur)
+        result, code = match_noted(name, version, list(aliases), self.CYC,
+                                   catalog_index=index)
+        plain = match_product(name, version, list(aliases), self.CYC,
+                              catalog_index=index)
+        self.assertEqual(result, plain)
+        return got(result), code
+
+    def test_listed_version_keeps_the_product_with_no_cycle(self):
+        want = (("glassview", None, NO_CYCLE, GENERATED),
+                SHARED_SUPPORT_LINES)
+        for name, ver in (("Glassview Browser", "11.0.9600.1"),
+                          ("Glassview Browser", "11"),
+                          ("Glassview Browser 11", ""),
+                          ("Glassview Browser 11", "11.0.17763.0"),
+                          ("Glassview Browser 11", "10.0.9200.1")):
+            with self.subTest(name=name, ver=ver):
+                self.assertEqual(self.m(name, ver), want)
+
+    def test_other_versions_are_unchanged(self):
+        for name, ver, cyc in (("Glassview Browser", "10.0.9200.1", "10"),
+                               ("Glassview Browser 10", "", "10"),
+                               ("Glassview Browser 9", "9.0.8112.1", "9")):
+            with self.subTest(name=name, ver=ver):
+                self.assertEqual(self.m(name, ver),
+                                 (("glassview", cyc, None, GENERATED), None))
+
+    def test_a_version_that_names_its_line_keeps_that_cycle(self):
+        for ver in ("11-server", "11-ltsc", "11-LTSC"):
+            with self.subTest(ver=ver):
+                cyc = ver.lower()
+                self.assertEqual(self.m("Glassview Browser", ver),
+                                 (("glassview", cyc, None, GENERATED), None))
+        # The name says 11, the version names a line: no cycle (as before
+        # review_versions) and no review code, whose text would be false.
+        self.assertEqual(self.m("Glassview Browser 11", "11-ltsc"),
+                         (("glassview", None, NO_CYCLE, GENERATED), None))
+
+    def test_without_the_entry_the_generic_cycle_is_picked(self):
+        cur = dict(self.CUR)
+        del cur["review_versions"]
+        self.assertEqual(self.m("Glassview Browser", "11.0.9600.1", cur),
+                         (("glassview", "11", None, GENERATED), None))
+
+    def test_curated_alias_still_wins(self):
+        aliases = [alias("glassview browser", "glassview")]
+        self.assertEqual(self.m("Glassview Browser", "11.0.9600.1",
+                                aliases=aliases),
+                         (("glassview", "11", None, CURATED), None))
+
+    def test_index_holds_part_tuples_and_the_code(self):
+        index = build_index(self.CAT, self.CUR)
+        self.assertEqual(index.review["glassview"],
+                         ((("11",),), SHARED_SUPPORT_LINES))
+
+
 # --- assess: match_source, overrides on generated rows, format 1 -----------
 
 AS_OF = date(2026, 10, 24)
@@ -1030,8 +1100,10 @@ class BundledSpeedTests(unittest.TestCase):
             ("Apache Log4j", "The Apache Software Foundation", "2.12.4",
              "2.12"),
             ("Amazon RDS for MySQL", "Amazon Web Services", "8.0.35", "8.0"),
+            # Curated review_versions (issue #21): IE 11 fits several
+            # support lines, so the product is kept with no cycle.
             ("Internet Explorer", "Microsoft Corporation",
-             "11.0.9600.20000", "11"),
+             "11.0.9600.20000", None),
             ("Mule Runtime", "MuleSoft", "4.9.0", "4.9"),
             ("Android OS", "Google", "12.0.0", "12"),
             ("Jenkins", "Jenkins project", "2.587", "2"),
