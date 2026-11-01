@@ -6,10 +6,14 @@
   (part of issue #52). It offers two tools, `preflight` and
   `check_counts`, each taking only the path to a `.csv` file. It returns
   only fixed labels and numbers: no cell text, column titles or item IDs.
-  It refuses symlinks, folders, non-CSV paths and files over the tool's
-  size limit. `docs/mcp-setup.md` explains how to add it to the ChatGPT
-  desktop app and, untested, to Claude Desktop, and what it does not
-  protect. The one-click Claude Desktop package is not built yet.
+  It refuses a path whose file itself is a symlink (a symlinked parent
+  folder is followed), folders, non-CSV paths and files over the tool's
+  size limit. Each CSV gets its own report folder next to it,
+  `swlc-out-<file name>`. `docs/mcp-setup.md` explains how to add it to
+  the ChatGPT desktop app and, untested, to Claude Desktop, and what it
+  does not protect. The README, usage, quick start, procedure, glossary,
+  SECURITY.md and CONTRIBUTING.md point to it. The one-click Claude
+  Desktop package is not built yet.
 - `preflight` now ends with a second command line for an AI assistant:
   the same `check` command with `--counts-only`, which prints counts only
   (issue #54). `preflight --json` has one new optional key,

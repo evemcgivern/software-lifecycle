@@ -115,6 +115,10 @@ goes beyond it.
   a file. An agent can still read that file:
   nothing technical stops it. Tell the agent not to, and keep the output
   folder out of its reach.
+- The optional MCP server (`swlc_mcp.py`) for desktop chat apps enforces
+  counts-only in its code: it returns only fixed labels and numbers, with
+  no item IDs. What it does not protect is in
+  [docs/mcp-setup.md](docs/mcp-setup.md).
 - An item ID is a 12-character hash of publisher, name and version, with
   no secret in it. It keeps names out of counts and findings, but anyone
   who holds a guess ("publisher, name, version") can hash it and confirm

@@ -29,8 +29,9 @@ It gives the chat app exactly two tools:
   `classification`, `ambiguous_review`, `support_records`, `count_total`
   and one count for each list. It never returns item IDs, names,
   versions, publishers or owners. The full report is written to a folder
-  named `swlc-out` next to your CSV, and the result tells the app where
-  that folder is.
+  next to your CSV named after it: for `inventory.csv`, the folder is
+  `swlc-out-inventory`. The result tells the app where that folder is.
+  Running it again on the same file replaces that file's report.
 
 Each tool takes one thing: the full path to your inventory `.csv` file.
 The server takes no other options, so the app cannot pass extra flags.
@@ -44,8 +45,12 @@ The rules are in the server's code, not in a prompt:
   reaches the app: no cell text, no column titles, no item IDs.
 - It accepts only a full path to a file ending in `.csv` that is a
   regular file of at most 268435456 bytes (256 MiB, the tool's own limit).
-  It refuses symlinks, folders, devices, paths with control characters
-  and paths longer than 4096 characters.
+  It refuses a path whose file itself is a symlink; a symlinked parent
+  folder is followed (on macOS, `/tmp` is one). It refuses folders,
+  devices, paths with control characters and paths longer than 4096
+  characters. It checks the file name before it looks at the disk, and a
+  missing file gets the same message as an unusable one, so the message
+  does not say whether a file exists.
 - Errors are short fixed messages with the exit code. The tool's own
   error text is never passed on.
 
@@ -59,8 +64,21 @@ What it does **not** protect:
   while you use this.
 - Do not attach, upload or paste your inventory or a report into the
   chat. The server cannot stop that.
+- The full report, with every name, is written next to your CSV. If that
+  folder syncs to iCloud, OneDrive, Dropbox or a shared drive, the report
+  goes to that service too. Running the check again on the same file
+  replaces the old report.
+- The assistant chooses the path, so it chooses where the report folder
+  lands: next to any `.csv` file your user account can read, which may
+  be in a synced or shared folder. Use the app's approval prompt to see
+  the path before each run.
+- Someone who can change files on your computer while a check runs is
+  out of scope. The server opens the file once and checks it is the same
+  file it checked, but the tool opens it again by name afterwards.
+- One request is handled at a time. A check can take up to 280 seconds,
+  and the server does not answer other messages during that time.
 - Rows on your lists are not returned, only counts. To see which items
-  are on a list, open `report.md` in the `swlc-out` folder yourself.
+  are on a list, open `report.md` in the report folder yourself.
 
 The fix codes `preflight` can return:
 
@@ -93,7 +111,7 @@ for the full advice.
    `~/tools/software-lifecycle`.
 3. Keep your inventory outside that folder, for example
    `~/inventories/inventory.csv`. The report folder will be
-   `~/inventories/swlc-out`.
+   `~/inventories/swlc-out-inventory`.
 4. Test the server by hand. From the repo folder, run
    `python3 swlc_mcp.py` (on Windows, `py -3 swlc_mcp.py`). It prints one
    line starting with `swlc_mcp: started` and waits. Press Ctrl+C (on

@@ -3,6 +3,12 @@
 There are three commands: `check`, `preflight` and `verify-data`. Run them
 from the repo root with `python3 software_lifecycle.py`. Python 3.9 or newer.
 
+`swlc_mcp.py` is a separate, optional entry point, not a command of
+`software_lifecycle.py`. It is a small server that a desktop chat app
+starts. It offers two tools, `preflight` and `check_counts`, and returns
+counts only: no item IDs, names or column titles. See
+[mcp-setup.md](mcp-setup.md).
+
 ## check
 
     python3 software_lifecycle.py check INVENTORY [flags]

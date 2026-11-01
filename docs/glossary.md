@@ -121,3 +121,22 @@ age. The KEV list may be out of date: an empty "In CISA KEV" section then
 reads "None listed. KEV overlay is not current, so this does not show
 there are none." A snapshot more than 3 days old already gives a warning.
 What to do is in [quick-start.md](quick-start.md).
+
+## The desktop chat app server
+
+These words appear in [mcp-setup.md](mcp-setup.md).
+
+**MCP server.** A small program that a chat app starts on your computer
+to give the assistant extra tools. MCP (Model Context Protocol) is the
+standard way chat apps do this. This repo's one is `swlc_mcp.py`.
+
+**Tool.** One action the assistant can ask the server to do. This server
+has two: `preflight` and `check_counts`.
+
+**stdio.** Short for standard input and output. The chat app and the
+server talk by passing lines of text through them, on your computer,
+with no network.
+
+**Allow-list.** A list of the only things let through. The server
+returns only output lines it knows (fixed labels and numbers) and drops
+everything else, so item IDs and file content never reach the assistant.

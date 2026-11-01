@@ -740,6 +740,39 @@ class McpSetupDocTests(unittest.TestCase):
                 "never runs `refresh_data.py`"):
             self.assertIn(phrase, flat)
         self.assertIn("--counts-only", flat)
+        for phrase in (
+                "It refuses a path whose file itself is a symlink; a "
+                "symlinked parent folder is followed",
+                "`swlc-out-inventory`",
+                "Running it again on the same file replaces that file's "
+                "report.",
+                "iCloud, OneDrive, Dropbox",
+                "The assistant chooses the path, so it chooses where the "
+                "report folder lands",
+                "out of scope",
+                "A check can take up to 280 seconds"):
+            self.assertIn(phrase, flat)
+        self.assertNotIn("refuses symlinks", flat)
+
+    def test_other_docs_point_to_the_server(self):
+        for path in (README, DOCS / "quick-start.md", DOCS / "usage.md",
+                     DOCS / "sop.md", DOCS / "glossary.md",
+                     ROOT / "SECURITY.md"):
+            self.assertIn("mcp-setup.md)", text(path), path.name)
+        flat = " ".join(text(ROOT / "SECURITY.md").split())
+        scope = flat.split("## Scope", 1)[1].split("## ", 1)[0]
+        self.assertIn("`swlc_mcp.py`", scope)
+        self.assertIn("## What the MCP server protects", text(
+            ROOT / "SECURITY.md"))
+        glossary = text(DOCS / "glossary.md")
+        for term in ("**MCP server.**", "**Tool.**", "**stdio.**",
+                     "**Allow-list.**"):
+            self.assertIn(term, glossary)
+        usage = " ".join(text(DOCS / "usage.md").split())
+        self.assertIn("`swlc_mcp.py` is a separate, optional entry point, "
+                      "not a command of `software_lifecycle.py`", usage)
+        self.assertIn("discover -s tests -p 'test_mcp.py'",
+                      text(ROOT / "CONTRIBUTING.md"))
 
     def test_config_keys_and_tool_names_match_the_server(self):
         import swlc_mcp
