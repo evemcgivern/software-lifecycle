@@ -679,7 +679,7 @@ class RepoFilesTests(unittest.TestCase):
         text = (GITHUB / "ISSUE_TEMPLATE" / "unmatched-product.yml").read_text(
             encoding="utf-8")
         for needle in ("Product name", "Publisher", "Version string format",
-                       "inventory rows", "internal application names",
+                       "Do not paste your inventory", "report files",
                        "owner names"):
             self.assertIn(needle, text, needle)
         config = (GITHUB / "ISSUE_TEMPLATE" / "config.yml").read_text(

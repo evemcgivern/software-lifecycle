@@ -25,7 +25,7 @@ body:
     id: preflight
     attributes:
       label: Output of the tool's preflight command
-      description: Counts and column names only. Run python3 software_lifecycle.py preflight on your file and paste the output. Do not paste rows.
+      description: Counts and fix codes only. Run python3 software_lifecycle.py preflight on your file and paste the output. Do not paste rows or names.
     validations:
       required: true
   - type: textarea

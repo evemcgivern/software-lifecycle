@@ -55,7 +55,7 @@ body:
     id: approval
     attributes:
       label: Did an approval prompt show the path before each tool ran?
-      description: Say what it showed and what you chose (for example Allow once, Always allow, Deny).
+      description: "Was the app in Full Access or an approval mode? Say what the prompt showed and what you chose (for example Allow once, Always allow, Deny). If the app was in Full Access, say so."
     validations:
       required: true
   - type: textarea
@@ -69,7 +69,7 @@ body:
     id: errors
     attributes:
       label: Error text or log lines
-      description: "Leave out anything from your inventory. To find the app's log, see the logs notes in docs/mcp-setup.md. For Claude Desktop the folder is ~/Library/Logs/Claude on macOS and %APPDATA%\\Claude\\logs on Windows."
+      description: "Paste only the error message, a few lines at most. Remove user names and folder paths. Never paste report files, the report folder contents, chat transcripts, or tool output that lists items. To find the app's log, see the logs notes in docs/mcp-setup.md."
     validations:
       required: false
   - type: textarea

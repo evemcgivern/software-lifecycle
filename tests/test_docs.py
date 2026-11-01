@@ -311,6 +311,13 @@ def form_problems(name: str, body: str) -> list:
     return out
 
 
+def form_block(body: str, field_id: str) -> str:
+    """The text of one form field, from its id line to the next field."""
+    m = re.search(r"^    id: %s$(.*?)(?=^  - type:|\Z)" % field_id, body,
+                  re.M | re.S)
+    return m.group(1) if m else ""
+
+
 class NewFilesTests(unittest.TestCase):
     FORMS = ("bug-report.yml", "feature-request.yml", "unmatched-product.yml",
              "assistant-setup-report.yml", "export-profile-report.yml",
@@ -372,6 +379,21 @@ class NewFilesTests(unittest.TestCase):
         for key in ("id: prereqs", "id: approval", "id: came_back",
                     "id: errors"):
             self.assertIn(key, setup)
+        self.assertIn("Full Access", setup)
+        self.assertIn("chat transcripts", form_block(setup, "errors"))
+        docs = text(GITHUB / "ISSUE_TEMPLATE" / "docs-correction.yml")
+        self.assertIn("required: true", form_block(docs, "source"))
+        self.assertNotIn("required: false", form_block(docs, "source"))
+
+    def test_block_checks_fail_when_reverted(self):
+        setup = text(GITHUB / "ISSUE_TEMPLATE" / "assistant-setup-report.yml")
+        docs = text(GITHUB / "ISSUE_TEMPLATE" / "docs-correction.yml")
+        cut = setup.replace("chat transcripts", "chats")
+        self.assertNotIn("chat transcripts", form_block(cut, "errors"))
+        loose = docs.replace("id: source", "id: source", 1)
+        loose = re.sub(r"(id: source.*?required: )true", r"\1false", loose,
+                       flags=re.S)
+        self.assertIn("required: false", form_block(loose, "source"))
 
     def test_warning_is_the_first_body_element(self):
         for name in self.FORMS:
