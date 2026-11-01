@@ -127,7 +127,8 @@ class ColumnTests(Base):
         self.assertEqual(code, 0)
         self.assertTrue(res["ok"])
         codes = {f["code"]: f["blocking"] for f in res["fix"]}
-        self.assertEqual(codes, {"NO_PUBLISHER": False, "NO_COUNT": False,
+        self.assertEqual(codes, {"NO_PUBLISHER": False, "NO_OWNER": False,
+                                 "NO_COUNT": False, "NO_EXPORT_EOL": False,
                                  "NO_PARENT": False})
         self.assertIsNone(res["columns"]["publisher"])
 
@@ -141,7 +142,70 @@ class ColumnTests(Base):
         # n/a as a name is matched as written, so it is not counted.
         self.assertEqual(res["placeholder_cells"], {})
         self.assertEqual(res["formula_cells"], 1)
-        self.assertEqual(res["other_columns"], {"owner": "Owner"})
+        self.assertEqual(res["columns"]["owner"], "Owner")
+        self.assertEqual(res["other_columns"], {})
+
+    def test_missing_owner_column_says_every_item_is_ownerless(self):
+        path = self.inv(["Product", "Version"], [["a", "1"]])
+        code, out, _ = self.pre(path)
+        self.assertEqual(code, 0)
+        self.assertIn("  owner: not found", out)
+        self.assertIn("  - No owner column was found. check will list every "
+                      "item under \"Ownerless\".", out)
+
+    def test_blank_owner_cells_are_named(self):
+        path = self.inv(["Product", "Version", "Owner"],
+                        [["a", "1", ""], ["b", "1", SECRETS[3]]])
+        code, res, _ = self.pre_json(path)
+        self.assertEqual(code, 0)
+        self.assertEqual(res["blank_cells"]["owner"], 1)
+        self.assertIn("BLANK_OWNER", [f["code"] for f in res["fix"]])
+
+    def test_owner_found_has_no_owner_fix(self):
+        path = self.inv(["Product", "Version", "Owner"],
+                        [["a", "1", SECRETS[3]]])
+        _, res, _ = self.pre_json(path)
+        codes = [f["code"] for f in res["fix"]]
+        self.assertNotIn("NO_OWNER", codes)
+        self.assertNotIn("BLANK_OWNER", codes)
+
+    def test_day_first_export_dates_are_counted(self):
+        path = self.inv(["Product", "Version", "End of Life"],
+                        [["a", "1", "29/11/2031"], ["b", "1", "2026-12-31"],
+                         ["c", "1", "2026-12-31T00:00:00Z"], ["d", "1", ""],
+                         ["e", "1", "12/31/2026"]])
+        code, res, _ = self.pre_json(path)
+        self.assertEqual(code, 0)
+        self.assertTrue(res["ok"])
+        self.assertEqual(res["columns"]["export_eol"], "End of Life")
+        self.assertEqual(res["unreadable_date_cells"], 2)
+        self.assertEqual(res["blank_cells"]["export_eol"], 1)
+        fix = {f["code"]: f["blocking"] for f in res["fix"]}
+        self.assertIs(fix["UNREADABLE_DATE"], False)
+        self.assertNotIn("NO_EXPORT_EOL", fix)
+        _, out, _ = self.pre(path)
+        self.assertIn("End-of-life date cells not in YYYY-MM-DD form: 2",
+                      out)
+        self.assertIn("lists those items under \"Dates disagree\"", out)
+        # The cells themselves are never printed.
+        self.assertNotIn("29/11/2031", out)
+        self.assertNotIn("12/31/2026", out)
+
+    def test_readable_export_dates_have_no_date_fix(self):
+        path = self.inv(["Product", "Version", "End of Life"],
+                        [["a", "1", "2026-12-31"]])
+        _, res, _ = self.pre_json(path)
+        self.assertEqual(res["unreadable_date_cells"], 0)
+        codes = [f["code"] for f in res["fix"]]
+        self.assertNotIn("UNREADABLE_DATE", codes)
+        self.assertNotIn("NO_EXPORT_EOL", codes)
+
+    def test_missing_export_date_column_is_fine(self):
+        path = self.inv(["Product", "Version"], [["a", "1"]])
+        _, out, _ = self.pre(path)
+        self.assertIn("  export_eol: not found", out)
+        self.assertIn("No end-of-life date column was found. That is fine",
+                      out)
 
     def test_placeholders_count_for_the_parent_column(self):
         path = self.inv(["Product", "Version", "Parent"],
@@ -298,7 +362,8 @@ class OutputTests(Base):
         self.assertEqual(set(res), {
             "preflight_version", "ok", "file", "limits", "profile",
             "columns", "other_columns", "blank_cells", "placeholder_cells",
-            "formula_cells", "fix", "next_command"})
+            "formula_cells", "unreadable_date_cells", "fix",
+            "next_command"})
         self.assertEqual(set(res["file"]), {"readable", "encoding", "bom",
                                             "line_endings", "bytes", "rows"})
         self.assertEqual(set(res["limits"]),
@@ -351,6 +416,25 @@ class OutputTests(Base):
         self.assertEqual(res["next_command"],
                          "python3 software_lifecycle.py check %s --out "
                          "../swlc-out" % shlex.quote(path))
+
+    def test_next_command_tells_windows_users_to_type_py(self):
+        path = self.inv(["Product", "Version"], [["a", "1"]])
+        code, out, _ = self.pre(path)
+        self.assertEqual(code, 0)
+        lines = out.splitlines()
+        at = lines.index("Next command")
+        self.assertTrue(lines[at + 1].startswith("  python3 "))
+        self.assertEqual(lines[at + 2],
+                         "  On Windows, type py instead of python3.")
+        # Also after must-fix items; the JSON command is unchanged.
+        bad = self.inv(["Product"], [["a"]], "bad.csv")
+        _, out, _ = self.pre(bad)
+        lines = out.splitlines()
+        at = lines.index("Next command, after the must-fix items")
+        self.assertEqual(lines[at + 2],
+                         "  On Windows, type py instead of python3.")
+        _, res, _ = self.pre_json(path)
+        self.assertTrue(res["next_command"].startswith("python3 "))
 
     def test_no_cell_value_on_success(self):
         path = self.inv(["Product", "Publisher", "Version", "Owner"],

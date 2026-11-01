@@ -7,6 +7,7 @@ with UPDATE_GOLDEN=1 after a deliberate change.
 from __future__ import annotations
 
 import csv
+import importlib.util
 import json
 import os
 import subprocess
@@ -25,6 +26,10 @@ from swlc.report import CLAIMS_LINE, DECISION_TEXT, KEV_LINE, MATCH_CAVEAT
 EXAMPLES = ROOT / "examples"
 DATA = ROOT / "tests" / "fixtures" / "data"
 EXPECTED = ROOT / "tests" / "fixtures" / "expected-report.json"
+_SPEC = importlib.util.spec_from_file_location(
+    "demo_generate", EXAMPLES / "generate.py")
+generate = importlib.util.module_from_spec(_SPEC)
+_SPEC.loader.exec_module(generate)
 AS_OF = "2026-10-24"
 DEMO_FILES = ("software-inventory.csv", "answer-key.json", "tracking.csv",
               "support-records.csv", "sample-report.md")
@@ -181,10 +186,15 @@ class MarkdownTests(DemoBase):
         self.assertNotIn(MATCH_CAVEAT, self.csv_text)
 
     def test_sample_report_is_this_run(self):
-        # examples/sample-report.md is the demo's report.md, byte for byte.
-        # Regenerate it with python3 examples/generate.py.
-        self.assertEqual(self.md, (EXAMPLES / "sample-report.md").read_text(
-            encoding="utf-8"))
+        # examples/sample-report.md is the demo's report.md, byte for byte,
+        # plus the sample note under the title. Regenerate it with
+        # python3 examples/generate.py.
+        sample = (EXAMPLES / "sample-report.md").read_bytes()
+        self.assertEqual(sample, generate.add_sample_note(
+            self.md.encode("utf-8")))
+        self.assertEqual(sample.count(generate.SAMPLE_NOTE), 1)
+        # A real run's report.md never carries the note.
+        self.assertNotIn("Sample note", self.md)
 
     def test_never_says_vulnerable(self):
         self.assertNotIn("vulnerable", self.md.lower())

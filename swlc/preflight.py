@@ -11,18 +11,21 @@ import shlex
 import stat
 
 from . import inputs
+from .assess import _parse_export
 from .classify import _PLACEHOLDERS
 from .errors import InputError
 from .inputs import _norm_header, _show, map_columns, read_rows
 from .normalize import normalize_name
 
 PREFLIGHT_VERSION = 1
-FIELDS = ("name", "publisher", "version", "count", "parent")
+FIELDS = ("name", "publisher", "version", "owner", "count", "export_eol",
+          "parent")
 CORE = ("name", "publisher", "version")
 SNIFF_BYTES = 64 * 1024
 # The same first characters that report.csv neutralizes.
 FORMULA_START = ("=", "+", "-", "@", "\t", "\r")
 NEXT_OUT = "../swlc-out"
+WINDOWS_NOTE = "On Windows, type py instead of python3."
 
 FIX_TEXT = {
     "NO_ROWS": "The file has a header row but no data rows. Export it "
@@ -34,9 +37,15 @@ FIX_TEXT = {
     "NO_PUBLISHER": "No publisher column was found. Matching uses the "
                     "publisher when there is one; add a Publisher column if "
                     "the export has it.",
+    "NO_OWNER": "No owner column was found. check will list every item "
+                "under \"Ownerless\". Rename the column that holds the "
+                "owner to Owner, or pass --columns FILE.",
     "NO_COUNT": "No count column was found. That is fine: the report counts "
                 "inventory rows and keeps its usual order. Add a count "
                 "column to rank items by it.",
+    "NO_EXPORT_EOL": "No end-of-life date column was found. That is fine: "
+                     "the report uses the endoflife.date dates. Add an End "
+                     "of Life column if the export has one.",
     "NO_PARENT": "No parent column was found. That is fine; add one if the "
                  "export has it (see \"The Parent column\" in "
                  "docs/usage.md).",
@@ -44,6 +53,13 @@ FIX_TEXT = {
                   "matched; fill them in or drop them.",
     "BLANK_VERSION": "Some rows have a blank version cell. Those rows cannot "
                      "be matched to a cycle; fill them in where you can.",
+    "BLANK_OWNER": "Some rows have a blank owner cell. An item with no "
+                   "owner on any row is listed under \"Ownerless\".",
+    "UNREADABLE_DATE": "Some end-of-life date cells are not in YYYY-MM-DD "
+                       "form, for example day-first dates such as "
+                       "31/12/2026. check cannot read them and lists those "
+                       "items under \"Dates disagree\". Export the dates as "
+                       "YYYY-MM-DD.",
     "PLACEHOLDER": "Some Parent cells hold a placeholder such as n/a, none "
                    "or unknown. check reads those as no parent.",
     "FORMULA": "Some cells start like a spreadsheet formula (=, +, -, @). "
@@ -165,6 +181,7 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
     # Only the Parent column treats placeholders as blank in check.
     placeholder = {"parent": 0} if "parent" in colmap else {}
     formula = 0
+    unreadable_dates = 0
     for row in rows:
         for field, col in colmap.items():
             cell = row.get(col) or ""
@@ -173,6 +190,8 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
             elif field in placeholder \
                     and normalize_name(cell) in _PLACEHOLDERS:
                 placeholder[field] += 1
+            elif field == "export_eol" and not _parse_export(cell)[1]:
+                unreadable_dates += 1
         formula += sum(1 for cell in row.values()
                        if cell[:1] in FORMULA_START)
     fix = []
@@ -185,6 +204,10 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
         fix.append("BLANK_NAME")
     if blank.get("version"):
         fix.append("BLANK_VERSION")
+    if blank.get("owner"):
+        fix.append("BLANK_OWNER")
+    if unreadable_dates:
+        fix.append("UNREADABLE_DATE")
     if any(placeholder.values()):
         fix.append("PLACEHOLDER")
     if formula:
@@ -214,6 +237,7 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
         "blank_cells": dict(sorted(blank.items())),
         "placeholder_cells": placeholder,
         "formula_cells": formula,
+        "unreadable_date_cells": unreadable_dates,
         "fix": [{"code": c, "blocking": c in BLOCKING, "text": FIX_TEXT[c]}
                 for c in fix],
         "next_command": _next_command(path, used, columns, encoding),
@@ -264,7 +288,9 @@ def render_text(result: dict) -> str:
               "like)"]
     lines += ["  %s: %d" % kv for kv in result["placeholder_cells"].items()]
     lines += ["", "Cells that start like a spreadsheet formula: %d"
-              % result["formula_cells"], "", "What to fix"]
+              % result["formula_cells"],
+              "End-of-life date cells not in YYYY-MM-DD form: %d"
+              % result["unreadable_date_cells"], "", "What to fix"]
     if result["fix"]:
         lines += ["  - %s%s" % ("[must fix] " if item["blocking"] else "",
                                 item["text"]) for item in result["fix"]]
@@ -272,5 +298,5 @@ def render_text(result: dict) -> str:
         lines.append("  Nothing.")
     lines += ["", "Next command" if result["ok"]
               else "Next command, after the must-fix items",
-              "  " + result["next_command"]]
+              "  " + result["next_command"], "  " + WINDOWS_NOTE]
     return "\n".join(lines) + "\n"

@@ -49,6 +49,8 @@ SOURCE_TEXT = {
     "curated": "matched by a curated alias",
     "generated": "matched by product title",
 }
+# For an unmatched item whose product is known: no cycle was decided.
+SOURCE_TEXT_UNMATCHED = "Product known; version not matched."
 DECISION_TEXT = {
     "DIFFERENT_DATE": (
         "The export date and the endoflife.date date differ. The ITAM lead "
@@ -433,7 +435,8 @@ def _item_block(it: dict, eol_snap: str, by_id: dict,
         ", ".join(it["classification_basis"]) or "none"))
     sub.extend(_parent_lines(it, by_id))
     if it.get("match_source") in SOURCE_TEXT:
-        sub.append("Product %s." % SOURCE_TEXT[it["match_source"]])
+        sub.append(SOURCE_TEXT_UNMATCHED if it["state"] == "unmatched"
+                   else "Product %s." % SOURCE_TEXT[it["match_source"]])
     owners = ", ".join(_disp(o) for o in it["owners"])
     if owners:
         sub.append("Owners: %s. Inventory rows: %d" % (owners, it["rows"]))

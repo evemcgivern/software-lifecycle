@@ -69,7 +69,9 @@ Windows PowerShell:
       --out ../swlc-demo
 
 Open `../swlc-demo/report.md`. It is the same as the committed
-[sample report](../examples/sample-report.md).
+[sample report](../examples/sample-report.md), except for the sample's
+note at the top. The Hostile Corp rows are planted tests of how the tool
+handles unsafe text.
 
 ## 1. Get an export
 

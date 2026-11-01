@@ -1,5 +1,7 @@
 # Software lifecycle report
 
+Sample note: the Hostile Corp rows (a script tag, a spreadsheet formula and a shell command) are planted tests of how the tool handles unsafe text.
+
 Checked on: 2026-10-24. Lookahead: 12 months.
 Tool version: 0.5.0. Data release: fixture-1.
 End-of-life dates: per endoflife.date, snapshot 2026-10-20 (4 days old).
@@ -206,14 +208,14 @@ Names to review: 1 of these were left unmatched on purpose; see "Names to review
 - **Brightline Editor** 9.0, publisher Fictional Software Ltd (id `bbccc7b93adf`)
   - State: could not be matched
   - Classification: governable (basis: category_governable)
-  - Product matched by a curated alias.
+  - Product known; version not matched.
   - Owners: Finance Systems. Inventory rows: 1
   - Count (from your file): 381
   - **Unverified:** product known (brightlineeditor), but no cycle was matched. Reason NO_CYCLE: no cycle matches this version, or the version in the name disagrees with it. No end-of-life date is claimed.
 - **Brightline Editor** , publisher Fictional Software Ltd (id `b3e080c410cc`)
   - State: could not be matched
   - Classification: unknown (basis: category_governable, version_shape)
-  - Product matched by a curated alias.
+  - Product known; version not matched.
   - Owners: Finance Systems. Inventory rows: 1
   - Count (from your file): 336
   - **Unverified:** product known (brightlineeditor), but no cycle was matched. Reason NO_VERSION: no version given. No end-of-life date is claimed.

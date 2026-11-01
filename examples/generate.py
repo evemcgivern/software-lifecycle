@@ -10,7 +10,8 @@ checked against tests/fixtures/data on 2026-10-24 (a 12 month window ends
 2027-10-24), with golden-sources.csv and exceptions.csv from this folder.
 The expected states below are written by hand, not read from the tool.
 sample-report.md is the tool's own report.md for the demo run on that
-date, made from the generated files.
+date, made from the generated files, with SAMPLE_NOTE added under its
+title. A real run's report.md never has that note.
 """
 from __future__ import annotations
 
@@ -181,6 +182,10 @@ SUPPORT_RECORDS = [
      "Desktop lead", [FILLER_LANTERN]),
 ]
 WINDOW = ("2026-10-24", "2027-10-24")
+TITLE = b"# Software lifecycle report\n\n"
+SAMPLE_NOTE = (b"Sample note: the Hostile Corp rows (a script tag, a "
+               b"spreadsheet formula and a shell command) are planted tests "
+               b"of how the tool handles unsafe text.\n\n")
 
 
 def _csv_bytes(rows) -> bytes:
@@ -202,9 +207,17 @@ def _support_key(ids: dict) -> dict:
     return {k: sorted(v) for k, v in sorted(out.items())}
 
 
+def add_sample_note(report_md: bytes) -> bytes:
+    """report.md with SAMPLE_NOTE put under its title line."""
+    if not report_md.startswith(TITLE):
+        raise SystemExit("report.md does not start with its title")
+    return TITLE + SAMPLE_NOTE + report_md[len(TITLE):]
+
+
 def sample_report(files: dict) -> bytes:
     """Run the demo check on the generated files (with golden-sources.csv
-    and exceptions.csv from this folder) and return its report.md."""
+    and exceptions.csv from this folder) and return its report.md with
+    SAMPLE_NOTE added."""
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
         for name in ("software-inventory.csv", "tracking.csv",
@@ -223,7 +236,7 @@ def sample_report(files: dict) -> bytes:
             code = swlc_main(argv)
         if code != 0:
             raise SystemExit("demo check failed with exit code %d" % code)
-        return (out / "report.md").read_bytes()
+        return add_sample_note((out / "report.md").read_bytes())
 
 
 def build() -> dict:

@@ -12,7 +12,7 @@ No install step. Run from the repo root.
 - Tests: `python3 -B -m unittest discover -s tests`
 - One module: `python3 -B -m unittest discover -s tests -p 'test_x.py'`
   (do not use `tests.test_x` or `-t`).
-- Demo: `python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out /tmp/swlc-demo`
+- Demo: `python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo`
 - Verify data: `python3 software_lifecycle.py verify-data`
 - On any real inventory: add `--counts-only --out DIR` and never read the
   report files.
