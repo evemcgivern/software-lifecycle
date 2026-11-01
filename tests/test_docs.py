@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import csv
 import hashlib
+import io
 import json
 import re
 import shutil
@@ -12,6 +14,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -63,6 +66,8 @@ def public_files() -> list:
             if p.is_file() and p.suffix in TEXT_SUFFIXES]
     out += sorted((ROOT / "swlc").glob("*.py"))
     out += [ROOT / "swlc_mcp.py"]
+    out += [p for p in sorted((ROOT / "mcpb").iterdir()) if p.is_file()]
+    out += sorted((ROOT / "tools").glob("*.py"))
     return out
 
 
@@ -822,7 +827,8 @@ class McpSetupDocTests(unittest.TestCase):
                 "Other tools in the same app can still read files.",
                 "Do not attach, upload or paste your inventory or a report "
                 "into the chat.",
-                "is **not built yet** and is untested",
+                "can be built from the repo, but nobody has installed it "
+                "yet: **Unverified**",
                 "**Unverified**",
                 "never runs `refresh_data.py`"):
             self.assertIn(phrase, flat)
@@ -891,6 +897,55 @@ class McpSetupDocTests(unittest.TestCase):
                       "not a command of `software_lifecycle.py`", usage)
         self.assertIn("discover -s tests -p 'test_mcp.py'",
                       text(ROOT / "CONTRIBUTING.md"))
+
+    def test_one_click_package_section(self):
+        body = text(MCP_SETUP)
+        self.assertIn("\n## One-click package (Claude Desktop)\n", body)
+        sec = " ".join(body.split("## One-click package (Claude Desktop)",
+                                  1)[1].split("\n## ", 1)[0].split())
+        for phrase in (
+                "**Unverified**: nobody has installed it in Claude Desktop "
+                "yet.",
+                "The manual route in [Claude Desktop](#claude-desktop) "
+                "remains the tested one.",
+                "python3 tools/build_mcpb.py --out",
+                "The package is unsigned.",
+                "uses the `uv` server type",
+                "declares no third-party packages",
+                "The Python that Claude Desktop's uv picks must be 3.9 or "
+                "newer.",
+                "whether it needs the network to do so: **Unverified**",
+                "`.venv` folder and a `uv.lock` file",
+                "\"No network by default\" is about this project's own "
+                "code.",
+                "~/Library/Logs/Claude"):
+            self.assertIn(phrase, sec)
+        args = re.search(r"python3 tools/build_mcpb\.py (--out \S+)", sec)
+        sys.path.insert(0, str(ROOT / "tools"))
+        import build_mcpb
+        # The documented command parses; the build itself is stopped.
+        with mock.patch.object(build_mcpb, "build",
+                               side_effect=build_mcpb.BuildError("stop")), \
+                contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(build_mcpb.main(args.group(1).split()), 1)
+        self.assertEqual(signed_problems(body), [])
+
+    def test_claude_desktop_approval_prompt_is_recorded(self):
+        body = text(MCP_SETUP)
+        tested = " ".join(
+            body.split("## Tested so far", 1)[1].split("\n## ", 1)[0].split())
+        for phrase in ('"Claude wants to use Preflight from '
+                       'software-lifecycle"',
+                       '"Claude wants to use Check counts from '
+                       'software-lifecycle"',
+                       "**Decline**, **Always allow** and **Allow once**",
+                       "**Allow once** was chosen both times."):
+            self.assertIn(phrase, tested)
+        self.assertNotIn("read from the connector's settings screen", tested)
+        self.assertNotIn("No approval prompt was answered", tested)
+        flat = " ".join(body.split())
+        self.assertIn("Choose **Allow once**, so you see the path each "
+                      "time. **Always allow** removes that check.", flat)
 
     def test_config_keys_and_tool_names_match_the_server(self):
         import swlc_mcp

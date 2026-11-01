@@ -43,6 +43,11 @@ No install step. Run from the repo root.
 - `software_lifecycle.py`: entry point.
 - `swlc_mcp.py`: the counts-only MCP server for desktop chat apps (two
   tools, standard library only). See `docs/mcp-setup.md`.
+- `mcpb/`: the Claude Desktop package sources (`manifest.json`,
+  `pyproject.toml`, a short `README.md`). The version comes from
+  `VERSION` at build time.
+- `tools/build_mcpb.py`: builds the `.mcpb` package from an allow-list
+  into `dist/` (git ignores it). Never commit a built package.
 - `swlc/cli.py`: flags, exit codes, `run()`.
 - `swlc/inputs.py`: CSV reading, column aliases, item IDs.
 - `swlc/preflight.py`: the `preflight` command's checks and output.

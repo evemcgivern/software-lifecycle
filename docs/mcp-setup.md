@@ -58,8 +58,18 @@ else was tested: every other detail on this page stays **Unverified**.
 - The app lists `preflight` under **Read-only tools** and `check_counts`
   under **Write/delete tools**. The server marks `check_counts` as not
   read-only (it writes the report folder); the app's label may come from
-  that: not confirmed. Both are listed as **Needs approval**, read from
-  the connector's settings screen. No approval prompt was answered.
+  that: not confirmed. Both are listed as **Needs approval** in the
+  connector's settings screen.
+- The approval prompt was seen in a second run the same day (chat model
+  Sonnet 5.5, approval mode **Manual**, the prompt from
+  [A prompt to use](#a-prompt-to-use)). Before each tool ran, Claude
+  Desktop asked first: "Claude wants to use Preflight from
+  software-lifecycle", and later "Claude wants to use Check counts from
+  software-lifecycle". Each prompt showed the full path to the demo file
+  and three buttons: **Decline**, **Always allow** and **Allow once**.
+  **Allow once** was chosen both times. Both tools then ran, and the chat
+  gave the counts below and said it had not opened the report or the
+  inventory.
 - Both tools ran and returned only counts: no names, versions, publishers,
   column titles or item IDs.
 - Not tested: a bare `python3` as the command. Whether Claude Desktop finds
@@ -94,8 +104,9 @@ wrong. In one test the chat guessed that the empty end-of-life column
 caused the unmatched items; that was wrong. The report folder holds the
 facts.
 
-Not built: the one-click `.mcpb` package for Claude Desktop (issue #66,
-labelled later).
+Not tested: the one-click `.mcpb` package for Claude Desktop (issue
+#66). It can be built from the repo, but nobody has installed it yet; see
+[One-click package (Claude Desktop)](#one-click-package-claude-desktop).
 
 ## What it protects, and what it does not
 
@@ -238,9 +249,10 @@ they appear to be set in `config.toml` only. **Unverified**.
 
 ## Claude Desktop
 
-The one-click package for Claude Desktop (a `.mcpb` file) is **not built
-yet** and is untested. Whether Claude Desktop can find a Python already
-installed on your computer for such a package is not confirmed.
+The one-click package for Claude Desktop (a `.mcpb` file) can be built
+from the repo, but nobody has installed it yet: **Unverified**. See
+[One-click package (Claude Desktop)](#one-click-package-claude-desktop).
+The manual route below is the tested one.
 
 The manual route below is documented for local servers in general:
 <https://modelcontextprotocol.io/docs/develop/connect-local-servers>.
@@ -283,9 +295,70 @@ read-only because it writes the report folder next to your CSV, and the
 app's label may come from that (not confirmed). Both are listed as
 **Needs approval**. Keep that, so you see the path before each run.
 
+Before each tool runs, Claude Desktop asks first and shows the path, with
+the buttons **Decline**, **Always allow** and **Allow once** (seen once on
+one Mac, 2026-11-01). Choose **Allow once**, so you see the path each
+time. **Always allow** removes that check.
+
 The same page says a local server runs with your user account's
 permissions. This server only runs the two commands above, but other
 servers you add may do much more.
+
+## One-click package (Claude Desktop)
+
+The repo can build a Desktop Extension: one `.mcpb` file that holds
+`swlc_mcp.py`, the tool, its bundled data, `LICENSE` and
+`THIRD-PARTY.md`, and nothing else (no tests, examples, docs or CSV
+files). It is **Unverified**: nobody has installed it in Claude Desktop
+yet. The manual route in [Claude Desktop](#claude-desktop) remains the
+tested one.
+
+Build it from the repo folder:
+
+```text
+python3 tools/build_mcpb.py --out ../swlc-package
+```
+
+It writes `software-lifecycle-<version>.mcpb` to that folder (without
+`--out`, to `dist/`, which git ignores) and prints every file in the
+package and the SHA-256 of the package. The same files give the same
+bytes on every build. It stops if any file not on its allow-list would go
+in.
+
+To install it, open the `.mcpb` file with Claude Desktop (for example by
+double-clicking it). The MCPB project's README says that shows an
+installation dialog:
+<https://github.com/modelcontextprotocol/mcpb> (no last-updated date
+shown). An install button under **Settings**, **Extensions**: not
+confirmed in a doc this page cites, **Unverified**.
+
+What to know first:
+
+- The package is unsigned. Claude Desktop may warn about that when you
+  install it.
+- It uses the `uv` server type from the MCPB manifest spec (manifest
+  version 0.4). The spec says the host app manages Python for such a
+  package. The package declares no third-party packages. The Python that
+  Claude Desktop's uv picks must be 3.9 or newer. Whether uv downloads
+  one the first time, and whether it needs the network to do so:
+  **Unverified**. Whether your version of Claude Desktop supports the
+  `uv` type, and runs this server with it: **Unverified**.
+- uv may write a `.venv` folder and a `uv.lock` file inside the
+  extension folder. A local uv did that in a test outside Claude Desktop;
+  what the app does: **Unverified**.
+- "No network by default" is about this project's own code. It says nothing
+  about what Claude Desktop or its uv does to start Python.
+- It offers the same two tools, with the same limits and the same
+  protections as the manual route. Everything in
+  [What it protects, and what it does not](#what-it-protects-and-what-it-does-not)
+  still applies. Whether Claude Desktop asks before each tool runs, as it
+  did with the manual route: **Unverified**.
+- Install the package or set up the manual route, not both, so the tools
+  do not show up twice.
+
+If it fails to install or the tools do not show up, look in the logs in
+`~/Library/Logs/Claude` on macOS (`%APPDATA%\Claude\logs` on Windows),
+remove the extension, and use the manual route instead.
 
 ## A prompt to use
 
