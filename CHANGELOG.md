@@ -7,6 +7,11 @@
   (issue #54). `preflight --json` has one new optional key,
   `next_command_counts_only`. `next_command` and `preflight_version` (1)
   are unchanged.
+- Added `docs/assistant-setup.md`: which AI assistants can run the tool,
+  the privacy rule, and a copy-paste prompt for each kind of assistant. The
+  README now opens with a "Start here" chooser. `AGENTS.md` gains rules for
+  an agent asked to run the tool on an inventory, and `CLAUDE.md` imports
+  it (issue #51).
 - Docs and tests now describe the public repository (issue #47).
   SECURITY.md, CONTRIBUTING.md, the README and the quick start no longer
   say the repository is private or that scheduled workflows are paused.
