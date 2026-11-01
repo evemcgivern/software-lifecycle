@@ -30,7 +30,8 @@
   800-53 cells are now checked against the standard text and no longer
   listed as Unverified. Dropped 27001 A.5.33, CSF GV.RM-02 and 800-53
   PM-16; added 27001 A.5.2, 19770-1 6.2.4, 8.5 and 10.1 and Annex A
-  Retirement, and 800-53 CA-6 and RA-3. `itil4` and `iso20000_1` stay
+  Retirement, and 800-53 CA-6 and RA-3. Most of the new citations are
+  Partial. Amendment 1 (2024) to 27001 and 19770-1 was not opened. `itil4` and `iso20000_1` stay
   Unverified, with the reasons in `docs/themes.md`. Docs and tests only.
 
 ## 0.6.0 - 2026-11-01

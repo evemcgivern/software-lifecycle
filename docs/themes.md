@@ -12,18 +12,22 @@ CIS Controls v8.1; ISO/IEC 27001:2022; COBIT 2019.
 ## What was checked, and against what
 
 Page numbers are printed pages. Partial means the text fits only part of
-the claim. Supported means it fits the claim as written. A cell can be
-Supported and still not be a direct requirement.
+the claim. Supported means it fits the claim as written. Supported with
+limits means it fits, but the text leaves out part of the claim. Partial,
+weak fit means the match is thin. Partial, related only means the control
+stays in the CSV as a related control, not as a fit. Read earlier, no
+per-cell verdict recorded means the control was read but no verdict was
+kept. A cell can be Supported and still not be a direct requirement.
 
 - `iso27001`: checked against ISO/IEC 27001:2022. Amendment 1 (2024) was
   not opened: Unverified.
 - `iso19770_1`: checked against ISO/IEC 19770-1:2017. Amendment 1 (2024)
-  was not opened: Unverified. Clauses outside the cells listed in
-  `crosswalk.csv` were not individually read beyond those in the table
-  below. ISO/IEC 19770-2:2015 (SWID tags) was read for the elements
+  was not opened: Unverified. The 19770-1 clauses read are the ones in
+  the table below. Other 19770-1 clauses were not read.
+- ISO/IEC 19770-2:2015 (SWID tags) was read for the elements
   SoftwareIdentity (8.5.1), Link (8.5.4), SoftwareMeta (8.6.11) and
   VersionScheme (8.6.13). None carries support-end data, so there is no
-  19770-2 column. Pages 17 to 22 were not read.
+  19770-2 column. Pages 17 to 22 of 19770-2 were not read.
 - `nist_csf2`: checked against the CSF 2.0 Core, NIST CSWP.29 (pp.16-21).
   NIST.CSWP.40 in the same folder is the NIST Privacy Framework draft, not
   the CSF, and is not cited.
@@ -55,12 +59,12 @@ Supported and still not be a direct requirement.
 | 27001 | 6.1.3 Information security risk treatment | 4-5 | XW-031 | Supported with limits |
 | 27001 | A.5.3 Segregation of duties | 11 | XW-031 | Supported |
 | 27001 | A.8.32 Change management | 17 | XW-032 | Supported |
-| 27001 | A.5.2 Information security roles and responsibilities | 11 | XW-032 | Added |
+| 27001 | A.5.2 Information security roles and responsibilities | 11 | XW-032 | Supported (not per-item) |
 | 19770-1 | 8.3 Core data management | 22 | XW-029, XW-030 | Partial |
 | 19770-1 | 6.1.2 IT asset risk assessment | 15-16 | XW-029, XW-030 | Partial |
-| 19770-1 | 6.2.4 item b | 18 | XW-029 | Added |
-| 19770-1 | Annex A, Table A.1, Retirement objective | 29 | XW-029 | Added |
-| 19770-1 | 8.5 Security management | 23 | XW-030 | Added |
+| 19770-1 | 6.2.4 item b | 18 | XW-029 | Partial |
+| 19770-1 | Annex A, Table A.1, Retirement objective | 29 | XW-029 | Supported with limits (covers removing assets, not tracking end of life) |
+| 19770-1 | 8.5 Security management | 23 | XW-030 | Partial, weak fit (nothing on vulnerabilities) |
 | 19770-1 | 6.1.3 IT asset risk treatment | 16 | XW-031 | Supported |
 | 19770-1 | 7.6.3 Audit trails of authorizations | 21 | XW-031, XW-032 | Supported |
 | 19770-1 | 5.3 Organizational roles, responsibilities and authorities | 14 | XW-031 | Partial |
@@ -68,7 +72,7 @@ Supported and still not be a direct requirement.
 | 19770-1 | 7.6.5 Control of documented information | 21 | XW-032 | Partial |
 | 19770-1 | 8.2 Management of change | 22 | XW-032 | Supported |
 | 19770-1 | 9.1 Monitoring, measurement, analysis and evaluation | 24 | XW-032 | Partial |
-| 19770-1 | 10.1 Nonconformity and corrective action | 26 | XW-032 | Added |
+| 19770-1 | 10.1 Nonconformity and corrective action | 26 | XW-032 | Partial |
 | CSF 2.0 | ID.AM-02 | 18 | XW-029 | Supported |
 | CSF 2.0 | ID.AM-02 | 18 | XW-032 | Partial |
 | CSF 2.0 | ID.AM-08 | 18 | XW-029 | Supported |
@@ -82,9 +86,18 @@ Supported and still not be a direct requirement.
 | CSF 2.0 | GV.RR-02 | 17 | XW-032 | Partial |
 | 800-53 | RA-5 Vulnerability Monitoring and Scanning | 242-243 | XW-030 | Partial |
 | 800-53 | SI-5 Security Alerts, Advisories, and Directives | 343-344 | XW-030 | Partial |
-| 800-53 | RA-3 Risk Assessment | 240 | XW-030, XW-031 | Added |
+| 800-53 | RA-3 Risk Assessment | 240 | XW-030, XW-031 | Partial (does not cover risk acceptance) |
 | 800-53 | RA-7 Risk Response | 246 | XW-031 | Partial |
-| 800-53 | CA-6 Authorization | 89-90 | XW-031 | Added |
+| 800-53 | CA-6 Authorization | 89-90 | XW-031 | Partial (closest to independent approval, but it authorizes a system; expiry only as a re-authorization frequency) |
+| 800-53 | CA-5 Plan of Action and Milestones | 88 | XW-031 | Partial, related only |
+| 800-53 | AC-5 Separation of Duties | 36 | XW-031 | Partial, related only |
+| 800-53 | CA-7 Continuous Monitoring | 90-91 | XW-032 | Partial, related only |
+| 800-53 | SA-22 | 290 | XW-029, XW-031 | Read earlier, no per-cell verdict recorded |
+| 800-53 | CM-8 | 107-108 | XW-029 | Read earlier, no per-cell verdict recorded |
+| 800-53 | CM-8(4) | 109 | XW-032 | Read earlier, no per-cell verdict recorded |
+| 800-53 | CM-3 | 98-99 | XW-032 | Read earlier, no per-cell verdict recorded |
+| 800-53 | PM-4 | 205 | XW-032 | Read earlier, no per-cell verdict recorded |
+| CIS v8.1 | 2.1, 2.2, 7.1, 7.2 | - | XW-029, XW-030, XW-031 | Read earlier, no per-cell verdict recorded |
 
 Limits seen in the text: 27001 6.1.3 and 19770-1 6.1.3 have owners approve
 the plan and accept residual risk, but say nothing on expiry or an
@@ -96,9 +109,8 @@ authorizes a system and sets re-authorization frequency, not an expiry.
 In 19770-1 7.6.3, authorizations can be time-limited. 19770-1 8.3 has no
 end-of-life idea.
 
-Related only: CA-5 (p.88) and AC-5 (p.36) in XW-031, and CA-7 (pp.90-91)
-in XW-032, stay in the CSV as related controls, not as a fit. CA-5 and
-CA-7 are Partial. AC-5 names no requester-versus-approver rule.
+Related only: CA-5, AC-5 and CA-7 stay in the CSV as related controls,
+not as a fit. AC-5 names no requester-versus-approver rule.
 
 Dropped: 27001 A.5.33, CSF GV.RM-02 and 800-53 PM-16 fit only weakly.
 RA-3(3) (p.241) is a closer fit than PM-16 for threat context.

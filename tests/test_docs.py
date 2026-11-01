@@ -202,6 +202,22 @@ class CrosswalkTests(unittest.TestCase):
         self.assertIn("NIST.CSWP.40", themes)
         self.assertIn("Amendment 1 (2024)", themes)
 
+    def test_retirement_cell_text(self):
+        _, rows = self.rows()
+        self.assertIn("Annex A Retirement (Table A.1)", rows[0]["iso19770_1"])
+
+    def test_amendment_1_caveat_sentence(self):
+        themes = " ".join(text(DOCS / "themes.md").split())
+        self.assertIn("Amendment 1 (2024) was not opened: Unverified.", themes)
+
+    def test_no_verdict_cell_says_added(self):
+        themes = text(DOCS / "themes.md")
+        table = [ln for ln in themes.splitlines() if ln.startswith("| ")]
+        self.assertGreater(len(table), 30)
+        for ln in table:
+            self.assertNotIn("Added", ln.split("|")[-2], ln)
+
+
 class LinkTests(unittest.TestCase):
     def test_relative_links_resolve(self):
         link = re.compile(r"\]\(([^)\s]+)\)")
