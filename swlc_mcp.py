@@ -16,9 +16,11 @@ runs refresh_data.py. Logs go to stderr; stdout carries only messages.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
+import signal
 import stat
 import subprocess
 import sys
@@ -202,11 +204,21 @@ def _same_file_check(given: Path, info) -> None:
 
 
 def out_name(csv_path: Path) -> str:
-    """swlc-out-<file name without .csv>, kept to letters, digits, dot,
-    underscore and hyphen, so each CSV in a folder gets its own report."""
-    stem = csv_path.name[:-4] if _csv_name(csv_path.name) else csv_path.name
-    safe = re.sub(r"[^A-Za-z0-9._-]", "_", stem)[:MAX_STEM_CHARS]
-    return OUT_PREFIX + (safe or "_")
+    """swlc-out-<file name without .csv>, so each CSV in a folder gets its
+    own report. A name that needs no change is kept as it is. Otherwise
+    other characters become _, leading dots and dashes go, the stem is cut
+    to MAX_STEM_CHARS, and a dash plus 8 hex characters of the SHA-256 of
+    the full file name is added, so two different names never share a
+    folder by accident."""
+    name = csv_path.name
+    stem = name[:-4] if _csv_name(name) else name
+    safe = re.sub(r"[^A-Za-z0-9._-]", "_", stem).lstrip(".-")
+    safe = safe[:MAX_STEM_CHARS]
+    if safe == stem:
+        return OUT_PREFIX + safe
+    digest = hashlib.sha256(
+        name.encode("utf-8", "surrogateescape")).hexdigest()[:8]
+    return OUT_PREFIX + (safe or "_") + "-" + digest
 
 
 def out_dir_for(csv_path: Path) -> Path:
@@ -242,9 +254,22 @@ def run_cli(args: list) -> tuple:
     never forwarded."""
     argv = [sys.executable, "-I", "-B", "-X", "utf8", str(CLI)] \
         + [str(a) for a in args]
+    posix = os.name == "posix"
+    # On POSIX the child leads its own process group, so a stop also
+    # reaches anything it started.
     proc = subprocess.Popen(argv, cwd=str(ROOT), env=_env(), shell=False,
                             stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                            stderr=subprocess.DEVNULL)
+                            stderr=subprocess.DEVNULL,
+                            start_new_session=posix)
+
+    def stop() -> None:
+        try:
+            if posix and isinstance(proc.pid, int) and proc.pid > 1:
+                os.killpg(proc.pid, signal.SIGKILL)
+            else:
+                proc.kill()
+        except OSError:
+            pass  # already gone
     chunks, over = [], []
 
     def read() -> None:
@@ -256,7 +281,7 @@ def run_cli(args: list) -> tuple:
             size += len(chunk)
             if size > MAX_CHILD_STDOUT:
                 over.append(True)
-                proc.kill()
+                stop()
                 return
             chunks.append(chunk)
 
@@ -265,12 +290,15 @@ def run_cli(args: list) -> tuple:
     try:
         code = proc.wait(timeout=TIMEOUT_SECONDS)
     except subprocess.TimeoutExpired:
-        proc.kill()
+        stop()
         proc.wait()
         raise
     finally:
         reader.join(5)
-        proc.stdout.close()
+        if not reader.is_alive():
+            proc.stdout.close()
+        # Otherwise the daemon reader keeps the pipe; it ends when the
+        # last writer is gone.
     if over:
         raise OutputTooLarge()
     return code, b"".join(chunks).decode("utf-8", "replace")

@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -78,6 +79,7 @@ def text_of(reply: dict) -> str:
 class FakeProc:
     """Stands in for subprocess.Popen: records the call, prints nothing."""
     last = None
+    pid = None  # never a real process, so nothing is ever signalled
 
     def __init__(self, argv, **kw):
         import io
@@ -332,20 +334,74 @@ class CheckCountsTests(Base):
         a = self.demo("first.csv")
         b = self.demo("Second File (copy).CSV")
         self.assertEqual(swlc_mcp.out_name(a), "swlc-out-first")
-        self.assertEqual(swlc_mcp.out_name(b),
-                         "swlc-out-Second_File__copy_")
-        self.assertEqual(swlc_mcp.out_name(Path("/x/" + "a" * 200 + ".csv")),
-                         "swlc-out-" + "a" * swlc_mcp.MAX_STEM_CHARS)
-        self.assertEqual(swlc_mcp.out_name(Path("/x/\u00e9.csv")),
-                         "swlc-out-_")
+        self.assertRegex(swlc_mcp.out_name(b),
+                         r"^swlc-out-Second_File__copy_-[0-9a-f]{8}$")
+        self.assertRegex(swlc_mcp.out_name(Path("/x/" + "a" * 200 + ".csv")),
+                         r"^swlc-out-a{%d}-[0-9a-f]{8}$"
+                         % swlc_mcp.MAX_STEM_CHARS)
+        self.assertRegex(swlc_mcp.out_name(Path("/x/\u00e9.csv")),
+                         r"^swlc-out-_-[0-9a-f]{8}$")
         r = replies([INIT, call(2, "check_counts", {"path": str(a)}),
                      call(3, "check_counts", {"path": str(b)})])
         for rid in (2, 3):
             self.assertIs(r[rid]["result"]["isError"], False)
         self.assertTrue((self.root / "swlc-out-first" / "report.md")
                         .is_file())
-        self.assertTrue((self.root / "swlc-out-Second_File__copy_" /
+        self.assertTrue((self.root / swlc_mcp.out_name(b) /
                          "report.md").is_file())
+
+    def test_different_names_never_share_a_report_folder(self):
+        pairs = [("a b.csv", "a_b.csv"), ("\u00e9.csv", "\u00f1.csv"),
+                 ("x" * 70 + "1.csv", "x" * 70 + "2.csv"),
+                 ("..csv", "_.csv"), ("-x.csv", "x.csv")]
+        for one, two in pairs:
+            self.assertNotEqual(swlc_mcp.out_name(Path("/d") / one),
+                                swlc_mcp.out_name(Path("/d") / two),
+                                (one, two))
+        for plain in ("inventory", "Q3.export_v2", "a-b.c"):
+            self.assertEqual(swlc_mcp.out_name(Path("/d/%s.csv" % plain)),
+                             "swlc-out-" + plain)
+        odd = ["..csv", "...csv", "-x.csv", "--.csv", "a/b.csv",
+               "\udcff.csv", "a\\b.csv", "x" * 300 + ".csv"]
+        for name in odd:
+            got = swlc_mcp.out_name(Path("/d") / Path(name).name)
+            self.assertRegex(got, r"^swlc-out-[A-Za-z0-9_][A-Za-z0-9._-]*$")
+            self.assertNotIn("/", got)
+            self.assertNotIn("\\", got)
+            self.assertLessEqual(len(got), 9 + swlc_mcp.MAX_STEM_CHARS + 9)
+            parent = self.root / "p"
+            self.assertEqual(swlc_mcp.out_dir_for(parent / "x.csv")
+                             .parent, parent)
+
+    @unittest.skipUnless(os.name == "posix", "process groups are POSIX")
+    def test_timeout_stops_the_whole_process_group(self):
+        inv = self.demo()
+        pid_file = self.root / "grandchild.pid"
+        script = self.root / "slow.py"
+        script.write_text(
+            "import subprocess, sys, time\n"
+            "p = subprocess.Popen([sys.executable, '-c', "
+            "'import time; time.sleep(60)'])\n"
+            "open(%r, 'w').write(str(p.pid))\n"
+            "time.sleep(60)\n" % str(pid_file), encoding="utf-8")
+        with mock.patch.object(swlc_mcp, "CLI", script), \
+                mock.patch.object(swlc_mcp, "TIMEOUT_SECONDS", 2):
+            res = swlc_mcp.call_tool("check_counts", {"path": str(inv)})
+        self.assertIn("was stopped", res["content"][0]["text"])
+        pid = int(pid_file.read_text(encoding="utf-8"))
+        for _ in range(100):
+            try:
+                os.kill(pid, 0)
+            except ProcessLookupError:
+                break
+            try:  # reap it if it became our child's orphan in a test run
+                os.waitpid(pid, os.WNOHANG)
+            except ChildProcessError:
+                pass
+            time.sleep(0.05)
+        else:
+            os.kill(pid, 9)
+            self.fail("the grandchild outlived the timeout")
 
     def test_cli_argv_is_fixed(self):
         inv = self.demo()
@@ -363,6 +419,7 @@ class CheckCountsTests(Base):
         self.assertEqual(kw["stderr"], subprocess.DEVNULL)
         self.assertTrue(set(kw["env"]) <= {"PYTHONIOENCODING", "PYTHONUTF8",
                                            "SYSTEMROOT", "SystemRoot"})
+        self.assertIs(kw["start_new_session"], os.name == "posix")
 
     def test_path_is_passed_as_typed_not_resolved(self):
         real_dir = self.root / "real"

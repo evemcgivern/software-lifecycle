@@ -30,7 +30,10 @@ It gives the chat app exactly two tools:
   and one count for each list. It never returns item IDs, names,
   versions, publishers or owners. The full report is written to a folder
   next to your CSV named after it: for `inventory.csv`, the folder is
-  `swlc-out-inventory`. The result tells the app where that folder is.
+  `swlc-out-inventory`. When the file name has unusual characters or is
+  long, the folder name also ends in a short code made from the name (for
+  `my file.csv`, something like `swlc-out-my_file-1a2b3c4d`), so two files
+  never share a folder. The result tells the app where that folder is.
   Running it again on the same file replaces that file's report.
 
 Each tool takes one thing: the full path to your inventory `.csv` file.

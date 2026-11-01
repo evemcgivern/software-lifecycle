@@ -744,6 +744,8 @@ class McpSetupDocTests(unittest.TestCase):
                 "It refuses a path whose file itself is a symlink; a "
                 "symlinked parent folder is followed",
                 "`swlc-out-inventory`",
+                "the folder name also ends in a short code made from the "
+                "name",
                 "Running it again on the same file replaces that file's "
                 "report.",
                 "iCloud, OneDrive, Dropbox",
