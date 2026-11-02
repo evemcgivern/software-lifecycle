@@ -1194,10 +1194,10 @@ class BundledSpeedTests(unittest.TestCase):
         pub = ("Apache " * 9363)[:65536]
         for name, publisher in ((words, ""), (lts, ""), (words, pub),
                                 (lts, pub)):
-            start = time.perf_counter()
+            start = time.process_time()
             r = match_product(name, "22.04", data.aliases, data.products,
                               catalog_index=index, publisher=publisher)
-            elapsed = time.perf_counter() - start
+            elapsed = time.process_time() - start
             self.assertLess(elapsed, 1.0, "%.2f s" % elapsed)
             self.assertNotEqual(r.source, GENERATED)
 
