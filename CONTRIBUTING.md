@@ -42,24 +42,44 @@ Three more forms:
 
 From the repo root, with no install step:
 
-    python3 -B -m unittest discover -s tests
+```bash
+python3 -B -m unittest discover -s tests
+```
 
 Do not pass `-t`. Running one module with `python3 -m unittest tests.test_x`
 does not work for some modules: it fails with an import error for several,
 for example `tests.test_cli`, `tests.test_e2e` and `tests.test_assess`. This
 form works for any module:
 
-    python3 -B -m unittest discover -s tests -p 'test_x.py'
+```bash
+python3 -B -m unittest discover -s tests -p 'test_x.py'
+```
 
 If you have Python 3.9, run the suite on it too. The floor is 3.9.
 
 The MCP server's tests run the real server against the demo inventory:
 
-    python3 -B -m unittest discover -s tests -p 'test_mcp.py'
+```bash
+python3 -B -m unittest discover -s tests -p 'test_mcp.py'
+```
 
 Any change to what `swlc_mcp.py` returns must keep its allow-list (fixed
 labels and numbers only, no item IDs or file content) and the tests that
 prove it.
+
+## The Pages site
+
+The site in `site/` is plain HTML and one CSS file. There is no build step:
+the files are the site. `.github/workflows/pages.yml` publishes it when
+`site/` changes on `main`.
+
+- Change it the same way as the docs: an issue, a branch, a pull request.
+- No scripts, forms, trackers or requests to other hosts. The one exception
+  is inert structured data (`<script type="application/ld+json">`).
+- The claims line, the KEV line and every hedge on the site are copied from
+  the README. Do not reword them.
+- `tests/test_site.py` checks the pages, links, structured data and banned
+  wording. Change the site and its tests together.
 
 ## Ground rules
 
@@ -120,6 +140,7 @@ prove it.
 - New dependencies.
 - Hosted-service features.
 - Changes that make real inventory data leave the machine.
+- Scripts, forms, analytics or outside requests on the Pages site.
 - Vulnerability scanning or CVE severity. This is not a scanner.
 
 ## Conduct

@@ -34,6 +34,8 @@ In scope:
   to run something other than its two fixed commands;
 - the refresh script (`refresh_data.py`);
 - the GitHub workflows;
+- the Pages site (`site/`) and its workflow, for example a script, a form or
+  a request to another host;
 - the data pipeline that builds and publishes data releases;
 - the documentation, when it claims more than the code does.
 
@@ -49,6 +51,8 @@ Out of scope:
 - It runs locally and makes no network calls by default. A test in the
   repository blocks network access and runs the tool.
 - It uses only the Python standard library.
+- The Pages site is static pages. It has no forms and no analytics, and
+  loads nothing from other hosts. A test in the repository checks this.
 
 ## Supply chain
 

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>software-lifecycle: find software past or near end of life</title>
+<meta name="description" content="A local tool that reads a software inventory export, lists what is past or near end of life, and flags items for review against CISA KEV. Experiment.">
+<link rel="canonical" href="https://evemcgivern.github.io/software-lifecycle/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="software-lifecycle">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="software-lifecycle: find software past or near end of life">
+<meta property="og:description" content="A local tool that reads a software inventory export, lists what is past or near end of life, and flags items for review against CISA KEV. Experiment.">
+<meta property="og:url" content="https://evemcgivern.github.io/software-lifecycle/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="software-lifecycle: find software past or near end of life">
+<meta name="twitter:description" content="A local tool that reads a software inventory export, lists what is past or near end of life, and flags items for review against CISA KEV. Experiment.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "software-lifecycle",
+  "description": "Reads a software inventory export and lists what is past end of life or close to it. It also flags items whose vendor and product appear in CISA's Known Exploited Vulnerabilities (KEV) catalog, so a person can review them first.",
+  "url": "https://evemcgivern.github.io/software-lifecycle/",
+  "codeRepository": "https://github.com/evemcgivern/software-lifecycle",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Tested on macOS and Linux; Windows is not a supported platform yet; needs Python 3.9 or newer",
+  "softwareRequirements": "Python 3.9 or newer",
+  "license": "https://opensource.org/license/mit",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Eve McGivern"
+  }
+}
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="index.html">software-lifecycle</a>
+<nav class="site-nav" aria-label="Main"><ul><li><a href="index.html" aria-current="page">Home</a></li><li><a href="start.html">Start</a></li><li><a href="reports.html">Reports</a></li><li><a href="privacy.html">Privacy and limits</a></li><li><a href="data-updates.html">Data updates</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle">GitHub</a></li></ul></nav>
+</div></header>
+<div class="status"><div class="wrap">Experiment. Maintained as time allows. Not independently assessed. <a href="privacy.html#status">What this status means</a></div></div>
+<main id="main" class="wrap" tabindex="-1">
+<div class="hero prose">
+<h1>software-lifecycle</h1>
+<p class="lead">Reads a software inventory export and lists what is past end of life or close to it. It also flags items whose vendor and product appear in CISA's Known Exploited Vulnerabilities (KEV) catalog, so a person can review them first.</p>
+<p><strong>Runs locally with no network by default; not independently assessed.</strong></p>
+<ul class="links"><li><a href="start.html">Start</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle">View on GitHub</a></li><li><a href="privacy.html">Read the privacy model</a></li></ul>
+</div>
+
+<h2 id="who-built-this">Who built this and why</h2>
+<div class="prose">
+<p>I'm Eve McGivern. I run IT application governance for a large global company: the application register, owner assignment, quarterly application audits, and the evaluation of IT service management and IT asset management tools. I started in technical business analysis.</p>
+<p>Lifecycle tracking is harder than it looks. Export names rarely match the names vendors publish. End-of-life dates sit on vendor pages in different formats. One product has many release lines, each with its own date, and a date means nothing until you match the right one. A quarterly review also needs evidence, not a guess. Commercial catalogs solve this, but not every team has one, and many inventories can't leave the building. I built this for those teams: offline, plain files, and honest about what it can't match.</p>
+</div>
+
+<h2 id="start-here">Start here</h2>
+<p>Pick the row that fits you.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Pick the row that fits you"><table>
+<caption>I want to...</caption>
+<thead><tr><th scope="col">I want to...</th><th scope="col">Go to</th></tr></thead>
+<tbody>
+<tr><th scope="row">Run it myself in a terminal</th><td><a href="start.html">Start</a>, then <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/quick-start.md">the quick start</a></td></tr>
+<tr><th scope="row">Have an AI assistant run it for me</th><td><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/assistant-setup.md">Assistant setup</a></td></tr>
+<tr><th scope="row">Let Claude Desktop or the ChatGPT desktop app run only the counts, through a small local server</th><td><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/mcp-setup.md">MCP setup</a>. Optional, advanced. Tested once on one Mac, with parts Unverified.</td></tr>
+<tr><th scope="row">Understand a report</th><td><a href="reports.html">How to read a report</a></td></tr>
+<tr><th scope="row">Check privacy</th><td><a href="privacy.html">Privacy, security and limits</a></td></tr>
+<tr><th scope="row">Export from Flexera, ServiceNow or Rapid7</th><td><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/platform-guide.md">Platform guide</a></td></tr>
+</tbody></table></div>
+<p>Real inventories are confidential. Whoever runs the tool, read <a href="privacy.html">Privacy, security and limits</a> first.</p>
+
+<h2 id="quick-answers">Quick answers</h2>
+<ul class="cards">
+<li><h3><a href="kev.html">What is KEV?</a></h3><p>KEV is the Known Exploited Vulnerabilities catalog, a list kept by CISA, the US government's cybersecurity agency.</p></li>
+<li><h3><a href="sbom.html">What is an SBOM?</a></h3><p>An SBOM is a software bill of materials: a list of the parts inside one piece of software. This tool does not read SBOM files.</p></li>
+<li><h3><a href="data-updates.html">How often is the data updated?</a></h3><p>The KEV check runs daily and the end-of-life job weekly. End-of-life dates reach users after the maintainer merges the weekly pull request. The project is maintained as time allows, so a run can be late.</p></li>
+</ul>
+
+<h2 id="not-for-everyone">What it is not, and when not to use it</h2>
+<div class="prose">
+<p>If you already run Flexera, ServiceNow or Rapid7, you likely have a wider catalog. This tool covers only the products endoflife.date lists. Dates come from endoflife.date unless a golden-sources file overrides them.</p>
+<p>The tool never says "vulnerable". A match in CISA KEV means "needs review" and nothing more.</p>
+</div>
+<aside class="define" aria-label="The KEV line"><span class="label">The KEV line</span><p>The vendor and product appear in CISA KEV. This does not mean your version is affected.</p></aside>
+
+<h2 id="status">Status</h2>
+<div class="prose">
+<p>This is an experiment with a review date of 2027-01-31. It is maintained as time allows, best effort, no SLA, not independently assessed.</p>
+<p>It needs Python 3.9 or newer and nothing else: the standard library only, nothing to install. It was tested on macOS and Linux. Windows is not a supported platform yet. The licence is MIT.</p>
+</div>
+
+</main>
+<footer class="site-footer"><div class="wrap">
+<nav aria-label="Explainers"><ul><li><a href="kev.html">What is KEV?</a></li><li><a href="sbom.html">What is an SBOM?</a></li><li><a href="data-updates.html">How often is the data updated?</a></li></ul></nav>
+<nav aria-label="Project links"><ul><li><a href="https://github.com/evemcgivern/software-lifecycle/tree/main/docs">Docs on GitHub</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">Report a security problem</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md">Contributing</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/LICENSE">Licence: MIT</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/THIRD-PARTY.md">Third-party material</a></li></ul></nav>
+<p>Runs locally with no network by default; not independently assessed.</p>
+<p>Experiment, review date 2027-01-31. Maintained as time allows.</p>
+</div></footer>
+</body>
+</html>

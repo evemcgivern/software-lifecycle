@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>What is an SBOM? | software-lifecycle</title>
+<meta name="description" content="An SBOM is a software bill of materials. How it differs from an inventory export, and why software-lifecycle does not read SBOM files.">
+<link rel="canonical" href="https://evemcgivern.github.io/software-lifecycle/sbom.html">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="software-lifecycle">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="What is an SBOM? | software-lifecycle">
+<meta property="og:description" content="An SBOM is a software bill of materials. How it differs from an inventory export, and why software-lifecycle does not read SBOM files.">
+<meta property="og:url" content="https://evemcgivern.github.io/software-lifecycle/sbom.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="What is an SBOM? | software-lifecycle">
+<meta name="twitter:description" content="An SBOM is a software bill of materials. How it differs from an inventory export, and why software-lifecycle does not read SBOM files.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://evemcgivern.github.io/software-lifecycle/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "What is an SBOM?",
+      "item": "https://evemcgivern.github.io/software-lifecycle/sbom.html"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is an SBOM?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An SBOM is a software bill of materials: a list of the parts inside one piece of software, such as each component's name, version and licence. Think of the ingredients label on food. The common formats are CycloneDX and SPDX."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this tool read SBOMs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. This tool does not read SBOM files. Its input is a CSV inventory export. See what the input file needs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this tool have an SBOM of its own?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Each CI run on a pull request or a push to main writes a CycloneDX 1.5 SBOM and uploads it as a build artifact named sbom. It lists the tool itself and no third-party components, because the tool uses only the Python standard library. It is not attached to releases, and it is not independently assessed."
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="index.html">software-lifecycle</a>
+<nav class="site-nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="start.html">Start</a></li><li><a href="reports.html">Reports</a></li><li><a href="privacy.html">Privacy and limits</a></li><li><a href="data-updates.html">Data updates</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle">GitHub</a></li></ul></nav>
+</div></header>
+<div class="status"><div class="wrap">Experiment. Maintained as time allows. Not independently assessed. <a href="privacy.html#status">What this status means</a></div></div>
+<main id="main" class="wrap" tabindex="-1">
+<h1>What is an SBOM?</h1>
+<p class="lead"><strong>Short answer.</strong> An SBOM is a software bill of materials: a list of the parts inside one piece of software, such as each component's name, version and licence. Think of the ingredients label on food. The common formats are CycloneDX and SPDX.</p>
+<h2 id="read">Does this tool read SBOMs?</h2>
+<p>No. This tool does not read SBOM files. Its input is a CSV inventory export. See <a href="start.html#what-you-need">what the input file needs</a>.</p>
+
+<details><summary>An SBOM is not an inventory</summary>
+<ul>
+<li>An SBOM lists what is inside one product.</li>
+<li>An inventory export lists what is installed across an estate.</li>
+</ul></details>
+<details><summary>Does this tool have an SBOM of its own?</summary>
+<p>Yes. Each CI run on a pull request or a push to <code>main</code> writes a CycloneDX 1.5 SBOM and uploads it as a build artifact named <code>sbom</code>. It lists the tool itself and no third-party components, because the tool uses only the Python standard library. It is not attached to releases, and it is not independently assessed.</p>
+<p>Not found: a download link on this site. The artifact lives in the CI runs on GitHub.</p></details>
+
+<h2 id="next">Where next</h2>
+<ul>
+<li><a href="start.html">Is this for you, and how to start</a></li>
+<li><a href="privacy.html">Privacy, security and limits</a></li>
+<li><a href="kev.html">What is KEV?</a></li>
+<li><a href="data-updates.html">How often is the data updated?</a></li>
+</ul>
+
+</main>
+<footer class="site-footer"><div class="wrap">
+<nav aria-label="Explainers"><ul><li><a href="kev.html">What is KEV?</a></li><li><a href="sbom.html">What is an SBOM?</a></li><li><a href="data-updates.html">How often is the data updated?</a></li></ul></nav>
+<nav aria-label="Project links"><ul><li><a href="https://github.com/evemcgivern/software-lifecycle/tree/main/docs">Docs on GitHub</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">Report a security problem</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md">Contributing</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/LICENSE">Licence: MIT</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/THIRD-PARTY.md">Third-party material</a></li></ul></nav>
+<p>Runs locally with no network by default; not independently assessed.</p>
+<p>Experiment, review date 2027-01-31. Maintained as time allows.</p>
+</div></footer>
+</body>
+</html>

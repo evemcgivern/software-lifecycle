@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>How often is the data updated? | software-lifecycle</title>
+<meta name="description" content="When software-lifecycle's CISA KEV and endoflife.date data are updated, how stale data is flagged, and how to check the age of your copy.">
+<link rel="canonical" href="https://evemcgivern.github.io/software-lifecycle/data-updates.html">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="software-lifecycle">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="How often is the data updated? | software-lifecycle">
+<meta property="og:description" content="When software-lifecycle&#x27;s CISA KEV and endoflife.date data are updated, how stale data is flagged, and how to check the age of your copy.">
+<meta property="og:url" content="https://evemcgivern.github.io/software-lifecycle/data-updates.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How often is the data updated? | software-lifecycle">
+<meta name="twitter:description" content="When software-lifecycle&#x27;s CISA KEV and endoflife.date data are updated, how stale data is flagged, and how to check the age of your copy.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://evemcgivern.github.io/software-lifecycle/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Data updates",
+      "item": "https://evemcgivern.github.io/software-lifecycle/data-updates.html"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How often is the data updated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The CISA KEV check runs daily and publishes a data release when the data changed. The end-of-life job runs weekly and opens a pull request; the new dates reach users in the next daily release after the maintainer merges it. The project is maintained as time allows, so a run can be late."
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="index.html">software-lifecycle</a>
+<nav class="site-nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="start.html">Start</a></li><li><a href="reports.html">Reports</a></li><li><a href="privacy.html">Privacy and limits</a></li><li><a href="data-updates.html" aria-current="page">Data updates</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle">GitHub</a></li></ul></nav>
+</div></header>
+<div class="status"><div class="wrap">Experiment. Maintained as time allows. Not independently assessed. <a href="privacy.html#status">What this status means</a></div></div>
+<main id="main" class="wrap" tabindex="-1">
+<h1>How often is the data updated?</h1>
+<p class="lead">The CISA KEV check runs daily and publishes a data release when the data changed. The end-of-life job runs weekly and opens a pull request; the new dates reach users in the next daily release after the maintainer merges it. The project is maintained as time allows, so a run can be late.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Data update schedule"><table>
+<caption>Scheduled updates</caption>
+<thead><tr><th scope="col">Data</th><th scope="col">Schedule</th><th scope="col">What happens</th></tr></thead>
+<tbody>
+<tr><th scope="row">CISA KEV</th><td>Daily, 07:41 UTC</td><td>A new data release is published when the data changed.</td></tr>
+<tr><th scope="row">End-of-life dates (endoflife.date)</th><td>Weekly, Mondays 08:23 UTC</td><td>The job opens a pull request. The dates reach users in the next daily release after the maintainer merges it.</td></tr>
+</tbody></table></div>
+<p>These are the scheduled times. The project is maintained as time allows, so a run can be late, and GitHub can pause scheduled jobs after 60 days with no repository activity. Check the snapshot dates in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/data/manifest.json">data/manifest.json</a> to see how old your copy is. Not found on this page by design: current snapshot dates, because they change.</p>
+
+<h2 id="source">Where the data comes from</h2>
+<ul>
+<li>End-of-life dates derive from the endoflife.date product files (MIT). Product descriptions are not included.</li>
+<li>KEV data derives from the CISA Known Exploited Vulnerabilities catalog (CC0 1.0).</li>
+</ul>
+<p>Attribution is in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/THIRD-PARTY.md">THIRD-PARTY.md</a>.</p>
+
+<h2 id="staleness">Staleness rules</h2>
+<ul>
+<li>A KEV snapshot older than 3 days gives a warning. Older than 7 days, the KEV overlay is reported as "not current".</li>
+<li>An end-of-life snapshot older than 30 days gives a warning.</li>
+</ul>
+
+<details><summary>Using a different data release</summary>
+<p>Point <code>--data</code> at any directory that holds a verified data release. The <code>verify-data</code> command runs only the SHA-256 manifest check. That check does not prove who made the files. The attestation is checked online; see <a href="privacy.html#supply-chain">Supply chain</a>.</p></details>
+<details><summary>Release names</summary>
+<p>Data releases are named <code>data-YYYY.MM.DD.N</code>. They are never changed or re-tagged. A fix is a new, higher release.</p></details>
+
+<h2 id="next">Where next</h2>
+<ul>
+<li><a href="kev.html">What is KEV?</a></li>
+<li><a href="sbom.html">What is an SBOM?</a> This is a different thing.</li>
+<li><a href="privacy.html#supply-chain">Supply chain</a></li>
+<li><a href="start.html">Is this for you, and how to start</a></li>
+<li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/data/manifest.json">Check data/manifest.json on GitHub</a></li>
+</ul>
+
+</main>
+<footer class="site-footer"><div class="wrap">
+<nav aria-label="Explainers"><ul><li><a href="kev.html">What is KEV?</a></li><li><a href="sbom.html">What is an SBOM?</a></li><li><a href="data-updates.html">How often is the data updated?</a></li></ul></nav>
+<nav aria-label="Project links"><ul><li><a href="https://github.com/evemcgivern/software-lifecycle/tree/main/docs">Docs on GitHub</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">Report a security problem</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md">Contributing</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/LICENSE">Licence: MIT</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/THIRD-PARTY.md">Third-party material</a></li></ul></nav>
+<p>Runs locally with no network by default; not independently assessed.</p>
+<p>Experiment, review date 2027-01-31. Maintained as time allows.</p>
+</div></footer>
+</body>
+</html>
