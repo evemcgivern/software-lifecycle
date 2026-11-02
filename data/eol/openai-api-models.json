@@ -1,5 +1,11 @@
 [
   {
+    "cycle": "gpt-6.1-terra",
+    "eol": false,
+    "releaseDate": "2026-10-26",
+    "support": true
+  },
+  {
     "cycle": "gpt-6.1-sol",
     "eol": false,
     "releaseDate": "2026-09-29",
