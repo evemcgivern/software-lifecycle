@@ -63,6 +63,15 @@
 <p>Lifecycle tracking is harder than it looks. Export names rarely match the names vendors publish. End-of-life dates sit on vendor pages in different formats. One product has many release lines, each with its own date, and a date means nothing until you match the right one. A quarterly review also needs evidence, not a guess. Commercial catalogs solve this, but not every team has one, and many inventories can't leave the building. I built this for those teams: offline, plain files, and honest about what it can't match.</p>
 </div>
 
+<h2 id="demo">See it in a minute</h2>
+<p>Run this from the repo root:</p>
+<figure class="code"><figcaption>Demo run</figcaption><pre tabindex="0" role="region" aria-label="Demo run"><code>python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo</code></pre></figure>
+<p>The tool prints exactly one line:</p>
+<figure class="code code--oneline"><figcaption>Terminal output</figcaption><pre tabindex="0" role="region" aria-label="Terminal output"><code>Wrote report.json, report.md, report.csv to ../swlc-demo</code></pre></figure>
+<p>The demo uses made-up data, so the output never changes with the date. Real inventories are confidential: read <a href="privacy.html#confidential">Confidential inventories</a> before you run your own.</p>
+<figure class="shot"><img src="img/report-summary.png" width="1210" height="647" loading="lazy" decoding="async" alt="The top of the sample report: title, notes, and a summary line starting &quot;Items: 50&quot; with one count for each list, such as 8 past end of life and 11 couldn't match."><figcaption>Look at the summary line that starts "Items: 50". It gives one count for each list. This is the sample report as GitHub renders report.md.</figcaption></figure>
+<p>The full set, with the KEV items, is on <a href="start.html#demo">Start</a>. <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/examples/sample-report.md">Read the full sample report on GitHub</a>.</p>
+
 <h2 id="start-here">Start here</h2>
 <p>Pick the row that fits you.</p>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Pick the row that fits you"><table>

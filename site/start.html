@@ -80,9 +80,30 @@
 <p>Run <code>preflight</code> on a new export. It says which columns it found and what to fix, without printing any row. On Windows, use <code>py</code> for <code>python3</code>.</p>
 <figure class="code code--oneline"><figcaption>Preflight check</figcaption><pre tabindex="0" role="region" aria-label="Preflight check"><code>python3 software_lifecycle.py preflight YOUR-INVENTORY.csv</code></pre></figure>
 
-<h2 id="demo">Try the demo first</h2>
-<p>The demo inventory is made up and runs against synthetic data, so the output never changes with the date. Run it from the repo root.</p>
+<h2 id="demo">See it in a minute</h2>
+<p>Run this from the repo root:</p>
 <figure class="code"><figcaption>Demo run</figcaption><pre tabindex="0" role="region" aria-label="Demo run"><code>python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo</code></pre></figure>
+<p>The tool prints exactly one line:</p>
+<figure class="code code--oneline"><figcaption>Terminal output</figcaption><pre tabindex="0" role="region" aria-label="Terminal output"><code>Wrote report.json, report.md, report.csv to ../swlc-demo</code></pre></figure>
+<p>The demo uses made-up data, so the output never changes with the date. Real inventories are confidential: read <a href="privacy.html#confidential">Confidential inventories</a> before you run your own.</p>
+<p>The report is in <code>../swlc-demo/report.md</code>. Here is what it looks like.</p>
+<figure class="shot"><img src="img/report-summary.png" width="1210" height="647" loading="lazy" decoding="async" alt="The top of the sample report: title, notes, and a summary line starting &quot;Items: 50&quot; with one count for each list, such as 8 past end of life and 11 couldn't match."><figcaption>Look at the summary line that starts "Items: 50". It gives one count for each list. This is the sample report as GitHub renders report.md.</figcaption></figure>
+<figure class="shot"><img src="img/report-kev-items.png" width="1166" height="650" loading="lazy" decoding="async" alt="The section "In CISA KEV, past or near end of life (2)" of the sample report. It lists two items, Example SQL 15 and Northwind Gateway 4.1, and each ends with a KEV line saying the vendor and product appear in CISA KEV, that this does not mean your version is affected, and that it needs review."><figcaption>Each KEV item ends with the KEV line: "The vendor and product appear in CISA KEV. This does not mean your version is affected. Needs review." This is the sample report as GitHub renders report.md.</figcaption></figure>
+<details><summary>Read the same text</summary>
+<p>The summary line, then the first KEV item, copied from the sample report.</p>
+<figure class="code"><figcaption>Summary line</figcaption><pre tabindex="0" role="region" aria-label="Summary line from the sample report"><code>Items: 50 (rows: 60; inventory rows, not installs). past end of life 8; ends within the lookahead window 5; dates disagree 4; couldn't match 11; in CISA KEV, past or near end of life 2; accepted risk 1; ownerless 1; golden source overrides 1; names to review 1.</code></pre></figure>
+<figure class="code"><figcaption>First KEV item</figcaption><pre tabindex="0" role="region" aria-label="First KEV item from the sample report"><code>- **Example SQL** 15, publisher Example Vendor (id `a3f0e99e87b4`)
+  - State: ends within the lookahead window
+  - Classification: governable (basis: category_governable)
+  - Product matched by a curated alias.
+  - Owners: Finance Systems. Inventory rows: 1
+  - Count (from your file): 263
+  - End of life: 2026-12-31 per endoflife.date, snapshot 2026-10-20
+  - Mainstream support: 2024-12-31 per endoflife.date, snapshot 2026-10-20
+  - Extended support: 2028-12-31 per endoflife.date, snapshot 2026-10-20
+  - KEV: The vendor and product appear in CISA KEV. This does not mean your version is affected. Needs review.</code></pre></figure>
+</details>
+<p><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/examples/sample-report.md">Read the full sample report on GitHub</a>, or see <a href="reports.html">How to read a report</a>.</p>
 <p>If you run the demo inventory against the bundled data, every item lists as "couldn't match", because the demo names are made up. A sample of the output is at <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/examples/sample-report.md">examples/sample-report.md</a>.</p>
 
 <h2 id="platforms">Exporting from your platform</h2>
