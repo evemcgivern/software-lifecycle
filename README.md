@@ -14,6 +14,21 @@ person can review them first.
 
 Runs locally with no network by default; not independently assessed.
 
+## Who built this and why
+
+I'm Eve McGivern. I run IT application governance for a large global
+company: the application register, owner assignment, quarterly application
+audits, and the evaluation of IT service management and IT asset management
+tools. I started in technical business analysis.
+
+Lifecycle tracking is harder than it looks. Export names rarely match the
+names vendors publish. End-of-life dates sit on vendor pages in different
+formats. One product has many release lines, each with its own date, and a
+date means nothing until you match the right one. A quarterly review also
+needs evidence, not a guess. Commercial catalogs solve this, but not every
+team has one, and many inventories can't leave the building. I built this
+for those teams: offline, plain files, and honest about what it can't match.
+
 ## Start here
 
 Pick the row that fits you.
@@ -359,7 +374,7 @@ How often the data updates:
 
 | Data | Schedule | What happens |
 |---|---|---|
-| CISA KEV | Daily, 07:41 UTC | A new data release is published. |
+| CISA KEV | Daily, 07:41 UTC | A new data release is published when the data changed. |
 | End-of-life dates (endoflife.date) | Weekly, Mondays 08:23 UTC | The job opens a pull request. The dates reach users in the next daily release after the maintainer merges it. |
 
 These are the scheduled times. The project is maintained as time allows, so
@@ -383,7 +398,7 @@ Staleness rules:
   KEV overlay is reported as "not current".
 - An end-of-life snapshot older than 30 days gives a warning.
 
-The bundled data is a snapshot. KEV data releases are published daily.
+The bundled data is a snapshot. The KEV job runs daily and publishes a data release when the data changed.
 The weekly end-of-life job opens a pull request, and the next daily release
 carries the dates once it is merged. Point `--data` at any
 directory that holds a verified data release to use one.
