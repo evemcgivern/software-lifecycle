@@ -1,6 +1,6 @@
 {
   "data_format": 2,
-  "eol_date": "2026-11-01",
+  "eol_date": "2026-11-02",
   "files": {
     "aliases.json": {
       "sha256": "d5e44680c7a63b08c773bfccc74202abfae1e7cd0d513847837814de95d8906b",
@@ -207,8 +207,8 @@
       "size": 1850
     },
     "eol/apache-spark.json": {
-      "sha256": "209235256ee187fe58824f418efb600c29261377f880472d15fa342f5ddfa4aa",
-      "size": 1809
+      "sha256": "9134757cda94234ccba080c95424b73b2d21025a80ee3773d8d4ae2f4f602ee4",
+      "size": 1895
     },
     "eol/apache-struts.json": {
       "sha256": "1982aaed0a35ccd4531add7e2d52e78818253580be37126d72aebad9cd464bad",
@@ -311,8 +311,8 @@
       "size": 10964
     },
     "eol/bitcoin-core.json": {
-      "sha256": "8fc222ff6b86023ac2f301d38b9c7d9a8b0f712c8a24d6e6d29a9ac921487e9e",
-      "size": 2751
+      "sha256": "a3e45f884e311a728c81b24216b79a47b9a002dfeb1604e38e188fb292785c63",
+      "size": 2858
     },
     "eol/blender.json": {
       "sha256": "e36a2b06236df52dbaef2aed42d81076fc21279bad4143220fc7cc5168c67a4b",
@@ -1159,8 +1159,8 @@
       "size": 5415
     },
     "eol/mulesoft-runtime.json": {
-      "sha256": "0d4d92093d1f6b16acec41ff2f47f270d3481bd9c5491caf066f6c9788c9817f",
-      "size": 1854
+      "sha256": "019a1a564c046198914e2e2778c9ac6fbf60c7b07cf0bbdaf49915e4733b332f",
+      "size": 1970
     },
     "eol/mxlinux.json": {
       "sha256": "9ee4c7dce76dd980c5a928c23de2e307b30a6af07d00b2682d963dfca2ce07d9",
@@ -1171,8 +1171,8 @@
       "size": 2637
     },
     "eol/neo4j.json": {
-      "sha256": "69bc645e6700380c0203169253f0e5a560f645163d59495fc7dd29932d4de552",
-      "size": 6289
+      "sha256": "f94ad689a7b18376a89ea10fafb0595a502f191d640e5c5410691c22cafbfb52",
+      "size": 6379
     },
     "eol/neos.json": {
       "sha256": "d546aec934dbed8e1c9eb5d967cfd25abf50479746102241446cd36097a0506c",
@@ -1283,8 +1283,8 @@
       "size": 171
     },
     "eol/openai-api-models.json": {
-      "sha256": "e2c8bc681b27f28884df3c39d175e5dc1dedd4e0c8d135759792d3f8df236133",
-      "size": 10857
+      "sha256": "4c6ea6b04389ea18618cda852ef42767b3ef3d4af6dd6c1181042443fb652d91",
+      "size": 10967
     },
     "eol/openbao.json": {
       "sha256": "186f2a5828d8e4e02104bfb3cf951830535899e6b3b34a4490e5338a4937e36f",
@@ -1982,6 +1982,6 @@
   "kev_catalog_version": "2026.10.30",
   "kev_date": "2026-10-30",
   "min_tool_version": "0.7.0",
-  "release_id": "main-eol-2026-11-01",
-  "upstream_commit": "38b1896e632717895c7896dde8f42b918a58103d"
+  "release_id": "main-eol-2026-11-02",
+  "upstream_commit": "5c5a8e2b881854b73a2f1209545191bc4dc30a79"
 }
