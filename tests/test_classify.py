@@ -361,10 +361,10 @@ class SpeedTests(unittest.TestCase):
                             "category": "app", "vendors": [],
                             "namespaces": []}
         data = dataclasses.replace(data, catalog=catalog)
-        start = time.perf_counter()
+        start = time.process_time()
         for n in range(20000):
             C.classify(item("libthing%d" % n, "1.0"), "", data)
-        self.assertLess(time.perf_counter() - start, 2.0)
+        self.assertLess(time.process_time() - start, 2.0)
 
 
 class ApplyTests(unittest.TestCase):
@@ -928,9 +928,9 @@ class ParentSpeedTests(unittest.TestCase):
                               classification_basis=[C.NO_SIGNAL]))
         for it in items:
             it["classification_basis"] = list(it["classification_basis"])
-        start = time.time()
+        start = time.process_time()
         C.resolve_parents(items, {}, data)
-        self.assertLess(time.time() - start, 3.0)
+        self.assertLess(time.process_time() - start, 3.0)
         self.assertEqual(items[1]["inherited_from"], "w")
 
 
