@@ -3,6 +3,10 @@ from __future__ import annotations
 
 import json
 import re
+import struct
+import subprocess
+import sys
+import tempfile
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
@@ -324,7 +328,6 @@ class SiteSeo(unittest.TestCase):
             page = load(name)
             self.assertIsNone(page.prop("og:image"), name)
             self.assertIsNone(page.meta("twitter:image"), name)
-            self.assertNotIn("<img", (SITE / name).read_text(encoding="utf-8"))
 
     def test_json_ld_parses_and_has_context_and_type(self):
         for name in PAGES:
@@ -533,3 +536,113 @@ class SiteAccessibility(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def png_size(path: Path):
+    data = path.read_bytes()[:24]
+    assert data[:8] == b"\x89PNG\r\n\x1a\n", path
+    return struct.unpack(">II", data[16:24])
+
+
+def readme_demo_command() -> str:
+    text = (ROOT / "README.md").read_text(encoding="utf-8")
+    m = re.search(r"1\. Try the demo\..*?```bash\n(.*?)\n\s*```", text, re.S)
+    assert m, "demo command not found in README Quick start"
+    return " ".join(m.group(1).split())
+
+
+TERMINAL_LINE = "Wrote report.json, report.md, report.csv to ../swlc-demo"
+
+
+class SiteDemo(unittest.TestCase):
+    """The 'See it in a minute' section uses real material only."""
+
+    def report_lines(self):
+        return (ROOT / "examples" / "sample-report.md").read_text(
+            encoding="utf-8").splitlines()
+
+    def pre_texts(self, name):
+        source = (SITE / name).read_text(encoding="utf-8")
+        return [m.group(1) for m in re.finditer(
+            r"<pre[^>]*><code>(.*?)</code></pre>", source, re.S)]
+
+    def test_every_img_is_accessible_local_and_sized(self):
+        seen = 0
+        for name in PAGES:
+            for tag, a in load(name).tags:
+                if tag != "img":
+                    continue
+                seen += 1
+                with self.subTest(page=name, src=a.get("src")):
+                    self.assertTrue((a.get("alt") or "").strip())
+                    self.assertNotIn(a["alt"].strip().lower(),
+                                     {"screenshot", "image", "picture"})
+                    src = a.get("src", "")
+                    self.assertTrue(src)
+                    self.assertFalse(is_external(src))
+                    self.assertNotIn("srcset", a)
+                    self.assertNotIn("sizes", a)
+                    file = SITE / unquote(urlparse(src).path)
+                    self.assertTrue(file.is_file(), src)
+                    self.assertEqual(
+                        (int(a["width"]), int(a["height"])), png_size(file))
+                    self.assertEqual(a.get("loading"), "lazy")
+                    self.assertEqual(a.get("decoding"), "async")
+        self.assertGreaterEqual(seen, 3)
+
+    def test_images_are_in_figures_with_captions(self):
+        for name in ("index.html", "start.html"):
+            source = (SITE / name).read_text(encoding="utf-8")
+            n = source.count("<img ")
+            figs = re.findall(
+                r'<figure class="shot"><img [^>]*><figcaption>.+?</figcaption></figure>',
+                source)
+            self.assertEqual(n, len(figs), name)
+
+    def test_terminal_line_matches_real_output_text(self):
+        self.assertEqual(TERMINAL_LINE, "Wrote report.json, report.md, report.csv to ../swlc-demo")
+        for name in ("index.html", "start.html"):
+            self.assertIn(TERMINAL_LINE, self.pre_texts(name), name)
+
+    def test_demo_command_equals_readme_quick_start(self):
+        expected = readme_demo_command()
+        for name in ("index.html", "start.html"):
+            shown = [" ".join(x.split()) for x in self.pre_texts(name)]
+            self.assertIn(expected, shown, name)
+
+    def test_excerpt_is_verbatim_from_sample_report(self):
+        lines = self.report_lines()
+        joined = "\n".join(lines)
+        texts = self.pre_texts("start.html")
+        items = [x for x in texts if x.startswith("Items: 50")]
+        self.assertEqual(len(items), 1)
+        self.assertIn(items[0], lines)
+        kev = [x for x in texts if x.startswith("- **Example SQL** 15")]
+        self.assertEqual(len(kev), 1)
+        self.assertIn(kev[0], joined)
+        self.assertIn(KEV_LINE, kev[0])
+        self.assertIn(
+            "## In CISA KEV, past or near end of life (2)\n", joined)
+        self.assertIn("Northwind Gateway", joined)
+
+    def test_demo_section_links(self):
+        for name in ("index.html", "start.html"):
+            hrefs = [a.get("href") for t, a in load(name).tags if t == "a"]
+            self.assertIn("privacy.html#confidential", hrefs, name)
+            self.assertIn("https://github.com/evemcgivern/software-lifecycle/"
+                          "blob/main/examples/sample-report.md", hrefs, name)
+        self.assertIn("reports.html", [a.get("href") for t, a in load("start.html").tags if t == "a"])
+
+    def test_demo_command_runs_and_prints_the_one_line(self):
+        command = readme_demo_command().split()
+        self.assertEqual(command[:3], ["python3", "software_lifecycle.py", "check"])
+        with tempfile.TemporaryDirectory() as tmp:
+            args = command[1:-1] + [str(Path(tmp) / "out")]
+            self.assertEqual(command[-2], "--out")
+            result = subprocess.run(
+                [sys.executable, "-I", "-B"] + args, cwd=ROOT,
+                capture_output=True, text=True, timeout=120)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(result.stdout.startswith(
+                "Wrote report.json, report.md, report.csv to "), result.stdout)
+            self.assertEqual(len(result.stdout.strip().splitlines()), 1)

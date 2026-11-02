@@ -206,6 +206,26 @@ Run these from the repo root.
 If you run the demo inventory against the bundled data, every item lists as
 "couldn't match", because the demo names are made up.
 
+### What the demo shows
+
+The tool prints one line and writes three files:
+
+```text
+Wrote report.json, report.md, report.csv to ../swlc-demo
+```
+
+The summary line at the top of `report.md` gives one count for each list:
+
+![The top of the sample report: title, notes, and a summary line that starts Items: 50 with one count for each list.](site/img/report-summary.png)
+
+The section for items whose vendor and product appear in CISA KEV lists two
+sample items:
+
+![The In CISA KEV section of the sample report, with the items Example SQL 15 and Northwind Gateway 4.1.](site/img/report-kev-items.png)
+
+Both images are the sample report as GitHub renders `report.md`. The full
+text is in [examples/sample-report.md](examples/sample-report.md).
+
 Before the first check of a new export, run `preflight`. It says which
 columns it found and what to fix, without printing any row:
 

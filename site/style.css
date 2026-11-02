@@ -129,6 +129,11 @@ code,kbd,samp{ font-family:var(--mono); font-size:.9em; }
 .code pre code{ font:inherit; background:none; padding:0; }
 .code--oneline pre{ user-select:all; }
 
+/* Report screenshots: dark images, so a visible border keeps them framed on the light theme */
+.shot{ max-width:100%; margin:0 0 var(--s-5); }
+.shot img{ display:block; max-width:100%; height:auto; border:2px solid var(--border); border-radius:var(--r-2); background:#0d1117; }
+.shot figcaption{ font-size:var(--step--1); color:var(--muted); margin-top:var(--s-2); max-width:var(--measure); }
+
 /* Tables: scroll inside a box on phones */
 .table-scroll{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--r-1); max-width:100%; }
 table{ border-collapse:collapse; width:100%; min-width:32rem; font-size:var(--step--1); line-height:1.5; }
