@@ -1,8 +1,8 @@
 # Themes XW-029 to XW-032
 
 Each theme is a job the tool helps with. `crosswalk.csv` in this folder
-lists published standards that touch each one. It is a reference, not a
-claim of compliance.
+lists the published standards that touch each one. It is a reference, not
+a claim of compliance.
 
 ## How to read crosswalk.csv
 
@@ -11,13 +11,20 @@ CIS Controls v8.1; ISO/IEC 27001:2022; COBIT 2019.
 
 ## What was checked, and against what
 
-Page numbers are printed pages. Partial means the text fits only part of
-the claim. Supported means it fits the claim as written. Supported with
-limits means it fits, but the text leaves out part of the claim. Partial,
-weak fit means the match is thin. Partial, related only means the control
-stays in the CSV as a related control, not as a fit. Read earlier, no
-per-cell verdict recorded means the control was read but no verdict was
-kept. A cell can be Supported and still not be a direct requirement.
+Page numbers are printed pages. The verdicts mean this:
+
+- Partial: the text fits only part of the claim.
+- Supported: the text fits the claim as written.
+- Supported with limits: the text fits, but leaves out part of the claim.
+- Partial, weak fit: the match is thin.
+- Partial, related only: the control stays in the CSV as a related
+  control, not as a fit.
+- Read earlier, no per-cell verdict recorded: the control was read but no
+  verdict was kept.
+
+A cell can be Supported and still not be a direct requirement.
+
+What was checked, column by column:
 
 - `iso27001`: checked against ISO/IEC 27001:2022. Amendment 1 (2024) was
   not opened: Unverified.
@@ -41,9 +48,9 @@ kept. A cell can be Supported and still not be a direct requirement.
 - `cobit2019`: checked against the COBIT 2019 Governance and Management
   Objectives volume (ISACA 2018). Every cell is Partial: no cited practice
   is a direct match. The 2018 text cites NIST 800-53 Rev 5 (Draft) and CIS
-  v6.1, and a newer COBIT 2019 publication date is Unverified. APO03,
-  BAI03 and the MEA objectives were not checked. Cells hold practice IDs
-  where one fits, otherwise the objective.
+  v6.1. A newer COBIT 2019 publication date is Unverified. APO03, BAI03
+  and the MEA objectives were not checked. Cells hold practice IDs where
+  one fits, otherwise the objective.
 - ITIL 4 cells hold practice names. ITIL 4 has no clause numbers.
 - ISO/IEC 20000-1 cells hold clause numbers.
 
@@ -99,15 +106,18 @@ kept. A cell can be Supported and still not be a direct requirement.
 | 800-53 | PM-4 | 205 | XW-032 | Read earlier, no per-cell verdict recorded |
 | CIS v8.1 | 2.1, 2.2, 7.1, 7.2 | - | XW-029, XW-030, XW-031 | Read earlier, no per-cell verdict recorded |
 
-Limits seen in the text: 27001 6.1.3 and 19770-1 6.1.3 have owners approve
-the plan and accept residual risk, but say nothing on expiry or an
-independent approver. The CSF text has nothing on per-item ownership or
-independent approval. RA-5 and SI-5 do not name a known-exploited list.
-RA-7 has no expiry or independent approval. CA-6 is the closest 800-53
-control to independent approval, as co-authorizing officials, but it
-authorizes a system and sets re-authorization frequency, not an expiry.
-In 19770-1 7.6.3, authorizations can be time-limited. 19770-1 8.3 has no
-end-of-life idea.
+Limits seen in the text:
+
+- 27001 6.1.3 and 19770-1 6.1.3 have owners approve the plan and accept
+  residual risk, but say nothing on expiry or an independent approver.
+- The CSF text has nothing on per-item ownership or independent approval.
+- RA-5 and SI-5 do not name a known-exploited list.
+- RA-7 has no expiry or independent approval.
+- CA-6 is the closest 800-53 control to independent approval, as
+  co-authorizing officials, but it authorizes a system and sets
+  re-authorization frequency, not an expiry.
+- In 19770-1 7.6.3, authorizations can be time-limited.
+- 19770-1 8.3 has no end-of-life idea.
 
 Related only: CA-5, AC-5 and CA-7 stay in the CSV as related controls,
 not as a fit. AC-5 names no requester-versus-approver rule.
@@ -118,14 +128,15 @@ RA-3(3) (p.241) is a closer fit than PM-16 for threat context.
 ### What stays Unverified
 
 - `itil4`: ITIL 4 Essentials (2nd ed., 2020, pp.126-179) is a secondary
-  book, not the official practice guides. It names the seven practices,
-  and its fit is Supported for IT asset management, service configuration
-  management and change enablement, and Partial for supplier, information
-  security, risk and problem management. The official practice guides for
-  the seven practices were not available. The official Service Design
-  practice guide is not one of the seven and does not speak to the claims
-  (pp.1-8 read, pp.9-31 not read). A third-party ITIL materials folder is
-  not cited. Best status: checked against a secondary summary.
+  book, not the official practice guides. It names the seven practices.
+  Its fit is Supported for IT asset management, service configuration
+  management and change enablement. Its fit is Partial for supplier,
+  information security, risk and problem management. The official
+  practice guides for the seven practices were not available. The
+  official Service Design practice guide is not one of the seven and does
+  not speak to the claims (pp.1-8 read, pp.9-31 not read). A third-party
+  ITIL materials folder is not cited. Best status: checked against a
+  secondary summary.
 - `iso20000_1`: the ISO/IEC 20000-1:2018 standard text was not available.
   A third-party template kit shows no clause numbers, so the cells stay
   leads.
@@ -158,11 +169,13 @@ document and a third-party explainer:
 ## XW-029: End-of-life and end-of-support tracking for software
 
 Know which installed software the vendor no longer supports, or soon will
-not. Implemented by the "Past end of life", "Ends within the lookahead
-window" and "Couldn't match" lists, and by the golden-sources file, which
-records which date is right for a product. The optional support-records
-file shows the owner's own support records beside those dates, as a
-renewal aid; it adds no list and changes no state.
+not.
+
+Implemented by the "Past end of life", "Ends within the lookahead window"
+and "Couldn't match" lists, and by the golden-sources file, which records
+which date is right for a product. The optional support-records file
+shows the owner's own support records beside those dates, as a renewal
+aid. It adds no list and changes no state.
 
 COBIT 2019 (Partial): BAI09 is the main fit, BAI09.01 (p.209) and BAI09.03
 (p.211). BAI10 (p.215) and APO10 (p.119) are weak: nothing on lifecycle or
@@ -174,19 +187,23 @@ sets a quarterly review (`sop.md`, Cadence). The difference is real.
 ## XW-030: Known-exploited vulnerability overlay on the software inventory
 
 Mark old software whose vendor and product appear in CISA KEV, so a person
-reviews it first. It is a reference for prioritization. Implemented by the
-"In CISA KEV, past or near end of life" list. It matches vendor and product only, never version,
-and says "needs review". It does not say any version is affected.
+reviews it first. It is a reference for prioritization.
+
+Implemented by the "In CISA KEV, past or near end of life" list. It
+matches vendor and product only, never version, and says "needs review".
+It does not say any version is affected.
 
 COBIT 2019 (Partial): DSS05 (p.257) is primary, DSS05.07 (p.261). APO12 (p.131) is weak and secondary.
 
 ## XW-031: Risk acceptance with expiry and independent approval
 
-When old software must stay, the risk is accepted by named people and
-expires. Implemented by `exceptions.csv` and the "Accepted risk" list. The
-file needs a risk owner, an approver who is not the requester, an expiry
-date and a reference. An expired exception shows up as `EXCEPTION_EXPIRED`
-in `decision_needed`.
+When old software must stay, named people accept the risk and the
+acceptance expires.
+
+Implemented by `exceptions.csv` and the "Accepted risk" list. The file
+needs a risk owner, an approver who is not the requester, an expiry date
+and a reference. An expired exception shows up as `EXCEPTION_EXPIRED` in
+`decision_needed`.
 
 COBIT 2019 (Partial): APO12.02, APO12.04, APO12.05 (pp.132-133) fit best.
 No COBIT counterpart was found for the independent-approver rule.
@@ -194,9 +211,11 @@ No COBIT counterpart was found for the independent-approver rule.
 ## XW-032: Ownership, evidence and change linkage for lifecycle findings
 
 Every finding has an owner, a record of what was decided and a link to the
-change that fixes it. Implemented by the "Ownerless" list, the hashes and
-data release ID in `report.json`, the `--previous` diff, and `tracking.csv`,
-which links an item ID to a change reference and a problem reference.
+change that fixes it.
+
+Implemented by the "Ownerless" list, the hashes and data release ID in
+`report.json`, the `--previous` diff, and `tracking.csv`, which links an
+item ID to a change reference and a problem reference.
 
 COBIT 2019 (Partial): BAI06 (p.193), DSS03 (p.243) and BAI10 (p.215) are
 reasonable; BAI09.01 act. 1 (p.209) is added. Item ownership at practice
