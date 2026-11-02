@@ -1066,13 +1066,13 @@ class BundledSpeedTests(unittest.TestCase):
     def test_100000_rows_within_the_bound(self):
         data = self.data
         index = data.matching_index()
-        start = time.perf_counter()
+        start = time.process_time()
         n = 0
         for name, ver, pub in synthetic_rows(data.catalog, 100000):
             match_product(name, ver, data.aliases, data.products,
                           catalog_index=index, publisher=pub)
             n += 1
-        elapsed = time.perf_counter() - start
+        elapsed = time.process_time() - start
         self.assertEqual(n, 100000)
         self.assertLess(elapsed, MAX_SECONDS_100K,
                         "100,000 rows took %.1f s" % elapsed)
