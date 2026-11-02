@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Privacy, security and limits | software-lifecycle</title>
+<meta name="description" content="What software-lifecycle claims and does not claim about privacy, confidential inventories, supply chain checks and limits. Not independently assessed.">
+<link rel="canonical" href="https://evemcgivern.github.io/software-lifecycle/privacy.html">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="software-lifecycle">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Privacy, security and limits | software-lifecycle">
+<meta property="og:description" content="What software-lifecycle claims and does not claim about privacy, confidential inventories, supply chain checks and limits. Not independently assessed.">
+<meta property="og:url" content="https://evemcgivern.github.io/software-lifecycle/privacy.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Privacy, security and limits | software-lifecycle">
+<meta name="twitter:description" content="What software-lifecycle claims and does not claim about privacy, confidential inventories, supply chain checks and limits. Not independently assessed.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://evemcgivern.github.io/software-lifecycle/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Privacy and limits",
+      "item": "https://evemcgivern.github.io/software-lifecycle/privacy.html"
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="index.html">software-lifecycle</a>
+<nav class="site-nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="start.html">Start</a></li><li><a href="reports.html">Reports</a></li><li><a href="privacy.html" aria-current="page">Privacy and limits</a></li><li><a href="data-updates.html">Data updates</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle">GitHub</a></li></ul></nav>
+</div></header>
+<div class="status"><div class="wrap">Experiment. Maintained as time allows. Not independently assessed. <a href="privacy.html#status">What this status means</a></div></div>
+<main id="main" class="wrap" tabindex="-1">
+<h1>Privacy, security and limits</h1>
+<p><strong>Runs locally with no network by default; not independently assessed.</strong></p>
+<p>The claims line is the whole claim. Nothing here goes beyond it.</p>
+
+<h2 id="what-it-does">What the tool does</h2>
+<p>It runs locally and makes no network calls by default. It uses only the Python standard library. A test in the repository blocks network access and runs the tool. Only <code>refresh_data.py</code>, run by the data workflows, opens network connections.</p>
+
+<h2 id="confidential">Confidential inventories</h2>
+<ul>
+<li>Run real inventories only through the local script, or through an AI agent in <code>--counts-only</code> mode.</li>
+<li>In <code>--counts-only</code> mode the tool prints only counts, item IDs, the checked-on date and the <code>kev_current</code> flag. The full report goes to a file.</li>
+<li>An agent can still read that file, and nothing technical stops it. Tell the agent not to, and keep the output folder out of its reach.</li>
+<li>No model should read the full report.</li>
+<li>The default keeps no run history. Keeping evidence is your choice.</li>
+</ul>
+
+<h2 id="item-ids">Item IDs</h2>
+<p>An item ID is a 12-character hash of publisher, name and version, with no secret in it. It keeps names out of counts and findings. But anyone who holds a guess can hash it and confirm that the item is in the estate. Treat item IDs with the same care as the inventory, and do not post them where the inventory would not go.</p>
+
+<h2 id="mcp">The optional desktop-chat server</h2>
+<p>The server (<code>swlc_mcp.py</code>) enforces counts-only in its code: it returns only fixed labels and numbers, with no item IDs. It was tested by hand once, on one Mac, in both apps (2026-11-01). It does not stop the counts and the path from going to the chat app's provider, other tools in the same app from reading files, or the full report (written next to the CSV) from reaching a synced folder. What is and is not tested, and what it does not protect, is in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/mcp-setup.md">docs/mcp-setup.md</a>.</p>
+
+<h2 id="supply-chain">Supply chain</h2>
+<ul>
+<li>The tool checks a SHA-256 manifest every time it loads its data. This catches a damaged data folder. It does not prove who made the files.</li>
+<li>Each data release made while the repository is public carries a GitHub artifact attestation. Check it online before use. The tool never checks attestations offline.</li>
+<li>Only main can publish a data release. Data releases are never changed or re-tagged. A fix is a new, higher release.</li>
+<li>Every GitHub Action is pinned to a commit SHA.</li>
+</ul>
+<figure class="code"><figcaption>Check a data release online</figcaption><pre tabindex="0" role="region" aria-label="Check a data release online"><code>gh attestation verify data.zip --repo evemcgivern/software-lifecycle --signer-workflow evemcgivern/software-lifecycle/.github/workflows/kev-daily.yml --source-ref refs/heads/main</code></pre></figure>
+<p>Details are in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+
+<h2 id="not-claimed">What it does not claim</h2>
+<ul>
+<li>It has not been independently assessed or audited.</li>
+<li>Its end-of-life and KEV data are snapshots and can be out of date.</li>
+<li>A clean result does not prove that software is safe or supported.</li>
+<li>A support-records file and the reports made with it hold your record references. Treat them as confidential.</li>
+</ul>
+
+<h2 id="limits">How it can be wrong</h2>
+<ul>
+<li>Coverage is partial. The tool covers only products endoflife.date lists. The rate on a real estate is unknown. Not found: a hit rate on a real estate. The benchmark figures are in the <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/README.md#how-it-can-be-wrong">README</a>.</li>
+<li>Names must match strictly. A name with extra words after the product name often lands in "couldn't match". That is safer than a wrong guess.</li>
+<li>A product whose version is a build number may map to the wrong cycle or none. Check the cycle shown in the report.</li>
+<li>The profiles for Flexera, ServiceNow and Rapid7 are Unverified until run on a real export.</li>
+<li>Data is a snapshot and can be out of date.</li>
+<li>The tool was tested on macOS and Linux. Windows is not a supported platform yet.</li>
+</ul>
+<aside class="define" aria-label="The KEV line"><span class="label">KEV limits</span>
+<p>The vendor and product appear in CISA KEV. This does not mean your version is affected.</p>
+<p>KEV matches vendor and product only, never version. <code>kev: false</code> means no match under the tool's rules, not that the software is known safe. See <a href="kev.html">What is KEV?</a></p></aside>
+
+<h2 id="status">Status and support</h2>
+<p>This is an experiment with a review date of 2027-01-31; on that date the maintainer decides whether to keep it, archive it, or fold it into another project. It is maintained as time allows, best effort, no SLA, not independently assessed. There is no promised response time. Only the latest release and the latest data release are supported.</p>
+
+<h2 id="report">Report a problem</h2>
+<ul>
+<li>Security: use private vulnerability reporting. Open the repository's Security tab and choose Report a vulnerability. Do not open a public issue and do not include real inventory data. See <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">SECURITY.md</a>.</li>
+<li>A mistake in the docs, or a column problem with an export: use the issue forms on GitHub, with names and headers only.</li>
+</ul>
+
+<h2 id="federal">Federal context</h2>
+<p>CISA's current binding directive for US federal civilian agencies, BOD 26-04, superseded BOD 22-01 (source: <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">CISA, BOD 26-04</a>). It is a reference only. It binds federal civilian agencies only. This tool does not implement it or its deadlines.</p>
+<p>For a standards crosswalk, see <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/themes.md">docs/themes.md</a>. Not found: independent assessment, audit report, SLA.</p>
+<ul class="links"><li><a href="start.html">Start</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">Read SECURITY.md</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/mcp-setup.md">Open mcp-setup limits</a></li></ul>
+
+</main>
+<footer class="site-footer"><div class="wrap">
+<nav aria-label="Explainers"><ul><li><a href="kev.html">What is KEV?</a></li><li><a href="sbom.html">What is an SBOM?</a></li><li><a href="data-updates.html">How often is the data updated?</a></li></ul></nav>
+<nav aria-label="Project links"><ul><li><a href="https://github.com/evemcgivern/software-lifecycle/tree/main/docs">Docs on GitHub</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">Report a security problem</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md">Contributing</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/LICENSE">Licence: MIT</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/THIRD-PARTY.md">Third-party material</a></li></ul></nav>
+<p>Runs locally with no network by default; not independently assessed.</p>
+<p>Experiment, review date 2027-01-31. Maintained as time allows.</p>
+</div></footer>
+</body>
+</html>

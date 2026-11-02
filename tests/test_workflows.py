@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 GITHUB = ROOT / ".github"
 WORKFLOWS = GITHUB / "workflows"
-NAMES = ("ci.yml", "kev-daily.yml", "eol-weekly.yml")
+NAMES = ("ci.yml", "kev-daily.yml", "eol-weekly.yml", "pages.yml")
 VERIFY = ("gh attestation verify data.zip --repo evemcgivern/software-lifecycle"
           " --signer-workflow evemcgivern/software-lifecycle/.github/workflows/"
           "kev-daily.yml --source-ref refs/heads/main")

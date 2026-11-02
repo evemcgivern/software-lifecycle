@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>How to read a report | software-lifecycle</title>
+<meta name="description" content="What the lists in a software-lifecycle report mean: past end of life, near end of life, dates disagree, couldn't match, and the KEV needs-review flag.">
+<link rel="canonical" href="https://evemcgivern.github.io/software-lifecycle/reports.html">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="software-lifecycle">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="How to read a report | software-lifecycle">
+<meta property="og:description" content="What the lists in a software-lifecycle report mean: past end of life, near end of life, dates disagree, couldn&#x27;t match, and the KEV needs-review flag.">
+<meta property="og:url" content="https://evemcgivern.github.io/software-lifecycle/reports.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How to read a report | software-lifecycle">
+<meta name="twitter:description" content="What the lists in a software-lifecycle report mean: past end of life, near end of life, dates disagree, couldn&#x27;t match, and the KEV needs-review flag.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://evemcgivern.github.io/software-lifecycle/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Reports",
+      "item": "https://evemcgivern.github.io/software-lifecycle/reports.html"
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="index.html">software-lifecycle</a>
+<nav class="site-nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="start.html">Start</a></li><li><a href="reports.html" aria-current="page">Reports</a></li><li><a href="privacy.html">Privacy and limits</a></li><li><a href="data-updates.html">Data updates</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle">GitHub</a></li></ul></nav>
+</div></header>
+<div class="status"><div class="wrap">Experiment. Maintained as time allows. Not independently assessed. <a href="privacy.html#status">What this status means</a></div></div>
+<main id="main" class="wrap" tabindex="-1">
+<h1>How to read a report</h1>
+<h2 id="what-you-get">What you get</h2>
+<p>A run writes <code>report.json</code>, <code>report.md</code> and <code>report.csv</code>. Their fields are in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/report-schema.md">docs/report-schema.md</a>. An item can be on more than one list.</p>
+
+<h2 id="lists">The lists</h2>
+<dl class="lists">
+<dt>Past end of life</dt><dd>The end-of-life date has passed.</dd>
+<dt>Ends within the lookahead window</dt><dd>The window is 12 months unless you change it.</dd>
+<dt>Dates disagree</dt><dd>This covers three cases: the export's own date and the endoflife.date date differ; a golden source has expired; or a golden source says to use the export date and the export has no usable one (<code>GOLDEN_EXPORT_UNUSABLE</code>).</dd>
+<dt>Couldn't match</dt><dd>The name and version did not map to a known product and cycle, and the tool claims no date for these. Some names it refused on purpose: a product title on a row with no publisher, or a row whose name and version fit more than one support line, such as Internet Explorer 11. Those are listed again under "Names to review". They are not a finding.</dd>
+<dt>In CISA KEV, past or near end of life</dt><dd>The item is past or near end of life, and its vendor and product appear in CISA KEV. The wording is "needs review". KEV matches vendor and product only, never version. The tool never says "vulnerable".</dd>
+<dt>Accepted risk</dt><dd>The item is listed in your exceptions file.</dd>
+<dt>Ownerless</dt><dd>The export has no owner for the item.</dd>
+<dt>Golden overrides</dt><dd>The item's state changed because a golden source chose a different date. A golden source that changes the date but not the state is not listed.</dd>
+</dl>
+
+<aside class="define" aria-label="The KEV line"><span class="label">The line the report prints</span>
+<p>The vendor and product appear in CISA KEV. This does not mean your version is affected.</p>
+<p><code>kev: false</code> means no match under the tool's rules, not that the software is known safe. See <a href="kev.html">What is KEV?</a></p></aside>
+
+<h2 id="counts">Counts are not installs</h2>
+<p><code>rows</code> in the report counts inventory rows, not installs or machines. An item's count is taken from your file; it is not discovered installs. See <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/usage.md#the-count-column">The count column</a>.</p>
+
+<h2 id="sample">Sample report</h2>
+<p><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/examples/sample-report.md">examples/sample-report.md</a> is the <code>report.md</code> the demo run writes, from made-up data only. A test keeps it the same as the real output. The words it uses are explained in the <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/glossary.md">glossary</a>.</p>
+
+<h2 id="overrides">Override files you own</h2>
+<p>The tool never changes these files. Blank copies are in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/templates/">templates/</a>.</p>
+<ul>
+<li><strong>golden-sources.csv</strong> says which date is right for a product and when to review that choice.</li>
+<li><strong>exceptions.csv</strong> records accepted risk.</li>
+<li><strong>tracking.csv</strong> links a finding's item ID to a change reference and a problem reference.</li>
+<li><strong>support-records.csv</strong> lists the support records you hold. It is a lifecycle and renewal aid, not a licence or audit position. A record never changes a state, a list or <code>--fail-on</code>.</li>
+</ul>
+
+<h2 id="quarterly">Quarterly review</h2>
+<p>The process is in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/sop.md">docs/sop.md</a> and <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/checklist.md">docs/checklist.md</a>. The crosswalk to standards is explained in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/themes.md">docs/themes.md</a>.</p>
+
+<h2 id="wrong">How it can be wrong</h2>
+<ul>
+<li>Coverage is partial.</li>
+<li>Names must match strictly, so a name with extra words often lands in "couldn't match".</li>
+<li>KEV matches vendor and product only, never version.</li>
+<li>The data is a snapshot and can be out of date.</li>
+</ul>
+<p>Dates come from endoflife.date unless a golden source overrides them. Report a wrong date to endoflife.date, not here. More in <a href="privacy.html#limits">How it can be wrong</a>.</p>
+<ul class="links"><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/examples/sample-report.md">Read the sample report</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/glossary.md">Open the glossary</a></li><li><a href="start.html">Back to the start page</a></li></ul>
+
+</main>
+<footer class="site-footer"><div class="wrap">
+<nav aria-label="Explainers"><ul><li><a href="kev.html">What is KEV?</a></li><li><a href="sbom.html">What is an SBOM?</a></li><li><a href="data-updates.html">How often is the data updated?</a></li></ul></nav>
+<nav aria-label="Project links"><ul><li><a href="https://github.com/evemcgivern/software-lifecycle/tree/main/docs">Docs on GitHub</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">Report a security problem</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md">Contributing</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/LICENSE">Licence: MIT</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/THIRD-PARTY.md">Third-party material</a></li></ul></nav>
+<p>Runs locally with no network by default; not independently assessed.</p>
+<p>Experiment, review date 2027-01-31. Maintained as time allows.</p>
+</div></footer>
+</body>
+</html>

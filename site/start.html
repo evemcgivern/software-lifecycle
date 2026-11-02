@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Is this for you, and how to start | software-lifecycle</title>
+<meta name="description" content="Check whether software-lifecycle fits your inventory export, what the input file needs, and three ways to run it. No upload box; it runs locally.">
+<link rel="canonical" href="https://evemcgivern.github.io/software-lifecycle/start.html">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="software-lifecycle">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Is this for you, and how to start | software-lifecycle">
+<meta property="og:description" content="Check whether software-lifecycle fits your inventory export, what the input file needs, and three ways to run it. No upload box; it runs locally.">
+<meta property="og:url" content="https://evemcgivern.github.io/software-lifecycle/start.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Is this for you, and how to start | software-lifecycle">
+<meta name="twitter:description" content="Check whether software-lifecycle fits your inventory export, what the input file needs, and three ways to run it. No upload box; it runs locally.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://evemcgivern.github.io/software-lifecycle/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Start",
+      "item": "https://evemcgivern.github.io/software-lifecycle/start.html"
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="index.html">software-lifecycle</a>
+<nav class="site-nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="start.html" aria-current="page">Start</a></li><li><a href="reports.html">Reports</a></li><li><a href="privacy.html">Privacy and limits</a></li><li><a href="data-updates.html">Data updates</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle">GitHub</a></li></ul></nav>
+</div></header>
+<div class="status"><div class="wrap">Experiment. Maintained as time allows. Not independently assessed. <a href="privacy.html#status">What this status means</a></div></div>
+<main id="main" class="wrap" tabindex="-1">
+<h1>Is this for you, and how to start</h1>
+<h2 id="fit">Does it fit?</h2>
+<ul>
+<li>Teams that have an inventory export but no commercial software catalog.</li>
+<li>Security and platform teams that use <code>--fail-on</code> as an offline gate.</li>
+<li>One-off reviews of an estate.</li>
+</ul>
+<p>When not to use it: if you already run Flexera, ServiceNow or Rapid7, you likely have a wider catalog. This tool covers only the products endoflife.date lists. See <a href="index.html#not-for-everyone">what it is not</a>.</p>
+
+<aside class="note" aria-label="Confidentiality"><span class="label">Real inventories are confidential</span>
+<p>Do not paste inventory rows, owner names or reports into a public issue. Names only. This site has no upload or paste box. Read <a href="privacy.html">Privacy, security and limits</a> before you run anything.</p></aside>
+
+<h2 id="what-you-need">What you need</h2>
+<ul>
+<li>A CSV with a header row. Two columns are required: <code>name</code> and <code>version</code>.</li>
+<li>Optional columns: publisher, owner, count, export_eol and parent. The heading export_support is accepted but not used in this version.</li>
+<li>Export dates must be ISO dates (<code>2026-01-15</code>, optionally with a time).</li>
+<li>The tool matches headings after ignoring case, punctuation and spacing, and it never guesses.</li>
+<li>Python 3.9 or newer. There is nothing to install.</li>
+</ul>
+<p>The full heading table is in the <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/README.md#your-input-file">README</a>. A blank layout is in <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/templates/inventory-template.csv">templates/inventory-template.csv</a>.</p>
+
+<h2 id="pick">Pick how to run it</h2>
+<ul class="cards">
+<li><h3>In a terminal</h3><p>Run it yourself.</p><p><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/quick-start.md">Open the quick start on GitHub</a></p></li>
+<li><h3>With an AI assistant</h3><p>Counts-only. The assistant must never read the report.</p><p><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/assistant-setup.md">Assistant setup</a></p></li>
+<li><h3>Desktop chat app server</h3><p>Optional, advanced. Tested once on one Mac, the rest Unverified. Use the full path to Python.</p><p><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/mcp-setup.md">MCP setup</a></p></li>
+</ul>
+
+<h2 id="preflight">Before your first run</h2>
+<p>Run <code>preflight</code> on a new export. It says which columns it found and what to fix, without printing any row. On Windows, use <code>py</code> for <code>python3</code>.</p>
+<figure class="code code--oneline"><figcaption>Preflight check</figcaption><pre tabindex="0" role="region" aria-label="Preflight check"><code>python3 software_lifecycle.py preflight YOUR-INVENTORY.csv</code></pre></figure>
+
+<h2 id="demo">Try the demo first</h2>
+<p>The demo inventory is made up and runs against synthetic data, so the output never changes with the date. Run it from the repo root.</p>
+<figure class="code"><figcaption>Demo run</figcaption><pre tabindex="0" role="region" aria-label="Demo run"><code>python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo</code></pre></figure>
+<p>If you run the demo inventory against the bundled data, every item lists as "couldn't match", because the demo names are made up. A sample of the output is at <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/examples/sample-report.md">examples/sample-report.md</a>.</p>
+
+<h2 id="platforms">Exporting from your platform</h2>
+<p>For Flexera, ServiceNow and Rapid7, see the <a href="https://github.com/evemcgivern/software-lifecycle/blob/main/docs/platform-guide.md">platform guide</a>. All three profiles are Unverified: no one has run them on a real export yet.</p>
+
+<h2 id="unmatched">Product not matched?</h2>
+<p>Open the <a href="https://github.com/evemcgivern/software-lifecycle/issues/new?template=unmatched-product.yml">Product the tool could not match</a> issue form on GitHub. Give the public product name, the publisher and the version format. Names only.</p>
+
+<h2 id="terms">Terms in plain language</h2>
+<p>Open a term to read it. KEV and SBOM have their own pages: <a href="kev.html">What is KEV?</a> and <a href="sbom.html">What is an SBOM?</a></p>
+<details><summary>What is end of life?</summary>
+<p>End of life (EOL) is the date after which a vendor or project stops publishing fixes for a version. Software past that date gets no more security updates from its maker. Some vendors sell extended support beyond it. A support record you hold for that is shown beside the vendor's dates but never changes a state, a list or <code>--fail-on</code>.</p></details>
+<details><summary>What is a cycle?</summary>
+<p>A cycle is one release line of a product that has its own end-of-life date, for example Python 3.12 or Ubuntu 22.04. The tool matches a name and version to a product and a cycle. If it cannot decide on a cycle, it claims no date and the item lands in "couldn't match".</p></details>
+<details><summary>What is a CVE?</summary>
+<p>A CVE is a public ID for one specific software flaw, such as CVE-2021-44228. KEV entries are CVEs. This tool does not look up CVEs or score their severity. It is not a scanner.</p></details>
+<details><summary>What is endoflife.date?</summary>
+<p>endoflife.date is a public website, with MIT-licensed product files, that lists end-of-life dates by product and cycle. The tool's dates come from it unless a golden-sources file overrides them. See <a href="data-updates.html">How often is the data updated?</a></p></details>
+<details><summary>What is an item ID?</summary>
+<p>An item ID is a 12-character hash of publisher, name and version. It keeps names out of counts and findings, but it does not hide an item from someone who can guess it. Treat item IDs with the same care as the inventory. See <a href="privacy.html#item-ids">item IDs</a>.</p></details>
+<details><summary>What is counts-only mode?</summary>
+<p><code>--counts-only</code> makes the tool print only counts, item IDs, the checked-on date and the <code>kev_current</code> flag. The full report goes to a file. It is meant for running the tool through an AI assistant. The assistant can still read that file, so tell it not to. See <a href="privacy.html#confidential">Privacy</a>.</p></details>
+
+<p>After a run, read <a href="reports.html">How to read a report</a>. For data age, see <a href="data-updates.html">How often is the data updated?</a> For the KEV flag, see <a href="kev.html">What is KEV?</a></p>
+
+</main>
+<footer class="site-footer"><div class="wrap">
+<nav aria-label="Explainers"><ul><li><a href="kev.html">What is KEV?</a></li><li><a href="sbom.html">What is an SBOM?</a></li><li><a href="data-updates.html">How often is the data updated?</a></li></ul></nav>
+<nav aria-label="Project links"><ul><li><a href="https://github.com/evemcgivern/software-lifecycle/tree/main/docs">Docs on GitHub</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/SECURITY.md">Report a security problem</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/CONTRIBUTING.md">Contributing</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/LICENSE">Licence: MIT</a></li><li><a href="https://github.com/evemcgivern/software-lifecycle/blob/main/THIRD-PARTY.md">Third-party material</a></li></ul></nav>
+<p>Runs locally with no network by default; not independently assessed.</p>
+<p>Experiment, review date 2027-01-31. Maintained as time allows.</p>
+</div></footer>
+</body>
+</html>
