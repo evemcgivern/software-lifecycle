@@ -1,24 +1,27 @@
 # Usage
 
 There are three commands: `check`, `preflight` and `verify-data`. Run them
-from the repo root with `python3 software_lifecycle.py`. Python 3.9 or newer.
+from the repo root with `python3 software_lifecycle.py`. You need Python 3.9
+or newer.
 
 `swlc_mcp.py` is a separate, optional entry point, not a command of
-`software_lifecycle.py`. It is a small server that a desktop chat app
-starts. It offers two tools, `preflight` and `check_counts`, and returns
-counts only: no item IDs, names or column titles. See
-[mcp-setup.md](mcp-setup.md).
+`software_lifecycle.py`. A desktop chat app starts it as a small server.
+It offers two tools, `preflight` and `check_counts`, and returns counts
+only: no item IDs, names or column titles. See [mcp-setup.md](mcp-setup.md).
 
 ## check
 
     python3 software_lifecycle.py check INVENTORY [flags]
 
 `INVENTORY` is a CSV export with a header row. The layout is in the
-[README](../README.md). The KEV overlay is the extra flag that marks items
-whose vendor and product appear in CISA's list of known exploited
-vulnerabilities. Without `--out` the Markdown report prints to the
-screen. With `--out DIR` the tool writes `report.json`, `report.md` and
-`report.csv` into `DIR` and prints one line naming them.
+[README](../README.md).
+
+Without `--out`, the Markdown report prints to the screen. With
+`--out DIR`, the tool writes `report.json`, `report.md` and `report.csv`
+into `DIR` and prints one line naming them.
+
+The KEV overlay is the extra flag that marks items whose vendor and product
+appear in CISA's list of known exploited vulnerabilities.
 
 | Flag | What it does | Example |
 |---|---|---|
@@ -40,11 +43,10 @@ screen. With `--out DIR` the tool writes `report.json`, `report.md` and
 | `-h`, `--help` | Show help. | `--help` |
 
 The override files (`--golden`, `--exceptions`, `--tracking`,
-`--support-records`) are optional.
-A file with only its header row is a valid empty file. Their columns are in
-[report-schema.md](report-schema.md).
+`--support-records`) are optional. A file with only its header row is a
+valid empty file. Their columns are in [report-schema.md](report-schema.md).
 
-Full example, the demo:
+Here is the full demo command:
 
     python3 software_lifecycle.py check examples/software-inventory.csv --data tests/fixtures/data --as-of 2026-10-24 --golden examples/golden-sources.csv --exceptions examples/exceptions.csv --tracking examples/tracking.csv --support-records examples/support-records.csv --out ../swlc-demo
 
@@ -52,8 +54,8 @@ Full example, the demo:
 
     python3 software_lifecycle.py preflight INVENTORY [flags]
 
-Run it once on a new export, before `check`. It reads the file offline,
-writes nothing, and prints:
+Run it once on a new export, before `check`. It reads the file offline and
+writes nothing. It prints:
 
 - whether the file is readable, its encoding, a byte order mark and its
   line endings (`CRLF`, `LF`, `CR`, `mixed`, or `unknown` for UTF-16 and
@@ -61,7 +63,7 @@ writes nothing, and prints:
 - the number of data rows and the file size, beside the row and size
   limits;
 - which profile fits best (`flexera`, `servicenow-mbs`, `rapid7` or
-  `generic`) and how it decided: a profile fits when its own headings for
+  `generic`) and how it decided. A profile fits when its own headings for
   name, publisher and version all match, and the fit that matches the most
   fields wins;
 - for name, publisher, version, owner, count, export end-of-life date
@@ -75,19 +77,23 @@ writes nothing, and prints:
   such as day-first dates. `check` cannot read them and lists those items
   under "Dates disagree";
 - a "What to fix" list in fixed wording, and the `check` command to run
-  next. The command starts with `python3`; a line under it tells Windows
-  users to type `py` instead. A last line gives the same command with
-  `--counts-only` added, for an AI assistant running it for you: it prints
-  counts only.
+  next. The command starts with `python3`, and a line under it tells
+  Windows users to type `py` instead. A last line gives the same command
+  with `--counts-only` added, for an AI assistant running it for you: it
+  prints counts only.
 
 It prints your column titles and numbers only, never a cell value or a
-name from a row, so its output is safe to show an AI agent. A missing
-name or version column, or a file with no data rows, exits 3. A missing
-publisher, owner, count, end-of-life date or parent column is listed in
-"What to fix" and exits 0. With no owner column, `check` lists every item
-under "Ownerless". Blank owner cells and unreadable end-of-life dates are
-listed too.
-An unreadable file exits 3 with the same error text as `check`.
+name from a row, so its output is safe to show an AI agent.
+
+Exit codes:
+
+- A missing name or version column, or a file with no data rows, exits 3.
+- A missing publisher, owner, count, end-of-life date or parent column is
+  listed in "What to fix" and exits 0.
+- An unreadable file exits 3 with the same error text as `check`.
+
+With no owner column, `check` lists every item under "Ownerless". Blank
+owner cells and unreadable end-of-life dates are listed too.
 
 | Flag | What it does | Example |
 |---|---|---|
@@ -109,7 +115,7 @@ It ends like this:
 
     python3 software_lifecycle.py verify-data [--data DIR]
 
-Checks the data directory against its SHA-256 manifest and checks the
+This checks the data directory against its SHA-256 manifest and checks the
 file formats. It does not check dates for staleness. It does not verify
 attestations; the tool never does that offline. Use `gh attestation
 verify` online (see the README).
@@ -132,116 +138,146 @@ On success it prints "Data check passed" with the release and file count.
 
 ## How names are matched
 
-Each item's name is matched in two steps. `match_source` in the report says
-which one found the product.
+The tool matches each item's name in two steps. `match_source` in the
+report says which step found the product.
 
-1. **Curated aliases** (`aliases.json`). An alias that hits the name decides
-   the item, even when it then finds no cycle or its strict tail-word rule
-   rejects the name. A curated alias matches by name regardless of
-   publisher, unless it has a `publisher` list: then it applies only when
-   the row's publisher holds one of those phrases as whole words (the
-   `node.js` alias needs the Node.js Foundation or the OpenJS Foundation,
-   the `ubuntu` aliases need Canonical), and otherwise it does not hit at
-   all. When an alias reads the version from the name, the name carries no
-   version and the column is a calendar version such as `2023.22.1` while
-   the product's cycles are not years (the Python extension for VS Code
-   against Python 3.x), the row is another product: no match. When an
-   alias reads the version from the name and the version column is not
-   empty, the column is checked:
-   - an alias without a `build_map`: the name's version and the column must
-     pick the same cycle (or, when either picks none, be equal on their
-     shared leading parts);
-   - an alias with a `build_map` (names that carry a year, such as Windows
-     Server 2019): the column is checked only when its leading parts are a
-     key of the alias's `column_map` (builds to the cycles they can be, for
-     example `10.0.17763` is 2019 or 1809), a key of the `build_map`, or a
-     cycle label. Then the year in the name must be one of the cycles the
-     column can be. A column that is none of these, such as a Windows
-     Server 2012 build, which the `column_map` does not list, is not
-     checked.
+1. **Curated aliases** (`aliases.json`).
+2. **Product titles** (`products.json`), only when no alias hits.
 
-   If the check fails, the item is not decided (`NO_CYCLE`, product known).
-2. **Product titles** (`products.json`), only when no alias hits. The name
-   must equal a product's title after normalizing. Before comparing, the
-   tool drops architecture and locale groups such as `(x64 en-US)` or
-   `[x64]` (a locale is any ISO language-region pair, such as `es-AR`; a word
-   like `go-to` is not one), drops a leading vendor word when the publisher carries that
-   vendor (`Mozilla Firefox` with publisher Mozilla), and splits a trailing
-   version number off the name (`Foo 2.1`). The split version may carry
-   suffix parts after `.`, `-` or `+` that start with a digit (a build or
-   distro number: `3.62.0-01`, `20.0.2+9`, `4.0r9`), one of a few named
-   build tags (`hf`, `eks`, `gke`, an installer build such as `I001`, a
-   dated build such as `.v20211001`), or a glued `patchN`
-   (`Eclipse Jetty 9.3.30.v20211001`, `Amazon EKS 1.27-eks-53`,
-   `7.7.2-HF`); the rest of the name must still equal a title exactly. Any
-   other word after the version (`MySQL 8.0-router`, `nginx 1.24.0-plus`),
-   a pre-release or milestone suffix (`2.1-beta`, `2.0-rc1`, `1.0rc1`,
-   `11.0.0-M1`, `3.0.0.CR1`, `8.0-milestone-1`, `-ea`) and an update number
-   (`8u392`) stop the split, so such a name is not matched. A whole title wins over a split one. The version column is used; when it is empty, the version from the
-   name is used; when both exist and pick different cycles, the item is not
-   decided. A name of more than 64 words is never matched by title.
-   - A one-word title matches only when the publisher names the product's
-     vendor as whole words, when the product is on the one-word allowlist
-     in `curation.json`, or by the version-in-name rule below. `The Apache Software Foundation`
-     confirms the vendor `apache`; `ApacheFriends` does not. A vendor
-     written as one word, such as `redhat`, is not confirmed by
-     `Red Hat, Inc.`.
-   - When the vendor word is the product's own title (vendor `prometheus`
-     for Prometheus), the publisher must be that word alone, apart from
-     words such as Inc, Ltd, GmbH, Foundation, Project, Team or The. So
-     `Prometheus Group Inc.` does not confirm Prometheus, and `Grafana Labs`
-     confirms Grafana only through its curated publisher alias. Known limit: a different
-     product from a same-name vendor still confirms unless an exclusion
-     stops it (the Moodle app from Moodle Pty Ltd is excluded).
-   - Version-in-name rule: a row with no publisher whose name is a
-     one-word title followed by a version (`Kibana 8.15.3`)
-     matches when the version decides exactly one cycle (and agrees with
-     the version column when both are given) and the title is on a
-     hand-reviewed list of coined titles (`VERSION_NAME_TITLES` in
-     `swlc/catalog_match.py`). Titles that are ordinary words, common names
-     or a name another product shares (Go, Flux, Salt, Puppet, Teleport,
-     Quasar, Rocket.Chat), and titles a same-named package or editor
-     extension shares, are not on the list, so `Go 1.21.5` with no
-     publisher stays unmatched. A Kubernetes version with a `-gke.` or
-     `-eks-` build is the managed service, not upstream Kubernetes, so it is
-     not matched to `kubernetes`. A row with a publisher still needs the
-     vendor check. A bare one-word name with no version is not touched,
-     and a product named by an exclusion never gets this rule. A product
-     added to the catalog later gets the rule only after it is reviewed
-     and added to the list.
-   - Products whose catalog category is `device`, and products on
-     `generated_off`, are never matched by title.
-   - An exclusion stops one product for a name: it applies when its name
-     equals any form of the row's name (whole, without architecture groups,
-     without the vendor word, or with the version split off) and, when it
-     gives one, its publisher word is in the publisher.
-   - No slugs, fragments or fuzzy scores are used.
-
-When a version has more parts than the chosen cycle and that cycle has finer
-cycles in the same product (4.6 has 4.6.1 and 4.6.2), the next part is
-checked. If it names one of the finer cycles, that cycle is used. If it
-names none and is shaped like a build (not all digits, more than three
-digits, or a zero-padded number such as `01`), the item is not decided
-(`NO_CYCLE`). So `.NET Framework` with the registry build `4.6.01590` gets
-no cycle rather than the wrong one. A plain number of three digits or fewer
-with no leading zero is read as a patch of the chosen cycle: Log4j `2.17.1`
-is cycle 2 and Jenkins `2.587` is cycle 2. A cycle with no finer cycles is
-unchanged (`3.12.1150.0` is Python 3.12).
-
-A name that fits two products, by alias, by title or one of each, is
+If a name fits two products, by alias, by title or one of each, it is
 `AMBIGUOUS` and stays unmatched. A data folder without `products.json`
 (format 1) matches by alias only.
 
+### Step 1: curated aliases
+
+An alias that hits the name decides the item. That holds even when the alias
+then finds no cycle or its strict tail-word rule rejects the name.
+
+An alias matches by name regardless of publisher, unless it has a
+`publisher` list. Then it applies only when the row's publisher holds one of
+those phrases as whole words, and otherwise it does not hit at all. The
+`node.js` alias needs the Node.js Foundation or the OpenJS Foundation. The
+`ubuntu` aliases need Canonical.
+
+When an alias reads the version from the name, the tool also checks the
+version column:
+
+- If the name carries no version, the column is a calendar version such as
+  `2023.22.1`, and the product's cycles are not years, the row is another
+  product: no match. The Python extension for VS Code against Python 3.x is
+  the example.
+- If the version column is not empty, the check depends on the alias:
+  - An alias without a `build_map`: the name's version and the column must
+    pick the same cycle (or, when either picks none, be equal on their
+    shared leading parts).
+  - An alias with a `build_map` (names that carry a year, such as Windows
+    Server 2019): the column is checked only when its leading parts are a
+    key of the alias's `column_map`, a key of the `build_map`, or a cycle
+    label. The `column_map` maps builds to the cycles they can be; for
+    example `10.0.17763` is 2019 or 1809. Then the year in the name must be
+    one of the cycles the column can be. A column that is none of these is
+    not checked. A Windows Server 2012 build is one, because the
+    `column_map` does not list it.
+
+If the check fails, the item is not decided (`NO_CYCLE`, product known).
+
+### Step 2: product titles
+
+The name must equal a product's title after normalizing. Before comparing,
+the tool does three things:
+
+- It drops architecture and locale groups such as `(x64 en-US)` or
+  `[x64]`. A locale is any ISO language-region pair, such as `es-AR`; a word
+  like `go-to` is not one.
+- It drops a leading vendor word when the publisher carries that vendor
+  (`Mozilla Firefox` with publisher Mozilla).
+- It splits a trailing version number off the name (`Foo 2.1`).
+
+The split version may carry suffix parts after `.`, `-` or `+` that start
+with a digit (a build or distro number: `3.62.0-01`, `20.0.2+9`, `4.0r9`).
+It may also carry one of a few named build tags: `hf`, `eks`, `gke`, an
+installer build such as `I001`, a dated build such as `.v20211001`, or a
+glued `patchN`. Examples are `Eclipse Jetty 9.3.30.v20211001`,
+`Amazon EKS 1.27-eks-53` and `7.7.2-HF`. The rest of the name must still
+equal a title exactly.
+
+These stop the split, so the name is not matched:
+
+- any other word after the version (`MySQL 8.0-router`, `nginx 1.24.0-plus`);
+- a pre-release or milestone suffix (`2.1-beta`, `2.0-rc1`, `1.0rc1`,
+  `11.0.0-M1`, `3.0.0.CR1`, `8.0-milestone-1`, `-ea`);
+- an update number (`8u392`).
+
+A whole title wins over a split one. The tool uses the version column; when
+it is empty, it uses the version from the name. When both exist and pick
+different cycles, the item is not decided. A name of more than 64 words is
+never matched by title.
+
+Rules for title matches:
+
+- **One-word titles.** A one-word title matches only when the publisher
+  names the product's vendor as whole words, when the product is on the
+  one-word allowlist in `curation.json`, or by the version-in-name rule
+  below. `The Apache Software Foundation` confirms the vendor `apache`;
+  `ApacheFriends` does not. A vendor written as one word, such as `redhat`,
+  is not confirmed by `Red Hat, Inc.`.
+- **Vendor word is the product's own title.** An example is vendor
+  `prometheus` for Prometheus. The publisher must then be that word alone,
+  apart from words such as Inc, Ltd, GmbH, Foundation, Project, Team or
+  The. So `Prometheus Group Inc.` does not confirm Prometheus, and `Grafana
+  Labs` confirms Grafana only through its curated publisher alias. Known
+  limit: a different product from a same-name vendor still confirms unless
+  an exclusion stops it (the Moodle app from Moodle Pty Ltd is excluded).
+- **Version-in-name rule.** A row with no publisher whose name is a
+  one-word title followed by a version (`Kibana 8.15.3`) matches when two
+  things hold. The version decides exactly one cycle (and agrees with the
+  version column when both are given). And the title is on a hand-reviewed
+  list of coined titles (`VERSION_NAME_TITLES` in `swlc/catalog_match.py`).
+  - Titles that are ordinary words, common names or a name another product
+    shares (Go, Flux, Salt, Puppet, Teleport, Quasar, Rocket.Chat) are not
+    on the list. Neither are titles that a same-named package or editor
+    extension shares. So `Go 1.21.5` with no publisher stays unmatched.
+  - A Kubernetes version with a `-gke.` or `-eks-` build is the managed
+    service, not upstream Kubernetes, so it is not matched to `kubernetes`.
+  - A row with a publisher still needs the vendor check.
+  - A bare one-word name with no version is not touched.
+  - A product named by an exclusion never gets this rule.
+  - A product added to the catalog later gets the rule only after it is
+    reviewed and added to the list.
+- **Never matched by title.** Products whose catalog category is `device`,
+  and products on `generated_off`.
+- **Exclusions.** An exclusion stops one product for a name. It applies when
+  its name equals any form of the row's name (whole, without architecture
+  groups, without the vendor word, or with the version split off) and, when
+  it gives one, its publisher word is in the publisher.
+- **No slugs, fragments or fuzzy scores are used.**
+
+### Picking the cycle
+
+When a version has more parts than the chosen cycle and that cycle has finer
+cycles in the same product (4.6 has 4.6.1 and 4.6.2), the tool checks the
+next part.
+
+- If it names one of the finer cycles, the tool uses that cycle.
+- If it names none and is shaped like a build (not all digits, more than
+  three digits, or a zero-padded number such as `01`), the item is not
+  decided (`NO_CYCLE`). So `.NET Framework` with the registry build
+  `4.6.01590` gets no cycle rather than the wrong one.
+- A plain number of three digits or fewer with no leading zero is read as a
+  patch of the chosen cycle. Log4j `2.17.1` is cycle 2 and Jenkins `2.587`
+  is cycle 2.
+- A cycle with no finer cycles is unchanged (`3.12.1150.0` is Python 3.12).
+
 ## Known limits of matching
 
-These are known and not fixed. The tool leaves the row unmatched or says
-so; it does not hide them.
+These limits are known and not fixed. The tool leaves the row unmatched or
+says so; it does not hide them.
 
 - A curated alias matches by name, whatever the publisher, unless it has a
-  `publisher` list. Only some aliases have one (`node.js`, `ubuntu`,
-  `debian gnu/linux`, the `macos` release names, and the PowerShell 7,
-  Red Hat Enterprise Linux, Rocky Linux, AlmaLinux and Oracle Linux
-  names). Rows with a blank publisher are not matched by those aliases.
+  `publisher` list. Only some aliases have one: `node.js`, `ubuntu`,
+  `debian gnu/linux`, the `macos` release names, and the PowerShell 7, Red
+  Hat Enterprise Linux, Rocky Linux, AlmaLinux and Oracle Linux names. Rows
+  with a blank publisher are not matched by those aliases.
 - Two products with the same name from the same vendor cannot be told
   apart. The Moodle mobile app and the Moodle LMS are an example: both are
   left unmatched, by an exclusion.
@@ -280,7 +316,7 @@ so; it does not hide them.
   - YouTrack: a JetBrains plugin named YouTrack (year versions).
 
   Chrome and other browser extensions were not checked. The review was
-  made once, on 2026-10-26: a package or extension published later under
+  made once, on 2026-10-26. A package or extension published later under
   a listed title is not caught and would be read as the product. Issue
   #12 added "Names to review" (below) for rows refused this way.
 - A version that ends in a bare letter splits with the letter
@@ -293,39 +329,43 @@ so; it does not hide them.
 - Titles on the one-word allowlist (GStreamer, Liquibase and others) match
   with any publisher or none, so a same-named package such as the npm
   `liquibase` wrapper is read as the product.
-- Microsoft and operating system names left unmatched on purpose (issues
-  #17 and #20), because no second public source for the name was found
-  or the name cannot pick one product or cycle: the bare `.NET Runtime`
-  and `.NET SDK` with no publisher; PowerShell 7 names other than
-  `PowerShell 7-x64` (`PowerShell 7.4.6.0-x64`, the x86, arm64 and
-  preview names, and the bare `PowerShell`, which is also the name of
-  the VS Code extension); `PowerShell 7-x64` with a 5.1, 6.x or 7.7
-  version gets no cycle; the `release` file forms (`Red Hat Enterprise
-  Linux release 9.4 (Plow)`, `Oracle Linux Server release 8.9`); Red Hat
-  Enterprise Linux 10 and Rocky Linux 10 release names, Rocky Linux 9.8,
-  and AlmaLinux betas. A release name with a codename matches only as an
-  exact name whose number and codename are one pair on the vendor's list
-  (`Rocky Linux 9.4 (Blue Onyx)`), and the version column must be that
-  release.
+- Microsoft and operating system names are left unmatched on purpose
+  (issues #17 and #20). Either no second public source for the name was
+  found, or the name cannot pick one product or cycle. The names are:
+  - the bare `.NET Runtime` and `.NET SDK` with no publisher;
+  - PowerShell 7 names other than `PowerShell 7-x64`
+    (`PowerShell 7.4.6.0-x64`, the x86, arm64 and preview names, and the
+    bare `PowerShell`, which is also the name of the VS Code extension);
+  - `PowerShell 7-x64` with a 5.1, 6.x or 7.7 version, which gets no cycle;
+  - the `release` file forms (`Red Hat Enterprise Linux release 9.4
+    (Plow)`, `Oracle Linux Server release 8.9`);
+  - Red Hat Enterprise Linux 10 and Rocky Linux 10 release names, Rocky
+    Linux 9.8, and AlmaLinux betas.
+
+  A release name with a codename matches only as an exact name whose
+  number and codename are one pair on the vendor's list (`Rocky Linux 9.4
+  (Blue Onyx)`), and the version column must be that release.
 - Internet Explorer 11 gets the product with no cycle. `Internet
-  Explorer` and `Internet Explorer 11` match by title, and a version that
+  Explorer` and `Internet Explorer 11` match by title. A version that
   starts with 11, in the column or in the name (an empty version with
   `Internet Explorer 11`), gets `internet-explorer` with no cycle, date or
   state, and the review code `shared_support_lines` under "Names to
-  review". IE 11 follows the support of the Windows it runs on: the
-  desktop app is past end of life on some Windows 10 versions
-  (2022-06-15 per Microsoft; the catalog lists 2022-06-14), but still
-  supported on Windows Server, LTSB, LTSC and embedded editions, and
-  Windows builds are shared across editions (14393 is Windows 10 2016
-  LTSB and Server 2016, 17763 is 2019 LTSC and Server 2019, 9600 is
-  Windows 8.1 and Server 2012 R2). The row does not say which Windows it
-  runs on. A version that names its line (`11-ltsc`, `11-server`) keeps
-  that line's cycle and gets no code. Internet Explorer 9 and 10 keep
-  their cycles. Office "Home and Business" and "Home
-  and Student" names are unmatched too, and so is `Microsoft ASP.NET Core
-  8.0.1 - Shared Framework (x64)`.
+  review".
+
+  IE 11 follows the support of the Windows it runs on. The desktop app is
+  past end of life on some Windows 10 versions (2022-06-15 per Microsoft;
+  the catalog lists 2022-06-14), but still supported on Windows Server,
+  LTSB, LTSC and embedded editions. Windows builds are shared across
+  editions: 14393 is Windows 10 2016 LTSB and Server 2016, 17763 is 2019
+  LTSC and Server 2019, 9600 is Windows 8.1 and Server 2012 R2. The row
+  does not say which Windows it runs on.
+
+  A version that names its line (`11-ltsc`, `11-server`) keeps that line's
+  cycle and gets no code. Internet Explorer 9 and 10 keep their cycles.
+  Office "Home and Business" and "Home and Student" names are unmatched
+  too, and so is `Microsoft ASP.NET Core 8.0.1 - Shared Framework (x64)`.
 - `Microsoft .NET SDK 8.0.101 (x64)` and `Microsoft Windows Desktop
-  Runtime - 6.0.25 (x64)` stay unmatched: the benchmark expects `dotnet`
+  Runtime - 6.0.25 (x64)` stay unmatched. The benchmark expects `dotnet`
   for one row of each form and `NONE` for others of the same form, and
   that conflict is the maintainer's to settle.
 - A codename in parentheses (`Debian GNU/Linux 12 (bookworm)`) is not an
@@ -336,12 +376,13 @@ so; it does not hide them.
 - `Microsoft .NET Core SDK 2.1.x` names get `dotnet` with no cycle: SDK
   2.1.4, 2.1.100 to 2.1.202 and others in that line ship the .NET Core 2.0
   runtime, so the SDK number does not pick the runtime cycle.
-- A .NET release candidate or preview build (`Microsoft .NET Runtime -
-  10.0.0-rc.2.25502.107 (x64)`, `Microsoft .NET Runtime - 8.0.0-preview.7.23375.6
-  (x64)`, and the same for ASP.NET Core and the .NET Core SDK) matches the
-  cycle of its major version, although the cycle's dates are for the final
-  release. A Visual Studio preview build (`17.14.0-pre.1.0`) does the same.
-  The alias maps cannot reject a pre-release part.
+- A .NET release candidate or preview build matches the cycle of its major
+  version, although the cycle's dates are for the final release. Examples
+  are `Microsoft .NET Runtime - 10.0.0-rc.2.25502.107 (x64)` and
+  `Microsoft .NET Runtime - 8.0.0-preview.7.23375.6 (x64)`, and the same
+  for ASP.NET Core and the .NET Core SDK. A Visual Studio preview build
+  (`17.14.0-pre.1.0`) does the same. The alias maps cannot reject a
+  pre-release part.
 - `Microsoft .NET Framework Runtime <version>` reads the version from the
   name, so any such name takes the cycle its number falls in. A number that
   is not a cycle of its own (`4.8.2`) takes the parent cycle (`4.8`).
@@ -355,25 +396,28 @@ so; it does not hide them.
   gets the product with no cycle: only the SP1 build is mapped.
 - SQL Server 2008 R2 maps only the SP1, SP2 and SP3 builds. The RTM
   build (10.50.1600) gets the product with no cycle.
-- Exchange names with "Cumulative Update N" match the year in the name;
-  the update number is not checked against the build in the version
-  column, only the year is.
+- Exchange names with "Cumulative Update N" match the year in the name.
+  The tool does not check the update number against the build in the
+  version column, only the year.
 - Office names in a language other than en-us (`- fr-fr`) do not match
   the LTSC aliases.
 
 ## Names to review
 
-Some unmatched rows were refused on purpose: the name looks like a
-catalog product, but there is not enough evidence to match it to one
-support line. They are unmatched on purpose, not a finding. `report.md`
-lists them in a "Names to review" section, after "Couldn't match", with
-the name, version, publisher and a one-line reason. The section never
-shows a cycle, date or state for them, and shows a product only for
-`shared_support_lines`. They are still counted in "Couldn't
-match" and in `lists.unmatched`, they never feed `--fail-on`, and
-`--governable-only` never hides them (they are never parts). The item key
-is `ambiguity` and the count is `counts.ambiguous_review`; see
-`docs/report-schema.md`.
+Some unmatched rows were refused on purpose. The name looks like a catalog
+product, but there is not enough evidence to match it to one support line.
+They are unmatched on purpose, not a finding.
+
+`report.md` lists them in a "Names to review" section, after "Couldn't
+match", with the name, version, publisher and a one-line reason. The section
+never shows a cycle, date or state for them, and shows a product only for
+`shared_support_lines`.
+
+- They are still counted in "Couldn't match" and in `lists.unmatched`.
+- They never feed `--fail-on`.
+- `--governable-only` never hides them (they are never parts).
+- The item key is `ambiguity` and the count is `counts.ambiguous_review`;
+  see `docs/report-schema.md`.
 
 There are three reasons:
 
@@ -383,9 +427,10 @@ There are three reasons:
   empty version keeps the code.
 - `title_not_on_list`: the name is a one-word title and a version
   (`Caddy 2.7.6`, `Bun 1.1.0`), the publisher is empty, the version
-  fits one cycle, and the title is not on the version-in-name list (a
-  short title, an ordinary word, a title another product, package or
-  extension shares, or a product not yet reviewed).
+  fits one cycle, and the title is not on the version-in-name list. A title
+  is off the list when it is a short title, an ordinary word, a title
+  another product, package or extension shares, or a product not yet
+  reviewed.
 - `shared_support_lines`: the name matched a product, but its version
   starts with a prefix listed in the curated `review_versions`, because
   that version fits more than one support line. Today this is Internet
@@ -395,32 +440,45 @@ There are three reasons:
   date or state; the generic cycle `11` is never used.
 
 To settle a `shared_support_lines` row, check which Windows the item runs
-on and that support line's date with the vendor. To settle one of the
-other two, add a publisher that names the vendor, ask the maintainer
-for a curated alias, or record that it is a different product. The tool
-never promotes such a row to a match. For these two codes, a row with a
-publisher is not listed: a publisher that does not confirm the product is
-often a different product (an editor extension, a mobile app), and an
-alias for it would invite a wrong match. A row refused by an exclusion (Moodle,
-Mattermost, Nextcloud), a device or `generated_off` product, a version
-that is given but fits no cycle, and a name that hits no title are not
-listed here either.
+on and that support line's date with the vendor.
+
+To settle one of the other two, do one of these:
+
+- add a publisher that names the vendor;
+- ask the maintainer for a curated alias;
+- record that it is a different product.
+
+The tool never promotes such a row to a match.
+
+For `title_needs_publisher` and `title_not_on_list`, a row with a publisher
+is not listed. A publisher that does not confirm the product is often a
+different product (an editor extension, a mobile app), and an alias for it
+would invite a wrong match. These are not listed here either:
+
+- a row refused by an exclusion (Moodle, Mattermost, Nextcloud);
+- a device or `generated_off` product;
+- a version that is given but fits no cycle;
+- a name that hits no title.
 
 ## How KEV is checked
 
-KEV is checked only for matched items that are past end of life or end
-within the window. The check uses the alias table's vendor and product pair
-for the matched product. If the alias has no pair, or the product was
-matched by title, the tool compares the
-publisher and the full inventory name (version included) with KEV, exactly.
-`kev: false` therefore means "no match under those rules", not "known
-safe". The `windows-server` and Windows client aliases use the broad
-Microsoft and Windows pair, so every Windows entry in KEV matches them.
+The tool checks KEV only for matched items that are past end of life or end
+within the window.
+
+- If the alias for the matched product has a vendor and product pair, the
+  check uses that pair.
+- If the alias has no pair, or the product was matched by title, the tool
+  compares the publisher and the full inventory name (version included)
+  with KEV, exactly.
+
+So `kev: false` means "no match under those rules", not "known safe". The
+`windows-server` and Windows client aliases use the broad Microsoft and
+Windows pair, so every Windows entry in KEV matches them.
 
 ## The data folder
 
-A data folder holds these files. `data/manifest.json` lists every one with
-its SHA-256 and size, and the tool checks them on every load.
+A data folder holds the files below. `data/manifest.json` lists every one
+with its SHA-256 and size, and the tool checks them on every load.
 
 | File | Made by | Holds |
 |---|---|---|
@@ -434,21 +492,34 @@ its SHA-256 and size, and the tool checks them on every load.
 Never edit a generated file by hand. The weekly job regenerates
 `products.json` and `eol/*.json` from the same endoflife.date commit.
 
+### What `products.json` reads
+
 `products.json` reads only these upstream fields: `permalink` (the id),
-`title`, `category` and the `identifiers` list. From `identifiers` it keeps
-the vendor part of each `cpe` entry (both the `cpe:/a:vendor:product` and
-`cpe:2.3:a:vendor:product` forms) as `vendors`, and the owner part of each
-`purl` entry as `namespaces`, lower-cased and checked to hold only letters,
-digits, `_`, `.` and `-`. Five purl types give a namespace: `github` and
-`composer` (the first namespace segment), `npm` (the scope, without the
-`@`), `golang` (the owner, and only for modules on github.com) and `maven`
-(the whole group id). Every other purl type gives none: `deb`, `rpm`,
-`apk`, `alpm`, `docker`, `oci`, `brew`, `scoop`, `chocolatey`, `winget`,
-`nuget`, `pypi`, `gem`, `cargo`, `hex`, `generic` and `swid`, because their
-namespaces name a distribution, a tap or a repackager, not an owner. Other
-identifier kinds are skipped. A value with unexpected characters stops the
-refresh. The file holds no descriptions, slugs, alternate URLs, page text
-or dates.
+`title`, `category` and the `identifiers` list. It keeps two things from
+`identifiers`:
+
+- The vendor part of each `cpe` entry (both the `cpe:/a:vendor:product` and
+  `cpe:2.3:a:vendor:product` forms), as `vendors`.
+- The owner part of each `purl` entry, as `namespaces`, lower-cased and
+  checked to hold only letters, digits, `_`, `.` and `-`.
+
+Five purl types give a namespace:
+
+- `github` and `composer`: the first namespace segment.
+- `npm`: the scope, without the `@`.
+- `golang`: the owner, and only for modules on github.com.
+- `maven`: the whole group id.
+
+Every other purl type gives none: `deb`, `rpm`, `apk`, `alpm`, `docker`,
+`oci`, `brew`, `scoop`, `chocolatey`, `winget`, `nuget`, `pypi`, `gem`,
+`cargo`, `hex`, `generic` and `swid`. Their namespaces name a distribution,
+a tap or a repackager, not an owner.
+
+Other identifier kinds are skipped. A value with unexpected characters
+stops the refresh. The file holds no descriptions, slugs, alternate URLs,
+page text or dates.
+
+### What `curation.json` holds
 
 `curation.json` has the keys `format`, `publisher_aliases` (a product id to
 an object of `phrases`, a sorted list of lowercase vendor phrases, `reason`,
@@ -463,37 +534,46 @@ publisher)
 of version prefixes such as `21.3`, `reason` and `source`) and
 `review_versions` (a product id to an object of `prefixes`, a sorted list
 of version prefixes such as `11`, `code`, the review code
-`shared_support_lines`, `reason`, `source` and `gold`). Three more keys
-are optional and set what kind of item a row is: `classification_rows` (a
-sorted list of `name`, a normalized name, `publisher`, one lowercase word or
-empty, `class`, `reason`, `source` and `gold`), `classification_products` (a
-product id to an object of `class`, `reason` and `source`) and
-`bundle_parents` (a sorted list of `name_prefix`, lowercase leading words,
-`publisher`, one lowercase word that must appear in the publisher, `parent`,
-a product id, `reason`, `source` and `gold`). A `class` here is
-`governable`, `component` or `unknown`. The tool refuses a file
-with an unknown key, a wrong type, a duplicate or an unsorted list where
-sorting is promised.
+`shared_support_lines`, `reason`, `source` and `gold`).
+
+Three more keys are optional and set what kind of item a row is:
+
+- `classification_rows`: a sorted list of `name`, a normalized name,
+  `publisher`, one lowercase word or empty, `class`, `reason`, `source` and
+  `gold`.
+- `classification_products`: a product id to an object of `class`, `reason`
+  and `source`.
+- `bundle_parents`: a sorted list of `name_prefix`, lowercase leading words,
+  `publisher`, one lowercase word that must appear in the publisher,
+  `parent`, a product id, `reason`, `source` and `gold`.
+
+A `class` here is `governable`, `component` or `unknown`. The tool refuses
+a file with an unknown key, a wrong type, a duplicate or an unsorted list
+where sorting is promised.
 
 ### Data format
 
 `data_format` in the manifest is 2. A format 2 folder must list both
-`products.json` and `curation.json`; the tool loads both or stops with a
-data error that names the file. A format 1 folder, which has neither, still
-loads as before. The report then carries this warning and the product
-catalog is absent: "This data release has no product catalog; generated
-matching is off." A tool that does not know a data format stops with "data
-format is not supported by this tool" before it looks at any file name. In a
-format 2 folder every product in `products.json` must have an `eol/` file
-and the other way round, and `curation.json` may name only products in
-`products.json`; otherwise the load stops with a data error that names the
+`products.json` and `curation.json`. The tool loads both or stops with a
+data error that names the file.
+
+A format 1 folder, which has neither, still loads as before. The report then
+carries this warning and the product catalog is absent: "This data release
+has no product catalog; generated matching is off."
+
+A tool that does not know a data format stops with "data format is not
+supported by this tool" before it looks at any file name.
+
+In a format 2 folder, every product in `products.json` must have an `eol/`
+file and the other way round. `curation.json` may name only products in
+`products.json`. Otherwise the load stops with a data error that names the
 file and echoes no value.
 
 ## Extending the alias table
 
-Most products match by their endoflife.date title (see the README). Use
-an alias for a name the title does not cover. To add one, edit a copy of
-the data folder. Do not edit `data/` in place.
+Most products match by their endoflife.date title (see the README). Use an
+alias for a name the title does not cover. Edit a copy of the data folder.
+Do not edit `data/` in place.
 
 1. Copy the folder: `cp -R data ../my-data`.
 2. Add an entry to the `aliases` list in `../my-data/aliases.json`. This one
@@ -512,19 +592,25 @@ the data folder. Do not edit `data/` in place.
    normalizing in [report-schema.md](report-schema.md)). `match` is `exact`
    or `prefix`. `product` is the file name in `data/eol/` without `.json`.
    `version_from` is `version` (read the version column) or `name` (read
-   the version from the end of the name). Optional fields: `cycle` (a fixed
-   cycle label), `build_map`, `column_map` (for an alias that reads the
-   version from the name: version-column builds to the cycles they can be,
-   used only to check the name), `kev` (an object with `vendor` and
-   `product`), `note`, `edition_words`, `numbered_words` (words that must
-   be followed by one whole number of one to three digits with no leading
-   zero, for example `update` in "Cumulative Update 23"; the number is
-   allowed only right after such a word, and only one such word may
-   appear) and
-   `publisher` (a non-empty list of
-   lowercase publisher phrases; the alias then applies only when the row's
-   publisher holds one of them as whole words). `source` is a link to where you
+   the version from the end of the name). `source` is a link to where you
    confirmed the mapping.
+
+   Optional fields:
+   - `cycle`: a fixed cycle label.
+   - `build_map`.
+   - `column_map`: for an alias that reads the version from the name,
+     version-column builds to the cycles they can be, used only to check
+     the name.
+   - `kev`: an object with `vendor` and `product`.
+   - `note`.
+   - `edition_words`.
+   - `numbered_words`: words that must be followed by one whole number of
+     one to three digits with no leading zero, for example `update` in
+     "Cumulative Update 23". The number is allowed only right after such a
+     word, and only one such word may appear.
+   - `publisher`: a non-empty list of lowercase publisher phrases. The
+     alias then applies only when the row's publisher holds one of them as
+     whole words.
 3. Rebuild the manifest. Copy the dates, catalog version and upstream commit
    from `data/manifest.json` into the placeholders:
 
@@ -534,14 +620,14 @@ the data folder. Do not edit `data/` in place.
 5. Run with it: `python3 software_lifecycle.py check INVENTORY --data ../my-data --out ../swlc-out`.
 
 Golden sources do not apply to unmatched items. They do not apply to an
-item with the review code `shared_support_lines` either, because it has
-no cycle and its Windows is not known; when a golden-source row names
-such an item's product, the report adds the warning "N item(s) have a
-golden-source row that was not applied: no cycle, see Names to review."
-Add the alias first, and
-then a golden source if you need one. If you want the bundled table to
-cover a product, open the "Product the tool could not match" issue form
-with names only.
+item with the review code `shared_support_lines` either, because it has no
+cycle and its Windows is not known. When a golden-source row names such an
+item's product, the report adds the warning "N item(s) have a golden-source
+row that was not applied: no cycle, see Names to review."
+
+So add the alias first, and then a golden source if you need one. If you
+want the bundled table to cover a product, open the "Product the tool could
+not match" issue form with names only.
 
 ## Extending the curation file
 
@@ -550,32 +636,32 @@ Edit it in a copy of the data folder, like the alias table, and rebuild the
 manifest (steps 3 to 5 above). The tool refuses a file that breaks the
 rules in "The data folder".
 
-- A publisher alias adds vendor names for one product, so a one-word or
-  short title can be confirmed by the row's publisher. Give `phrases`
+- **Publisher alias.** It adds vendor names for one product, so a one-word
+  or short title can be confirmed by the row's publisher. Give `phrases`
   (lowercase), a `reason`, an https `source` and, for a new entry, the
   `gold` row (`name|publisher|version`) it protects.
-- A one-word allowlist entry lets a one-word title match with no vendor.
-  Give the `product`, a `reason`, a `source` and a `gold` row
+- **One-word allowlist entry.** It lets a one-word title match with no
+  vendor. Give the `product`, a `reason`, a `source` and a `gold` row
   (`name|publisher|version`) that shows it is right.
-- An exclusion stops one product for one name, optionally for one
+- **Exclusion.** It stops one product for one name, optionally for one
   publisher word. Give the `product`, `name`, `publisher`, `reason` and a
   `gold` row.
-- `generated_off` lists products that never match by title.
-- `no_cycle_versions` names version prefixes from an older numbering that
-  overlaps a product's cycles. GraalVM numbered releases by year until 2023
-  (21.3.1), and its cycles are the later JDK-based releases (21.0.2). A
-  title match whose version, in the column or in the name, starts with a
-  listed prefix gets the product with no cycle. Give the `prefixes`, a
-  `reason` and a `source`. Curated aliases are not affected.
-- `review_versions` names version prefixes that fit more than one support
-  line of a product. Internet Explorer 11 follows the Windows it runs on,
-  and its builds are shared by desktop, Server, LTSB and LTSC editions. A
-  title match whose version, in the column or in the name, starts with a
-  listed prefix gets the product with no cycle and the entry's review
-  `code` (`shared_support_lines`), so it is listed under "Names to
-  review". Give the `prefixes`, the `code`, a `reason`, a `source` and a
-  `gold` row (`name|publisher|version`). Curated aliases are not
-  affected.
+- **`generated_off`.** It lists products that never match by title.
+- **`no_cycle_versions`.** It names version prefixes from an older
+  numbering that overlaps a product's cycles. GraalVM numbered releases by
+  year until 2023 (21.3.1), and its cycles are the later JDK-based releases
+  (21.0.2). A title match whose version, in the column or in the name,
+  starts with a listed prefix gets the product with no cycle. Give the
+  `prefixes`, a `reason` and a `source`. Curated aliases are not affected.
+- **`review_versions`.** It names version prefixes that fit more than one
+  support line of a product. Internet Explorer 11 follows the Windows it
+  runs on, and its builds are shared by desktop, Server, LTSB and LTSC
+  editions. A title match whose version, in the column or in the name,
+  starts with a listed prefix gets the product with no cycle and the
+  entry's review `code` (`shared_support_lines`), so it is listed under
+  "Names to review". Give the `prefixes`, the `code`, a `reason`, a
+  `source` and a `gold` row (`name|publisher|version`). Curated aliases are
+  not affected.
 
 For the bundled file, the rules in `CONTRIBUTING.md` also apply: every
 entry cites its evidence and the benchmark must not get worse.
@@ -583,17 +669,7 @@ entry cites its evidence and the benchmark must not get worse.
 ## What kind of item this is
 
 An inventory row can be an application someone owns, a piece of something
-else, or a member of a bundle. Each row gets one of four classes. These are
-policy lines, not terms from a standard. ISO/IEC 19770-1 (IT asset
-management) is the relevant standard; clause 8.3 (core data management,
-p.22 of ISO/IEC 19770-1:2017) is the clause the crosswalk cites for
-inventory and lifecycle control. The crosswalk cells for that standard
-were checked against the standard text; Amendment 1 (2024) was not
-opened, so it is Unverified. Refer to the official ISO/IEC 19770-1
-documentation for its wording. The terms "component", "bundle" and
-"governable" are this tool's own. ISO/IEC 19770-2 (SWID)
-has parent and child links; its clause references are Unverified until
-checked.
+else, or a member of a bundle. Each row gets one of four classes:
 
 - `governable`: a standalone application, server, database, OS, browser,
   security agent or directly used developer tool, plus standalone runtimes
@@ -606,8 +682,19 @@ checked.
 - `unknown`: the tool cannot tell. This is a valid answer and the default.
   Never default to governable.
 
-The first confident hit wins, and all the evidence is recorded. The order of
-evidence is:
+These are policy lines, not terms from a standard. ISO/IEC 19770-1 (IT asset
+management) is the relevant standard; clause 8.3 (core data management,
+p.22 of ISO/IEC 19770-1:2017) is the clause the crosswalk cites for
+inventory and lifecycle control. The crosswalk cells for that standard
+were checked against the standard text. Amendment 1 (2024) was not
+opened, so it is Unverified. Refer to the official ISO/IEC 19770-1
+documentation for its wording. The terms "component", "bundle" and
+"governable" are this tool's own. ISO/IEC 19770-2 (SWID)
+has parent and child links; its clause references are Unverified until
+checked.
+
+The first confident hit wins, and the tool records all the evidence. The
+order of evidence is:
 
 1. a curated row override (a maintainer decision);
 2. bundle: an inventory parent column, a curated parent link, or a vendor
@@ -622,23 +709,29 @@ Component outranks governable when both fire. Publisher alone never decides.
 Version shape only ever breaks a tie toward `unknown`.
 
 A curated parent links a row only when every word after the curated name is
-a year or version word, so "Microsoft Excel 2016" links to Office 2016 but
+a year or version word. So "Microsoft Excel 2016" links to Office 2016 but
 "Microsoft Excel 2016 Viewer" does not. A row that matches a curated parent,
 including a curated OS-patch name, but fits no single cycle is `unknown`
-(`suite_no_fit`), not `component`. A last word Runtime or SDK is not a part
-signal by itself, because standalone runtimes and SDKs (.NET, Vulkan,
-Google Cloud) end that way. Such a name gets its class from the other rules:
-a curated row, the matched product's category, or `unknown`. Known parts
-named that way, such as the WebView2 Runtime, are curated as components.
+(`suite_no_fit`), not `component`.
+
+A last word Runtime or SDK is not a part signal by itself, because
+standalone runtimes and SDKs (.NET, Vulkan, Google Cloud) end that way.
+Such a name gets its class from the other rules: a curated row, the matched
+product's category, or `unknown`. Known parts named that way, such as the
+WebView2 Runtime, are curated as components.
 
 ### The Parent column
 
 An inventory can name a row's parent in a `Parent` column (also `Parent
-Software`, `Suite` or `Bundle`). The column is optional. A blank cell, or a
-placeholder cell (`n/a`, `na`, `none`, `null`, `nil`, `unknown`, `tbd`, `-`,
-`--`, `n.a.`, `n.a`, `not applicable`, `not available`, `no parent`), counts
-as no parent. Cells are compared without regard to case or spacing, so
-"SQL Server" and "sql server" are one parent.
+Software`, `Suite` or `Bundle`). The column is optional.
+
+A blank cell, or a placeholder cell, counts as no parent. The placeholders
+are `n/a`, `na`, `none`, `null`, `nil`, `unknown`, `tbd`, `-`, `--`,
+`n.a.`, `n.a`, `not applicable`, `not available` and `no parent`. Cells are
+compared without regard to case or spacing, so "SQL Server" and "sql
+server" are one parent.
+
+How the column is read:
 
 - The column beats a `governable` result, including a governable curated row
   override, because a runtime named in a Parent column is not standalone. It
@@ -646,14 +739,16 @@ as no parent. Cells are compared without regard to case or spacing, so
 - A name that matches one other row from the same publisher (when both rows
   have one, they must share a publisher word) links to it (kind `item`). A
   name that matches no row but matches a product links to that product
-  (kind `product`). A name that matches two rows, whatever their publishers,
-  or a row with two different Parent values, gives no link and the
-  class `unknown` (or `component`, when the row's own name says so).
+  (kind `product`).
+- A name that matches two rows, whatever their publishers, or a row with
+  two different Parent values, gives no link and the class `unknown` (or
+  `component`, when the row's own name says so).
 - A name that matches no row and no product gives no link
-  (`parent_not_found`). A row that names itself or its own product family
-  ("Microsoft Office" on an Office row, "Eclipse Temurin" on a Temurin row;
-  `parent_is_self`), or two rows that name each other (`parent_cycle`), keep
-  their class and get no link.
+  (`parent_not_found`).
+- A row that names itself or its own product family ("Microsoft Office" on
+  an Office row, "Eclipse Temurin" on a Temurin row; `parent_is_self`), or
+  two rows that name each other (`parent_cycle`), keep their class and get
+  no link.
 - A parent that is itself a part is linked, but no dates are inherited
   (one hop only).
 - A parent that is a product and cycle passes its dates on only when exactly
@@ -697,13 +792,17 @@ stays complete, and `unknown` items are never hidden.
 ## Support records
 
 A support-records file lists the support records your organisation holds,
-for example an extended-support contract, so that they show beside the
-vendor's end-of-life and extended-support dates. It is a lifecycle and
-renewal aid: it helps decide "pay for extended support or migrate" and
-plan renewals. It is not a licence position and not audit preparation.
-The tool shows the fact you list and makes no judgement about it.
+for example an extended-support contract. They then show beside the
+vendor's end-of-life and extended-support dates.
+
+It is a lifecycle and renewal aid: it helps decide "pay for extended
+support or migrate" and plan renewals. It is not a licence position and not
+audit preparation. The tool shows the fact you list and makes no judgement
+about it.
 
     python3 software_lifecycle.py check inventory.csv --support-records support-records.csv --out ../swlc-out
+
+### The file
 
 One row per record. A blank copy is `templates/support-records.csv`; the
 demo has `examples/support-records.csv`. The columns are in
@@ -735,7 +834,7 @@ code 3) with an error naming the data row. To fix it, change that row's
 `product` to the new ID (listed in `data/products.json`, or on
 endoflife.date), or delete the row if the product is gone.
 
-What it does:
+### What it does
 
 - An item gets the record when the item is a dated item (it matched a
   product and cycle), the product is the record's product, and the
@@ -760,23 +859,26 @@ What it does:
 - `report.csv` always has a column, "Support records (from your
   file)", after "Review reason"; without a file every cell is empty.
   With a file it holds at most 10 records per item, in the same order as
-  report.md, and then "and N more in report.json". `report.json` adds the item key `support_records` (every record, no
+  report.md, and then "and N more in report.json".
+- `report.json` adds the item key `support_records` (every record, no
   cap), `counts.support_records` (`listed`, `ending_soon`, `not_matched`)
   and, only when the flag is used, `meta.override_hashes.support_records`.
 - `--counts-only` prints one line,
   `support_records listed=N ending_soon=M not_matched=K`, with no
   references, products or dates.
 
-The three counts: `listed` is the records that fit at least one dated
-item; `not_matched` is the records that fit none, and this includes a
-product that appears in the inventory without a decided cycle or
-version (for example an unmatched row of that product); `listed` and
-`not_matched` add up to the records in the file. `ending_soon` counts
-records from either group that end within the lookahead window, so the
-counts overlap: one record can be in `ending_soon` and in `listed` or
-`not_matched`.
+### The three counts
 
-What it does not do:
+- `listed` is the records that fit at least one dated item.
+- `not_matched` is the records that fit none. This includes a product that
+  appears in the inventory without a decided cycle or version (for example
+  an unmatched row of that product).
+- `listed` and `not_matched` add up to the records in the file.
+- `ending_soon` counts records from either group that end within the
+  lookahead window. The counts overlap: one record can be in `ending_soon`
+  and in `listed` or `not_matched`.
+
+### What it does not do
 
 - A record never changes an item's state, never puts an item on a list
   or takes it off one, and never affects `--fail-on`, the class, the
@@ -798,16 +900,17 @@ shelfware, compliant, non-compliant, audit-ready, over-licensed.
 
 ## The count column
 
-The optional `count` column (headings such as "Install Count", "Qty" or
-"Device Count"; see the README) is a count from your file, not
+The optional `count` column has headings such as "Install Count", "Qty" or
+"Device Count"; see the README. It is a count from your file, not
 discovered installs. The tool does not check it.
 
 - An item's `install_count` is the sum of the valid count cells in its
   rows. A valid cell is a whole number from 0 to 1000000000 in ASCII
   digits. It may use commas in strict groups of three (`1,234`) and may
-  end in a decimal point and zeros only (`12.0`, `1,234.00`). A sign, any
-  other decimal (`1.234`, `1.5`), any other separator (`1 234`, `12,34`),
-  text or a formula is not valid. A blank cell adds nothing. Any other cell is ignored and counted in
+  end in a decimal point and zeros only (`12.0`, `1,234.00`).
+- These are not valid: a sign, any other decimal (`1.234`, `1.5`), any
+  other separator (`1 234`, `12,34`), text or a formula.
+- A blank cell adds nothing. Any other cell is ignored and counted in
   `counts.count_invalid_cells`. An item with no valid cell has
   `install_count` `null`.
 - Each list in `report.json`, each section in `report.md` and the rows of

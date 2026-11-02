@@ -1,23 +1,30 @@
 # Platform guide: getting an inventory export
 
-This page says where to find a software inventory export in three
-platforms and which column headings the tool's profiles expect. Facts here
-come only from pages fetched on 2026-10-24 (see Sources). Where no fetched
-page says it, this page says "Not found". The vendor pages can change; check
-them.
+Use this page to find a software inventory export in Flexera,
+ServiceNow or Rapid7, and to see which column headings the tool's profiles
+expect.
+
+Every fact here comes from a page fetched on 2026-10-24 (see Sources).
+Where no fetched page says it, this page says "Not found". The vendor
+pages can change, so check them.
 
 ## How profiles work
 
 A profile is a pre-filled list of extra column headings, nothing more. It
-does not change how the tool matches products or dates. Use one with
-`--profile flexera`, `--profile servicenow-mbs` or `--profile rapid7`.
-The profile lists live in `data/profiles.json`. All three are marked
-**Unverified**: no one has run them on a real export.
+does not change how the tool matches products or dates.
+
+Use one with `--profile flexera`, `--profile servicenow-mbs` or
+`--profile rapid7`. The profile lists live in `data/profiles.json`. All
+three are marked **Unverified**: no one has run them on a real export.
 
 If a heading does not match, the tool stops and names the missing field.
-Add your own headings with `--columns FILE` (see
-`templates/columns.example.json`), or rename the column in the file. The
-tool never guesses.
+Fix it in one of two ways:
+
+- Add your own headings with `--columns FILE` (see
+  `templates/columns.example.json`).
+- Rename the column in the file.
+
+The tool never guesses.
 
 ## Flexera
 

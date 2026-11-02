@@ -2,15 +2,17 @@
 
 This page is optional. It is for people who want Claude Desktop or the
 ChatGPT desktop app to run the tool for them, instead of running the
-commands themselves. Product facts were checked on 2026-11-01. These
-products change often, so check the product's own docs before you rely on
-a detail. Lines marked **Unverified** were not confirmed in the product's
-docs or were not tested.
+commands themselves.
 
 If you would rather run the tool yourself, use
 [quick-start.md](quick-start.md). For assistants that run commands on
 your computer (Claude Code, Codex, Copilot), use
 [assistant-setup.md](assistant-setup.md) instead.
+
+Product facts were checked on 2026-11-01. These products change often, so
+check the product's own docs before you rely on a detail. Lines marked
+**Unverified** were not confirmed in the product's docs or were not
+tested.
 
 ## What it is
 
@@ -237,20 +239,20 @@ for the full advice.
    `python3 swlc_mcp.py` (on Windows, `py -3 swlc_mcp.py`). It prints one
    line starting with `swlc_mcp: started` and waits. Press Ctrl+C (on
    Windows, Ctrl+Z then Enter) to stop it.
-
 5. Find the full path to Python: run `which python3` (on Windows,
    `where py`). Use that full path as the command in both apps, for
    example `/opt/homebrew/bin/python3` for a Homebrew install. Apps you
    start from the Dock or Start menu may not search the same folders as
    your terminal, so they may not find a bare `python3` (reason not
-   confirmed). The full path avoids that. Leave the
-   working directory blank.
+   confirmed). The full path avoids that. Leave the working directory
+   blank.
 
 In the settings below, replace `/path/to/python3` with that full path and
-`/path/to/software-lifecycle` with the full path of your repo folder. On
-Windows, use the command `py`, the
-arguments `-3` and the path, and write each backslash in a path twice in
-JSON (`C:\\tools\\software-lifecycle\\swlc_mcp.py`).
+`/path/to/software-lifecycle` with the full path of your repo folder.
+
+On Windows, use the command `py`, the arguments `-3` and the path, and
+write each backslash in a path twice in JSON
+(`C:\\tools\\software-lifecycle\\swlc_mcp.py`).
 
 ## ChatGPT desktop app
 
@@ -298,13 +300,13 @@ they appear to be set in `config.toml` only. **Unverified**.
 
 ## Claude Desktop
 
-The one-click package for Claude Desktop (a `.mcpb` file) was installed
-and run once on one Mac on 2026-11-01; everything else about it is
-**Unverified**. See
+There are two ways in. The one-click package for Claude Desktop (a
+`.mcpb` file) was installed and run once on one Mac on 2026-11-01;
+everything else about it is **Unverified**. See
 [One-click package (Claude Desktop)](#one-click-package-claude-desktop).
-The manual route below is the longest-tested one.
 
-The manual route below is documented for local servers in general:
+The manual route below is the longest-tested one. It is documented for
+local servers in general:
 <https://modelcontextprotocol.io/docs/develop/connect-local-servers>.
 It worked once with this server on one Mac on 2026-11-01; see
 [Tested so far](#tested-so-far). Other computers and app versions:

@@ -4,44 +4,53 @@
 it. This page lists every key and code in schema version 2. A test in this
 repo fails if a key in a real run is missing from this page.
 
-`report.md` also prints one fixed line, once, under the summary counts:
-"Matches rest on name and publisher only. Rows we could not tell apart are
-listed as unmatched. Check the source and cycle before relying on any
-row." It is not a key and is not in `report.json` or `report.csv`.
-
-`report.md` also has a "Names to review" section and `report.csv` a
-"Review reason" column, both made from the item key `ambiguity`
-(see below).
-
-`report.csv` always has a column "Support records (from your
-file)", made from the item key `support_records` (see below), after
-"Review reason". A run without `--support-records`
-gets the column with every cell empty. With `--support-records`,
-`report.md` adds a support-record line to items in "Past end of life"
-and "Ends within the lookahead window" and a "Support records" section.
-`--counts-only` prints `support_records listed=N ending_soon=M
-not_matched=K`. report.md and report.csv show at most 10 records per
-item, then "and N more in report.json": records that have not ended
-first, nearest end date first, then ended ones, most recently ended
-first. `report.json` keeps them all, sorted by end date and reference.
-The tool does not check that a record was paid for or is current.
-Record references are confidential, like item IDs.
-
-`report.csv` always has a last column "Count (from your file)", after
-"Support records (from your file)", made from the item key
-`install_count` (see below); it is empty for an item with no count.
-When at least one item has a count, `items`, each list in `lists`, each
-section of `report.md` and the rows of `report.csv` are ordered by
-`install_count`, largest first, then items with no count, then by item
-ID. With no count, the order is by item ID, as before. `report.md` adds
-"Count (from your file): N" to each item with a count. The count is the
-sum of your file's count column, not discovered installs. It never
-changes a state, a list's members, a class, an ID or `--fail-on`.
-`--counts-only` prints `count_total N` when the count column has a
-filled cell, and keeps its list IDs in ID order.
-
 The file is UTF-8 JSON with sorted keys. It contains text from your
 inventory, so keep it as private as the inventory.
+
+## What the Markdown and CSV views add
+
+Some things appear in `report.md` or `report.csv` and are not keys in
+`report.json`. Two bullets below also cover how `report.json` is ordered
+and which item key a column comes from.
+
+- **Fixed caveat line.** `report.md` prints one fixed line, once, under
+  the summary counts: "Matches rest on name and publisher only. Rows we
+  could not tell apart are listed as unmatched. Check the source and cycle
+  before relying on any row." It is not a key and is not in `report.json`
+  or `report.csv`.
+- **Review of ambiguous names.** `report.md` has a "Names to review"
+  section and `report.csv` a "Review reason" column. Both are made from
+  the item key `ambiguity` (see below).
+- **Support records.** `report.csv` always has a column "Support records
+  (from your file)", made from the item key `support_records` (see below),
+  after "Review reason". A run without `--support-records` gets the column
+  with every cell empty. With `--support-records`, `report.md` adds a
+  support-record line to items in "Past end of life" and "Ends within the
+  lookahead window", and a "Support records" section. `--counts-only`
+  prints `support_records listed=N ending_soon=M not_matched=K`.
+- **Record limits in the views.** `report.md` and `report.csv` show at
+  most 10 records per item, then "and N more in report.json". Records that
+  have not ended come first, nearest end date first. Ended ones follow,
+  most recently ended first. `report.json` keeps them all, sorted by end
+  date and reference.
+- **Support record caveats.** The tool does not check that a record was
+  paid for or is current. Record references are confidential, like item
+  IDs.
+- **Install counts.** `report.csv` always has a last column "Count (from
+  your file)", after "Support records (from your file)", made from the
+  item key `install_count` (see below). It is empty for an item with no
+  count. `report.md` adds "Count (from your file): N" to each item with a
+  count.
+- **Ordering with counts.** When at least one item has a count, `items`,
+  each list in `lists`, each section of `report.md` and the rows of
+  `report.csv` are ordered by `install_count`, largest first, then items
+  with no count, then by item ID. With no count, the order is by item ID,
+  as before.
+- **What a count means.** The count is the sum of your file's count
+  column, not discovered installs. It never changes a state, a list's
+  members, a class, an ID or `--fail-on`. `--counts-only` prints
+  `count_total N` when the count column has a filled cell, and keeps its
+  list IDs in ID order.
 
 ## Top-level keys
 
@@ -103,10 +112,12 @@ The four numbers add up to `counts.items`.
 | `parts_with_parent` | Unmatched `bundle_member` items with `inherited_from` set. |
 | `parts_parent_absent` | Every other unmatched part: a `component`, or a `bundle_member` whose parent is not in this inventory. |
 
-The three numbers add up to `counts.lists.unmatched`. `lists.unmatched` itself
-is unchanged. `report.md` leads its "Couldn't match" section with the
-`needs_review` number and lists the other unmatched items in "Parts that could
-not be matched". The warning "N parts whose parent is not in this inventory"
+The three numbers add up to `counts.lists.unmatched`. `lists.unmatched`
+itself is unchanged.
+
+`report.md` leads its "Couldn't match" section with the `needs_review`
+number and lists the other unmatched items in "Parts that could not be
+matched". The warning "N parts whose parent is not in this inventory"
 (`parent_absent` in `classification_basis`) appears in `warnings`.
 
 ### counts.support_records
@@ -159,9 +170,11 @@ other two.
 Rows with the same normalized publisher, name and version make one item.
 "Normalized" means lowercased, with extra spaces removed and a few fixed
 tokens dropped (`(64-bit)`, `(32-bit)`, `x64`, `x86`, `en-us`).
-`id` is 12 hex characters made from those three values, stable across runs.
-It is an unsalted hash: a guessed publisher, name and version can be
-confirmed against it, so treat IDs with the same care as the inventory.
+
+`id` is 12 hex characters made from those three values, and it is stable
+across runs. It is an unsalted hash: a guessed publisher, name and version
+can be confirmed against it. Treat IDs with the same care as the
+inventory.
 
 | Field | Meaning |
 |---|---|
@@ -210,10 +223,9 @@ confirmed against it, so treat IDs with the same care as the inventory.
 | `basis` | The signal code that named it: `parent_column`, `os_parent` or `curated_parent`. |
 
 A `product` parent passes its dates only when exactly one item in the
-inventory has that product and cycle. Otherwise the parent counts as not
-in the inventory: `inherited_from` is `null`, the basis lists
-`parent_absent`, and the report warns "N parts whose parent is not in this
-inventory".
+inventory has that product and cycle. If not, the parent counts as not in
+the inventory: `inherited_from` is `null`, the basis lists `parent_absent`,
+and the report warns "N parts whose parent is not in this inventory".
 
 ### inherited_lifecycle
 
@@ -252,14 +264,15 @@ A record never changes `state`, never puts an item on a list, and
 Set only on an unmatched item whose class is `unknown` or `governable`.
 It changes nothing else: the item keeps `state` `unmatched` and no cycle
 or date. For `title_needs_publisher` and `title_not_on_list` the item
-keeps its `reason` (`NO_ALIAS`) and `product` `null`; for
+keeps its `reason` (`NO_ALIAS`) and `product` `null`. For
 `shared_support_lines` it keeps its `product`, `match_source`
 `generated` and `reason` `NO_CYCLE`. It never puts the item on another
 list, and `--fail-on` never reads it.
-Unmatched on purpose, not a finding. To settle one, a person adds a
-publisher that names the vendor, asks the maintainer for a curated alias,
-or records that it is a different product; the tool never promotes such
-a row to a match.
+
+An ambiguous row is unmatched on purpose. It is not a finding. To settle
+one, a person adds a publisher that names the vendor, asks the maintainer
+for a curated alias, or records that it is a different product. The tool
+never promotes such a row to a match.
 
 | Key | Meaning |
 |---|---|
@@ -274,22 +287,32 @@ a row to a match.
 | `shared_support_lines` | Added in schema version 2. Generated matching picked the product, and the version column or the version in the name starts with a prefix the curated `review_versions` lists for it, because that version fits more than one support line. Today only `internet-explorer` with prefix `11`: Internet Explorer 11 follows the Windows it runs on, and its builds are shared by desktop, Server, LTSB and LTSC editions. The item keeps `product` and gets no cycle, so no date and state `unmatched`. A row a curated alias decided gets no code, and so does a version that names its line (`11-ltsc`, `11-server`): it keeps that line's cycle. Reason: "The name and version fit more than one support line (desktop, Server, LTSB or LTSC); the row does not say which Windows it runs on." |
 | `title_not_on_list` | The name is a one-word product title followed by a version, the publisher is empty, the version would decide one cycle, and the product is not on the reviewed list for rows with no publisher (the version-in-name rule in "How names are matched", `docs/usage.md`). Reason: "The name is a product title and a version, but that title is not on the reviewed list for rows with no publisher." |
 
-For the two title codes, no code is set for a row with a publisher (a publisher that does not
-confirm the product is often a different product, such as an editor
-extension or a mobile app), a row refused by a curated exclusion (or for
-any product an exclusion names), a device or `generated_off` product, a
-version that is given but decides no single cycle, a name that hits no product title, or
-a row a curated alias decided. A row gets at most one code: the
-title check runs before the version split, so if both could apply,
-`title_needs_publisher` is used.
+For the two title codes, no code is set for any of these:
 
-Date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
+- a row with a publisher (a publisher that does not confirm the product
+  is often a different product, such as an editor extension or a mobile
+  app)
+- a row refused by a curated exclusion, or any product an exclusion names
+- a device or `generated_off` product
+- a version that is given but decides no single cycle
+- a name that hits no product title
+- a row a curated alias decided
+
+A row gets at most one code. The title check runs before the version
+split, so if both could apply, `title_needs_publisher` is used.
+
+### Date fields
+
+The date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
 `extended_support`) hold `YYYY-MM-DD` text, `null` for none, or `true` or
-`false` where endoflife.date gives a flag instead of a date. For
-`eol_endoflife` and `eol_used`, `true` means end of life reached with no
-date given, and `false` means none announced. For `support` and
-`extended_support`, `false` means the support has ended and `true` means
-it is ongoing.
+`false` where endoflife.date gives a flag instead of a date.
+
+- For `eol_endoflife` and `eol_used`, `true` means end of life reached
+  with no date given, and `false` means none announced.
+- For `support` and `extended_support`, `false` means the support has
+  ended and `true` means it is ongoing.
+
+### KEV
 
 KEV is checked only for matched items whose state is `past_eol` or
 `ends_soon`. It matches on vendor and product, never on version. The
@@ -377,8 +400,8 @@ is listed. Publisher only confirms a curated entry and never decides a class.
 
 `lists` maps each name to a sorted list of item IDs.
 
-The list `review_urgently` keeps its old name for stability: renaming a key
-would change the schema. `report.md` shows it under the heading "In CISA KEV,
+The list `review_urgently` keeps its old name because renaming a key would
+change the schema. `report.md` shows it under the heading "In CISA KEV,
 past or near end of life".
 
 | List | Item is on it when |
@@ -404,8 +427,8 @@ past or near end of life".
 ### diff.changed_state
 
 Each entry in `changed_state` has these keys. The first run after the data
-changes from format 1 to format 2 lists many items here: rows that were
-`unmatched` now match by product title.
+changes from format 1 to format 2 lists many items here, because rows that
+were `unmatched` now match by product title.
 
 | Key | Meaning |
 |---|---|
@@ -416,13 +439,15 @@ changes from format 1 to format 2 lists many items here: rows that were
 ## Override file columns (schema_version 1)
 
 All four files are CSV with a header row. The first column is
-`schema_version` and every row must hold `1`. Every column listed below
-must appear in the header, even the optional ones; a missing one stops the
-run with "missing required column(s)". Header names are matched
-without regard to case, and extra columns are ignored. Cells are trimmed.
-A file with only the header is a valid empty file. A bad value stops the
-run with exit code 3 and an error that names the data row number and the
-column, never the cell text.
+`schema_version` and every row must hold `1`.
+
+- Every column listed below must appear in the header, even the optional
+  ones. A missing one stops the run with "missing required column(s)".
+- Header names are matched without regard to case, and extra columns are
+  ignored. Cells are trimmed.
+- A file with only the header is a valid empty file.
+- A bad value stops the run with exit code 3 and an error that names the
+  data row number and the column, never the cell text.
 
 Dates in these files are ISO dates, `YYYY-MM-DD`, and must be real dates.
 `review_by` and `expires_on` hold through that day: the item is expired
@@ -472,9 +497,9 @@ Links a finding to your change and problem records.
 
 ### support-records.csv
 
-Support records you hold, shown beside the vendor's dates. A lifecycle
-and renewal aid, not a licence or audit position. There is no quantity,
-licence metric, cost or vendor column.
+Support records you hold, shown beside the vendor's dates. It is a
+lifecycle and renewal aid, not a licence or audit position. There is no
+quantity, licence metric, cost or vendor column.
 
 | Column | Rule |
 |---|---|
@@ -486,34 +511,40 @@ licence metric, cost or vendor column.
 | `ends_on` | Required date. |
 | `owner_role` | Optional. A role, not a person, up to 80 characters. |
 
-At most 2,000 data rows and at most 25 records per product; a larger file
-stops the run with an error that names the row and the limit. When a data
-refresh renames or removes a product ID, a file that still names the old
-ID stops the run (exit code 3, naming the data row): change the row to
-the new ID or delete it.
+The file may have at most 2,000 data rows and at most 25 records per
+product. A larger file stops the run with an error that names the row and
+the limit.
+
+When a data refresh renames or removes a product ID, a file that still
+names the old ID stops the run (exit code 3, naming the data row). Change
+the row to the new ID or delete it.
 
 ## Stability
 
 Within a `schema_version`, keys are never removed or renamed and never
 change meaning or type. New keys may be added; consumers must ignore keys
 they do not know. Adding a state, a list name, a reason code or a decision
-code bumps `schema_version`. The item key `ambiguity` and
-`counts.ambiguous_review` were added within schema version 1 as new keys;
-they add no state, list, reason code or decision code. The item key
-`support_records`, `counts.support_records`,
-`meta.override_hashes.support_records` (only with the flag) and the
-`support_records` keyword of `swlc.cli.run` were added the same way: optional keys only, no
-new state, list, reason code or decision code. A report with them and a
-report without them read each other with `--previous`. The item key
-`install_count` and `counts.count_invalid_cells` were added the same way;
-with a count they change only the order of `items` and of the IDs in each
-list, never which IDs a list holds. The `ambiguity`
-codes follow the reason-code rule: adding one bumps `schema_version`.
-The keyword arguments of `swlc.cli.run` follow
-the same rule. The tool reads a `--previous` report of schema version 1 or
-2; any other version gives no diff and the warning "previous run uses
-schema_version N; this tool reads 1 and 2; no diff", where N is the
-number found, or `unreadable` when it is not a whole number.
+code bumps `schema_version`. The `ambiguity` codes follow the reason-code
+rule: adding one bumps `schema_version`.
+
+These keys were added within schema version 1 as new, optional keys. None
+of them adds a state, list, reason code or decision code.
+
+- The item key `ambiguity` and `counts.ambiguous_review`.
+- The item key `support_records`, `counts.support_records`,
+  `meta.override_hashes.support_records` (only with the flag) and the
+  `support_records` keyword of `swlc.cli.run`. A report with them and a
+  report without them read each other with `--previous`.
+- The item key `install_count` and `counts.count_invalid_cells`. With a
+  count they change only the order of `items` and of the IDs in each
+  list, never which IDs a list holds.
+
+The keyword arguments of `swlc.cli.run` follow the same rule.
+
+The tool reads a `--previous` report of schema version 1 or 2. Any other
+version gives no diff and the warning "previous run uses schema_version N;
+this tool reads 1 and 2; no diff", where N is the number found, or
+`unreadable` when it is not a whole number.
 
 ### Changes in schema version 2
 
@@ -538,7 +569,9 @@ from the repo root, or put the repo on `sys.path`.
 
 Options are keyword arguments: `as_of` (required), `data`,
 `lookahead_months`, `profile`, `columns`, `golden`, `exceptions`,
-`tracking`, `support_records`, `previous` and `encoding`. They match the command-line flags.
+`tracking`, `support_records`, `previous` and `encoding`. They match the
+command-line flags.
+
 It raises:
 
 - `InputError` (in `swlc.errors`) when the inventory, a columns file, an

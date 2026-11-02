@@ -1,10 +1,12 @@
 # Set up an AI assistant to run the tool
 
 This page helps you get an AI assistant to run `software-lifecycle` for you.
+If you would rather run it yourself, use [quick-start.md](quick-start.md).
+
 Product facts were checked on 2026-11-01. These products change often, so
 check the product's own docs before you rely on a detail.
 
-Words used here:
+Four words used on this page:
 
 - Clone: copy the repo to your computer with `git clone`. Downloading a
   release does the same job.
@@ -15,8 +17,6 @@ Words used here:
 - Item ID: a 12-character code the tool makes from an item's publisher,
   name and version. It is a hash, not a name, but anyone who can guess the
   item can check the code.
-
-If you would rather run it yourself, use [quick-start.md](quick-start.md).
 
 ## Which assistant can run this?
 
@@ -145,8 +145,8 @@ Guide me one step at a time. Wait for me to answer before the next step:
 
 ## What to do with the counts
 
-The counts tell you how many items are on each list. The names are in the
-report files, which you read yourself. See "Counts-only mode" in
+Read the counts to see how many items are on each list. The names are in
+the report files, which you read yourself. See "Counts-only mode" in
 [usage.md](usage.md) for each line, [glossary.md](glossary.md) for the
 words, and [sop.md](sop.md) for the review steps.
 
@@ -157,13 +157,15 @@ Run the same commands yourself in a terminal, from the tool's folder:
     python3 software_lifecycle.py preflight ../inventory.csv
     python3 software_lifecycle.py check ../inventory.csv --counts-only --out ../swlc-out
 
-On Windows, type `py` in place of `python3`. Paste back only the summary
-lines of the `check` output: the ones that start with `checked_on`,
-`kev_current`, `items`, `states`, `classification`, `ambiguous_review`,
-`support_records` and `count_total`. Leave out every line that lists item
-IDs (`past_eol 7: 0a668be21645 ...` and the other list lines). If you want
-to share a list count, type the number, not the IDs. Never paste the
-inventory or the report files.
+On Windows, type `py` in place of `python3`.
+
+If you want the assistant's help with the output, paste back only the
+summary lines of the `check` output: the ones that start with
+`checked_on`, `kev_current`, `items`, `states`, `classification`,
+`ambiguous_review`, `support_records` and `count_total`. Leave out every
+line that lists item IDs (`past_eol 7: 0a668be21645 ...` and the other
+list lines). If you want to share a list count, type the number, not the
+IDs. Never paste the inventory or the report files.
 
 ## Files in the repo for other tools
 
