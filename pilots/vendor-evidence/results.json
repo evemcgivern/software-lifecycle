@@ -1,0 +1,301 @@
+[
+ {
+  "case_id": "C01",
+  "page": "win11-homepro.txt",
+  "n_hits": 1,
+  "hits": [
+   {
+    "row": [
+     "Version 24H2",
+     "10/1/2024 8:00:00 AM",
+     "10/14/2026 6:59:59 AM"
+    ],
+    "headers": [
+     "End Date",
+     "Version 26H2",
+     "Version 26H1",
+     "Version 25H2"
+    ]
+   }
+  ],
+  "flags": [
+   "stamp 6:59/7:59 AM: may be the end of the previous day in PT; confirm against the vendor announcement"
+  ],
+  "seconds": 0.0,
+  "verdict": "candidate: human verifies"
+ },
+ {
+  "case_id": "C02",
+  "page": "win11-entedu.txt",
+  "n_hits": 1,
+  "hits": [
+   {
+    "row": [
+     "Version 24H2",
+     "10/1/2024 8:00:00 AM",
+     "10/13/2027 6:59:59 AM"
+    ],
+    "headers": [
+     "End Date",
+     "Version 26H2",
+     "Version 26H1",
+     "Version 25H2"
+    ]
+   }
+  ],
+  "flags": [
+   "stamp 6:59/7:59 AM: may be the end of the previous day in PT; confirm against the vendor announcement"
+  ],
+  "seconds": 0.0,
+  "verdict": "candidate: human verifies"
+ },
+ {
+  "case_id": "C03",
+  "page": "win11-homepro.txt",
+  "n_hits": 2,
+  "hits": [
+   {
+    "row": [
+     "Version 24H2",
+     "10/1/2024 8:00:00 AM",
+     "10/14/2026 6:59:59 AM"
+    ],
+    "headers": [
+     "End Date",
+     "Version 26H2",
+     "Version 26H1",
+     "Version 25H2"
+    ]
+   },
+   {
+    "row": [
+     "Version 24H2",
+     "10/1/2024 8:00:00 AM",
+     "10/13/2027 6:59:59 AM"
+    ],
+    "headers": [
+     "End Date",
+     "Version 26H2",
+     "Version 26H1",
+     "Version 25H2"
+    ]
+   }
+  ],
+  "flags": [
+   "stamp 6:59/7:59 AM: may be the end of the previous day in PT; confirm against the vendor announcement"
+  ],
+  "seconds": 0.0,
+  "verdict": "unresolved: edition missing; editions disagree"
+ },
+ {
+  "case_id": "C04",
+  "page": "winsrv2022.txt",
+  "n_hits": 1,
+  "hits": [
+   {
+    "row": [
+     "Windows Server 2022",
+     "8/18/2021 8:00:00 AM",
+     "10/14/2026 6:59:59 AM",
+     "10/15/2031 6:59:59 AM",
+     "Tip",
+     "Microsoft Edge follows the Modern Lifecycle Policy. Please reference Edge lifecycle documentation for how to keep this browser updated and in support.",
+     "Links",
+     "Lifecycle FAQ - Windows"
+    ],
+    "headers": [
+     "Support Dates",
+     "Start Date",
+     "Mainstream End Date",
+     "Extended End Date"
+    ]
+   }
+  ],
+  "flags": [
+   "stamp 6:59/7:59 AM: may be the end of the previous day in PT; confirm against the vendor announcement"
+  ],
+  "seconds": 0.0,
+  "verdict": "candidate: human verifies"
+ },
+ {
+  "case_id": "C05",
+  "page": "win10.txt",
+  "n_hits": 1,
+  "hits": [
+   {
+    "row": [
+     "Version 22H2",
+     "10/18/2022 8:00:00 AM",
+     "10/15/2025 6:59:59 AM"
+    ],
+    "headers": [
+     "Releases",
+     "Version",
+     "Start Date",
+     "End Date"
+    ]
+   }
+  ],
+  "flags": [
+   "stamp 6:59/7:59 AM: may be the end of the previous day in PT; confirm against the vendor announcement"
+  ],
+  "seconds": 0.0,
+  "verdict": "candidate: human verifies"
+ },
+ {
+  "case_id": "C06",
+  "page": "oltsc.txt",
+  "n_hits": 0,
+  "hits": [],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "unresolved: no row found"
+ },
+ {
+  "case_id": "C07",
+  "page": "rhel.txt",
+  "n_hits": 0,
+  "hits": [],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "unresolved: no row found"
+ },
+ {
+  "case_id": "C08",
+  "page": "ubuntu.txt",
+  "n_hits": 2,
+  "hits": [
+   {
+    "row": [
+     "Ubuntu 20.04 LTS",
+     "Released: Apr 2020",
+     "May 2025",
+     "With Ubuntu Pro",
+     "May 2030",
+     "May 2030",
+     "May 2035",
+     "FIPS 140-2: Expired"
+    ],
+    "headers": []
+   },
+   {
+    "row": [
+     "Ubuntu 20.04 LTS",
+     "Released: Apr 2020",
+     "Standard security maintenance",
+     "May 2025",
+     "With Ubuntu Pro",
+     "Expanded security maintenance",
+     "May 2030",
+     "Break/bug support"
+    ],
+    "headers": []
+   }
+  ],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "unresolved: several rows"
+ },
+ {
+  "case_id": "C09",
+  "page": "pydev.txt",
+  "n_hits": 1,
+  "hits": [
+   {
+    "row": [
+     "3.12",
+     "PEP 693",
+     "security",
+     "2023-10-02",
+     "2028-10",
+     "Thomas Wouters"
+    ],
+    "headers": []
+   }
+  ],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "candidate: human verifies"
+ },
+ {
+  "case_id": "C10",
+  "page": "pydev.txt",
+  "n_hits": 1,
+  "hits": [
+   {
+    "row": [
+     "2.7",
+     "PEP 373",
+     "end-of-life",
+     "2010-07-03",
+     "2020-01-01",
+     "Benjamin Peterson"
+    ],
+    "headers": []
+   }
+  ],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "candidate: human verifies"
+ },
+ {
+  "case_id": "C11",
+  "page": "node.md",
+  "n_hits": 1,
+  "hits": [
+   {
+    "row": [
+     "20.x",
+     "End-of-Life",
+     "Iron",
+     "2023-04-18",
+     "2023-10-24",
+     "2024-10-22",
+     "2026-04-30"
+    ],
+    "headers": [
+     "End-of-Life",
+     "End-of-Life"
+    ]
+   }
+  ],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "candidate: human verifies"
+ },
+ {
+  "case_id": "C12",
+  "page": "none.txt",
+  "n_hits": 0,
+  "hits": [],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "unresolved: no row found"
+ },
+ {
+  "case_id": "C13",
+  "page": "synthetic-a.txt",
+  "n_hits": 2,
+  "hits": [
+   {
+    "row": [
+     "Acme Widgets 4.2",
+     "2027-03-31"
+    ],
+    "headers": [
+     "End of support"
+    ]
+   },
+   {
+    "row": [
+     "Acme Widgets 4.2",
+     "2027-09-30"
+    ],
+    "headers": []
+   }
+  ],
+  "flags": [],
+  "seconds": 0.0,
+  "verdict": "unresolved: sources conflict"
+ }
+]
