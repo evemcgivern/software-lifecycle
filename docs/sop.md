@@ -158,6 +158,11 @@ system. Add a row to `tracking.csv`: the item ID, the change reference
 and, if there is one, the problem reference. The next run shows those
 references beside the item.
 
+An item ID does not hide the item. Someone who can guess the publisher,
+name and version can confirm it against the ID. Share `tracking.csv`,
+exceptions and support-records files, and tickets that quote IDs, only
+with people who may see the inventory.
+
 ### 12. Keep evidence
 
 Decide what to keep. A usual set:
