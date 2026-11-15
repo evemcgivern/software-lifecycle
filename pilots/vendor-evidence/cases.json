@@ -1,0 +1,74 @@
+[
+{
+"case_id": "C01",
+"page": "win11-homepro.txt",
+"row_re": "^Version 24H2$"
+},
+{
+"case_id": "C02",
+"page": "win11-entedu.txt",
+"row_re": "^Version 24H2$"
+},
+{
+"case_id": "C03",
+"page": "win11-homepro.txt",
+"row_re": "^Version 24H2$",
+"edition_missing": true,
+"other_pages": [
+"win11-entedu.txt"
+]
+},
+{
+"case_id": "C04",
+"page": "winsrv2022.txt",
+"row_re": "^Windows Server 2022$"
+},
+{
+"case_id": "C05",
+"page": "win10.txt",
+"row_re": "^Version 22H2$"
+},
+{
+"case_id": "C06",
+"page": "oltsc.txt",
+"row_re": "Professional Plus"
+},
+{
+"case_id": "C07",
+"page": "rhel.txt",
+"row_re": "^RHEL 8$"
+},
+{
+"case_id": "C08",
+"page": "ubuntu.txt",
+"row_re": "^Ubuntu 20\\.04 LTS$"
+},
+{
+"case_id": "C09",
+"page": "pydev.txt",
+"row_re": "^3\\.12$"
+},
+{
+"case_id": "C10",
+"page": "pydev.txt",
+"row_re": "^2\\.7$"
+},
+{
+"case_id": "C11",
+"page": "node.md",
+"row_re": "^20\\.x$"
+},
+{
+"case_id": "C12",
+"page": "none.txt",
+"row_re": "Acme"
+},
+{
+"case_id": "C13",
+"page": "synthetic-a.txt",
+"row_re": "^Acme Widgets 4\\.2$",
+"other_pages": [
+"synthetic-b.txt"
+]
+}
+]
