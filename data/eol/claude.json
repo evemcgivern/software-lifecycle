@@ -91,9 +91,9 @@
   },
   {
     "cycle": "claude-opus-4-5-20251101",
-    "eol": "2026-11-24",
+    "eol": "2027-01-22",
     "releaseDate": "2025-11-24",
-    "support": true
+    "support": "2026-11-23"
   },
   {
     "cycle": "claude-haiku-4-5-20251001",

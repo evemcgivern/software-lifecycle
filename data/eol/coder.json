@@ -1,5 +1,12 @@
 [
   {
+    "cycle": "2.39",
+    "eol": false,
+    "extendedSupport": false,
+    "releaseDate": "2026-11-03",
+    "support": true
+  },
+  {
     "cycle": "2.38",
     "eol": false,
     "extendedSupport": false,
@@ -11,11 +18,11 @@
     "eol": false,
     "extendedSupport": false,
     "releaseDate": "2026-09-01",
-    "support": true
+    "support": "2026-11-03"
   },
   {
     "cycle": "2.36",
-    "eol": false,
+    "eol": "2026-11-03",
     "extendedSupport": false,
     "releaseDate": "2026-08-04",
     "support": "2026-10-06"
