@@ -106,5 +106,35 @@
     "eol": "2013-10-29",
     "releaseDate": "2008-10-01",
     "support": false
+  },
+  {
+    "cycle": "2.5",
+    "eol": "2011-05-26",
+    "releaseDate": "2006-09-19",
+    "support": false
+  },
+  {
+    "cycle": "2.4",
+    "eol": "2008-12-19",
+    "releaseDate": "2004-11-30",
+    "support": false
+  },
+  {
+    "cycle": "2.3",
+    "eol": "2008-03-11",
+    "releaseDate": "2003-07-29",
+    "support": false
+  },
+  {
+    "cycle": "2.2",
+    "eol": "2003-05-30",
+    "releaseDate": "2001-12-21",
+    "support": false
+  },
+  {
+    "cycle": "2.1",
+    "eol": "2002-04-09",
+    "releaseDate": "2001-04-17",
+    "support": false
   }
 ]

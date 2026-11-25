@@ -1,5 +1,10 @@
 [
   {
+    "cycle": "2.16",
+    "eol": false,
+    "releaseDate": "2026-11-10"
+  },
+  {
     "cycle": "2.15",
     "eol": false,
     "releaseDate": "2026-03-20"
@@ -11,7 +16,7 @@
   },
   {
     "cycle": "2.13",
-    "eol": false,
+    "eol": "2026-11-10",
     "releaseDate": "2025-04-09"
   },
   {

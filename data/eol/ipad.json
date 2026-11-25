@@ -70,6 +70,11 @@
     "releaseDate": "2022-10-26"
   },
   {
+    "cycle": "pro-4-11",
+    "eol": false,
+    "releaseDate": "2022-10-26"
+  },
+  {
     "cycle": "air-5",
     "eol": false,
     "releaseDate": "2022-03-18"
@@ -90,6 +95,11 @@
     "releaseDate": "2021-05-21"
   },
   {
+    "cycle": "pro-3-11",
+    "eol": false,
+    "releaseDate": "2021-05-21"
+  },
+  {
     "cycle": "air-4",
     "eol": "2027-09-15",
     "releaseDate": "2020-10-23"
@@ -105,14 +115,9 @@
     "releaseDate": "2020-03-25"
   },
   {
-    "cycle": "pro-4-11",
-    "eol": false,
-    "releaseDate": "2020-03-25"
-  },
-  {
     "cycle": "pro-2-11",
     "eol": false,
-    "releaseDate": "2020-03-01"
+    "releaseDate": "2020-03-25"
   },
   {
     "cycle": "7",
@@ -130,11 +135,6 @@
     "releaseDate": "2019-03-18"
   },
   {
-    "cycle": "pro-3-11",
-    "eol": false,
-    "releaseDate": "2018-11-07"
-  },
-  {
     "cycle": "pro-3-12",
     "eol": false,
     "releaseDate": "2018-11-07"
@@ -142,7 +142,7 @@
   {
     "cycle": "pro-1-11",
     "eol": false,
-    "releaseDate": "2018-11-01"
+    "releaseDate": "2018-11-07"
   },
   {
     "cycle": "6",
