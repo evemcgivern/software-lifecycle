@@ -1235,7 +1235,8 @@
       "category": "framework",
       "id": "dropwizard",
       "namespaces": [
-        "dropwizard"
+        "dropwizard",
+        "io.dropwizard"
       ],
       "title": "Dropwizard",
       "vendors": []
@@ -1315,7 +1316,9 @@
     {
       "category": "lang",
       "id": "elixir",
-      "namespaces": [],
+      "namespaces": [
+        "elixir-lang"
+      ],
       "title": "Elixir",
       "vendors": []
     },
@@ -1555,7 +1558,9 @@
     {
       "category": "server-app",
       "id": "geoserver",
-      "namespaces": [],
+      "namespaces": [
+        "geoserver"
+      ],
       "title": "GeoServer",
       "vendors": []
     },
@@ -2231,9 +2236,14 @@
     {
       "category": "lang",
       "id": "kotlin",
-      "namespaces": [],
+      "namespaces": [
+        "jetbrains",
+        "org.jetbrains.kotlin"
+      ],
       "title": "Kotlin",
-      "vendors": []
+      "vendors": [
+        "jetbrains"
+      ]
     },
     {
       "category": "server-app",
@@ -2719,9 +2729,13 @@
     {
       "category": "app",
       "id": "nix",
-      "namespaces": [],
+      "namespaces": [
+        "nixos"
+      ],
       "title": "nix",
-      "vendors": []
+      "vendors": [
+        "nixos"
+      ]
     },
     {
       "category": "os",
@@ -2819,7 +2833,9 @@
       "id": "nvidia",
       "namespaces": [],
       "title": "NVIDIA Driver",
-      "vendors": []
+      "vendors": [
+        "nvidia"
+      ]
     },
     {
       "category": "device",
@@ -3491,9 +3507,13 @@
     {
       "category": "server-app",
       "id": "rocket-chat",
-      "namespaces": [],
+      "namespaces": [
+        "rocketchat"
+      ],
       "title": "Rocket.Chat",
-      "vendors": []
+      "vendors": [
+        "rocket.chat"
+      ]
     },
     {
       "category": "os",
@@ -3998,9 +4018,14 @@
     {
       "category": "framework",
       "id": "twig",
-      "namespaces": [],
+      "namespaces": [
+        "twig",
+        "twigphp"
+      ],
       "title": "Twig",
-      "vendors": []
+      "vendors": [
+        "symfony"
+      ]
     },
     {
       "category": "server-app",

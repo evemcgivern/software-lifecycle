@@ -650,7 +650,8 @@ rules in "The data folder".
 - **`no_cycle_versions`.** It names version prefixes from an older
   numbering that overlaps a product's cycles. GraalVM numbered releases by
   year until 2023 (21.3.1), and its cycles are the later JDK-based releases
-  (21.0.2). A title match whose version, in the column or in the name,
+  (21.0.2). The same key holds a version Apache never published, such as
+  CouchDB 2.0.1. A title match whose version, in the column or in the name,
   starts with a listed prefix gets the product with no cycle. Give the
   `prefixes`, a `reason` and a `source`. Curated aliases are not affected.
 - **`review_versions`.** It names version prefixes that fit more than one

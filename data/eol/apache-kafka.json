@@ -25,13 +25,13 @@
   },
   {
     "cycle": "4.0",
-    "eol": false,
+    "eol": "2026-07-03",
     "extendedSupport": "2027-06-11",
     "releaseDate": "2025-03-18"
   },
   {
     "cycle": "3.9",
-    "eol": false,
+    "eol": "2026-07-03",
     "extendedSupport": "2027-02-19",
     "releaseDate": "2024-11-06"
   },

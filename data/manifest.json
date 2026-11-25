@@ -1,14 +1,14 @@
 {
   "data_format": 2,
-  "eol_date": "2026-11-01",
+  "eol_date": "2026-11-23",
   "files": {
     "aliases.json": {
       "sha256": "d5e44680c7a63b08c773bfccc74202abfae1e7cd0d513847837814de95d8906b",
       "size": 85758
     },
     "curation.json": {
-      "sha256": "edc1dfcd56aafb1ff42907191121d1479f4743e4afc72c47d8de14fea1371222",
-      "size": 45703
+      "sha256": "cca8c09e20b6b3befbca08a87f2bb70658e8bd3a978180d4e38a8acef75d8bbd",
+      "size": 46077
     },
     "eol/adonisjs.json": {
       "sha256": "becaf3f1f663a31df0a8db2cc922988cfd2e6bd012ced57c18ee2872d6b1704d",
@@ -99,8 +99,8 @@
       "size": 700
     },
     "eol/amazon-rds-mysql.json": {
-      "sha256": "187722cb779a38e7cf9cef3c84e5937f46e4a45ba5d15466b95b8177be9aaac1",
-      "size": 2767
+      "sha256": "acaf163b34e0f632b8b4647bf02f23b1630eb0f411a97708ff8c0976aac7fcfb",
+      "size": 2919
     },
     "eol/amazon-rds-postgresql.json": {
       "sha256": "34f6b987abb3e186dfe1398be782d7b52ce353abbae01ccdee8fcde727c452e3",
@@ -119,12 +119,12 @@
       "size": 1044
     },
     "eol/ansible-core.json": {
-      "sha256": "e2cd3e0ba510155d963a777f10782651bf0abf627b5a99ff8f246a9ebbc955ec",
-      "size": 1133
+      "sha256": "e5b45e439b00df151c01bf7abf0eb9720e235c848e09414e271d135f7df89c74",
+      "size": 1220
     },
     "eol/ansible.json": {
-      "sha256": "2bbbd8525cbde4b3133208b80f28afff946d8ea1555266fbc7c6aff7f59a7d25",
-      "size": 1182
+      "sha256": "a3d9a0f2ea88919113fbd4973c24553dd2c8fe733b36900db6ee8415ef63502d",
+      "size": 1260
     },
     "eol/ant.json": {
       "sha256": "a4bc5ebfeb23dd8daf68908af555f8a3ea09a907681b227a5eed223343665aaf",
@@ -139,12 +139,12 @@
       "size": 2135
     },
     "eol/apache-airflow.json": {
-      "sha256": "b366709a81acfd1769632440e38477b71a684bd85082193ee08b15543a5fe19b",
-      "size": 1022
+      "sha256": "628ab9cb5438bfb66b8fa8907947ec971c862120b51d24faad48f7c1c10d8e3b",
+      "size": 1137
     },
     "eol/apache-apisix.json": {
-      "sha256": "d4c98a0dd38002b2acf6444a3b637b34a8e039ad48d7bb8646562e114c0a17a1",
-      "size": 2248
+      "sha256": "e988047613eee2e9818c87fa380b7d32c1b1f180c0fbb8e658713f6b3f342474",
+      "size": 2422
     },
     "eol/apache-artemis.json": {
       "sha256": "b778c467182774e7dcf016b7cd992561c968af6b028792905bbcd15a565943c2",
@@ -163,8 +163,8 @@
       "size": 340
     },
     "eol/apache-couchdb.json": {
-      "sha256": "3cc8d1d7f912ecc1f412297fd52d8dd32d7e7d661a2d9d2a312cd908b925fdc3",
-      "size": 333
+      "sha256": "a9680413ed432f568bb4fe7b511580b0ddbe0eb60474bd91e3fa0d380a65c016",
+      "size": 933
     },
     "eol/apache-flink.json": {
       "sha256": "5b079ba302bcb652ad144a4a8896eb0b112dad787848f5ddfef33262994a3841",
@@ -179,16 +179,16 @@
       "size": 1524
     },
     "eol/apache-hop.json": {
-      "sha256": "6a7391989e67719fb401022aca79fdcbaebbb99cfc7d4dda4194f1436deb6c76",
-      "size": 1984
+      "sha256": "a4bb743613b823c8bf40f9f7a932ede69a6be2410a8b23dd46faebd0d7266402",
+      "size": 2071
     },
     "eol/apache-http-server.json": {
       "sha256": "ae9616f5fe36c21e096341df7d3107c98ac7cf7d29af492a80cf77e52373e54b",
       "size": 340
     },
     "eol/apache-kafka.json": {
-      "sha256": "f94aa7747c0fc674683de43fb262b3e60c949d885ace017ee5872b1fb0f585b2",
-      "size": 3762
+      "sha256": "a3249aed315b15232bc9c57492d7d0bc3d8119bf07e7b89fbc125e6ec86c2e4a",
+      "size": 3776
     },
     "eol/apache-lucene.json": {
       "sha256": "d6d50d8706b8ee1b6d3eb258722ac752b946314ce2bd2955e2d17331f8e13b0f",
@@ -207,8 +207,8 @@
       "size": 1850
     },
     "eol/apache-spark.json": {
-      "sha256": "209235256ee187fe58824f418efb600c29261377f880472d15fa342f5ddfa4aa",
-      "size": 1809
+      "sha256": "9134757cda94234ccba080c95424b73b2d21025a80ee3773d8d4ae2f4f602ee4",
+      "size": 1895
     },
     "eol/apache-struts.json": {
       "sha256": "1982aaed0a35ccd4531add7e2d52e78818253580be37126d72aebad9cd464bad",
@@ -231,8 +231,8 @@
       "size": 1187
     },
     "eol/argo-cd.json": {
-      "sha256": "4ed4e09ee84d40928ef9abb429115faf58f77730457efd8eb8eedd3c96c9ae6e",
-      "size": 2567
+      "sha256": "cf00f6a145c8f84557ee0dedc97241bd32072364d770a595933612790f9984d4",
+      "size": 2653
     },
     "eol/argo-workflows.json": {
       "sha256": "89e28752607aeed1e6773a7a72305c5337683a4da18a90a2c57858dda7feb746",
@@ -247,8 +247,8 @@
       "size": 1063
     },
     "eol/aws-lambda.json": {
-      "sha256": "98a3b3f860ba0c5dea0fde2ce7af7e8d1c108c097bab507fbe2d37035c79df9e",
-      "size": 6283
+      "sha256": "3c92dcc34b2b1e3361b0a2527799d0bfab882e70f5bca68ccc061b5855c29965",
+      "size": 6282
     },
     "eol/azul-zulu.json": {
       "sha256": "4b3877d58b0c8644a6f27e406d205c886800d17ba68a505ad354bdcb8673a78d",
@@ -275,8 +275,8 @@
       "size": 772
     },
     "eol/bamboo.json": {
-      "sha256": "8f30041cb0e0c9c5a51e67ff5a938bec7e11131727c8861613c349a102e02c78",
-      "size": 5832
+      "sha256": "508002365b3100f86e6f9b81614ae2de6e1b75b848211ddb8d8c66bf027ed9b1",
+      "size": 5919
     },
     "eol/bazel.json": {
       "sha256": "412e8b9e69f8c9d43aa5cbf85294c46f51be6673acefe04ef4a858f69267d4d8",
@@ -291,8 +291,8 @@
       "size": 327
     },
     "eol/bellsoft-liberica.json": {
-      "sha256": "2ad080dc9e8642a5a86133bbb9d9bb32c9c6f9f4d6c2569dbe92f9ef60f2fe5e",
-      "size": 2457
+      "sha256": "0d03ea542b461376ede11aa6a11f809a09e92547d39c6be126edf0b59b0524c4",
+      "size": 2464
     },
     "eol/big-ip.json": {
       "sha256": "e5511e239dd43428db13e0ade2cc0c13646550ea0f8b3ee33ca185bfca882b56",
@@ -311,12 +311,12 @@
       "size": 10964
     },
     "eol/bitcoin-core.json": {
-      "sha256": "8fc222ff6b86023ac2f301d38b9c7d9a8b0f712c8a24d6e6d29a9ac921487e9e",
-      "size": 2751
+      "sha256": "a3e45f884e311a728c81b24216b79a47b9a002dfeb1604e38e188fb292785c63",
+      "size": 2858
     },
     "eol/blender.json": {
-      "sha256": "e36a2b06236df52dbaef2aed42d81076fc21279bad4143220fc7cc5168c67a4b",
-      "size": 2075
+      "sha256": "6efea697bf0c133bbd74c968dd71099312c346c71fe1545f4a804a7bcf36cebf",
+      "size": 2175
     },
     "eol/bootstrap.json": {
       "sha256": "7411d2234c6e4e9562acee44c2fcacd82d77a038fc74f96b484116738cd7ea63",
@@ -359,7 +359,7 @@
       "size": 1878
     },
     "eol/ceph.json": {
-      "sha256": "eae3c3ff6894e2e9bbcbfd467ad5d42901cb1444240ba5625ce219d4443692d3",
+      "sha256": "8b16f08be6069b46675a8e33c849d453b524cf5d3b2d9906bc6361a1ca51ba71",
       "size": 1107
     },
     "eol/cert-manager.json": {
@@ -367,8 +367,8 @@
       "size": 1033
     },
     "eol/cfengine.json": {
-      "sha256": "f01a14f1308f348b709acbe9bb8bc97fe8975fe58b382921d1ef52aec8b5df5e",
-      "size": 1214
+      "sha256": "4b7c9d0733454e841e8d0a210e71feaf79a06d256dbf4d410e43f59ab4ab70d4",
+      "size": 1301
     },
     "eol/checkmk.json": {
       "sha256": "c15485f65bdbe528129d0b0ad0de1c2800ab1114f3d7d76f14ccde4700ac8443",
@@ -395,8 +395,8 @@
       "size": 672
     },
     "eol/chrome.json": {
-      "sha256": "585ee9b4f80ff7cf6965433b1eba9f305814b2d083b3e8b33f3cc43af50d26f2",
-      "size": 12722
+      "sha256": "95459327232121dbe855708c59197e755035c15da3929bfd1e914cba702754ad",
+      "size": 12894
     },
     "eol/chromecast.json": {
       "sha256": "79a708526e8a85e11122599e4ab5bbd7d1e7cace0bcf6675a20705d33357d21a",
@@ -407,8 +407,8 @@
       "size": 678
     },
     "eol/cisco-ios-xe.json": {
-      "sha256": "cb3590fad4446afd46bd21fac1d3a612335ba0c0171f258535f9665bdac9cdee",
-      "size": 2318
+      "sha256": "b0e22706756291ead8ae1d945b48c4ab8173ac98e212ed6ec9f6a8f44c477136",
+      "size": 2419
     },
     "eol/citrix-vad.json": {
       "sha256": "62258142aff857cbcfc68d2911c3e5b5ad372acb4b0e192cf4ec72ed7c243082",
@@ -423,8 +423,8 @@
       "size": 1127
     },
     "eol/claude.json": {
-      "sha256": "93c4fb13f1d91699e798ecc195376c0bcb7decb2ce12a876fbf45a052617396c",
-      "size": 4434
+      "sha256": "ba2292cbd6bd5fb037309a0916217cb04dcff5b8748f4a1cbe36e2591d5a4bf6",
+      "size": 4675
     },
     "eol/clear-linux.json": {
       "sha256": "a1ef1c3dd3015bd8cc9a83e00c08dca6d0f8f836d9b850cac430952a1e9e35d7",
@@ -443,8 +443,8 @@
       "size": 1003
     },
     "eol/cockroachdb.json": {
-      "sha256": "7ea3f7dfaf3b17d6dc4896dd9a1c7cbbb9263d0974927ce93398eef97eed3494",
-      "size": 2783
+      "sha256": "caccaaa9feaffcddb9aa3d54e5f92e6c29c55ee7021dc6b24aa3dca8f12e26a5",
+      "size": 2899
     },
     "eol/coder.json": {
       "sha256": "151e3167015ce29bb2c5b0bf48b656aa1c756636ff580b671cb125b65c8159bd",
@@ -547,8 +547,8 @@
       "size": 2270
     },
     "eol/dotnet.json": {
-      "sha256": "74dff76879a3c86eda128150f234c62aea2dcb1f4b30acea0b33cab1c89a20ae",
-      "size": 1110
+      "sha256": "072b41d43b612933d1dfb7e41fc7cd58e3fb9c290559e4c8b9faeff974601c00",
+      "size": 1195
     },
     "eol/dotnetfx.json": {
       "sha256": "4a59c3794506a1cb5d62b83cf5430046787784541967ab6f867b979aaffce31e",
@@ -563,7 +563,7 @@
       "size": 746
     },
     "eol/drupal.json": {
-      "sha256": "7130f12532a098bd61641124b4bea8d8ce2c3e82f7e1643c4b54ca53542afd6f",
+      "sha256": "5c77dfae05a0fe25e541f4dee13d0333a5d362b0fadb951e12654b540abbc19e",
       "size": 3057
     },
     "eol/drush.json": {
@@ -639,24 +639,24 @@
       "size": 864
     },
     "eol/fedora.json": {
-      "sha256": "0e795733e10328c18d98a009f2f8f862f7b46e2cdec9e314ddc161dc4d29b995",
-      "size": 3734
+      "sha256": "505a9b398036eada4de3f7f7ccb7fb378e27d89faa0094b0f9fb11ae400d31ae",
+      "size": 3819
     },
     "eol/ffmpeg.json": {
-      "sha256": "20e431bf27f97d16613de2ded343d5b08e5fa6a7c9087758b65be1517b7bb939",
-      "size": 3224
+      "sha256": "06f1951d0087cf72f4c0688cadae63d8919bfbcff4c82f1affb22a710f756ce5",
+      "size": 3303
     },
     "eol/filemaker.json": {
       "sha256": "29d60042deb95ea44dfb8cdcd32af2d0b878057beb928d26efb64a50570c231a",
       "size": 1975
     },
     "eol/firefox.json": {
-      "sha256": "8aeda7f7c1876543d7f92a38fe3188bde86a3ffdbb527eba66afd190afc8bd7e",
-      "size": 5154
+      "sha256": "a44947ac03967d9663e5fb5041698011f748c0e5f65b0c6a280e1013fa22637a",
+      "size": 6005
     },
     "eol/fluent-bit.json": {
-      "sha256": "a49342038864f11b2d3544b7ed67a6920b09ae93dde6e21c7f6352433fdeacf5",
-      "size": 2133
+      "sha256": "a3843a3bf2dbc5d5f70add981b6a8f30a57949d0db64334bdcafb8cd75db149f",
+      "size": 2219
     },
     "eol/flux.json": {
       "sha256": "766dc26b457c04e924e87dacff3e2532750578afe3a256bb7ade5777f78f61e8",
@@ -679,8 +679,8 @@
       "size": 923
     },
     "eol/foundationdb.json": {
-      "sha256": "8458f60f968c40d6cf8bb2b9f1bd6e6ce49b7f876ba8db86e52d80e427d3a4e6",
-      "size": 326
+      "sha256": "42cb9d05f557d478d999bf410f34e2fdbe99cfc309d6823ecd6ceea44a79d6c2",
+      "size": 441
     },
     "eol/freebsd.json": {
       "sha256": "1130e926e6624f734da078e3688d53c6025c5b1075063a61a452e031fa859c94",
@@ -695,12 +695,12 @@
       "size": 1120
     },
     "eol/geoserver.json": {
-      "sha256": "ed74aee5f0ede87ade41dc6ddd56d9e9b608ec65f20a35540a8acaeebdcc688c",
-      "size": 676
+      "sha256": "b453483fc8709f40f7ddaac46ab69db5486800f06c40add7d51fe610413a1804",
+      "size": 1488
     },
     "eol/gerrit.json": {
-      "sha256": "9a5c579e8d3f01a2c00150f1f29ed5f556fedc76e6357f03aecf7a2d7ac40891",
-      "size": 1617
+      "sha256": "9f92892bd067fc5fedae33ad729461da39abfa4ad28c739fdba402fda4b23ffb",
+      "size": 1704
     },
     "eol/ghc.json": {
       "sha256": "0ff168bbdfc17d773e10052a6ea699105cce61cbe81dd026c3783ae1eec0ee55",
@@ -715,20 +715,20 @@
       "size": 2527
     },
     "eol/gitlab-runner.json": {
-      "sha256": "44116bf6f3a9c487611b570efdd44ce88f8636f1e4a4a2752b8d027a7cbf4625",
-      "size": 2093
+      "sha256": "840b22e7c56a925e62d9011160a4342cf6154a12792c7dc6dfe978a781bda2e5",
+      "size": 2209
     },
     "eol/gitlab.json": {
-      "sha256": "7cc36bde51544e4ea658af42d4ca5ce6d00406f7e60986886059f6239f717c67",
-      "size": 7903
+      "sha256": "b4631968ac5ac213a169097913281e0f657251ec3bb6feafb49b63b79015dd37",
+      "size": 8019
     },
     "eol/gleam.json": {
       "sha256": "5e303f67db11ffc04497b13c73af93eeaa2f68c2785e83d15d08a63c4275bc7a",
       "size": 80
     },
     "eol/go.json": {
-      "sha256": "d3ebec5a4285b67d37d5cedc3817132eb7546515ab17a2a51fc8632b6867aeef",
-      "size": 1555
+      "sha256": "27cdbae29f1c3d89f4b899fa3128ebcc6575fc5eb5123c95373978eed5efbd2c",
+      "size": 2243
     },
     "eol/goaccess.json": {
       "sha256": "048d95fe891dc2b9a1e7baa1e6b152422d9bb2d1da82beb87bb1d8c57c8c97d9",
@@ -739,7 +739,7 @@
       "size": 1961
     },
     "eol/google-kubernetes-engine.json": {
-      "sha256": "b66403e40c1f69318a6557599bb8d2bf14e0a74396b728a17a485fac4632f14c",
+      "sha256": "4e3e4333fef331232edc968bfe38b84a504ac81a6a2cb598caffbd49e70501e5",
       "size": 2439
     },
     "eol/google-nexus.json": {
@@ -771,7 +771,7 @@
       "size": 851
     },
     "eol/graylog.json": {
-      "sha256": "564f39b1da1571ac60492e43b9645131a812adab586ff134437a7f6044ba538d",
+      "sha256": "cad2185775b193118341d321d7ddced499e5ba82dc7161f3cbff8d4df13f9f08",
       "size": 2411
     },
     "eol/greenlight.json": {
@@ -803,8 +803,8 @@
       "size": 2153
     },
     "eol/harbor.json": {
-      "sha256": "6827adb9d8e3e05f1f47232bbb6c43d34d38d1a20404200c5854dc56b642f27a",
-      "size": 1537
+      "sha256": "1fd2b0e078f22ad7cafce3c2cac8ffa48214b075f2b2f17cedf0e9318778924b",
+      "size": 1624
     },
     "eol/hashicorp-packer.json": {
       "sha256": "bc811ec94d25655b83f9d5e78ddea3ece2ae8730b60052ba7f66b4a345de5b29",
@@ -847,7 +847,7 @@
       "size": 1531
     },
     "eol/ibm-semeru-runtime.json": {
-      "sha256": "bcacab74bcb408bbc3166fbc2b9d63e9eb62cf0d203369fc608bf796e4086076",
+      "sha256": "69d9a139a7c48e869e6f35906457fdd2e58b5404a0c11dc3a2d0368aef439c2d",
       "size": 852
     },
     "eol/icinga-web.json": {
@@ -883,7 +883,7 @@
       "size": 1779
     },
     "eol/ipad.json": {
-      "sha256": "0e62840ba38eaac764831003690accad300d163330b465357999a4a197c56fe3",
+      "sha256": "f5df69c7da7f83a21c8398c8fcaac26d1aa72052b2a3e32ed7fd81c725ba70bd",
       "size": 3801
     },
     "eol/ipados.json": {
@@ -895,12 +895,12 @@
       "size": 4586
     },
     "eol/isc-dhcp.json": {
-      "sha256": "0e79a0346ee446755ef9179681526a37b1a99333191d2df101ce286b33253da3",
+      "sha256": "44331a3b76f4966b9658dc8f4e3147c0c45803667d7df0aeff77cc90c4f27770",
       "size": 347
     },
     "eol/istio.json": {
-      "sha256": "4a27f477f7606ece59ab244bec996c56b2adf12e874ea61befd37e9ec493ad86",
-      "size": 2175
+      "sha256": "cfce8866e68d25afd87574f79b8e2fdae60ea4c739003ebb4a0c0cac8cb29251",
+      "size": 2262
     },
     "eol/jaeger.json": {
       "sha256": "f28e33a771b28b905113fef422eb831af9f36b5781ccb74015eafa1b6bed8f98",
@@ -1015,8 +1015,8 @@
       "size": 1986
     },
     "eol/kyverno.json": {
-      "sha256": "bc537deb411234e4795961c63cd81fbdbd0ebbbc81548ae155cdf3e4237e806c",
-      "size": 1038
+      "sha256": "956606d9ceabee24e92586cde1a09134102c8283cf4dd32f2b4e37ee572af87f",
+      "size": 1125
     },
     "eol/laravel.json": {
       "sha256": "1bbf33c6a3f1d8d2a399428ac36c771e50558efcf825a72453530e0530d84181",
@@ -1035,15 +1035,15 @@
       "size": 1194
     },
     "eol/linux.json": {
-      "sha256": "67facfcca14a729584e3dfdc49f281cfa706a16262a5d3997416f6a104289b75",
-      "size": 3279
+      "sha256": "53c04898934057cbb7c02b14f04ff7525dd08ce4c0294bacc7c9de124089c6c5",
+      "size": 3286
     },
     "eol/linuxmint.json": {
       "sha256": "2b5d53fa1a97786245b9c68db3ef96a30db1e05cdefee917023f7e1b614c0028",
       "size": 1906
     },
     "eol/liquibase-secure.json": {
-      "sha256": "e87bc61c2b978dc5241004111298aefb5ce9bd70e8d534bf37bed8b47452e2f7",
+      "sha256": "75fb9273682ccae38427852dfa5de467fe6b1ba24912ae082f3736ede4902254",
       "size": 1035
     },
     "eol/liquibase.json": {
@@ -1091,8 +1091,8 @@
       "size": 1468
     },
     "eol/mariadb.json": {
-      "sha256": "c59246e0ffcf0116f90ab6183d0931c7522c7961af903c6e713498dfb8bfb2e4",
-      "size": 3609
+      "sha256": "f603733c38a16560cd7f0d111bf402befa411732c7bc1c738f2069890b9885a8",
+      "size": 3616
     },
     "eol/mastodon.json": {
       "sha256": "23c2eb8c6e480108bfc3bbdc8c8a766ea9705ddb2b62494bbe2cf79b496e99e4",
@@ -1103,8 +1103,8 @@
       "size": 553
     },
     "eol/mattermost.json": {
-      "sha256": "6ed598f0abee59e75d23f00fd3f07b58a8291dd01f7356898fe4f50dd77a0de0",
-      "size": 5025
+      "sha256": "9979fc64fae043204871ac9b0b657bc60974a8769a534b766840a068079de070",
+      "size": 5112
     },
     "eol/mautic.json": {
       "sha256": "7c42305d40b891f1047ca7ba7998c5911b59e26f45bab729656a271de8bbd1ab",
@@ -1115,8 +1115,8 @@
       "size": 1395
     },
     "eol/meilisearch.json": {
-      "sha256": "55314a345872bb17c8f2e836cfc3b43d1a2454bdbe6e4f2fedee78a51b4ea01b",
-      "size": 4945
+      "sha256": "0397e1f4f4c04a7472f641ff1a4b46d773d0da47a7607d2cfcf1252be71aa859",
+      "size": 5032
     },
     "eol/memcached.json": {
       "sha256": "c7541e50b8a5bd66172bd77581f9c11c660aab60918f7b899b06f5df9bbedc50",
@@ -1159,8 +1159,8 @@
       "size": 5415
     },
     "eol/mulesoft-runtime.json": {
-      "sha256": "0d4d92093d1f6b16acec41ff2f47f270d3481bd9c5491caf066f6c9788c9817f",
-      "size": 1854
+      "sha256": "12d8547f5ffed065b6c8fd99d623c0a9e5c28b26d1d8972d24cd405ebd585ef7",
+      "size": 1970
     },
     "eol/mxlinux.json": {
       "sha256": "9ee4c7dce76dd980c5a928c23de2e307b30a6af07d00b2682d963dfca2ce07d9",
@@ -1171,16 +1171,16 @@
       "size": 2637
     },
     "eol/neo4j.json": {
-      "sha256": "69bc645e6700380c0203169253f0e5a560f645163d59495fc7dd29932d4de552",
-      "size": 6289
+      "sha256": "af3da899ae20e6de31b53e2489c5e76ae91bc5e8c19e7e31f8e7099e7d9e50dd",
+      "size": 6379
     },
     "eol/neos.json": {
       "sha256": "d546aec934dbed8e1c9eb5d967cfd25abf50479746102241446cd36097a0506c",
       "size": 1038
     },
     "eol/nestjs.json": {
-      "sha256": "0ad8fd39c840f2659256f7494b0ce8fe34f0f78de27a4f5bf88261308155a976",
-      "size": 630
+      "sha256": "ff3bade3a88be687bfddeb6e391810c5c1b8f57eed138580389876117fcb6d63",
+      "size": 735
     },
     "eol/netapp-ontap.json": {
       "sha256": "47494780d4105a709083755bc949479db17209391d93e0466917d70c1d0c7e6b",
@@ -1199,20 +1199,20 @@
       "size": 2297
     },
     "eol/nextjs.json": {
-      "sha256": "f17a60329a9a09e2d9c45b9089f86cbcce96afd932001eb4af4e95e036dbfea6",
-      "size": 675
+      "sha256": "4d97ae7eeb4836586cce36d50e1cb6828aa4a3dd621dfa6dc41327138044681d",
+      "size": 914
     },
     "eol/nexus.json": {
-      "sha256": "40a1b313836522b85c6edf78eb3b4e960d4db29327405cd345b8310c5d603993",
-      "size": 8050
+      "sha256": "c4152d8ae2ce6c3df312d04669d5a411d43e37f03b7606bf6fb277c056b03e26",
+      "size": 8166
     },
     "eol/nginx.json": {
       "sha256": "84fa140b3738839cf86823998ac929b4851f7b426d54b83d0153bd6fa3aced71",
       "size": 2763
     },
     "eol/nix.json": {
-      "sha256": "3027579a3789911785c62fb739d3f3ed49e945dcc789b50c11cce76290d91b9c",
-      "size": 3202
+      "sha256": "bed7612da7f6d9861f746d3fbd1935e07f86e5b6d4b2535d4845b608d8515daa",
+      "size": 3289
     },
     "eol/nixos.json": {
       "sha256": "06d445a7594eb6d27669ba2f6d0f6a179d9a0db3590d31ee4eebb88012d67378",
@@ -1259,20 +1259,20 @@
       "size": 559
     },
     "eol/nvidia-gpu.json": {
-      "sha256": "6a50d22aaca196ef2161ee13874784f42bfc66d04905d7536f1f8ff2280f3993",
-      "size": 4539
+      "sha256": "c8236dfd7109b1003ce2a4782ce26918acecd38f4770168f9e788518b893c117",
+      "size": 4665
     },
     "eol/nvidia.json": {
-      "sha256": "f3274a2980ba6d291e0e3122a0036d376a134c55b161487998252bebe7fe1c9d",
-      "size": 5777
+      "sha256": "5382c0d5d712b8a8fd1ed2a02f9ced0b3203ebe23aba9f409c03d4d1685bacd7",
+      "size": 6025
     },
     "eol/nvm.json": {
-      "sha256": "a1f737a75a1e176fd2ad309f1efa08f62e61534fd577f238772b759097cf8859",
-      "size": 3467
+      "sha256": "7744f3e0d1e6592b62f0ff00c578fb156c7d69267233700fd5ad8ea226deabfd",
+      "size": 3554
     },
     "eol/office.json": {
-      "sha256": "66f67d12dfca5e6c24725c5299cf7217e45f799da7b7130de64f0555048a8ca2",
-      "size": 1184
+      "sha256": "ce95227f5564908ecc3e0bd88fa9c9c47313d1e03a65c7479148f3d229986dc8",
+      "size": 1300
     },
     "eol/oneplus.json": {
       "sha256": "9f8df28c017bcf1e56ed87f0d04d60fedc6ae4f1009f988cc83a14ebaae00832",
@@ -1283,15 +1283,15 @@
       "size": 171
     },
     "eol/openai-api-models.json": {
-      "sha256": "e2c8bc681b27f28884df3c39d175e5dc1dedd4e0c8d135759792d3f8df236133",
-      "size": 10857
+      "sha256": "d6be2a985c6fb015077dea12d0bc5f6daad1d85fa67c6170783ce0f7b71b50dd",
+      "size": 11543
     },
     "eol/openbao.json": {
       "sha256": "186f2a5828d8e4e02104bfb3cf951830535899e6b3b34a4490e5338a4937e36f",
       "size": 684
     },
     "eol/openbsd.json": {
-      "sha256": "d37a86f7d3eb2d08a1dd156d083eb82a2150af6ba10c6cada5a80fb288bb5e30",
+      "sha256": "fba90b42c2317f3f199a44a1061e3b0bc49b11b60d596f34e20c809cee8c04e4",
       "size": 5163
     },
     "eol/openjdk-builds-from-oracle.json": {
@@ -1375,8 +1375,8 @@
       "size": 430
     },
     "eol/perl.json": {
-      "sha256": "f746236de5dc09acf6ecaa4ebc77ff4afd11179dd7d8ca1e506fc61ca4d3ad4d",
-      "size": 1147
+      "sha256": "735dda736ca2fa18b20a0903188349749665f94b7e76ee27d6236573eb290f6e",
+      "size": 2190
     },
     "eol/pgadmin.json": {
       "sha256": "06482564c967f65c341fe6cdf9d244809104bc0125bcc485c44ecabb5ab2b7e7",
@@ -1387,12 +1387,12 @@
       "size": 1002
     },
     "eol/photon.json": {
-      "sha256": "b6e31237e5929481b5fd12a547936184fdbdf4543de3d602dd4cfdae8b4c85e1",
+      "sha256": "ef26d606352f3a5e3fe47316948d3a886cfe442885832d28f7bd3d8a954d83bd",
       "size": 426
     },
     "eol/php.json": {
-      "sha256": "414f441cbb7e639cc0b97399fd7d6f3d6f7dd40cafba6ca7b89b4f1dbd7086d3",
-      "size": 2648
+      "sha256": "bf908b7aa201873c09bebf3182b6e39309c39527a8aeb58f861e9d34abadb76c",
+      "size": 2763
     },
     "eol/phpbb.json": {
       "sha256": "82b5e41d1f752b6974dfed0962944bbbf935414df976c3924734476885b92b6c",
@@ -1427,8 +1427,8 @@
       "size": 755
     },
     "eol/podman.json": {
-      "sha256": "2d4574e7008ee9c18ceb87c4c5aebaacac3923c732f0b33ebe94b7f0bc8c1e90",
-      "size": 2232
+      "sha256": "8e0b76868a518b1e264c6a378c97bea837477013406c5ad5b3ced5241d9d3285",
+      "size": 2318
     },
     "eol/pop-os.json": {
       "sha256": "2251e62b9d537909a80236b77fdd23f37a73ca602eef3e8339f6cdc2a83206c6",
@@ -1439,16 +1439,16 @@
       "size": 1527
     },
     "eol/postgresql.json": {
-      "sha256": "a72bf2fb067ffe7c48250cc9437ec73ae8115871d696816dc26f48f34aa3a1ea",
-      "size": 2722
+      "sha256": "4a8c5060e367480c5531d53a63303a6f6a9404170196f5189f0b49fd6d9cd90c",
+      "size": 2807
     },
     "eol/postmarketos.json": {
       "sha256": "3edf1e0aba8078b02e63c0984c3f13d4cbac5be2c28dd6c40570b7214cd243ea",
       "size": 1147
     },
     "eol/powershell.json": {
-      "sha256": "abf72e82a3ac767b628bb458d1851d9b92182d35c294775d0fef75fd646c02ac",
-      "size": 863
+      "sha256": "374c114e0f8ab67c2eaa6db24a8bf8679bc61057e46d0832213f0bf914e0cfda",
+      "size": 949
     },
     "eol/privatebin.json": {
       "sha256": "2a3feada095389dea3002825357a7b631d35c63594a964621360cb2c78697f9a",
@@ -1459,8 +1459,8 @@
       "size": 566
     },
     "eol/prometheus.json": {
-      "sha256": "6f6cdaa03d988d2120aa1068a30c434980a3d27e6ce95e93852cbe6794315ea2",
-      "size": 3125
+      "sha256": "c352c1f2cf33cb7f0ec4d131e277081008e7363d48963eec4582ff7331e8db32",
+      "size": 3212
     },
     "eol/protractor.json": {
       "sha256": "9a1eeee3c0edf31acd58bd811917cf8c49b1fbbdc890dd83840418f7fc1acce5",
@@ -1487,8 +1487,8 @@
       "size": 500
     },
     "eol/python.json": {
-      "sha256": "da7e0572f225d856852565e6101c326e2c4bda89924c0fdf10d621587e953899",
-      "size": 2023
+      "sha256": "ca802dbbbb4adece2841d3aff94a0c6f86c8f10036bb7fb92c34f5fb4645945a",
+      "size": 2563
     },
     "eol/qt.json": {
       "sha256": "613a272068a35038a29fb24742e10cfdbe7de97729420030b67ef56877878637",
@@ -1515,7 +1515,7 @@
       "size": 1964
     },
     "eol/raspberry-pi.json": {
-      "sha256": "2ac5db0a61cf3caa62293c5c0557392ee5f4b49fef7ff8d50895c342c33494fc",
+      "sha256": "86fabdd74f3cae2e12d0a6604fa1de4041bd0dfe55b6bd857953411bddf2448d",
       "size": 2083
     },
     "eol/react-native.json": {
@@ -1531,8 +1531,8 @@
       "size": 611
     },
     "eol/red-hat-openshift.json": {
-      "sha256": "25460d75f0c49528239a2dee774d83fa5fee8d3c6757c271722040d9124dc382",
-      "size": 3241
+      "sha256": "ce45e016caf675d70528d10d18306a37004be53a97d4fcc39f3c2a7ac28e9f85",
+      "size": 3386
     },
     "eol/redhat-build-of-openjdk.json": {
       "sha256": "447db16d1de54a43d43feb62470827ba740c72162e7ceb4aedbb6ae5fb88e616",
@@ -1543,7 +1543,7 @@
       "size": 907
     },
     "eol/redhat-satellite.json": {
-      "sha256": "c3b3abfe655a300d5b24757514e74aecc05f89cbee39b4f7d089e0751db2b95e",
+      "sha256": "bad54bad30b7436fb16032919bb1202d4e1fc7d2bcb203a2d4c328cb0a352e6e",
       "size": 2313
     },
     "eol/redis.json": {
@@ -1567,8 +1567,8 @@
       "size": 493
     },
     "eol/rocket-chat.json": {
-      "sha256": "2344875518dea90d57368e9871c6972edda2796c61a6c86206a6025a403b8eac",
-      "size": 9220
+      "sha256": "8c88e86ab39bd55fe51a43bcdac004a68458ac78fe2be09aefc8c99911aa0757",
+      "size": 9335
     },
     "eol/rocky-linux.json": {
       "sha256": "24c039c83793f5809265f3644d2dd1ca680402bab733acc86d51b066a1d4ebb3",
@@ -1591,16 +1591,16 @@
       "size": 7516
     },
     "eol/rtpengine.json": {
-      "sha256": "ce30d960926c696814520611738d26d2febd006fad8ce32ff8cdf5511bc19c38",
+      "sha256": "8af2c3ebe3cb7f16a51cafbbc0fa9c866b5d6685d0459bc6d6add2aa2f6d0500",
       "size": 2350
     },
     "eol/ruby.json": {
-      "sha256": "2f3888fa06b01243e560b460e252a7d8c61c3417ffa0fa904ea31c5c9f327d69",
-      "size": 1297
+      "sha256": "d23fbc4ac10463d38558d78e3ae36f71cc2f6be6ad8dd3f0d1d3b0af0ced4786",
+      "size": 1383
     },
     "eol/rust.json": {
-      "sha256": "576c474fce5462fb0169911991bc476cade2816cd985ed78d59338f4a0268d8e",
-      "size": 6173
+      "sha256": "14a2928ec0fd1a93c1be612a003f23a99fb3470272ad719eeeba62d088f6440b",
+      "size": 6261
     },
     "eol/salt.json": {
       "sha256": "a246ac7502f1c3c3d7c2eb70954e6bec0eef71e63996c4452c9c4f8da21ce7e2",
@@ -1647,8 +1647,8 @@
       "size": 1559
     },
     "eol/sles.json": {
-      "sha256": "8ea5ab50d6c184beea70b154589ebc61712d6909aceaa97479a821d7e70fe244",
-      "size": 3103
+      "sha256": "84e69907ccf166c486fe7da71a5d7c2bdf6aa19bde93bd78b74c9d4dff75e4f9",
+      "size": 3227
     },
     "eol/sns-firmware.json": {
       "sha256": "9e6c16088bb81528eb4117d95d7ba61bc3b0a2ec1be7bb8202adf9ed7c68c9e1",
@@ -1667,8 +1667,8 @@
       "size": 722
     },
     "eol/sonarqube-community.json": {
-      "sha256": "127fee4d197c95876b67bab761fbe00b75a7aacff040a0e7f9f7ff771fad66be",
-      "size": 1374
+      "sha256": "5793b321d4ea4f2a4847719f5bcfa532a6499ac7d871bd6679ac02bcbf559bb9",
+      "size": 1462
     },
     "eol/sonarqube-server.json": {
       "sha256": "2e0c6eaec2133ee83145508cb690c452431ef20aa84756fe748e74bbc14cb526",
@@ -1687,16 +1687,16 @@
       "size": 1296
     },
     "eol/spring-boot.json": {
-      "sha256": "58fe8161267c6d7988ad33dac364b5134a29fcb96f1c078f9697910ba97aa23b",
-      "size": 2094
+      "sha256": "f390626719b8f28359cdb83c4ff00f589a03dc03e5b32856e7b89a1626068662",
+      "size": 2217
     },
     "eol/spring-cloud.json": {
       "sha256": "59772b47560b341449a1a956bb71ee4f0afa87c6cc2d50250638c3ab4a4d1ac2",
       "size": 885
     },
     "eol/spring-framework.json": {
-      "sha256": "c190f37c3f31903fe4b51c222c0d9ea530f0a58d2ee06cd65d6b160d988e679f",
-      "size": 1212
+      "sha256": "1f646dad52e255a36f60c31a4524c951aceab8910ff557db40dadaaafeadd4b8",
+      "size": 1335
     },
     "eol/spring-security.json": {
       "sha256": "b7e1717886ada412798a9323bec0dcf41671ac77e969c9ac82dec8ddc8d05643",
@@ -1731,7 +1731,7 @@
       "size": 777
     },
     "eol/suse-manager.json": {
-      "sha256": "6ed8ae892514f6d257f323a911785fe8dfcf110ae594f2690e7a5748e8461a72",
+      "sha256": "816823ca0cd1666c138f45456910cc26e12e07ec148762c957688d965d5c1820",
       "size": 1402
     },
     "eol/svelte.json": {
@@ -1739,8 +1739,8 @@
       "size": 703
     },
     "eol/sylius.json": {
-      "sha256": "2a75524946ea6a2674ea0dd5dc4022d6c1598a3b3001d73a381fb7683fc9529f",
-      "size": 1258
+      "sha256": "94b0a664e2179c4119bfd93db8539db8b398390a2e9e1c7cc20d14f086a89aac",
+      "size": 1273
     },
     "eol/symfony.json": {
       "sha256": "47f62f045e8e89f588b09309e6dc8e7884d9015d6cc31af2f057201943736220",
@@ -1783,8 +1783,8 @@
       "size": 333
     },
     "eol/tomcat.json": {
-      "sha256": "d806171a970b008b5d2de68ba8f1d5153faa3b37b37f459e1fa3a16b8b1b83de",
-      "size": 760
+      "sha256": "067fff7400e09dc6a845e79e00ef7a8f0a9896e3dce999a450f6558bb779fb9a",
+      "size": 844
     },
     "eol/traefik.json": {
       "sha256": "3b3d3ba046352afa49016008ea5b8ec4af94f293140846ccb9ca6f46a1080a62",
@@ -1823,15 +1823,15 @@
       "size": 442
     },
     "eol/valkey.json": {
-      "sha256": "20e92e4d33a8f898545b3b567c301a8542e4a9106f9e5597dac469cd13af059d",
-      "size": 578
+      "sha256": "a4b8e6816b1151f8bc381c0858f4d85bc5f9dfe0c93d61bc2e0261cb1af032cb",
+      "size": 693
     },
     "eol/vcenter.json": {
       "sha256": "54be0bed69c622f19e1a18511f5a3020e7f972f3c260e754177fb8a7209ae172",
       "size": 947
     },
     "eol/veeam-backup-and-replication.json": {
-      "sha256": "127d4063375a08b655cca390d79e54d8cbb47424c059e5948722dd3a9a6fa61a",
+      "sha256": "46e90043924ff17e957175c8b2f04727a11a0a6816d57188557d3284505c96fc",
       "size": 1674
     },
     "eol/veeam-backup-for-microsoft-365.json": {
@@ -1859,8 +1859,8 @@
       "size": 1036
     },
     "eol/visual-studio.json": {
-      "sha256": "750bfa989f51c92bf4407afa1eed0dbafd935c85213d833185c0bf029e6ba152",
-      "size": 4616
+      "sha256": "a57dbb6046520a5557e7c836da2cc59dba543e630262600fef4a02f5ce1395b1",
+      "size": 4704
     },
     "eol/vitess.json": {
       "sha256": "1b167655ccf2855fd7a9c3b287b545b1b084a025ef5b4ac4dc2f392ead3f615c",
@@ -1887,8 +1887,8 @@
       "size": 559
     },
     "eol/wagtail.json": {
-      "sha256": "e1afe817ee4387fdf7e0f7e43e52d4ddd89bc2627027c9ed78fd49531a9604cc",
-      "size": 5569
+      "sha256": "3b25ec77ea30301cfcd30ad4dfd2a736cae0296a7b741bca4aa7a173aed90e11",
+      "size": 5684
     },
     "eol/watchos.json": {
       "sha256": "a2f7f1bbc3e21920b924db1c352f7eda956e16f7557f52663ba9630305c7a691",
@@ -1951,8 +1951,8 @@
       "size": 2118
     },
     "eol/zabbix.json": {
-      "sha256": "e257f79e408d6ddb8e426322e44d30ea8c0e0d53531a51d23d46b57c705f385f",
-      "size": 1030
+      "sha256": "c255597849b954035fb824d3a7d24fa5a0f598acbe40399f9fa862b54dab9007",
+      "size": 1153
     },
     "eol/zentyal.json": {
       "sha256": "16606dacdca6b7a131cdcc06a27c4aa745ecc3d51e2dde7f938aaf01c4daf71a",
@@ -1971,8 +1971,8 @@
       "size": 262259
     },
     "products.json": {
-      "sha256": "3e18a9f78dcd95f7a07b98f5bcf83e9826291617654e3bd2d63abeeb5765f089",
-      "size": 81947
+      "sha256": "02c37b9dd89e91c2c7b8adab1b29dda8036e86288e2a8f8a33d11a2f3dba9ec2",
+      "size": 82307
     },
     "profiles.json": {
       "sha256": "de569a287932f84b3e060361d1e91bc9177b6c8b42ec0c0eff887c9a0171863d",
@@ -1982,6 +1982,6 @@
   "kev_catalog_version": "2026.10.30",
   "kev_date": "2026-10-30",
   "min_tool_version": "0.7.0",
-  "release_id": "main-eol-2026-11-01",
-  "upstream_commit": "38b1896e632717895c7896dde8f42b918a58103d"
+  "release_id": "main-eol-2026-11-23",
+  "upstream_commit": "45773d7f6833ea2340fffae8f742be7b2fad5b27"
 }

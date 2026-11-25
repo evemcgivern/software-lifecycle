@@ -55,7 +55,7 @@
   },
   {
     "cycle": "dotnet9",
-    "eol": false,
+    "eol": true,
     "releaseDate": "2024-12-09",
     "support": "2026-11-10"
   },
@@ -63,7 +63,7 @@
     "cycle": "nodejs22.x",
     "eol": "2027-08-31",
     "releaseDate": "2024-11-22",
-    "support": "2027-04-30"
+    "support": "2027-05-30"
   },
   {
     "cycle": "python3.13",

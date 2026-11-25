@@ -1,5 +1,11 @@
 [
   {
+    "cycle": "5.3",
+    "eol": false,
+    "releaseDate": "2026-11-10",
+    "support": true
+  },
+  {
     "cycle": "5.2",
     "eol": "2028-07-14",
     "releaseDate": "2026-07-14",
@@ -21,7 +27,7 @@
     "cycle": "4.5",
     "eol": "2027-07-14",
     "releaseDate": "2025-07-14",
-    "support": "2025-11-11"
+    "support": "2025-11-18"
   },
   {
     "cycle": "4.4",

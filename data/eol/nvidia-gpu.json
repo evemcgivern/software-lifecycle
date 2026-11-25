@@ -1,6 +1,6 @@
 [
   {
-    "cycle": "mobile-professional-ada-lovelace",
+    "cycle": "mobile-professional-blackwell",
     "eol": false,
     "releaseDate": "2025-01-30",
     "support": true
@@ -21,6 +21,12 @@
     "cycle": "consumer-blackwell",
     "eol": false,
     "releaseDate": "2025-01-30",
+    "support": true
+  },
+  {
+    "cycle": "mobile-professional-ada-lovelace",
+    "eol": false,
+    "releaseDate": "2023-03-21",
     "support": true
   },
   {
@@ -151,7 +157,7 @@
   },
   {
     "cycle": "consumer-kepler",
-    "eol": "2024-09-01",
+    "eol": "2024-09-30",
     "releaseDate": "2012-03-22",
     "support": "2021-09-20"
   },
@@ -163,7 +169,7 @@
   },
   {
     "cycle": "mobile-consumer-kepler",
-    "eol": "2019-04-11",
+    "eol": "2020-04-30",
     "releaseDate": "2012-03-22",
     "support": "2019-03-11"
   },
@@ -175,7 +181,7 @@
   },
   {
     "cycle": "consumer-fermi",
-    "eol": "2018-03-10",
+    "eol": "2019-01-31",
     "releaseDate": "2010-03-26",
     "support": "2018-03-10"
   },
