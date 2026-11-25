@@ -1,5 +1,11 @@
 [
   {
+    "cycle": "gpt-live-1.1",
+    "eol": false,
+    "releaseDate": "2026-11-19",
+    "support": true
+  },
+  {
     "cycle": "gpt-6.2-astra",
     "eol": false,
     "releaseDate": "2026-11-17",

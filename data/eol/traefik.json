@@ -1,9 +1,15 @@
 [
   {
-    "cycle": "3.7",
+    "cycle": "3.8",
     "eol": false,
-    "releaseDate": "2026-05-05",
+    "releaseDate": "2026-11-23",
     "support": true
+  },
+  {
+    "cycle": "3.7",
+    "eol": "2026-11-23",
+    "releaseDate": "2026-05-05",
+    "support": "2026-11-23"
   },
   {
     "cycle": "3.6",

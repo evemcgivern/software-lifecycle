@@ -1,6 +1,6 @@
 {
   "data_format": 2,
-  "eol_date": "2026-11-23",
+  "eol_date": "2026-11-25",
   "files": {
     "aliases.json": {
       "sha256": "d5e44680c7a63b08c773bfccc74202abfae1e7cd0d513847837814de95d8906b",
@@ -423,8 +423,8 @@
       "size": 1127
     },
     "eol/claude.json": {
-      "sha256": "ba2292cbd6bd5fb037309a0916217cb04dcff5b8748f4a1cbe36e2591d5a4bf6",
-      "size": 4675
+      "sha256": "4177d83c41afd88cce03905075b8e4c2b1f2451ce45c27cd90a2d87a1f689cbd",
+      "size": 4683
     },
     "eol/clear-linux.json": {
       "sha256": "a1ef1c3dd3015bd8cc9a83e00c08dca6d0f8f836d9b850cac430952a1e9e35d7",
@@ -491,8 +491,8 @@
       "size": 710
     },
     "eol/cortex-xdr.json": {
-      "sha256": "064f006dc1d1cdc0239727f3d9b767894003530f0e4cc230394115f8e46da456",
-      "size": 3287
+      "sha256": "954baa4cc0f75aaf066d98089489436bfcaa45a9a55956950a37c946a2884167",
+      "size": 3373
     },
     "eol/cos.json": {
       "sha256": "1ccfb0f921f282a618f86579ea902b86c0d199cc5e2204998865d92959723c48",
@@ -651,8 +651,8 @@
       "size": 1975
     },
     "eol/firefox.json": {
-      "sha256": "a44947ac03967d9663e5fb5041698011f748c0e5f65b0c6a280e1013fa22637a",
-      "size": 6005
+      "sha256": "c10bb2821a2cb864d52f65fea08f85506f1eb471efa0f866fb5d6ffa6911ec0a",
+      "size": 6091
     },
     "eol/fluent-bit.json": {
       "sha256": "a3843a3bf2dbc5d5f70add981b6a8f30a57949d0db64334bdcafb8cd75db149f",
@@ -1043,7 +1043,7 @@
       "size": 1906
     },
     "eol/liquibase-secure.json": {
-      "sha256": "75fb9273682ccae38427852dfa5de467fe6b1ba24912ae082f3736ede4902254",
+      "sha256": "0618d82de68dd29c222412adaac4a2bb2ce790b8bcf2507da80200e83b6437a0",
       "size": 1035
     },
     "eol/liquibase.json": {
@@ -1067,8 +1067,8 @@
       "size": 1125
     },
     "eol/looker.json": {
-      "sha256": "7e23713f14c5e6b29313ed045dafbdfb3cd2b6884e1c8ea40ef13c27939e6350",
-      "size": 6019
+      "sha256": "a3cd4ba4f43ec6f1747e50745bf07ceb54f32c5462a2a62de4c58745329f819e",
+      "size": 6107
     },
     "eol/lua.json": {
       "sha256": "38e2cba4a109263fe2df2a5b2337cd6f91e33c2d0dd413936dbd2aa130149207",
@@ -1091,8 +1091,8 @@
       "size": 1468
     },
     "eol/mariadb.json": {
-      "sha256": "f603733c38a16560cd7f0d111bf402befa411732c7bc1c738f2069890b9885a8",
-      "size": 3616
+      "sha256": "8595a67918f611d031021ad3139e494aba28fc28d0e49a0882e53563ec5853bb",
+      "size": 3733
     },
     "eol/mastodon.json": {
       "sha256": "23c2eb8c6e480108bfc3bbdc8c8a766ea9705ddb2b62494bbe2cf79b496e99e4",
@@ -1283,8 +1283,8 @@
       "size": 171
     },
     "eol/openai-api-models.json": {
-      "sha256": "d6be2a985c6fb015077dea12d0bc5f6daad1d85fa67c6170783ce0f7b71b50dd",
-      "size": 11543
+      "sha256": "26c96a0aee40f473c8f8103db5548000637cb9e367f358d2c111b8e240a13bc5",
+      "size": 11652
     },
     "eol/openbao.json": {
       "sha256": "186f2a5828d8e4e02104bfb3cf951830535899e6b3b34a4490e5338a4937e36f",
@@ -1547,8 +1547,8 @@
       "size": 2313
     },
     "eol/redis.json": {
-      "sha256": "2d4439693fc66704c90229c1519e7b185bfa69901380316b0d7f04f7a3916d90",
-      "size": 1348
+      "sha256": "54c6d77232b57c0d2ec9c8afe36d7f3c974fd2b2566e8018e98fcffe76f17b5b",
+      "size": 1478
     },
     "eol/redmine.json": {
       "sha256": "c900e6d448c719c4b6e670f220b1e3cb971a3bdc8703c94b07999e9871f5a732",
@@ -1583,8 +1583,8 @@
       "size": 360
     },
     "eol/roundcube.json": {
-      "sha256": "3eec99a990fbba505963bc065d9b3a46ac5db20641398f5445c43ceed6a28dda",
-      "size": 850
+      "sha256": "f02f34a31a6582909ca8d8b1029e7e25761c9f17ed9c4c9b929e7bf8685e8bf8",
+      "size": 857
     },
     "eol/routeros.json": {
       "sha256": "936856e1a5cbd5b38155e1862b443bc20ab463935b87aac4f734a5e5e100d26e",
@@ -1787,8 +1787,8 @@
       "size": 844
     },
     "eol/traefik.json": {
-      "sha256": "3b3d3ba046352afa49016008ea5b8ec4af94f293140846ccb9ca6f46a1080a62",
-      "size": 2405
+      "sha256": "ffb41b6d70552945fb74900d297655a6c301a3994bd8993b706fd9f319a07b72",
+      "size": 2520
     },
     "eol/truenas.json": {
       "sha256": "3cf81294472ae057fd826590a29e86edfc68a4af952e0ee9189af890fb210daa",
@@ -1807,7 +1807,7 @@
       "size": 1208
     },
     "eol/ubuntu.json": {
-      "sha256": "e8226c5f5cf37ff35884e14f5ff79bf7432cffaa44761e69cb3c5219ef9622a3",
+      "sha256": "f99c77f9ec75ad96d16fd5347c2d74a93c71a706fc5b2dce183c3c8f3ab54e21",
       "size": 6663
     },
     "eol/umbraco.json": {
@@ -1843,8 +1843,8 @@
       "size": 1059
     },
     "eol/vinyl-cache.json": {
-      "sha256": "8df2cc25ddf892dcb7eee504dde8e2a90f26d6021cdc000bcc645ce1243b93d3",
-      "size": 1035
+      "sha256": "5df0c8283bd457ec247b33d27a965881c53a8c4fb3a1485b4e64dd674f28ddeb",
+      "size": 1028
     },
     "eol/virtualbox.json": {
       "sha256": "4d16382e95d7516aed6fe43c2ca6d184e47626cbd941b7df7948ead66273ad5a",
@@ -1982,6 +1982,6 @@
   "kev_catalog_version": "2026.10.30",
   "kev_date": "2026-10-30",
   "min_tool_version": "0.7.0",
-  "release_id": "main-eol-2026-11-23",
-  "upstream_commit": "45773d7f6833ea2340fffae8f742be7b2fad5b27"
+  "release_id": "main-eol-2026-11-25",
+  "upstream_commit": "47260b0874bb3b2b1fd8d3a61bd83e696ff7117d"
 }
