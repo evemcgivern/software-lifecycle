@@ -331,6 +331,13 @@
     "openai-api-models"
   ],
   "no_cycle_versions": {
+    "apache-couchdb": {
+      "prefixes": [
+        "2.0.1"
+      ],
+      "reason": "Apache never published CouchDB 2.0.1: its source archive goes from 2.0.0 to 2.1.0 and the 2.0 release notes list only 2.0.0. A 2.0.1 row is a version this tool cannot verify, so it gets the product with no cycle.",
+      "source": "https://archive.apache.org/dist/couchdb/source/"
+    },
     "graalvm-ce": {
       "prefixes": [
         "20.0.0",
