@@ -192,13 +192,15 @@ A version cell lists several versions when either is true:
   and an optional leading `v`), and they pick two or more different
   release cycles of the product, for example `16.20.0 24.1.0` for
   Node.js;
-- it has more than one line.
+- it has more than one line;
+- it holds more than 50 distinct numbers and no other words. Such a cell
+  is never decided from one of them.
 
 Numbers may be separated by spaces, brackets, `,` `;` `|` `/` `&` or the
 words `and`, `or` and `also`. Labels such as `64-bit` are ignored, and
 four whole numbers joined by commas, such as `6, 0, 25, 8`, are one
 version. Only
-the first 50 distinct entries of a cell are read.
+the first 50 distinct entries of a cell are read for cycles.
 
 No entry decides the item. When the name gives the product, the item is
 unmatched with the reason `SEVERAL_VERSIONS`, and the report flags it for
@@ -231,8 +233,26 @@ What this can get wrong:
 - A single version written with two numbers that are both cycles, such as
   a version and a build number, is flagged as a list.
 
-`preflight` counts cells with more than one line. It does not count
-one-line lists, which need the product data.
+#### Possible lists
+
+Some lists cannot be told apart from one version, so they are read by the
+start of the cell, as above. The tool warns about one-line cells that
+have:
+
+- two or more different dotted numbers, none the start of another, for
+  example `22.04 LTS, 20.04 LTS`; or
+- four whole numbers joined by commas, none of them zero.
+
+A matched item with such a cell is listed in `report.md` under "Version
+cells to check", has `possible_version_list` `true` in `report.json`, and
+is counted as `possible=P` on the `several_versions` counts line.
+`preflight` counts these cells, matched or not, and counts cells with more
+than one line separately.
+
+The warning is not a finding. It changes no state or list, and `--fail-on`
+does not read it. It also fires on some single versions, such as a version
+beside a build or kernel number. A cell with fewer than two dotted
+numbers, such as `21 8.0.392`, gets no warning.
 
 ### Step 2: product titles
 
@@ -993,7 +1013,8 @@ It prints:
 - the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - the count of names to review (`ambiguous_review N`), with no names;
 - the counts of items whose version cell lists several versions
-  (`several_versions items=N past_eol=M kev=K`), with no names;
+  (`several_versions items=N past_eol=M kev=K possible=P`), with no names.
+  `possible` counts matched items whose cell may list several versions;
 - the support-record counts
   (`support_records listed=N ending_soon=M not_matched=K`), with no
   references, products or dates;

@@ -17,7 +17,7 @@ from .classify import (CLASSES, PARENT_ABSENT, PART_CLASSES,
 from .data import Data, kev_match
 from .errors import InputError
 from .matching import SEVERAL_VERSIONS, match_noted
-from .normalize import normalize_name
+from .normalize import may_list_versions, normalize_name
 from .overrides import Exceptions, Golden
 from .support import attach as attach_support
 
@@ -298,6 +298,8 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "reason": match.reason,
         "several_versions": _several(match, group, data, as_of, window_end)
         if match.reason == SEVERAL_VERSIONS else None,
+        "possible_version_list": cycle is not None
+        and may_list_versions(version),
         "match_source": match.source,
         "eol_endoflife": _iso(eol_endoflife),
         "eol_export": _iso(export_date),
@@ -517,7 +519,10 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
                                 if (it["several_versions"] or {})
                                 .get("past_eol")),
                 "kev": sum(1 for it in items
-                           if (it["several_versions"] or {}).get("kev"))},
+                           if (it["several_versions"] or {}).get("kev")),
+                # Matched items whose cell may list several versions.
+                "possible": sum(1 for it in items
+                                if it["possible_version_list"])},
             # Records from the support-records file. Counts only; a record
             # never changes a state, a list or --fail-on.
             "support_records": support_counts,

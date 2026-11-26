@@ -214,7 +214,8 @@ def _match(name, version, aliases, products, catalog_index, publisher,
                 best, tied = best_cycle(split_version(entry), labels)
                 if best is not None and len(_distinct_by_parts(tied)) == 1:
                     found[best] = _cycle_dict(cycles, best)
-    if not multi and len(found) < 2:
+    # More entries than are read: a later one could pick another cycle.
+    if not multi and len(found) < 2 and len(entries) <= MAX_ENTRIES:
         return result, code
     return replace(result, cycle=None, reason=SEVERAL_VERSIONS, kev=kev,
                    listed=tuple(found[k] for k in sorted(found))), code

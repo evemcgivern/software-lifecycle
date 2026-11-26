@@ -101,6 +101,12 @@ NEEDS_REVIEW_LEAD = ("Needs review: %d. Parts with a parent are listed in "
 PARTS = ("component", "bundle_member")
 REVIEW_HEADING = "Names to review"
 REVIEW_COLUMN = "Review reason"
+POSSIBLE_LINE = ("Check this: the version cell may list several versions. "
+                 "This result may rest on only one of them.")
+CHECK_HEADING = "Version cells to check"
+CHECK_LEAD = ("A warning, not a finding. Each item below is matched, and its "
+              "version cell may list several versions. Its state is "
+              "unchanged.")
 SEVERAL_LEAD = ("Several versions: %d of these list several versions; %d "
                 "have a listed version past end of life.")
 REVIEW_POINTER = ("Names to review: %d of these were left unmatched on "
@@ -500,6 +506,8 @@ def _item_block(it: dict, eol_snap: str, by_id: dict,
         sub.append(COUNT_LINE % it["install_count"])
     if it["state"] == "unmatched":
         sub.append(_unmatched_line(it))
+    if it["possible_version_list"]:
+        sub.append(POSSIBLE_LINE)
     if it["several_versions"]:
         sub.extend(_several_lines(it["several_versions"], kev_current))
     sub.extend(_date_lines(it, eol_snap))
@@ -662,6 +670,11 @@ def render_markdown(result: dict, meta: dict,
                              "this does not show there are none.")
         emit(heading, len(ids), ids, lead, none_text,
              name in SUPPORT_SECTIONS)
+
+    possible = [it["id"] for it in result["items"]
+                if it["possible_version_list"]]
+    if possible:
+        emit(CHECK_HEADING, len(possible), possible, [CHECK_LEAD, ""])
 
     if support_records is not None:
         out += _support_section(result, support_records)

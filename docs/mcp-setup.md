@@ -221,6 +221,7 @@ The fix codes `preflight` can return:
 | `BLANK_NAME` | Some rows have a blank name cell. |
 | `BLANK_VERSION` | Some rows have a blank version cell. |
 | `MULTI_LINE_VERSION` | Some version cells hold more than one line; no cycle is decided for them. |
+| `POSSIBLE_VERSION_LIST` | Some one-line version cells may list several versions; check them. |
 | `BLANK_OWNER` | Some rows have a blank owner cell. |
 | `UNREADABLE_DATE` | Some end-of-life date cells are not in YYYY-MM-DD form. |
 | `PLACEHOLDER` | Some Parent cells hold a placeholder such as n/a. |

@@ -53,6 +53,16 @@ class HelpTests(unittest.TestCase):
 
 
 class ReportWordingTests(unittest.TestCase):
+    def test_a_possible_list_is_shown_even_when_supported(self):
+        md = markdown_for([["Node.js", "24.1.0 999.9", "OpenJS Foundation",
+                            "a"]])
+        self.assertIn("## Version cells to check (1)", md)
+        self.assertIn("Check this: the version cell may list several "
+                      "versions. This result may rest on only one of them.",
+                      md)
+        clean = markdown_for([["Node.js", "24.1.0", "OpenJS Foundation",
+                               "a"]])
+        self.assertNotIn("Version cells to check", clean)
     def test_several_versions_flag_is_a_lower_bound(self):
         md = markdown_for([["Node.js", "16.20.0 24.1.0", "OpenJS Foundation",
                             "a"]])

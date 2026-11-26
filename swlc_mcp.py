@@ -334,7 +334,8 @@ _ITEMS = re.compile(r"items ([0-9]{1,12}) rows ([0-9]{1,12})")
 _PAIRS = re.compile(r"(states|classification)((?: [a-z_]{1,40}=[0-9]{1,12})+)")
 _AMBIG = re.compile(r"ambiguous_review ([0-9]{1,12})")
 _SEVERAL = re.compile(r"several_versions items=([0-9]{1,12}) "
-                      r"past_eol=([0-9]{1,12}) kev=([0-9]{1,12})")
+                      r"past_eol=([0-9]{1,12}) kev=([0-9]{1,12}) "
+                      r"possible=([0-9]{1,12})")
 _SUPPORT = re.compile(r"support_records listed=([0-9]{1,12}) "
                       r"ending_soon=([0-9]{1,12}) not_matched=([0-9]{1,12})")
 _QUALITY = re.compile(
@@ -384,8 +385,8 @@ def counts_lines(stdout: str) -> list:
             continue
         m = _SEVERAL.fullmatch(line)
         if m:
-            out.append("several_versions items=%d past_eol=%d kev=%d"
-                       % tuple(int(g) for g in m.groups()))
+            out.append("several_versions items=%d past_eol=%d kev=%d "
+                       "possible=%d" % tuple(int(g) for g in m.groups()))
             continue
         m = _SUPPORT.fullmatch(line)
         if m:

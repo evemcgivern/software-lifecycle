@@ -377,7 +377,7 @@ def _counts_text(result: dict, support_line: str | None = None) -> str:
                   "no_version_number_rows", "identical_repeat_rows")))
     lines.append("several_versions " + " ".join(
         "%s=%d" % (k, counts["several_versions"][k])
-        for k in ("items", "past_eol", "kev")))
+        for k in ("items", "past_eol", "kev", "possible")))
     with_count = [it["install_count"] for it in result["items"]
                   if it["install_count"] is not None]
     if with_count or counts["count_invalid_cells"]:
