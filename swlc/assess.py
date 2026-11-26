@@ -491,6 +491,14 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             # install_count.
             "count_invalid_cells": sum(
                 g.get("count_invalid_cells", 0) for g in groups.values()),
+            # Figures about the rows read, not about the estate. Counts
+            # only; shares are worked out where they are shown.
+            "data_quality": dict(
+                {"matched_rows": sum(it["rows"] for it in items
+                                     if it["state"] != "unmatched")},
+                **{key: sum(g.get(key, 0) for g in groups.values())
+                   for key in ("blank_owner_rows", "no_version_number_rows",
+                               "identical_repeat_rows")}),
         },
         "diff": _diff(items, before),
     }

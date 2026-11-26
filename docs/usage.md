@@ -942,6 +942,12 @@ It prints:
   and the count in each state;
 - the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - the count of names to review (`ambiguous_review N`), with no names;
+- one line of figures about the rows read
+  (`data_quality matched_rows=N blank_owner_rows=N no_version_number_rows=N identical_repeat_rows=N`),
+  out of the row count above. `report.md` shows the same figures with
+  percentages, rounded down. They are not a score and do not show whether
+  the inventory is complete. See `counts.data_quality` in
+  [report-schema.md](report-schema.md);
 - the support-record counts
   (`support_records listed=N ending_soon=M not_matched=K`), with no
   references, products or dates;

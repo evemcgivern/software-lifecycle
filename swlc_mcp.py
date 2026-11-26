@@ -335,6 +335,11 @@ _PAIRS = re.compile(r"(states|classification)((?: [a-z_]{1,40}=[0-9]{1,12})+)")
 _AMBIG = re.compile(r"ambiguous_review ([0-9]{1,12})")
 _SUPPORT = re.compile(r"support_records listed=([0-9]{1,12}) "
                       r"ending_soon=([0-9]{1,12}) not_matched=([0-9]{1,12})")
+_QUALITY = re.compile(
+    r"data_quality matched_rows=([0-9]{1,12}) "
+    r"blank_owner_rows=([0-9]{1,12}) "
+    r"no_version_number_rows=([0-9]{1,12}) "
+    r"identical_repeat_rows=([0-9]{1,12})")
 _TOTAL = re.compile(r"count_total ([0-9]{1,15})")
 _LIST = re.compile(r"(%s) ([0-9]{1,12})(?:: [0-9a-f]{12}(?: [0-9a-f]{12})*)?"
                    % "|".join(LISTS))
@@ -376,6 +381,12 @@ def counts_lines(stdout: str) -> list:
         if m:
             out.append("support_records listed=%d ending_soon=%d "
                        "not_matched=%d" % tuple(int(g) for g in m.groups()))
+            continue
+        m = _QUALITY.fullmatch(line)
+        if m:
+            out.append("data_quality matched_rows=%d blank_owner_rows=%d "
+                       "no_version_number_rows=%d identical_repeat_rows=%d"
+                       % tuple(int(g) for g in m.groups()))
             continue
         m = _TOTAL.fullmatch(line)
         if m:

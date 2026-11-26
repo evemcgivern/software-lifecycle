@@ -593,6 +593,7 @@ class SchemaTests(unittest.TestCase):
             "counts.unmatched_breakdown": set(
                 r["counts"]["unmatched_breakdown"]),
             "counts.support_records": set(r["counts"]["support_records"]),
+            "counts.data_quality": set(r["counts"]["data_quality"]),
             "meta": set(r["meta"]),
             "meta.data_release": set(r["meta"]["data_release"]),
             # support_records is there only with --support-records.
@@ -838,7 +839,7 @@ class AssistantSetupTests(unittest.TestCase):
         firsts = {line.split()[0] for line in out.splitlines()}
         flat = " ".join(text(ASSISTANT_SETUP).split())
         for name in ("checked_on", "kev_current", "items", "states",
-                     "classification", "ambiguous_review",
+                     "classification", "ambiguous_review", "data_quality",
                      "support_records", "count_total"):
             self.assertIn(name, firsts)
             self.assertIn("`%s`" % name, flat)

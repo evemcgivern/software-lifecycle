@@ -9,6 +9,12 @@
       "unknown": 7
     },
     "count_invalid_cells": 1,
+    "data_quality": {
+      "blank_owner_rows": 1,
+      "identical_repeat_rows": 0,
+      "matched_rows": 49,
+      "no_version_number_rows": 1
+    },
     "inherited_attention": 2,
     "items": 50,
     "lists": {

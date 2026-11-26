@@ -90,6 +90,7 @@ and which item key a column comes from.
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
 | `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
 | `count_invalid_cells` | Number of count cells ignored because they are not a whole number from 0 to 1000000000: digits, optionally in comma groups of three (`1,234`), optionally ending in a decimal point and zeros only (`12.0`). A sign, another decimal (`1.234`), another separator (`1 234`), text or a formula is ignored. Blank cells are not counted. `0` with no count column. |
+| `data_quality` | Figures about the inventory rows read, for judging how far to trust a run. See `counts.data_quality`. |
 | `support_records` | Counts from the support-records file. See `counts.support_records`. Zeros when no file is given. A count only: a record never changes a state, a list or `--fail-on`. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 
@@ -119,6 +120,19 @@ itself is unchanged.
 number and lists the other unmatched items in "Parts that could not be
 matched". The warning "N parts whose parent is not in this inventory"
 (`parent_absent` in `classification_basis`) appears in `warnings`.
+
+### counts.data_quality
+
+Each figure is a number of inventory rows out of `counts.rows`. They are
+not a score and do not show whether the inventory is complete. Added
+while at schema version 3 (issue #107).
+
+| Key | Meaning |
+|---|---|
+| `matched_rows` | Rows whose item's `state` is not `unmatched`. A matched row can still be matched wrongly; see "Names to review" and the match source. |
+| `blank_owner_rows` | Rows with an empty owner cell; every row when there is no owner column. It is not `lists.ownerless`, which counts items with no owner on any row. |
+| `no_version_number_rows` | Rows whose version cell is blank or has no digit, for example `latest`. Such a row can still match when the name holds the version. A cell with a digit is counted as having a number even if it matches no version. |
+| `identical_repeat_rows` | Rows that equal an earlier row in every column, after spaces around each cell are removed. Rows that differ in any column, such as a device name, are not repeats. An export with no such column can have many repeats that are separate installs, so a repeat is not proof of a mistake. |
 
 ### counts.support_records
 
