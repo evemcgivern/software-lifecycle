@@ -154,7 +154,7 @@ COUNT_ORDER_LINE = ("Items in each section are ordered by the count from "
 QUALITY_HEADING = "Inventory rows read, of %d:"
 QUALITY_LINES = (
     ("matched_rows", "Matched"),
-    ("blank_owner_rows", "Blank owner cell"),
+    ("blank_owner_rows", "Blank owner cell, or no owner column"),
     ("no_version_number_rows", "Version cell blank or without a digit"),
     ("identical_repeat_rows", "Identical to an earlier row"),
 )
@@ -561,6 +561,10 @@ def render_markdown(result: dict, meta: dict,
                   for name, h, _ in SECTIONS),
         REVIEW_HEADING.lower(), len(ambiguous))]
     out += ["", MATCH_CAVEAT]
+    if any(it.get("install_count") is not None for it in result["items"]):
+        out += ["", COUNT_ORDER_LINE]
+    if result["counts"].get("count_invalid_cells"):
+        out += ["", COUNT_INVALID_LINE % result["counts"]["count_invalid_cells"]]
     rows = result["counts"]["rows"]
     quality = result["counts"]["data_quality"]
     out += ["", QUALITY_HEADING % rows, ""]
@@ -568,10 +572,6 @@ def render_markdown(result: dict, meta: dict,
                                      _share(quality[key], rows))
             for key, label in QUALITY_LINES]
     out += ["", QUALITY_NOTE]
-    if any(it.get("install_count") is not None for it in result["items"]):
-        out += ["", COUNT_ORDER_LINE]
-    if result["counts"].get("count_invalid_cells"):
-        out += ["", COUNT_INVALID_LINE % result["counts"]["count_invalid_cells"]]
     if governable_only:
         out += ["", hidden_line(result)]
 

@@ -263,7 +263,7 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         if whole in seen_rows:
             grp["identical_repeat_rows"] += 1
         seen_rows.add(whole)
-        if not any(c.isdigit() for c in ver):
+        if not any(c in "0123456789" for c in ver):
             grp["no_version_number_rows"] += 1
         owner = cell(row, "owner")
         if owner:

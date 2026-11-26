@@ -21,6 +21,11 @@ and which item key a column comes from.
 - **Review of ambiguous names.** `report.md` has a "Names to review"
   section and `report.csv` a "Review reason" column. Both are made from
   the item key `ambiguity` (see below).
+- **Data-quality figures.** `report.md` shows `counts.data_quality` as
+  counts with percentages, then "These figures describe the rows read.
+  They are not a score and do not show whether the inventory is
+  complete." The percentages are not keys. `report.csv` does not carry
+  the figures.
 - **Support records.** `report.csv` always has a column "Support records
   (from your file)", made from the item key `support_records` (see below),
   after "Review reason". A run without `--support-records` gets the column
@@ -583,7 +588,8 @@ nowhere else; its state does not change. What "support" means differs
 between vendors, so the code asks a person to look and decides nothing.
 
 Also added while at version 3, as a new key that needs no version change:
-`meta.inventory` (issue #106). See "meta.inventory".
+`meta.inventory` (issue #106). See "meta.inventory". So was
+`counts.data_quality` (issue #107). See "counts.data_quality".
 
 ### Changes in schema version 2
 

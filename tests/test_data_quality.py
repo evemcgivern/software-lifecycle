@@ -60,6 +60,36 @@ class DataQuality(unittest.TestCase):
                              "Demo OS 2.0,2.0,ZzOwner,b\n")
         self.assertEqual(counts["data_quality"]["identical_repeat_rows"], 0)
 
+    def test_spaces_around_cells_do_not_hide_a_repeat(self):
+        counts = self.counts(HEADER + "Demo OS 2.0,2.0,ZzOwner,a\n"
+                             " Demo OS 2.0 , 2.0 ,ZzOwner , a\n")
+        self.assertEqual(counts["data_quality"]["identical_repeat_rows"], 1)
+
+    def test_only_ascii_digits_make_a_version_number(self):
+        versions = ("v\u00b2", "\uff11\uff12", "\u0661", "one", "11g")
+        counts = self.counts("Software Name,Version\n" + "".join(
+            "ZzSecretApp,%s\n" % v for v in versions))
+        self.assertEqual(counts["data_quality"]["no_version_number_rows"], 4)
+
+    def test_owner_figure_follows_mapped_columns_and_short_rows(self):
+        mapping = self.root / "columns.json"
+        mapping.write_text('{"owner": ["Keeper"]}', encoding="utf-8")
+        _, out = self.check("Software Name,Version,Keeper\n"
+                            "Demo OS 2.0,2.0,ZzOwner\n"
+                            "Demo OS 2.0,2.0\n", "--columns", str(mapping))
+        counts = json.loads(
+            (out / "report.json").read_text("utf-8"))["counts"]
+        self.assertEqual(counts["data_quality"]["blank_owner_rows"], 1)
+
+    def test_desktop_server_says_the_figures_are_not_a_score(self):
+        inventory = self.root / "inv.csv"
+        inventory.write_text(HEADER + ROWS, encoding="utf-8")
+        failed, body = swlc_mcp.tool_check_counts(inventory)
+        self.assertFalse(failed, body)
+        self.assertIn("note: " + swlc_mcp.QUALITY_CAVEAT,
+                      body.splitlines())
+        self.assertIn("not a score", swlc_mcp.QUALITY_CAVEAT)
+
     def test_no_owner_column_makes_every_row_blank_owner(self):
         counts = self.counts("Software Name,Version\nDemo OS 2.0,2.0\n"
                              "ZzSecretApp,1\n")
@@ -70,7 +100,7 @@ class DataQuality(unittest.TestCase):
         md = (out / "report.md").read_text("utf-8")
         for line in (
                 "- Matched: 3 of 5 (60%)",
-                "- Blank owner cell: 2 of 5 (40%)",
+                "- Blank owner cell, or no owner column: 2 of 5 (40%)",
                 "- Version cell blank or without a digit: 2 of 5 (40%)",
                 "- Identical to an earlier row: 1 of 5 (20%)"):
             self.assertIn(line + "\n", md)

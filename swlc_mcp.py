@@ -340,6 +340,9 @@ _QUALITY = re.compile(
     r"blank_owner_rows=([0-9]{1,12}) "
     r"no_version_number_rows=([0-9]{1,12}) "
     r"identical_repeat_rows=([0-9]{1,12})")
+QUALITY_CAVEAT = ("data_quality figures describe the rows read; they are not "
+                  "a score and do not show whether the inventory is "
+                  "complete")
 _TOTAL = re.compile(r"count_total ([0-9]{1,15})")
 _LIST = re.compile(r"(%s) ([0-9]{1,12})(?:: [0-9a-f]{12}(?: [0-9a-f]{12})*)?"
                    % "|".join(LISTS))
@@ -417,6 +420,8 @@ def tool_check_counts(path: Path) -> tuple:
     lines = counts_lines(stdout)
     if not lines or not lines[0].startswith("checked_on "):
         return True, "the tool's output was not in the expected form"
+    if any(line.startswith("data_quality ") for line in lines):
+        lines.append("note: " + QUALITY_CAVEAT)
     lines += [
         "note: counts are from your file; count_total is the sum of its "
         "count column",
