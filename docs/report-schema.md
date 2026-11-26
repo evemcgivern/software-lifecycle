@@ -1,7 +1,7 @@
-# Report schema (version 2)
+# Report schema (version 3)
 
 `report.json` is the full result. `report.md` and `report.csv` are views of
-it. This page lists every key and code in schema version 2. A test in this
+it. This page lists every key and code in schema version 3. A test in this
 repo fails if a key in a real run is missing from this page.
 
 The file is UTF-8 JSON with sorted keys. It contains text from your
@@ -56,7 +56,7 @@ and which item key a column comes from.
 
 | Key | Meaning |
 |---|---|
-| `schema_version` | The number 2. |
+| `schema_version` | The number 3. |
 | `as_of` | The date checked, `YYYY-MM-DD`. |
 | `lookahead_months` | The window in months (default 12). |
 | `data_release` | Which data was used. See below. |
@@ -192,6 +192,7 @@ inventory.
 | `eol_endoflife` | The endoflife.date end-of-life value. |
 | `eol_export` | The export's end-of-life date, if it was readable. |
 | `eol_export_raw` | The export's end-of-life text as given. |
+| `support_export_raw` | The export's support-date text as given, or `null`. Added in schema version 3. A text that is not a readable date is kept here but not compared. |
 | `eol_used` | The end-of-life value the tool used. |
 | `eol_source` | Where `eol_used` came from: `endoflife.date`, `export` or `manual`. |
 | `support` | The mainstream support value from endoflife.date. |
@@ -343,6 +344,7 @@ mean your version is affected. The tool never says "vulnerable".
 | Code | Meaning |
 |---|---|
 | `DIFFERENT_DATE` | The export date and the endoflife.date date differ. |
+| `SUPPORT_DATE_DIFFERENT` | The export support date and the endoflife.date support date differ. Added in schema version 3. It is checked only when both are dates and the item has no other code. It never changes the item's state. |
 | `NO_ENDOFLIFE_DATE` | The export has a date; endoflife.date has none to compare. |
 | `EXPORT_DATE_UNREADABLE` | The export date is not an ISO date. |
 | `EXPORT_DATES_CONFLICT` | Rows for the item carry different export dates. |
@@ -364,7 +366,7 @@ again, and the risk owner and an independent approver sign off.
 | `GOLDEN_EXPORT_UNUSABLE` | When it appears in `dates_disagree` (see that table). |
 | `EXCEPTION_EXPIRED` | An exceptions row matches the item and its `expires_on` date has passed. |
 
-`DIFFERENT_DATE` appears in `dates_disagree` but not in `decision_needed`.
+`DIFFERENT_DATE` and `SUPPORT_DATE_DIFFERENT` appear in `dates_disagree` but not in `decision_needed`.
 The Markdown report still prints a "Decision needed" line for it.
 
 ### classification_basis codes
@@ -419,7 +421,7 @@ past or near end of life".
 
 | Key | Meaning |
 |---|---|
-| `available` | `true` if `--previous` was a usable report of schema version 1 or 2. If not, the report adds a warning and the lists below are empty. |
+| `available` | `true` if `--previous` was a usable report of schema version 1, 2 or 3. If not, the report adds a warning and the lists below are empty. |
 | `new` | Item IDs not in the previous report. |
 | `resolved` | Item IDs in the previous report and not in this one. |
 | `changed_state` | Entries with `id`, `from` and `to`. |
@@ -541,10 +543,21 @@ of them adds a state, list, reason code or decision code.
 
 The keyword arguments of `swlc.cli.run` follow the same rule.
 
-The tool reads a `--previous` report of schema version 1 or 2. Any other
+The tool reads a `--previous` report of schema version 1, 2 or 3. Any other
 version gives no diff and the warning "previous run uses schema_version N;
-this tool reads 1 and 2; no diff", where N is the number found, or
+this tool reads 1, 2 and 3; no diff", where N is the number found, or
 `unreadable` when it is not a whole number.
+
+### Changes in schema version 3
+
+Version 3 adds one `dates_disagree` code, `SUPPORT_DATE_DIFFERENT`, and
+one item key, `support_export_raw` (issue #108). The tool now reads the
+optional `export_support` column and compares it with the endoflife.date
+support date. No key was removed or renamed, and the states, lists and
+other codes are those of version 2. `--previous` still reads a version 1
+or 2 report. An item the new code flags shows in `dates_disagree` and
+nowhere else; its state does not change. What "support" means differs
+between vendors, so the code asks a person to look and decides nothing.
 
 ### Changes in schema version 2
 

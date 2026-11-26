@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- The optional `export_support` column is now used (issue #108). When both
+  the export and the bundled data hold a support date for an item and the
+  two differ, the item lists under "dates disagree" with the new code
+  `SUPPORT_DATE_DIFFERENT`. The check never changes a state and does not
+  run when the item has another date code or an active golden source. A
+  support text that is not a date, or rows that disagree, are kept in the
+  new item key `support_export_raw` and not compared. `report.json`
+  `schema_version` is now 3; `--previous` still accepts a version 1 or 2
+  report.
 - Reworded the three issue forms and added three more (issue #72): a
   test of an assistant or the MCP server, a column-name problem with an
   export (headers only), and a mistake in the docs or crosswalk. Every

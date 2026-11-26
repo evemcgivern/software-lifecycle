@@ -336,7 +336,12 @@ A few columns need a note:
   suite a part belongs to. A blank or placeholder cell (`n/a`, `none`)
   means no parent. See "The Parent column" in
   [docs/usage.md](docs/usage.md).
-- **`export_support`** is accepted but not used in this version.
+- **`export_support`** is optional. When the row's item has a readable
+  support date and the bundled data has a support date for its cycle, the
+  two are compared. A difference lists the item under "dates disagree" with
+  the code `SUPPORT_DATE_DIFFERENT`. It never changes the item's state.
+  What "support" means differs between vendors, so a person decides which
+  date is right.
 - **`count`** orders each list, largest first. An item's count is the sum of
   its rows' count cells. It is a count from your file, not discovered
   installs; see "The count column" in [docs/usage.md](docs/usage.md).

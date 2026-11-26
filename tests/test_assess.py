@@ -20,7 +20,8 @@ from swlc.overrides import Exceptions, Golden
 
 AS_OF = date(2026, 10, 24)
 COLMAP = {"name": "name", "version": "version", "publisher": "publisher",
-          "owner": "owner", "export_eol": "export_eol"}
+          "owner": "owner", "export_eol": "export_eol",
+          "export_support": "export_support"}
 
 # Synthetic product "alpha"; each cycle plants one case.
 ALPHA = [
@@ -64,9 +65,10 @@ def make_data(kev_current=True, warnings=None):
 
 
 def row(version, name="Alpha App", publisher="Other Corp", owner="ops",
-        export_eol=""):
+        export_eol="", export_support=""):
     return {"name": name, "version": version, "publisher": publisher,
-            "owner": owner, "export_eol": export_eol}
+            "owner": owner, "export_eol": export_eol,
+            "export_support": export_support}
 
 
 def golden_row(source, review_by=date(2027, 1, 1), manual=None,
@@ -217,6 +219,65 @@ class Unmatched(unittest.TestCase):
         it = only(run([row("1", name="Nope Suite")], golden=g))
         self.assertEqual(it["state"], "unmatched")
         self.assertIsNone(it["golden_applied"])
+
+
+class SupportDateDisagree(unittest.TestCase):
+    # Cycle 6 has eol False and the support date 2026-01-01; cycle 1 has
+    # an eol date and the support date 2025-01-15.
+    def test_different_support_date_is_flagged_and_changes_no_state(self):
+        base = only(run([row("6")]))
+        out = run([row("6", export_support="2026-03-01")])
+        it = only(out)
+        self.assertEqual(it["dates_disagree"], "SUPPORT_DATE_DIFFERENT")
+        self.assertIn(it["id"], out["lists"]["dates_disagree"])
+        self.assertEqual(it["support_export_raw"], "2026-03-01")
+        self.assertEqual(it["support"], "2026-01-01")
+        for key in ("state", "eol_used", "eol_source", "decision_needed"):
+            self.assertEqual(it[key], base[key], key)
+
+    def test_same_support_date_is_not_flagged(self):
+        out = run([row("6", export_support="2026-01-01 00:00:00")])
+        self.assertEqual(out["lists"]["dates_disagree"], [])
+        self.assertIsNone(only(out)["dates_disagree"])
+
+    def test_no_export_support_gives_no_raw_text(self):
+        self.assertIsNone(only(run([row("6")]))["support_export_raw"])
+
+    def test_bundled_support_not_a_date_is_not_compared(self):
+        # Cycle 2 has no support date; cycle 5 has the flag True.
+        for version in ("2", "5"):
+            it = only(run([row(version, export_support="2026-03-01")]))
+            self.assertIsNone(it["dates_disagree"], version)
+
+    def test_unreadable_support_date_is_kept_but_not_compared(self):
+        it = only(run([row("6", export_support="15/03/2026")]))
+        self.assertIsNone(it["dates_disagree"])
+        self.assertEqual(it["support_export_raw"], "15/03/2026")
+
+    def test_rows_that_disagree_on_support_are_not_compared(self):
+        it = only(run([row("6", export_support="2026-03-01"),
+                       row("6", export_support="2026-04-01")]))
+        self.assertIsNone(it["dates_disagree"])
+        self.assertEqual(it["support_export_raw"],
+                         "2026-03-01; 2026-04-01")
+
+    def test_end_of_life_disagreement_comes_first(self):
+        it = only(run([row("1", export_eol="2030-01-01",
+                           export_support="2025-06-01")]))
+        self.assertEqual(it["dates_disagree"], "DIFFERENT_DATE")
+
+    def test_conflicting_end_of_life_dates_come_first(self):
+        it = only(run([row("1", export_eol="2030-01-01",
+                           export_support="2025-06-01"),
+                       row("1", export_eol="2031-01-01",
+                           export_support="2025-06-01")]))
+        self.assertEqual(it["dates_disagree"], "EXPORT_DATES_CONFLICT")
+
+    def test_active_golden_source_is_not_second_guessed(self):
+        g = Golden({"alpha": golden_row("endoflife.date")})
+        it = only(run([row("6", export_support="2026-03-01")], golden=g))
+        self.assertEqual(it["golden_applied"], "endoflife.date")
+        self.assertIsNone(it["dates_disagree"])
 
 
 class DatesDisagree(unittest.TestCase):
@@ -547,7 +608,7 @@ class Shape(unittest.TestCase):
         self.assertEqual(sorted(out), sorted([
             "schema_version", "as_of", "lookahead_months", "data_release",
             "kev_current", "warnings", "items", "lists", "counts", "diff"]))
-        self.assertEqual(out["schema_version"], 2)
+        self.assertEqual(out["schema_version"], 3)
         self.assertEqual(out["as_of"], "2026-10-24")
         self.assertEqual(out["data_release"]["id"], "data-2026.10.24.1")
         self.assertEqual(out["data_release"]["kev_catalog_version"],
@@ -664,15 +725,15 @@ class Diff(unittest.TestCase):
         self.assertFalse(any("previous" in w for w in now["warnings"]))
 
     def test_previous_versions_accepted(self):
-        self.assertEqual(assess_mod.PREVIOUS_SCHEMA_VERSIONS, (1, 2))
+        self.assertEqual(assess_mod.PREVIOUS_SCHEMA_VERSIONS, (1, 2, 3))
         self.assertIn(assess_mod.SCHEMA_VERSION,
                       assess_mod.PREVIOUS_SCHEMA_VERSIONS)
 
     def test_unsupported_previous_version_is_named(self):
-        cases = (({"schema_version": 3, "items": []}, "3"),
+        cases = (({"schema_version": 4, "items": []}, "4"),
                  ({"schema_version": 0, "items": []}, "0"),
                  ({"schema_version": -4, "items": []}, "-4"),
-                 ({"schema_version": "3", "items": []}, "unreadable"),
+                 ({"schema_version": "4", "items": []}, "unreadable"),
                  ({"schema_version": True, "items": []}, "unreadable"),
                  ({"schema_version": 1.0, "items": []}, "unreadable"),
                  ({"schema_version": 10 ** 40, "items": []}, "unreadable"),
@@ -683,7 +744,7 @@ class Diff(unittest.TestCase):
                 out = run([row("1")], previous=prev)
                 self.assertFalse(out["diff"]["available"])
                 self.assertIn("previous run uses schema_version %s; this "
-                              "tool reads 1 and 2; no diff" % shown,
+                              "tool reads 1, 2 and 3; no diff" % shown,
                               out["warnings"])
                 self.assertFalse(any("Zqxv" in w for w in out["warnings"]))
         # A supported version with bad items keeps the general warning.
@@ -693,7 +754,7 @@ class Diff(unittest.TestCase):
             self.assertIn(assess_mod.PREVIOUS_UNUSABLE, out["warnings"])
 
     def test_unusable_previous(self):
-        for bad in ({"schema_version": 3, "items": []},
+        for bad in ({"schema_version": 4, "items": []},
                     {"schema_version": 0, "items": []}, {"items": "x"},
                     {"schema_version": True, "items": []},
                     {"schema_version": 1.0, "items": []},

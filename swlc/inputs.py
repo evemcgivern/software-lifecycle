@@ -226,6 +226,7 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
     keys: dict[str, tuple] = {}
     owners: dict[str, set] = {}
     eols: dict[str, set] = {}
+    supports: dict[str, set] = {}
     parents: dict[str, set] = {}
     for row in rows:
         pub, name, ver = (cell(row, f) for f in ("publisher", "name", "version"))
@@ -238,12 +239,14 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         grp = groups.get(gid)
         if grp is None:
             grp = groups[gid] = {"id": gid, "rows": 0, "owners": [],
-                                 "export_eols": [], "publisher": pub,
+                                 "export_eols": [], "export_supports": [],
+                                 "publisher": pub,
                                  "name": name, "version": ver,
                                  "install_count": None,
                                  "count_invalid_cells": 0}
             owners[gid] = set()
             eols[gid] = set()
+            supports[gid] = set()
             parents[gid] = set()
         grp["rows"] += 1
         owner = cell(row, "owner")
@@ -252,6 +255,9 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         eol = cell(row, "export_eol")
         if eol:
             eols[gid].add(eol)
+        support = cell(row, "export_support")
+        if support:
+            supports[gid].add(support)
         parent = cell(row, "parent")
         if parent:
             parents[gid].add(parent)
@@ -265,5 +271,6 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
     for gid, grp in groups.items():
         grp["owners"] = sorted(owners[gid])
         grp["export_eols"] = sorted(eols[gid])
+        grp["export_supports"] = sorted(supports[gid])
         grp["parents"] = sorted(parents[gid])
     return groups

@@ -55,6 +55,10 @@ DECISION_TEXT = {
     "DIFFERENT_DATE": (
         "The export date and the endoflife.date date differ. The ITAM lead "
         "settles which date to use. Nothing here is auto-resolved."),
+    "SUPPORT_DATE_DIFFERENT": (
+        "The export support date and the endoflife.date support date "
+        "differ. The ITAM lead settles which date to use. Nothing here is "
+        "auto-resolved."),
     "NO_ENDOFLIFE_DATE": (
         "endoflife.date has no date to compare with the export date. The "
         "ITAM lead settles which date to use."),

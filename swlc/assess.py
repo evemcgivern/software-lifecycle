@@ -21,10 +21,12 @@ from .normalize import normalize_name
 from .overrides import Exceptions, Golden
 from .support import attach as attach_support
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 # --previous reads a report of any of these versions. Version 2 added the
 # ambiguity code shared_support_lines; its states are those of version 1.
-PREVIOUS_SCHEMA_VERSIONS = (1, 2)
+# Version 3 added the dates_disagree code SUPPORT_DATE_DIFFERENT and the
+# item key support_export_raw; its states and lists are those of version 2.
+PREVIOUS_SCHEMA_VERSIONS = (1, 2, 3)
 STATES = ("supported", "mainstream_ended", "ends_soon", "past_eol",
           "unmatched")
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
@@ -35,6 +37,7 @@ _ID = re.compile(r"[0-9a-f]{12}")
 # dates_disagree codes (also used in decision_needed)
 DIFFERENT_DATE = "DIFFERENT_DATE"
 NO_ENDOFLIFE_DATE = "NO_ENDOFLIFE_DATE"
+SUPPORT_DATE_DIFFERENT = "SUPPORT_DATE_DIFFERENT"
 EXPORT_DATE_UNREADABLE = "EXPORT_DATE_UNREADABLE"
 EXPORT_DATES_CONFLICT = "EXPORT_DATES_CONFLICT"
 GOLDEN_EXPIRED = "GOLDEN_EXPIRED"
@@ -46,8 +49,8 @@ KEV_NOT_CURRENT = ("KEV snapshot is not current; the KEV overlay may be "
 GOLDEN_CLASH = ("%d item(s) matched two golden-source rows; the product-id "
                 "row was used.")
 PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
-PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1 "
-                    "and 2; no diff")
+PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1, "
+                    "2 and 3; no diff")
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row that was not "
                       "applied: no cycle, see Names to review.")
@@ -156,6 +159,8 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
     cycle = match.cycle
     export_date, export_readable, export_conflict, export_raw = \
         _read_exports(list(group.get("export_eols") or []))
+    support_export, _, _, support_raw = \
+        _read_exports(list(group.get("export_supports") or []))
 
     eol_endoflife = cycle.get("eol") if cycle else None
     eol_used, eol_source = None, None
@@ -195,6 +200,16 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
                     disagree = disagree or NO_ENDOFLIFE_DATE
                 elif export_date != eol_endoflife:
                     disagree = disagree or DIFFERENT_DATE
+            # The export's support date is compared only when both it and
+            # the bundled support date are dates. A flag, an unreadable
+            # text or rows that disagree are not compared. It never
+            # changes the state; it only asks a person to look.
+            bundled_support = cycle.get("support")
+            if (disagree is None and not export_conflict
+                    and support_export is not None
+                    and isinstance(bundled_support, date)
+                    and support_export != bundled_support):
+                disagree = SUPPORT_DATE_DIFFERENT
         state = _state(eol_used, cycle.get("support"), as_of, window_end)
         state_endoflife = _state(eol_endoflife, cycle.get("support"), as_of,
                                  window_end)
@@ -243,6 +258,7 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "eol_endoflife": _iso(eol_endoflife),
         "eol_export": _iso(export_date),
         "eol_export_raw": export_raw,
+        "support_export_raw": support_raw,
         "eol_used": _iso(eol_used),
         "eol_source": eol_source,
         "support": _iso(cycle.get("support")) if cycle else None,
