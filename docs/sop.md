@@ -120,6 +120,11 @@ The ITAM lead picks the right date for each item. If it will keep
 recurring, record the choice as a row in `golden-sources.csv` with a
 `review_by` date.
 
+A golden-source row cannot record a support date. Do not add one to
+clear `SUPPORT_DATE_DIFFERENT`: an active row turns that check off for
+every version of the product, and also clears end-of-life date
+differences. Correct the export or note the decision in your own records.
+
 If two rows could apply to one item (one by product ID and one by name),
 the product-ID row is used and the report warns "N item(s) matched two
 golden-source rows; the product-id row was used." Remove the extra row.

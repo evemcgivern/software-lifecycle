@@ -285,6 +285,22 @@ class CompareSupportFlag(unittest.TestCase):
         self.assertIn("SUPPORT_DATE_DIFFERENT", codes)
         self.assertEqual(on["counts"]["states"], plain["counts"]["states"])
 
+    def test_flag_alone_changes_the_exit_code(self):
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            inventory.write_text(
+                "Software Name,Version,Publisher,Owner,End of Support\n"
+                "Demo OS 2.0,2.0,Fictional Software Ltd,Ops,2028-06-01\n",
+                encoding="utf-8")
+            codes = []
+            for extra in ((), ("--compare-support",)):
+                codes.append(run_main(
+                    ["check", str(inventory), "--data", str(DATA),
+                     "--as-of", AS_OF, "--out", str(tmp / "out"),
+                     "--fail-on", "dates_disagree", *extra])[0])
+        self.assertEqual(codes, [0, 10])
+
 
 if __name__ == "__main__":
     unittest.main()

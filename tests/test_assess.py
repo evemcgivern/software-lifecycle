@@ -265,6 +265,22 @@ class SupportDateDisagree(unittest.TestCase):
         self.assertEqual(it["support_export_raw"],
                          "2026-03-01; 2026-04-01")
 
+    def test_support_dates_not_compared_are_counted_in_a_warning(self):
+        # One unreadable text and one item whose rows differ.
+        rows = [row("6", export_support="15/03/2026"),
+                row("1", export_support="2030-01-01"),
+                row("1", export_support="2031-01-01")]
+        warning = ("2 item(s) have an export support date that was not "
+                   "compared: the text is not read as one YYYY-MM-DD date.")
+        self.assertIn(warning, compare(rows)["warnings"])
+        self.assertNotIn(warning, run(rows)["warnings"])
+
+    def test_readable_or_blank_support_dates_give_no_warning(self):
+        for value in ("2026-03-01", ""):
+            out = compare([row("6", export_support=value)])
+            self.assertFalse(
+                [w for w in out["warnings"] if "support date" in w], value)
+
     def test_end_of_life_disagreement_comes_first(self):
         it = only(compare([row("1", export_eol="2030-01-01",
                            export_support="2025-06-01")]))

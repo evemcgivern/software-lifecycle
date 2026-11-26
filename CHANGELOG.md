@@ -12,6 +12,7 @@
   mean that by "end of support". The check never changes a state and does
   not run when the item has another date code or an active golden source.
   The export's text is in the new item key `support_export_raw`.
+  A warning counts the items whose support date was not compared.
   `report.json`
   `schema_version` is now 3; `--previous` still accepts a version 1 or 2
   report.

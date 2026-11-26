@@ -192,7 +192,7 @@ inventory.
 | `eol_endoflife` | The endoflife.date end-of-life value. |
 | `eol_export` | The export's end-of-life date, if it was readable. |
 | `eol_export_raw` | The export's end-of-life text as given. |
-| `support_export_raw` | The export's support-date text as given. `null` without `--compare-support` or without a value. Added in schema version 3. A text that is not a readable date is kept here but not compared. |
+| `support_export_raw` | The export's support-date text as given. `null` without `--compare-support` or without a value. Added in schema version 3. A text that is not a readable date, or rows of one item that differ, is kept here but not compared; `warnings` then gives the number of items. |
 | `eol_used` | The end-of-life value the tool used. |
 | `eol_source` | Where `eol_used` came from: `endoflife.date`, `export` or `manual`. |
 | `support` | The mainstream support value from endoflife.date. |

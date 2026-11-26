@@ -54,6 +54,9 @@ PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1, "
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row that was not "
                       "applied: no cycle, see Names to review.")
+SUPPORT_NOT_COMPARED = ("%d item(s) have an export support date that was "
+                        "not compared: the text is not read as one "
+                        "YYYY-MM-DD date.")
 # Item "ambiguity" codes: a row the matcher refused on purpose, for a person
 # to review. Fixed text, never row data. Not a state, list or reason code.
 # shared_support_lines keeps its product; the others have none.
@@ -149,7 +152,8 @@ def _exception(exceptions: Exceptions, products: list, scopes: list,
 
 def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
           tracking: dict, as_of: date, window_end: date,
-          golden_clashes: list, compare_support: bool) -> dict:
+          golden_clashes: list, compare_support: bool,
+          support_skipped: list) -> dict:
     name, version = group["name"], group["version"]
     norm_name = normalize_name(name)
     match, ambiguity = match_noted(name, version, data.aliases,
@@ -159,9 +163,11 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
     cycle = match.cycle
     export_date, export_readable, export_conflict, export_raw = \
         _read_exports(list(group.get("export_eols") or []))
-    support_export, _, _, support_raw = \
+    support_export, support_readable, support_conflict, support_raw = \
         _read_exports(list(group.get("export_supports") or [])
                       if compare_support else [])
+    if support_conflict or not support_readable:
+        support_skipped.append(group["id"])
 
     eol_endoflife = cycle.get("eol") if cycle else None
     eol_used, eol_source = None, None
@@ -379,8 +385,9 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     window_end = add_months(as_of, lookahead_months)
 
     clashes: list = []
+    support_skipped: list = []
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
-                   window_end, clashes, compare_support)
+                   window_end, clashes, compare_support, support_skipped)
              for gid in sorted(groups)]
     apply_classification(items, groups, data)
     for it in items:
@@ -397,6 +404,8 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
         warnings.append(KEV_NOT_CURRENT)
     if clashes:
         warnings.append(GOLDEN_CLASH % len(clashes))
+    if support_skipped:
+        warnings.append(SUPPORT_NOT_COMPARED % len(support_skipped))
     # A golden source needs a cycle; a shared_support_lines item has none,
     # and its platform is unknown, so the row is not applied to it.
     skipped = sum(1 for it in items
