@@ -31,6 +31,41 @@ def alias(key, product, match="exact", version_from="version", **extra):
 SQL_PRODUCTS = {"mssqlserver": cycles("2014", "2016", "2019")}
 
 
+class MultiLineVersionTests(unittest.TestCase):
+    """A version cell with more than one line is never decided from one of
+    its lines (issue #118)."""
+    PRODUCTS = {"acme": cycles("2", "3")}
+
+    def check(self, name, version, aliases):
+        r = match_product(name, version, aliases, self.PRODUCTS)
+        self.assertEqual((r.product, r.cycle, r.reason),
+                         ("acme", None, NO_CYCLE), repr(version))
+
+    def test_either_order_and_any_line_break_gives_no_cycle(self):
+        a = [alias("acme", "acme")]
+        for sep in ("\n", "\r\n", "\r", "\u2028"):
+            for lines in (("2.1", "9.9"), ("9.9", "2.1"), ("2.1", "3.0"),
+                          ("2.1", "2.1")):
+                self.check("Acme", sep.join(lines), a)
+
+    def test_alias_with_a_fixed_cycle_gives_no_cycle(self):
+        self.check("Acme", "2.1\n9.9", [alias("acme", "acme", cycle="2")])
+
+    def test_version_in_the_name_does_not_decide_it(self):
+        self.check("Acme 2", "2.1\n9.9",
+                   [alias("acme", "acme", "prefix", "name")])
+
+    def test_line_break_around_one_version_is_ignored(self):
+        r = match_product("Acme", "\n2.1\r\n", [alias("acme", "acme")],
+                          self.PRODUCTS)
+        self.assertEqual(r.cycle, {"cycle": "2"})
+
+    def test_unknown_name_keeps_no_alias(self):
+        r = match_product("Other", "2.1\n9.9", [alias("acme", "acme")],
+                          self.PRODUCTS)
+        self.assertEqual((r.product, r.reason), (None, NO_ALIAS))
+
+
 class BriefCaseTests(unittest.TestCase):
     def test_build_map_maps_sql_build_to_cycle(self):
         a = [alias("Microsoft SQL Server", "mssqlserver",

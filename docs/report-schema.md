@@ -362,7 +362,7 @@ mean your version is affected. The tool never says "vulnerable".
 | Code | Meaning |
 |---|---|
 | `NO_ALIAS` | No alias entry and no product title fits this name, or the name has extra words after an alias that the strict tail-word rule rejects. |
-| `NO_CYCLE` | The product is known, but no cycle matches this version, or the version in the name and the version column disagree (they would pick different cycles), so the row is not decided. `product` and `match_source` are still set; `cycle` is `null`. |
+| `NO_CYCLE` | The product is known, but no cycle matches this version, or the version in the name and the version column disagree (they would pick different cycles), or the version cell has more than one line, so the row is not decided. `product` and `match_source` are still set; `cycle` is `null`. |
 | `NO_VERSION` | No version was given. |
 | `AMBIGUOUS` | The name matches more than one product (aliases, product titles, or an alias and a title), or more than one cycle fits this version. |
 

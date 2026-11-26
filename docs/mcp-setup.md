@@ -219,6 +219,7 @@ The fix codes `preflight` can return:
 | `NO_PARENT` | No parent column was found. That is fine. |
 | `BLANK_NAME` | Some rows have a blank name cell. |
 | `BLANK_VERSION` | Some rows have a blank version cell. |
+| `MULTI_LINE_VERSION` | Some version cells hold more than one line; no cycle is decided for them. |
 | `BLANK_OWNER` | Some rows have a blank owner cell. |
 | `UNREADABLE_DATE` | Some end-of-life date cells are not in YYYY-MM-DD form. |
 | `PLACEHOLDER` | Some Parent cells hold a placeholder such as n/a. |

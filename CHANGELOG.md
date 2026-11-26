@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased
+
+### When you upgrade
+
+- **Some end-of-life findings can disappear.** An item with several lines
+  in its version cell, listed as past or near end of life only because of
+  its first line, is now unmatched. It leaves those lists and loses any
+  CISA KEV flag, so `--fail-on past_eol`, `ends_soon` or
+  `review_urgently` can now pass for it. Run `preflight`, which counts
+  these cells, and give each version its own row. `--fail-on unmatched`
+  also fails on these items, as on any unmatched item.
+
+### Changes
+
+- A version cell with more than one line is no longer decided from its
+  first line (issue #118). Before, an item could show as `supported` while
+  a second line held another version. It is now unmatched (`NO_CYCLE`
+  when the name gives the product), and `preflight` counts these cells
+  with the new fix code `MULTI_LINE_VERSION`. Such a cell is also no
+  longer used to link a part to its parent suite. This change does not
+  handle several versions on one line.
+
 ## 0.8.0 - 2026-11-26
 
 ### When you upgrade
