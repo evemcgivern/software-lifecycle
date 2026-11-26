@@ -192,7 +192,7 @@ inventory.
 | `eol_endoflife` | The endoflife.date end-of-life value. |
 | `eol_export` | The export's end-of-life date, if it was readable. |
 | `eol_export_raw` | The export's end-of-life text as given. |
-| `support_export_raw` | The export's support-date text as given, or `null`. Added in schema version 3. A text that is not a readable date is kept here but not compared. |
+| `support_export_raw` | The export's support-date text as given. `null` without `--compare-support` or without a value. Added in schema version 3. A text that is not a readable date is kept here but not compared. |
 | `eol_used` | The end-of-life value the tool used. |
 | `eol_source` | Where `eol_used` came from: `endoflife.date`, `export` or `manual`. |
 | `support` | The mainstream support value from endoflife.date. |
@@ -344,7 +344,7 @@ mean your version is affected. The tool never says "vulnerable".
 | Code | Meaning |
 |---|---|
 | `DIFFERENT_DATE` | The export date and the endoflife.date date differ. |
-| `SUPPORT_DATE_DIFFERENT` | The export support date and the endoflife.date support date differ. Added in schema version 3. It is checked only when both are dates and the item has no other code. It never changes the item's state. |
+| `SUPPORT_DATE_DIFFERENT` | The export support date and the endoflife.date support date differ. Added in schema version 3. Only with `--compare-support`. It is checked only when both are dates, the export date is not the endoflife.date end-of-life date and the item has no other code. It never changes the item's state. |
 | `NO_ENDOFLIFE_DATE` | The export has a date; endoflife.date has none to compare. |
 | `EXPORT_DATE_UNREADABLE` | The export date is not an ISO date. |
 | `EXPORT_DATES_CONFLICT` | Rows for the item carry different export dates. |
@@ -551,9 +551,10 @@ this tool reads 1, 2 and 3; no diff", where N is the number found, or
 ### Changes in schema version 3
 
 Version 3 adds one `dates_disagree` code, `SUPPORT_DATE_DIFFERENT`, and
-one item key, `support_export_raw` (issue #108). The tool now reads the
-optional `export_support` column and compares it with the endoflife.date
-support date. No key was removed or renamed, and the states, lists and
+one item key, `support_export_raw` (issue #108). With the new
+`--compare-support` flag, off by default, the tool reads the optional
+`export_support` column and compares it with the endoflife.date support
+date. No key was removed or renamed, and the states, lists and
 other codes are those of version 2. `--previous` still reads a version 1
 or 2 report. An item the new code flags shows in `dates_disagree` and
 nowhere else; its state does not change. What "support" means differs
@@ -582,7 +583,8 @@ from the repo root, or put the repo on `sys.path`.
 
 Options are keyword arguments: `as_of` (required), `data`,
 `lookahead_months`, `profile`, `columns`, `golden`, `exceptions`,
-`tracking`, `support_records`, `previous` and `encoding`. They match the
+`tracking`, `support_records`, `compare_support`, `previous` and
+`encoding`. They match the
 command-line flags.
 
 It raises:

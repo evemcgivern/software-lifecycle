@@ -86,11 +86,11 @@ def exception_row(expires_on, scope="", product="alpha"):
 
 
 def run(rows, golden=None, exceptions=None, tracking=None, previous=None,
-        data=None, as_of=AS_OF, lookahead_months=12):
+        data=None, as_of=AS_OF, lookahead_months=12, compare_support=False):
     return assess(group_rows(rows, COLMAP), data or make_data(),
                   golden or Golden(), exceptions or Exceptions(),
                   tracking or {}, as_of, lookahead_months=lookahead_months,
-                  previous=previous)
+                  previous=previous, compare_support=compare_support)
 
 
 def only(out):
@@ -221,12 +221,16 @@ class Unmatched(unittest.TestCase):
         self.assertIsNone(it["golden_applied"])
 
 
+def compare(rows, **kwargs):
+    return run(rows, compare_support=True, **kwargs)
+
+
 class SupportDateDisagree(unittest.TestCase):
     # Cycle 6 has eol False and the support date 2026-01-01; cycle 1 has
     # an eol date and the support date 2025-01-15.
     def test_different_support_date_is_flagged_and_changes_no_state(self):
-        base = only(run([row("6")]))
-        out = run([row("6", export_support="2026-03-01")])
+        base = only(compare([row("6")]))
+        out = compare([row("6", export_support="2026-03-01")])
         it = only(out)
         self.assertEqual(it["dates_disagree"], "SUPPORT_DATE_DIFFERENT")
         self.assertIn(it["id"], out["lists"]["dates_disagree"])
@@ -236,38 +240,38 @@ class SupportDateDisagree(unittest.TestCase):
             self.assertEqual(it[key], base[key], key)
 
     def test_same_support_date_is_not_flagged(self):
-        out = run([row("6", export_support="2026-01-01 00:00:00")])
+        out = compare([row("6", export_support="2026-01-01 00:00:00")])
         self.assertEqual(out["lists"]["dates_disagree"], [])
         self.assertIsNone(only(out)["dates_disagree"])
 
     def test_no_export_support_gives_no_raw_text(self):
-        self.assertIsNone(only(run([row("6")]))["support_export_raw"])
+        self.assertIsNone(only(compare([row("6")]))["support_export_raw"])
 
     def test_bundled_support_not_a_date_is_not_compared(self):
         # Cycle 2 has no support date; cycle 5 has the flag True.
         for version in ("2", "5"):
-            it = only(run([row(version, export_support="2026-03-01")]))
+            it = only(compare([row(version, export_support="2026-03-01")]))
             self.assertIsNone(it["dates_disagree"], version)
 
     def test_unreadable_support_date_is_kept_but_not_compared(self):
-        it = only(run([row("6", export_support="15/03/2026")]))
+        it = only(compare([row("6", export_support="15/03/2026")]))
         self.assertIsNone(it["dates_disagree"])
         self.assertEqual(it["support_export_raw"], "15/03/2026")
 
     def test_rows_that_disagree_on_support_are_not_compared(self):
-        it = only(run([row("6", export_support="2026-03-01"),
+        it = only(compare([row("6", export_support="2026-03-01"),
                        row("6", export_support="2026-04-01")]))
         self.assertIsNone(it["dates_disagree"])
         self.assertEqual(it["support_export_raw"],
                          "2026-03-01; 2026-04-01")
 
     def test_end_of_life_disagreement_comes_first(self):
-        it = only(run([row("1", export_eol="2030-01-01",
+        it = only(compare([row("1", export_eol="2030-01-01",
                            export_support="2025-06-01")]))
         self.assertEqual(it["dates_disagree"], "DIFFERENT_DATE")
 
     def test_conflicting_end_of_life_dates_come_first(self):
-        it = only(run([row("1", export_eol="2030-01-01",
+        it = only(compare([row("1", export_eol="2030-01-01",
                            export_support="2025-06-01"),
                        row("1", export_eol="2031-01-01",
                            export_support="2025-06-01")]))
@@ -275,9 +279,20 @@ class SupportDateDisagree(unittest.TestCase):
 
     def test_active_golden_source_is_not_second_guessed(self):
         g = Golden({"alpha": golden_row("endoflife.date")})
-        it = only(run([row("6", export_support="2026-03-01")], golden=g))
+        it = only(compare([row("6", export_support="2026-03-01")], golden=g))
         self.assertEqual(it["golden_applied"], "endoflife.date")
         self.assertIsNone(it["dates_disagree"])
+
+    def test_off_by_default(self):
+        out = run([row("6", export_support="2026-03-01")])
+        self.assertIsNone(only(out)["dates_disagree"])
+        self.assertIsNone(only(out)["support_export_raw"])
+        self.assertEqual(out["lists"]["dates_disagree"], [])
+
+    def test_export_support_equal_to_end_of_life_agrees(self):
+        it = only(compare([row("1", export_support="2026-01-15")]))
+        self.assertIsNone(it["dates_disagree"])
+        self.assertEqual(it["support_export_raw"], "2026-01-15")
 
 
 class DatesDisagree(unittest.TestCase):

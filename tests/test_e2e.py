@@ -253,5 +253,38 @@ class GeneratorTests(unittest.TestCase):
                 self.assertEqual(data, (EXAMPLES / name).read_bytes(), name)
 
 
+class CompareSupportFlag(unittest.TestCase):
+    """An export_support column changes nothing until the flag is given."""
+
+    def report(self, tmp: Path, inventory: Path, *extra):
+        out = tmp / "out"
+        args = check_args(out, "--fail-on", "dates_disagree", *extra)
+        args[1] = str(inventory)
+        code = run_main(args)[0]
+        return code, json.loads((out / "report.json").read_text("utf-8"))
+
+    def test_flag_turns_the_comparison_on(self):
+        with open(EXAMPLES / "software-inventory.csv", encoding="utf-8",
+                  newline="") as fh:
+            table = list(csv.reader(fh))
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            with open(inventory, "w", encoding="utf-8", newline="") as fh:
+                writer = csv.writer(fh)
+                writer.writerow(table[0] + ["End of Support"])
+                writer.writerows(r + ["1999-01-01"] for r in table[1:])
+            _, plain = self.report(
+                tmp, EXAMPLES / "software-inventory.csv")
+            _, off = self.report(tmp, inventory)
+            code, on = self.report(tmp, inventory, "--compare-support")
+        self.assertEqual(off["lists"], plain["lists"])
+        self.assertEqual(off["items"], plain["items"])
+        self.assertEqual(code, 10)
+        codes = [it["dates_disagree"] for it in on["items"]]
+        self.assertIn("SUPPORT_DATE_DIFFERENT", codes)
+        self.assertEqual(on["counts"]["states"], plain["counts"]["states"])
+
+
 if __name__ == "__main__":
     unittest.main()

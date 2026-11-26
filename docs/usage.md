@@ -34,6 +34,7 @@ appear in CISA's list of known exploited vulnerabilities.
 | `--exceptions FILE` | Exceptions CSV (accepted risk). | `--exceptions exceptions.csv` |
 | `--tracking FILE` | Tracking CSV (change and problem references). | `--tracking tracking.csv` |
 | `--support-records FILE` | Support-records CSV: your own support records, shown beside the vendor's dates. Never changes a state, a list or `--fail-on`. See "Support records" below. | `--support-records support-records.csv` |
+| `--compare-support` | Compare the `export_support` column with the endoflife.date support date. A difference lists the item under "dates disagree" (`SUPPORT_DATE_DIFFERENT`), so with `--fail-on dates_disagree` it can make a run that passed before exit 10. A date equal to the end-of-life date is not flagged. It never changes a state. What "support" means differs between vendors, so check each flag. Default off: the column is then not read. | `--compare-support` |
 | `--previous REPORT.json` | An earlier `report.json`. The new report then shows what is new, gone or changed. | `--previous last-quarter/report.json` |
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |

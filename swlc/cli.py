@@ -104,14 +104,14 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
           columns: str | None = None, golden: str | None = None,
           exceptions: str | None = None, tracking: str | None = None,
           previous: str | None = None, encoding: str | None = None,
-          support_records: str | None = None):
+          support_records: str | None = None, compare_support: bool = False):
     """Run the whole check; return (result, meta). Raises the tool's errors."""
     result, meta, _records = _build(
         inventory_path, as_of=as_of, data=data,
         lookahead_months=lookahead_months, profile=profile, columns=columns,
         golden=golden, exceptions=exceptions, tracking=tracking,
         previous=previous, encoding=encoding,
-        support_records=support_records)
+        support_records=support_records, compare_support=compare_support)
     return result, meta
 
 
@@ -126,7 +126,7 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
            lookahead_months: int, profile: str, columns: str | None,
            golden: str | None, exceptions: str | None, tracking: str | None,
            previous: str | None, encoding: str | None,
-           support_records: str | None):
+           support_records: str | None, compare_support: bool = False):
     """As build, plus the loaded support records (None when no file),
     which report.md needs for its "Support records" section."""
     loaded = load_data(data or BUNDLED_DATA, as_of)
@@ -147,7 +147,8 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
     try:
         result = assess(groups, loaded, load_golden(golden),
                         load_exceptions(exceptions), load_tracking(tracking),
-                        as_of, lookahead_months, prior, records)
+                        as_of, lookahead_months, prior, records,
+                        compare_support)
     except (OverflowError, ValueError):
         raise UsageError("a date is out of range") from None
     meta = {
@@ -225,6 +226,10 @@ def _parser() -> argparse.ArgumentParser:
                        help="support-records CSV: your own support records, "
                             "shown beside the dates; never changes a state "
                             "or a list")
+    check.add_argument("--compare-support", action="store_true",
+                       help="compare the export_support column with the "
+                            "bundled support date and list differences "
+                            "under dates_disagree (default: off)")
     check.add_argument("--previous", metavar="REPORT.json",
                        help="an earlier report.json, to show what changed")
     check.add_argument("--out", metavar="DIR",
@@ -357,7 +362,8 @@ def _check(args) -> int:
         columns=args.columns, golden=args.golden,
         exceptions=args.exceptions, tracking=args.tracking,
         previous=args.previous, encoding=args.encoding,
-        support_records=args.support_records)
+        support_records=args.support_records,
+        compare_support=args.compare_support)
     if args.out:
         _write_out(args.out, args.inventory, result, meta,
                    args.governable_only, records)

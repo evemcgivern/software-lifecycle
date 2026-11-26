@@ -19,6 +19,7 @@ window. The window is 12 months unless you set `--lookahead-months`.
 
 - your export's own date and the endoflife.date date differ
 - your export's support date and the endoflife.date support date differ
+  (only with `--compare-support`)
 - rows of one item carry different export dates
 - endoflife.date has no date to compare
 - a golden source has passed its review-by date

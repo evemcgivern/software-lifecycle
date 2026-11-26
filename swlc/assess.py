@@ -149,7 +149,7 @@ def _exception(exceptions: Exceptions, products: list, scopes: list,
 
 def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
           tracking: dict, as_of: date, window_end: date,
-          golden_clashes: list) -> dict:
+          golden_clashes: list, compare_support: bool) -> dict:
     name, version = group["name"], group["version"]
     norm_name = normalize_name(name)
     match, ambiguity = match_noted(name, version, data.aliases,
@@ -160,7 +160,8 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
     export_date, export_readable, export_conflict, export_raw = \
         _read_exports(list(group.get("export_eols") or []))
     support_export, _, _, support_raw = \
-        _read_exports(list(group.get("export_supports") or []))
+        _read_exports(list(group.get("export_supports") or [])
+                      if compare_support else [])
 
     eol_endoflife = cycle.get("eol") if cycle else None
     eol_used, eol_source = None, None
@@ -200,15 +201,17 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
                     disagree = disagree or NO_ENDOFLIFE_DATE
                 elif export_date != eol_endoflife:
                     disagree = disagree or DIFFERENT_DATE
-            # The export's support date is compared only when both it and
-            # the bundled support date are dates. A flag, an unreadable
-            # text or rows that disagree are not compared. It never
+            # Opt-in (--compare-support). Compared only when both are
+            # dates: a flag, an unreadable text or rows that disagree are
+            # not. Many exports mean end of life by "end of support", so
+            # a date equal to the bundled end of life agrees. It never
             # changes the state; it only asks a person to look.
             bundled_support = cycle.get("support")
             if (disagree is None and not export_conflict
                     and support_export is not None
                     and isinstance(bundled_support, date)
-                    and support_export != bundled_support):
+                    and support_export not in (bundled_support,
+                                               eol_endoflife)):
                 disagree = SUPPORT_DATE_DIFFERENT
         state = _state(eol_used, cycle.get("support"), as_of, window_end)
         state_endoflife = _state(eol_endoflife, cycle.get("support"), as_of,
@@ -359,7 +362,8 @@ def _diff(items: list, before: dict | None) -> dict:
 def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
            tracking: dict, as_of: date, lookahead_months: int = 12,
            previous: dict | None = None,
-           support_records: list | None = None) -> dict:
+           support_records: list | None = None,
+           compare_support: bool = False) -> dict:
     """Assess grouped inventory items against the loaded data.
 
     ``support_records`` (from swlc.support) only adds the item key
@@ -376,7 +380,8 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
 
     clashes: list = []
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
-                   window_end, clashes) for gid in sorted(groups)]
+                   window_end, clashes, compare_support)
+             for gid in sorted(groups)]
     apply_classification(items, groups, data)
     for it in items:
         # A part is reviewed with its parent, not as a name on its own.
