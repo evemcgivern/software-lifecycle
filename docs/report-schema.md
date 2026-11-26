@@ -568,6 +568,9 @@ or 2 report. An item the new code flags shows in `dates_disagree` and
 nowhere else; its state does not change. What "support" means differs
 between vendors, so the code asks a person to look and decides nothing.
 
+Also added while at version 3, as a new key that needs no version change:
+`meta.inventory` (issue #106). See "meta.inventory".
+
 ### Changes in schema version 2
 
 Version 2 adds one `ambiguity` code, `shared_support_lines` (issue #21),
@@ -605,5 +608,6 @@ It raises:
   different items share one ID. The command line exits with 4.
 - `UsageError` (in `swlc.cli`) for an unknown `profile` or a date out of
   range. The command line exits with 2.
-- `TypeError` if `as_of` is a `datetime` instead of a `date`. Pass a
-  `date`.
+- `TypeError` if `as_of` is a `datetime` instead of a `date`, or if
+  `export_date` is given and is not a `date` (a `datetime` or text is
+  rejected). Pass a `date`.

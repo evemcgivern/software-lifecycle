@@ -8,7 +8,7 @@ import json
 import os
 import re
 import sys
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 from .assess import (LISTS, MAX_LOOKAHEAD_MONTHS, NO_SUPPORT_COLUMN,
@@ -135,6 +135,12 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
     """As build, plus the loaded support records (None when no file),
     which report.md needs for its "Support records" section, and the
     --counts-only support-date line (None without --compare-support)."""
+    if export_date is not None:
+        if isinstance(export_date, datetime) \
+                or not isinstance(export_date, date):
+            raise TypeError("export_date must be a date")
+        if not MIN_YEAR <= export_date.year <= MAX_YEAR:
+            raise UsageError("a date is out of range")
     loaded = load_data(data or BUNDLED_DATA, as_of)
     _known_profile(loaded.profiles, profile)
     if profile == "generic":
