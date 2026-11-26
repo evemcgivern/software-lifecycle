@@ -293,6 +293,27 @@ class FailOnTests(CliBase):
         code, _, _ = self.check("--fail-on", "past_eol")
         self.assertEqual(code, 10)
 
+    def _several(self, version, name="several.csv"):
+        return write_inventory(self.root / name,
+                               [["Example SQL", version, "Example Vendor",
+                                 "dba"]],
+                               header=["Name", "Version", "Publisher",
+                                       "Owner"])
+
+    def test_fail_on_several_versions_past_eol(self):
+        # Fixture data: examplesql cycle 14 has ended, 16 has not.
+        flag = "several_versions_past_eol"
+        past = self._several("14.0 16.0")
+        code, _, err = self.check("--fail-on", flag, inv=past)
+        self.assertEqual(code, 10, err)
+        self.assertIn(flag, err)
+        self.assertEqual(self.check("--fail-on", "past_eol", inv=past)[0], 0)
+        current = self._several("15.0 16.0", "current.csv")
+        self.assertEqual(self.check("--fail-on", flag, inv=current)[0], 0)
+        self.assertEqual(
+            self.check("--fail-on", flag,
+                       inv=self._several("14.0", "one.csv"))[0], 0)
+
     def test_fail_on_several_and_unknown(self):
         self.assertEqual(self.check("--fail-on", "ends_soon,unmatched")[0], 10)
         self.assertEqual(self.check("--fail-on", "past_eol,bogus")[0], 2)

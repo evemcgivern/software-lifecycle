@@ -28,7 +28,8 @@ It gives the chat app exactly two tools:
   return your column titles (the `preflight` command in a terminal does).
 - `check_counts`: runs the check with `--counts-only` and returns only the
   summary counts: `checked_on`, `kev_current`, `items`, `states`,
-  `classification`, `ambiguous_review`, `support_records`, `data_quality`,
+  `classification`, `ambiguous_review`, `several_versions`,
+  `support_records`, `data_quality`,
   `count_total`
   and one count for each list. It never returns item IDs, names,
   versions, publishers or owners. The full report is written to a folder

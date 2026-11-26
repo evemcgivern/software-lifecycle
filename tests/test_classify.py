@@ -363,6 +363,14 @@ class MultiLineSuiteTests(unittest.TestCase):
             self.assertIsNone(got.parent_ref, repr(version))
             self.assertIn(C.SUITE_NO_FIT, got.basis, repr(version))
 
+    def test_one_line_list_of_two_cycles_links_no_parent(self):
+        data = make_data(bundle_parents=[OUTLOOK])
+        for version in ("2021 2016", "2016, 2021", "2021.1 / 2019.1"):
+            got = run(data, "Microsoft Outlook", version,
+                      publisher="Microsoft")
+            self.assertIsNone(got.parent_ref, version)
+            self.assertIn(C.SUITE_NO_FIT, got.basis, version)
+
     def test_line_break_around_one_version_still_links(self):
         data = make_data(bundle_parents=[OUTLOOK])
         got = run(data, "Microsoft Outlook", "2021\n", publisher="Microsoft")
