@@ -25,6 +25,9 @@ from .support import load_support_records
 EXIT_OK, EXIT_USAGE, EXIT_INPUT, EXIT_DATA = 0, 2, 3, 4
 EXIT_FINDINGS, EXIT_UNEXPECTED = 10, 70
 
+# A --fail-on name that is not a list: items flagged for several versions
+# with a listed version past end of life. They stay unmatched.
+FAIL_ON_SEVERAL = "several_versions_past_eol"
 FAIL_ON_NAMES = ("past_eol", "ends_soon", "review_urgently",
                  "dates_disagree", "unmatched")
 OUTPUT_FILES = ("report.json", "report.md", "report.csv")
@@ -271,7 +274,10 @@ def _parser() -> argparse.ArgumentParser:
                             "and bundle members; report.json is unchanged")
     check.add_argument("--fail-on", metavar="LIST",
                        help="exit 10 if any named list has items: "
-                            + ", ".join(FAIL_ON_NAMES))
+                            + ", ".join(FAIL_ON_NAMES)
+                            + ". " + FAIL_ON_SEVERAL + " is not a list: it "
+                              "fails when an item with several versions has "
+                              "one past end of life")
     check.add_argument("--encoding", metavar="NAME",
                        help="text encoding of the inventory if not UTF-8")
     pre = sub.add_parser("preflight",
@@ -299,9 +305,10 @@ def _fail_on(text: str | None) -> list:
     if text is None:
         return []
     names = [n.strip() for n in text.split(",")]
-    if not text.strip() or any(n not in FAIL_ON_NAMES for n in names):
+    allowed = (*FAIL_ON_NAMES, FAIL_ON_SEVERAL)
+    if not text.strip() or any(n not in allowed for n in names):
         raise UsageError("--fail-on takes a comma list of: %s"
-                         % ", ".join(FAIL_ON_NAMES))
+                         % ", ".join(allowed))
     return sorted(set(names))
 
 
@@ -368,6 +375,9 @@ def _counts_text(result: dict, support_line: str | None = None) -> str:
         "%s=%d" % (k, counts["data_quality"][k])
         for k in ("matched_rows", "blank_owner_rows",
                   "no_version_number_rows", "identical_repeat_rows")))
+    lines.append("several_versions " + " ".join(
+        "%s=%d" % (k, counts["several_versions"][k])
+        for k in ("items", "past_eol", "kev")))
     with_count = [it["install_count"] for it in result["items"]
                   if it["install_count"] is not None]
     if with_count or counts["count_invalid_cells"]:
@@ -412,7 +422,9 @@ def _check(args) -> int:
     else:
         sys.stdout.write(render_markdown(result, meta, args.governable_only,
                                          records))
-    hit = [n for n in fail_on if result["lists"][n]]
+    hit = [n for n in fail_on if (
+        result["counts"]["several_versions"]["past_eol"]
+        if n == FAIL_ON_SEVERAL else result["lists"][n])]
     if hit:
         print("Findings present in: %s" % ", ".join(hit), file=sys.stderr)
         return EXIT_FINDINGS

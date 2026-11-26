@@ -4,13 +4,16 @@ import random
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from swlc import matching  # noqa: E402
 from swlc.errors import DataError  # noqa: E402
 from swlc.inputs import OPTIONAL, REQUIRED, map_columns  # noqa: E402
 from swlc.matching import (  # noqa: E402
-    AMBIGUOUS, NO_ALIAS, NO_CYCLE, NO_VERSION, MatchResult, match_product)
+    AMBIGUOUS, NO_ALIAS, NO_CYCLE, NO_VERSION, SEVERAL_VERSIONS,
+    MatchResult, match_product)
 from swlc.normalize import normalize_name  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
@@ -39,7 +42,7 @@ class MultiLineVersionTests(unittest.TestCase):
     def check(self, name, version, aliases):
         r = match_product(name, version, aliases, self.PRODUCTS)
         self.assertEqual((r.product, r.cycle, r.reason),
-                         ("acme", None, NO_CYCLE), repr(version))
+                         ("acme", None, SEVERAL_VERSIONS), repr(version))
 
     def test_either_order_and_any_line_break_gives_no_cycle(self):
         a = [alias("acme", "acme")]
@@ -63,6 +66,92 @@ class MultiLineVersionTests(unittest.TestCase):
     def test_unknown_name_keeps_no_alias(self):
         r = match_product("Other", "2.1\n9.9", [alias("acme", "acme")],
                           self.PRODUCTS)
+        self.assertEqual((r.product, r.reason), (None, NO_ALIAS))
+
+
+class OneLineVersionListTests(unittest.TestCase):
+    """Entries on one line that pick different cycles are a list. No entry
+    decides the item (issue #125)."""
+    PRODUCTS = {"acme": [{"cycle": "2"}, {"cycle": "3"}, {"cycle": "8"}]}
+
+    def match(self, version, name="Acme", aliases=None):
+        return match_product(name, version,
+                             aliases or [alias("acme", "acme")],
+                             self.PRODUCTS)
+
+    def test_two_cycles_in_either_order(self):
+        for version in ("2.1 3.0", "3.0 2.1", "2.1, 3.0", "2.1,3.0",
+                        "2.1;3.0", "2.1 | 3.0", "2.1 / 3.0", "2.1 & 3.0",
+                        "2.1 (also 3.0)", "3 8.0.392", "v2.1 v3.0"):
+            r = self.match(version)
+            self.assertEqual((r.product, r.cycle, r.reason),
+                             ("acme", None, SEVERAL_VERSIONS), version)
+            self.assertEqual(len(r.listed), 2, version)
+
+    def test_entries_picking_one_cycle_are_one_version(self):
+        for version in ("2.1 2.4", "2.1 (2.1.7)", "2.1, 2.1", "2.1 LTS",
+                        "2.1 999.9", "2.1 build 777"):
+            r = self.match(version)
+            self.assertEqual((r.cycle, r.reason, r.listed),
+                             ({"cycle": "2"}, None, ()), version)
+
+    def test_version_in_the_name_does_not_hide_a_list(self):
+        aliases = [alias("acme", "acme", "prefix", "name")]
+        for version in ("2.1 3.0", "3.0 2.1"):
+            r = self.match(version, name="Acme 2", aliases=aliases)
+            self.assertEqual((r.cycle, r.reason),
+                             (None, SEVERAL_VERSIONS), version)
+
+    def test_bitness_is_not_a_version(self):
+        for version in ("2.1 (3-bit)", "2.1 (3 bit)", "2.1, 3-bit"):
+            r = self.match(version)
+            self.assertEqual((r.cycle, r.reason),
+                             ({"cycle": "2"}, None), version)
+
+    def test_bitness_does_not_hide_a_list(self):
+        r = self.match("2.1 3.0 (64-bit)")
+        self.assertEqual(r.reason, SEVERAL_VERSIONS)
+
+    def test_a_cell_with_other_words_is_not_a_list(self):
+        for version in ("2.1 (kernel 3.18.0-372.el8.x86_64)",
+                        "2.1 (bullseye) 3.10.0-23-amd64",
+                        "2.1 Workstation kernel 3.5.6",
+                        "2.1 compiled by gcc 3.4.0",
+                        "2.1 LTS 3.15.0"):
+            r = self.match(version)
+            self.assertEqual((r.cycle, r.reason),
+                             ({"cycle": "2"}, None), version)
+
+    def test_lines_with_other_words_count_by_their_first_number(self):
+        r = self.match("2.1\nkernel 3.18.0")
+        self.assertEqual((r.reason, r.listed),
+                         (SEVERAL_VERSIONS, ({"cycle": "2"},)))
+
+    def test_a_line_with_a_build_suffix_is_not_read_as_a_release(self):
+        for version in ("2.1 (name)\n3.1.0-13-amd64",
+                        "2.1 (name)\n3.18.0-372.el8 kernel"):
+            r = self.match(version)
+            self.assertEqual(r.listed, ({"cycle": "2"},), version)
+
+    def test_a_comma_file_version_is_one_version(self):
+        for version in ("2, 0, 3, 8", "2,0,3,8"):
+            self.assertNotEqual(self.match(version).reason,
+                                SEVERAL_VERSIONS, version)
+
+    def test_joining_words_still_make_a_list(self):
+        for version in ("2.1 and 3.0", "2.1 or 3.0", "2.1 (also 3.0)"):
+            self.assertEqual(self.match(version).reason, SEVERAL_VERSIONS,
+                             version)
+
+    def test_a_very_long_cell_reads_a_bounded_number_of_entries(self):
+        cell = " ".join("2.%d" % n for n in range(9000))
+        with mock.patch("swlc.matching._match_one",
+                        wraps=matching._match_one) as spy:
+            self.match(cell)
+        self.assertLessEqual(spy.call_count, matching.MAX_ENTRIES + 1)
+
+    def test_unknown_name_is_untouched(self):
+        r = self.match("2.1 3.0", name="Other")
         self.assertEqual((r.product, r.reason), (None, NO_ALIAS))
 
 

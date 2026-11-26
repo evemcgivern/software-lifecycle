@@ -351,9 +351,11 @@ A few columns need a note:
   `report.md` says so in its summary line and labels each item's count
   "Inventory rows".
 
-Give each version its own row. A version cell with more than one line is
-never decided from one of its lines: the item stays unmatched, and
-`preflight` counts these cells.
+Give each version its own row. A cell that lists several versions of a
+product is not decided from one of them. The item stays unmatched, and the
+report flags it, saying when a listed version is past end of life. See
+"Several versions in one cell" in [docs/usage.md](docs/usage.md) for what
+this misses.
 
 Export dates must be ISO dates (`2026-01-15`, optionally with a time).
 Day-first and month-first dates are never read. For a matched item with no

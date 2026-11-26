@@ -155,6 +155,14 @@ owner names or report text in a public issue.
 
 Until it is matched, track the item by hand.
 
+An item flagged "Several versions, needs review" is different: its version
+cell lists more than one version. Check each listed version, starting with
+the items that have a listed version past end of life. Then correct the
+export so that each version has its own row, and run the check again.
+These items are in no end-of-life or KEV list until you do. An automated
+run can fail on those with a listed version past end of life with
+`--fail-on several_versions_past_eol`.
+
 ### 10. Assign owners to the "Ownerless" items
 
 Give each item in the "Ownerless" list an owner.

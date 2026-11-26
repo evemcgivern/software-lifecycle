@@ -612,7 +612,7 @@ class SchemaTests(unittest.TestCase):
         self.assertEqual(self.documented("States"), set(assess.STATES))
         self.assertEqual(self.documented("Lists"), set(assess.LISTS))
         reasons = {matching.NO_ALIAS, matching.NO_CYCLE, matching.NO_VERSION,
-                   matching.AMBIGUOUS}
+                   matching.AMBIGUOUS, matching.SEVERAL_VERSIONS}
         self.assertEqual(
             self.documented("Reason codes (unmatched items)"), reasons)
 

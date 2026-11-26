@@ -1,7 +1,7 @@
-# Report schema (version 3)
+# Report schema (version 4)
 
 `report.json` is the full result. `report.md` and `report.csv` are views of
-it. This page lists every key and code in schema version 3. A test in this
+it. This page lists every key and code in schema version 4. A test in this
 repo fails if a key in a real run is missing from this page.
 
 The file is UTF-8 JSON with sorted keys. It contains text from your
@@ -61,7 +61,7 @@ and which item key a column comes from.
 
 | Key | Meaning |
 |---|---|
-| `schema_version` | The number 3. |
+| `schema_version` | The number 4. |
 | `as_of` | The date checked, `YYYY-MM-DD`. |
 | `lookahead_months` | The window in months (default 12). |
 | `data_release` | Which data was used. See below. |
@@ -93,6 +93,7 @@ and which item key a column comes from.
 | `lists` | Count of item IDs in each list. |
 | `classification` | Count of items in each class. See `counts.classification`. |
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
+| `several_versions` | Added in schema version 4. `items` is the number of items with a non-null `several_versions`; `past_eol` is how many of them have `past_eol` `true`; `kev` is how many have `kev` `true`. These items stay unmatched and enter no list for this. The only `--fail-on` name that reads these counts is `several_versions_past_eol`, which fails when `past_eol` is above 0. |
 | `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
 | `count_invalid_cells` | Number of count cells ignored because they are not a whole number from 0 to 1000000000: digits, optionally in comma groups of three (`1,234`), optionally ending in a decimal point and zeros only (`12.0`). A sign, another decimal (`1.234`), another separator (`1 234`), text or a formula is ignored. Blank cells are not counted. `0` with no count column. |
 | `data_quality` | Figures about the inventory rows read, for judging how far to trust a run. See `counts.data_quality`. |
@@ -216,6 +217,7 @@ inventory.
 | `state` | One of the states below. |
 | `state_endoflife` | The state using only the endoflife.date date. `null` if unmatched. |
 | `reason` | A reason code when `state` is `unmatched`; otherwise `null`. |
+| `several_versions` | For an item with `reason` `SEVERAL_VERSIONS`, a flag for a person to review; otherwise `null`. Added in schema version 4. See `several_versions` below. |
 | `eol_endoflife` | The endoflife.date end-of-life value. |
 | `eol_export` | The export's end-of-life date, if it was readable. |
 | `eol_export_raw` | The export's end-of-life text as given. |
@@ -343,7 +345,10 @@ The date fields (`eol_endoflife`, `eol_export`, `eol_used`, `support`,
 ### KEV
 
 KEV is checked only for matched items whose state is `past_eol` or
-`ends_soon`. It matches on vendor and product, never on version. The
+`ends_soon`, and, for the review flag only, for an item with
+`several_versions` that has such a cycle (see `several_versions`; the
+item's own `kev` stays `null`). It matches on vendor and product, never
+on version. The
 report prints: The vendor and product appear in CISA KEV. This does not
 mean your version is affected. The tool never says "vulnerable".
 
@@ -362,8 +367,9 @@ mean your version is affected. The tool never says "vulnerable".
 | Code | Meaning |
 |---|---|
 | `NO_ALIAS` | No alias entry and no product title fits this name, or the name has extra words after an alias that the strict tail-word rule rejects. |
-| `NO_CYCLE` | The product is known, but no cycle matches this version, or the version in the name and the version column disagree (they would pick different cycles), or the version cell has more than one line, so the row is not decided. `product` and `match_source` are still set; `cycle` is `null`. |
+| `NO_CYCLE` | The product is known, but no cycle matches this version, or the version in the name and the version column disagree (they would pick different cycles), so the row is not decided. `product` and `match_source` are still set; `cycle` is `null`. |
 | `NO_VERSION` | No version was given. |
+| `SEVERAL_VERSIONS` | Added in schema version 4. The product is known, and the version cell lists several versions: its numbers pick two or more different cycles (see "Several versions in one cell" in `docs/usage.md`), or it has more than one line. No entry decides the item; `cycle` is `null`. See the item key `several_versions`. |
 | `AMBIGUOUS` | The name matches more than one product (aliases, product titles, or an alias and a title), or more than one cycle fits this version. |
 
 ### dates_disagree codes
@@ -570,10 +576,32 @@ of them adds a state, list, reason code or decision code.
 
 The keyword arguments of `swlc.cli.run` follow the same rule.
 
-The tool reads a `--previous` report of schema version 1, 2 or 3. Any other
+The tool reads a `--previous` report of schema version 1, 2, 3 or 4. Any other
 version gives no diff and the warning "previous run uses schema_version N;
-this tool reads 1, 2 and 3; no diff", where N is the number found, or
+this tool reads 1, 2, 3 and 4; no diff", where N is the number found, or
 `unreadable` when it is not a whole number.
+
+### several_versions
+
+A lower bound, from the endoflife.date dates only. It reads no golden
+source, export date or exception, and it never sets the item's state,
+dates or lists. An entry that picks no cycle is not judged, so `false`
+does not mean every listed version is supported.
+
+| Key | Meaning |
+|---|---|
+| `cycles` | The distinct cycles the entries pick, sorted by label. Each has `cycle` and `state` (a state other than `unmatched`). Empty when no entry picks one. |
+| `past_eol` | `true` when at least one of those cycles has state `past_eol`. |
+| `kev` | Checked only when a cycle is `past_eol` or `ends_soon`: `true` if the vendor and product appear in KEV, `false` if not, `null` if not checked. The vendor and product appear in CISA KEV. This does not mean your version is affected. |
+
+### Changes in schema version 4
+
+Version 4 adds one reason code, `SEVERAL_VERSIONS`, the item key
+`several_versions` and `counts.several_versions` (issue #125). No key was
+removed or renamed, and the states and lists are those of version 3. An
+item whose version cell lists several versions is now unmatched with this
+code, where an earlier version could give it the state of one entry.
+`--previous` still reads a version 1, 2 or 3 report.
 
 ### Changes in schema version 3
 

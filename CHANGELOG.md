@@ -4,23 +4,40 @@
 
 ### When you upgrade
 
-- **Some end-of-life findings can disappear.** An item with several lines
-  in its version cell, listed as past or near end of life only because of
-  its first line, is now unmatched. It leaves those lists and loses any
+- **Some end-of-life findings can disappear.** An item whose version cell
+  lists several versions, listed as past or near end of life only because
+  of one of them, is now unmatched. It leaves those lists and loses any
   CISA KEV flag, so `--fail-on past_eol`, `ends_soon` or
-  `review_urgently` can now pass for it. Run `preflight`, which counts
-  these cells, and give each version its own row. `--fail-on unmatched`
-  also fails on these items, as on any unmatched item.
+  `review_urgently` can now pass for it. The new review flag and the
+  `several_versions` counts show these items. Give each version its own
+  row. To keep failing a run on them, add the new
+  `--fail-on several_versions_past_eol`. It does not cover a listed
+  version that only ends soon or has a KEV line. `--fail-on unmatched`
+  fails on every unmatched item.
+- `report.json` `schema_version` is now 4. A script that requires version
+  3 needs updating. `--previous` still reads versions 1, 2 and 3.
 
 ### Changes
 
-- A version cell with more than one line is no longer decided from its
-  first line (issue #118). Before, an item could show as `supported` while
-  a second line held another version. It is now unmatched (`NO_CYCLE`
-  when the name gives the product), and `preflight` counts these cells
-  with the new fix code `MULTI_LINE_VERSION`. Such a cell is also no
-  longer used to link a part to its parent suite. This change does not
-  handle several versions on one line.
+- A version cell that lists several versions is no longer decided from one
+  of them (issues #118 and #125). Before, an item could show as
+  `supported` while the cell held another version. A list is a one-line
+  cell of only version numbers that pick two or more different release
+  cycles, or a cell with more than one line. When the name gives the product, the item is unmatched
+  with the new reason code `SEVERAL_VERSIONS`. Such a cell is also no
+  longer used to link a part to its parent suite.
+- A one-line list is not detected when it holds another word (such as
+  `LTS`) or when only one of its numbers picks a cycle.
+- Review flag: for these items, `report.md` and the new item key
+  `several_versions` say when at least one listed version is past end of
+  life, and show the KEV line when it applies. The item stays unmatched.
+  `--counts-only` and the desktop chat server print one new
+  `several_versions` line.
+- New `--fail-on several_versions_past_eol`: exit 10 when an item with
+  several versions has a listed version past end of life. It is off unless
+  you name it.
+- `preflight` counts version cells with more than one line, with the new
+  fix code `MULTI_LINE_VERSION`. It does not count one-line lists.
 
 ## 0.8.0 - 2026-11-26
 

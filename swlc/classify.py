@@ -15,9 +15,9 @@ import re
 from dataclasses import dataclass
 
 from .catalog_match import CORPORATE_WORDS, strip_arch, tokens
-from .matching import NO_CYCLE, match_product
+from .matching import MAX_ENTRIES, NO_CYCLE, match_product
 from .normalize import (best_cycle, is_multi_line, normalize_name,
-                        split_version)
+                        split_version, version_entries)
 
 CLASSES = ("governable", "component", "bundle_member", "unknown")
 GOVERNABLE_CATEGORIES = frozenset({"server-app", "app", "os", "database",
@@ -217,8 +217,8 @@ def _suite_cycles(tail: list, version: str, cycles: list) -> set:
     """Cycles of the parent that fit. The tail after the prefix may hold
     only year and version words (and the few words above); they are read in
     order as one version ("10 version 22h2" gives 10, 22h2). With no such
-    word the version column is used, unless it has more than one line.
-    Any other word: no fit."""
+    word the version column is used, unless it has more than one line or
+    its entries fit different cycles. Any other word: no fit."""
     found = _tail_words(tail[:-1] if tail and _TAIL_GROUP.fullmatch(tail[-1])
                         else tail)
     if found is None:
@@ -227,6 +227,11 @@ def _suite_cycles(tail: list, version: str, cycles: list) -> set:
     for word in found:
         parts.extend(split_version(word))
     if not parts and not is_multi_line(version):
+        listed = set()
+        for entry in version_entries(version)[:MAX_ENTRIES]:
+            listed.update(best_cycle(split_version(entry), cycles)[1])
+        if len(listed) > 1:
+            return listed
         parts = split_version(version)
     return set(best_cycle(parts, cycles)[1]) if parts else set()
 

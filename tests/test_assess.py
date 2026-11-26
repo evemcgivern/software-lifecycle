@@ -631,6 +631,41 @@ class Tracking(unittest.TestCase):
         self.assertIsNone(it["problem_ref"])
 
 
+class SeveralVersions(unittest.TestCase):
+    """The review flag: a lower bound that never sets the state (#125)."""
+
+    def test_past_eol_entry_is_flagged_without_setting_state(self):
+        for version in ("5 1", "1 5", "5\n1"):
+            out = run([row(version, publisher=KEV_PUB)])
+            it = only(out)
+            self.assertEqual((it["state"], it["reason"], it["cycle"],
+                              it["eol_used"], it["kev"]),
+                             ("unmatched", "SEVERAL_VERSIONS", None, None,
+                              None), version)
+            flag = it["several_versions"]
+            self.assertEqual(flag["cycles"],
+                             [{"cycle": "1", "state": "past_eol"},
+                              {"cycle": "5", "state": "supported"}], version)
+            self.assertTrue(flag["past_eol"])
+            self.assertIs(flag["kev"], True)
+            self.assertNotIn("past_eol", on(out, it))
+            self.assertNotIn("review_urgently", on(out, it))
+            self.assertEqual(out["counts"]["several_versions"],
+                             {"items": 1, "past_eol": 1, "kev": 1})
+
+    def test_supported_entries_have_no_past_eol_or_kev(self):
+        it = only(run([row("5 11", publisher=KEV_PUB)]))
+        self.assertEqual((it["several_versions"]["past_eol"],
+                          it["several_versions"]["kev"]), (False, None))
+
+    def test_other_items_have_no_flag(self):
+        out = run([row("1"), row("999", name="Nope")])
+        self.assertEqual([i["several_versions"] for i in out["items"]],
+                         [None, None])
+        self.assertEqual(out["counts"]["several_versions"],
+                         {"items": 0, "past_eol": 0, "kev": 0})
+
+
 class Shape(unittest.TestCase):
     ROWS = [row("1"), row("2", owner=""), row("5"), row("1", name="Nope"),
             row("6", export_eol="2020-01-01")]
@@ -640,7 +675,7 @@ class Shape(unittest.TestCase):
         self.assertEqual(sorted(out), sorted([
             "schema_version", "as_of", "lookahead_months", "data_release",
             "kev_current", "warnings", "items", "lists", "counts", "diff"]))
-        self.assertEqual(out["schema_version"], 3)
+        self.assertEqual(out["schema_version"], 4)
         self.assertEqual(out["as_of"], "2026-10-24")
         self.assertEqual(out["data_release"]["id"], "data-2026.10.24.1")
         self.assertEqual(out["data_release"]["kev_catalog_version"],
@@ -757,12 +792,13 @@ class Diff(unittest.TestCase):
         self.assertFalse(any("previous" in w for w in now["warnings"]))
 
     def test_previous_versions_accepted(self):
-        self.assertEqual(assess_mod.PREVIOUS_SCHEMA_VERSIONS, (1, 2, 3))
+        self.assertEqual(assess_mod.PREVIOUS_SCHEMA_VERSIONS,
+                         (1, 2, 3, 4))
         self.assertIn(assess_mod.SCHEMA_VERSION,
                       assess_mod.PREVIOUS_SCHEMA_VERSIONS)
 
     def test_unsupported_previous_version_is_named(self):
-        cases = (({"schema_version": 4, "items": []}, "4"),
+        cases = (({"schema_version": 5, "items": []}, "5"),
                  ({"schema_version": 0, "items": []}, "0"),
                  ({"schema_version": -4, "items": []}, "-4"),
                  ({"schema_version": "4", "items": []}, "unreadable"),
@@ -776,7 +812,7 @@ class Diff(unittest.TestCase):
                 out = run([row("1")], previous=prev)
                 self.assertFalse(out["diff"]["available"])
                 self.assertIn("previous run uses schema_version %s; this "
-                              "tool reads 1, 2 and 3; no diff" % shown,
+                              "tool reads 1, 2, 3 and 4; no diff" % shown,
                               out["warnings"])
                 self.assertFalse(any("Zqxv" in w for w in out["warnings"]))
         # A supported version with bad items keeps the general warning.
@@ -786,7 +822,7 @@ class Diff(unittest.TestCase):
             self.assertIn(assess_mod.PREVIOUS_UNUSABLE, out["warnings"])
 
     def test_unusable_previous(self):
-        for bad in ({"schema_version": 4, "items": []},
+        for bad in ({"schema_version": 5, "items": []},
                     {"schema_version": 0, "items": []}, {"items": "x"},
                     {"schema_version": True, "items": []},
                     {"schema_version": 1.0, "items": []},

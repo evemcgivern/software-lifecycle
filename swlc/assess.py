@@ -16,17 +16,19 @@ from .classify import (CLASSES, PARENT_ABSENT, PART_CLASSES,
                        apply_classification, inherited_states)
 from .data import Data, kev_match
 from .errors import InputError
-from .matching import match_noted
+from .matching import SEVERAL_VERSIONS, match_noted
 from .normalize import normalize_name
 from .overrides import Exceptions, Golden
 from .support import attach as attach_support
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 # --previous reads a report of any of these versions. Version 2 added the
 # ambiguity code shared_support_lines; its states are those of version 1.
 # Version 3 added the dates_disagree code SUPPORT_DATE_DIFFERENT and the
 # item key support_export_raw; its states and lists are those of version 2.
-PREVIOUS_SCHEMA_VERSIONS = (1, 2, 3)
+# Version 4 added the reason code SEVERAL_VERSIONS and the item key
+# several_versions; its states and lists are those of version 3.
+PREVIOUS_SCHEMA_VERSIONS = (1, 2, 3, 4)
 STATES = ("supported", "mainstream_ended", "ends_soon", "past_eol",
           "unmatched")
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
@@ -50,7 +52,7 @@ GOLDEN_CLASH = ("%d item(s) matched two golden-source rows; the product-id "
                 "row was used.")
 PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
 PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1, "
-                    "2 and 3; no diff")
+                    "2, 3 and 4; no diff")
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row that was not "
                       "applied: no cycle, see Names to review.")
@@ -117,6 +119,27 @@ def _state(eol, support, as_of: date, window_end: date) -> str:
     if support is False or (isinstance(support, date) and support <= as_of):
         return "mainstream_ended"
     return "supported"
+
+
+def _several(match, group: dict, data: Data, as_of: date,
+             window_end: date) -> dict:
+    """The review flag for a SEVERAL_VERSIONS item. A lower bound from the
+    endoflife.date dates of the cycles the entries pick: entries that pick
+    none are not judged. It never sets the item's state."""
+    cycles = [{"cycle": c.get("cycle"),
+               "state": _state(c.get("eol"), c.get("support"), as_of,
+                               window_end)}
+              for c in match.listed]
+    kev = None
+    if any(c["state"] in ("past_eol", "ends_soon") for c in cycles):
+        if match.kev:
+            kev = kev_match(data.kev, match.kev["vendor"],
+                            match.kev["product"])
+        else:
+            kev = kev_match(data.kev, group["publisher"], group["name"])
+    return {"cycles": cycles,
+            "past_eol": any(c["state"] == "past_eol" for c in cycles),
+            "kev": kev}
 
 
 def _read_exports(texts: list):
@@ -273,6 +296,8 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "state": state,
         "state_endoflife": state_endoflife,
         "reason": match.reason,
+        "several_versions": _several(match, group, data, as_of, window_end)
+        if match.reason == SEVERAL_VERSIONS else None,
         "match_source": match.source,
         "eol_endoflife": _iso(eol_endoflife),
         "eol_export": _iso(export_date),
@@ -483,6 +508,16 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             # Unmatched items refused on purpose (item "ambiguity"). They
             # stay in lists.unmatched; a count, not a list.
             "ambiguous_review": sum(1 for it in items if it["ambiguity"]),
+            # Items whose version cell lists several versions, and how
+            # many of them have a listed version past end of life or a
+            # KEV entry. Counts only: they stay unmatched.
+            "several_versions": {
+                "items": sum(1 for it in items if it["several_versions"]),
+                "past_eol": sum(1 for it in items
+                                if (it["several_versions"] or {})
+                                .get("past_eol")),
+                "kev": sum(1 for it in items
+                           if (it["several_versions"] or {}).get("kev"))},
             # Records from the support-records file. Counts only; a record
             # never changes a state, a list or --fail-on.
             "support_records": support_counts,

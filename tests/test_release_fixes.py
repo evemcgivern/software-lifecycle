@@ -53,14 +53,23 @@ class HelpTests(unittest.TestCase):
 
 
 class ReportWordingTests(unittest.TestCase):
+    def test_several_versions_flag_is_a_lower_bound(self):
+        md = markdown_for([["Node.js", "16.20.0 24.1.0", "OpenJS Foundation",
+                            "a"]])
+        self.assertIn("Reason SEVERAL_VERSIONS", md)
+        self.assertIn("Several versions, needs review. At least one listed "
+                      "version is past end of life per endoflife.date "
+                      "(cycles: 16). The item stays unmatched.", md)
+        self.assertIn("Several versions: 1 of these list several versions; "
+                      "1 have a listed version past end of life.", md)
     def test_unmatched_lines_follow_the_reason(self):
         md = markdown_for([
             ["Microsoft SQL Server 2016", "13.0.5026.0", "Microsoft", "a"],
             ["Zzz Unknown Tool", "1.0", "Nobody", "b"]])
         self.assertIn("product known (mssqlserver), but no cycle was "
                       "matched. Reason NO_CYCLE: no cycle matches this "
-                      "version, the version in the name disagrees with it, "
-                      "or the version cell has more than one line.", md)
+                      "version, or the version in the name disagrees with "
+                      "it.", md)
         self.assertIn("no known product was matched. Reason NO_ALIAS",
                       md)
         self.assertNotIn("not matched to a known product", md)

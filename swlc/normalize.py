@@ -39,6 +39,36 @@ def is_multi_line(raw: str) -> bool:
     return len(raw.strip().splitlines()) > 1
 
 
+_ENTRY_SPLIT_RE = re.compile(r"[\s,;|/&()\[\]]+")
+_BITNESS_RE = re.compile(r"(?<![\w.])(?:16|32|64)[\s-]?bit(?!\w)", re.I)
+# A piece that is only a version number, and the words that may join them.
+_NUMBER_RE = re.compile(r"v?[0-9]+(?:[._][0-9]+)*", re.I)
+# One version written with commas, as in Windows file details.
+_COMMA_VERSION_RE = re.compile(r"[0-9]+(?:\s*,\s*[0-9]+){3}")
+_JOIN_WORDS = ("and", "or", "also")
+
+
+def version_entries(raw: str) -> list[str]:
+    """The distinct pieces of a version cell that could be the entries of
+    a version list, in cell order. Bitness ("64-bit") is dropped. When the
+    cell holds only version numbers and joining words, the entries are the
+    numbers. Otherwise another word is there ("kernel", "LTS"), so a
+    number may belong to something else: a one-line cell gives nothing,
+    and a cell with several lines gives only a plain number that starts
+    a line."""
+    text = _BITNESS_RE.sub(" ", raw)
+    if _COMMA_VERSION_RE.fullmatch(text.strip()):
+        return []
+    pieces = [p for p in _ENTRY_SPLIT_RE.split(text)
+              if p and p.casefold() not in _JOIN_WORDS]
+    if not all(_NUMBER_RE.fullmatch(p) for p in pieces):
+        lines = text.strip().splitlines()
+        firsts = [line.split()[0] for line in lines if line.split()]
+        pieces = [w for w in firsts if _NUMBER_RE.fullmatch(w)] \
+            if len(lines) > 1 else []
+    return list(dict.fromkeys(pieces))
+
+
 def split_version(raw: str) -> list[str]:
     """Strip a leading ``v``; split on ``.``, ``-``, ``_`` and space."""
     text = unicodedata.normalize("NFKC", raw).casefold().strip()

@@ -139,7 +139,7 @@ Guide me one step at a time. Wait for me to answer before the next step:
 1. Tell me how to open a terminal on my system, and how to check that Python is 3.9 or newer: `python3 --version` (on Windows, `py --version`).
 2. Tell me to put the software-lifecycle repo in a NEW folder and to open the terminal in that folder.
 3. Tell me to run `python3 software_lifecycle.py preflight ../inventory.csv`, and to paste back only what it prints. It shows column titles and counts, never a cell. Help me fix any problem it names in my export.
-4. Tell me to run `python3 software_lifecycle.py check ../inventory.csv --counts-only --out ../swlc-out`, and to paste back only the summary lines (checked_on, kev_current, items, states, classification, ambiguous_review, support_records, data_quality, count_total). Tell me to leave out every line that lists item IDs.
+4. Tell me to run `python3 software_lifecycle.py check ../inventory.csv --counts-only --out ../swlc-out`, and to paste back only the summary lines (checked_on, kev_current, items, states, classification, ambiguous_review, several_versions, support_records, data_quality, count_total). Tell me to leave out every line that lists item IDs.
 5. Explain the counts in plain words. The data_quality figures are not a score and do not show whether the inventory is complete, so do not turn them into one. Tell me the full report is in ../swlc-out and that I should read it myself.
 ```
 
@@ -162,8 +162,8 @@ On Windows, type `py` in place of `python3`.
 If you want the assistant's help with the output, paste back only the
 summary lines of the `check` output: the ones that start with
 `checked_on`, `kev_current`, `items`, `states`, `classification`,
-`ambiguous_review`, `support_records`, `data_quality` and
-`count_total`. Leave out every
+`ambiguous_review`, `several_versions`, `support_records`,
+`data_quality` and `count_total`. Leave out every
 line that lists item IDs (`past_eol 7: 0a668be21645 ...` and the other
 list lines). If you want to share a list count, type the number, not the
 IDs. Never paste the inventory or the report files.

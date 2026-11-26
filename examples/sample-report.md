@@ -220,7 +220,7 @@ Names to review: 1 of these were left unmatched on purpose; see "Names to review
   - Product known; version not matched.
   - Owners: Finance Systems. Inventory rows: 1
   - Count (from your file): 381
-  - **Unverified:** product known (brightlineeditor), but no cycle was matched. Reason NO_CYCLE: no cycle matches this version, the version in the name disagrees with it, or the version cell has more than one line. No end-of-life date is claimed.
+  - **Unverified:** product known (brightlineeditor), but no cycle was matched. Reason NO_CYCLE: no cycle matches this version, or the version in the name disagrees with it. No end-of-life date is claimed.
 - **Brightline Editor** , publisher Fictional Software Ltd (id `b3e080c410cc`)
   - State: could not be matched
   - Classification: unknown (basis: category_governable, version_shape)
@@ -315,7 +315,7 @@ Unmatched on purpose, not a finding. Each name looks like a catalog product, but
 
 ## In CISA KEV, past or near end of life (2)
 
-Needs review, not a finding that any version is affected. KEV is checked only for matched items that are past end of life or end within the window.
+Needs review, not a finding that any version is affected. KEV is checked only for matched items that are past end of life or end within the window. An item with several versions shows its KEV line in its own entry and is not listed here.
 
 - **Example SQL** 15, publisher Example Vendor (id `a3f0e99e87b4`)
   - State: ends within the lookahead window

@@ -6,12 +6,15 @@ from functools import lru_cache
 from .catalog_match import TITLE_NEEDS_PUBLISHER, _has_run, tokens
 from .errors import DataError
 from .normalize import (best_cycle, is_multi_line, normalize_name,
-                        split_version)
+                        split_version, version_entries)
 
 NO_ALIAS = "NO_ALIAS"
 NO_CYCLE = "NO_CYCLE"
 NO_VERSION = "NO_VERSION"
 AMBIGUOUS = "AMBIGUOUS"
+SEVERAL_VERSIONS = "SEVERAL_VERSIONS"
+# Entries read from one version cell. A cell can be 65,536 characters.
+MAX_ENTRIES = 50
 
 _MODES = ("exact", "prefix")
 _SOURCES = ("name", "version")
@@ -30,6 +33,10 @@ class MatchResult:
     # Which table found the product: CURATED (aliases.json), GENERATED
     # (product titles in products.json), or None when no product is known.
     source: str | None = None
+    # With SEVERAL_VERSIONS: the distinct cycle dicts the cell's entries
+    # pick, sorted by label, and the alias's KEV pair if it has one. None
+    # of them is the item's cycle.
+    listed: tuple = ()
 
 
 def _check(entry: dict, pos: int) -> None:
@@ -178,17 +185,39 @@ def match_noted(name: str, version: str, aliases: list[dict],
 
 def _match(name, version, aliases, products, catalog_index, publisher,
            noted: bool) -> tuple:
-    """_match_one, except for a version cell with more than one line. It
-    may list several versions, so no line of it is read: the name alone
-    finds the product, and no cycle is decided."""
-    if not is_multi_line(version or ""):
-        return _match_one(name, version, aliases, products, catalog_index,
+    """_match_one, except for a version cell that lists several versions:
+    entries that pick two or more different cycles, or more than one line.
+    No entry decides the item. A cell with several lines is not read as a
+    whole: the name alone finds the product."""
+    def one(text: str) -> tuple:
+        return _match_one(name, text, aliases, products, catalog_index,
                           publisher, noted)
-    result, code = _match_one(name, "", aliases, products, catalog_index,
-                              publisher, noted)
+
+    multi = is_multi_line(version or "")
+    result, code = one("" if multi else version)
     if result.product is None:
         return result, code
-    return replace(result, cycle=None, reason=NO_CYCLE, kev=None), code
+    entries = version_entries(version or "")
+    cycles = products.get(result.product) or []
+    labels = [c.get("cycle", "") for c in cycles]
+    found: dict = {}
+    kev = None
+    if multi or len(entries) > 1:
+        for entry in entries[:MAX_ENTRIES]:
+            got, _code = one(entry)
+            if got.product == result.product and got.cycle is not None:
+                found[got.cycle.get("cycle", "")] = got.cycle
+                kev = kev or got.kev
+            elif "." in entry:
+                # A version in the name rejects an entry that disagrees
+                # with it, so a dotted entry is also read on its own.
+                best, tied = best_cycle(split_version(entry), labels)
+                if best is not None and len(_distinct_by_parts(tied)) == 1:
+                    found[best] = _cycle_dict(cycles, best)
+    if not multi and len(found) < 2:
+        return result, code
+    return replace(result, cycle=None, reason=SEVERAL_VERSIONS, kev=kev,
+                   listed=tuple(found[k] for k in sorted(found))), code
 
 
 def _match_one(name, version, aliases, products, catalog_index, publisher,

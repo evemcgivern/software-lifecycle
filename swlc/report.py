@@ -37,11 +37,12 @@ STATE_TEXT = {
 }
 REASON_TEXT = {
     "NO_ALIAS": "no alias entry or product title fits this name",
-    "NO_CYCLE": ("no cycle matches this version, the version in the name "
-                 "disagrees with it, or the version cell has more than one "
-                 "line"),
+    "NO_CYCLE": ("no cycle matches this version, or the version in the name "
+                 "disagrees with it"),
     "NO_VERSION": "no version given",
     "AMBIGUOUS": "more than one cycle fits this version",
+    "SEVERAL_VERSIONS": ("the version cell lists several versions or has "
+                         "more than one line"),
 }
 REASON_TEXT_NO_PRODUCT = {
     "AMBIGUOUS": "the name fits more than one product",
@@ -100,6 +101,8 @@ NEEDS_REVIEW_LEAD = ("Needs review: %d. Parts with a parent are listed in "
 PARTS = ("component", "bundle_member")
 REVIEW_HEADING = "Names to review"
 REVIEW_COLUMN = "Review reason"
+SEVERAL_LEAD = ("Several versions: %d of these list several versions; %d "
+                "have a listed version past end of life.")
 REVIEW_POINTER = ("Names to review: %d of these were left unmatched on "
                   "purpose; see \"%s\" below.")
 REVIEW_LEAD = ("Unmatched on purpose, not a finding. Each name looks like a "
@@ -314,6 +317,28 @@ def _unmatched_line(it: dict) -> str:
             "claimed." % (lead, reason, why))
 
 
+def _several_lines(flag: dict, kev_current: bool) -> list:
+    """The review flag for a SEVERAL_VERSIONS item: a lower bound only."""
+    past = [_disp(c["cycle"]) for c in flag["cycles"]
+            if c["state"] == "past_eol"]
+    if past:
+        found = ("At least one listed version is past end of life per "
+                 "endoflife.date (cycles: %s)." % ", ".join(past))
+    elif flag["cycles"]:
+        found = ("No listed version that matched a cycle is past end of "
+                 "life per endoflife.date. Other entries were not checked.")
+    else:
+        found = "No entry matched a cycle, so none was checked."
+    lines = ["Several versions, needs review. %s The item stays unmatched."
+             % found]
+    if flag["kev"]:
+        text = "KEV: %s Needs review." % KEV_LINE
+        if not kev_current:
+            text += " KEV data was not current when this was checked."
+        lines.append(text)
+    return lines
+
+
 def hidden_counts(result: dict) -> tuple:
     """(components, bundle members) that --governable-only leaves out."""
     kinds = [it["classification"] for it in result["items"]]
@@ -450,7 +475,8 @@ def _support_section(result: dict, records: list) -> list:
 
 
 def _item_block(it: dict, eol_snap: str, by_id: dict,
-                as_of: str | None = None) -> list:
+                as_of: str | None = None,
+                kev_current: bool = True) -> list:
     head = "- **%s** %s" % (_name(it["name"]), _disp(it["version"]))
     if it["publisher"]:
         head += ", publisher %s" % _disp(it["publisher"])
@@ -474,6 +500,8 @@ def _item_block(it: dict, eol_snap: str, by_id: dict,
         sub.append(COUNT_LINE % it["install_count"])
     if it["state"] == "unmatched":
         sub.append(_unmatched_line(it))
+    if it["several_versions"]:
+        sub.extend(_several_lines(it["several_versions"], kev_current))
     sub.extend(_date_lines(it, eol_snap))
     if as_of is not None:
         sub.extend(_support_lines(it, as_of))
@@ -591,7 +619,8 @@ def render_markdown(result: dict, meta: dict,
             out.append("All of these are hidden by --governable-only.")
         for gid in shown:
             out.extend(_item_block(items[gid], eol_snap, items,
-                                   result["as_of"] if notes else None))
+                                   result["as_of"] if notes else None,
+                                   result["kev_current"]))
 
     unmatched = result["lists"]["unmatched"]
     review = [gid for gid in unmatched if _needs_review(items[gid])]
@@ -599,12 +628,16 @@ def render_markdown(result: dict, meta: dict,
     attention = [it["id"] for it in result["items"]
                  if it["inherited_lifecycle"]
                  and it["inherited_lifecycle"]["state"] in inherited_states]
+    several = result["counts"]["several_versions"]
+    several_lead = [SEVERAL_LEAD % (several["items"], several["past_eol"])] \
+        if several["items"] else []
     for name, heading, _ in SECTIONS:
         ids = result["lists"][name]
         if name == "unmatched":
             emit(heading, len(ids), review,
                  [NEEDS_REVIEW_LEAD % len(review),
-                  REVIEW_POINTER % (len(ambiguous), REVIEW_HEADING), ""])
+                  REVIEW_POINTER % (len(ambiguous), REVIEW_HEADING)]
+                 + several_lead + [""])
             # Never hidden: an ambiguous item is never a part.
             out.extend(["", "## %s (%d)" % (REVIEW_HEADING, len(ambiguous)),
                         "", REVIEW_LEAD, ""])
@@ -621,7 +654,9 @@ def render_markdown(result: dict, meta: dict,
         if name == "review_urgently":
             lead = ["Needs review, not a finding that any version is "
                     "affected. KEV is checked only for matched items that "
-                    "are past end of life or end within the window.", ""]
+                    "are past end of life or end within the window. An item "
+                    "with several versions shows its KEV line in its own "
+                    "entry and is not listed here.", ""]
             if not result["kev_current"]:
                 none_text = ("None listed. KEV overlay is not current, so "
                              "this does not show there are none.")

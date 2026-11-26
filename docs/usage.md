@@ -40,7 +40,7 @@ appear in CISA's list of known exploited vulnerabilities.
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
 | `--governable-only` | Leave components and bundle members out of `report.md` and `report.csv`. Prints "N items hidden: M components, K bundle members". `report.json` and `--fail-on` are unchanged, and `unknown` items are never hidden. Default off. | `--governable-only --out ../swlc-out` |
-| `--fail-on LIST` | Exit with code 10 if any named list has items. Names: `past_eol`, `ends_soon`, `review_urgently`, `dates_disagree`, `unmatched`. Comma separated. The name `review_urgently` is kept for stability; `report.md` shows that list as "In CISA KEV, past or near end of life". | `--fail-on past_eol,review_urgently` |
+| `--fail-on LIST` | Exit with code 10 if any named list has items. Names: `past_eol`, `ends_soon`, `review_urgently`, `dates_disagree`, `unmatched`. Also `several_versions_past_eol`, which is not a list: it fails when an item whose version cell lists several versions has a listed version past end of life (see "Several versions in one cell"). Comma separated. The name `review_urgently` is kept for stability; `report.md` shows that list as "In CISA KEV, past or near end of life". | `--fail-on past_eol,review_urgently` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
 | `-h`, `--help` | Show help. | `--help` |
 
@@ -136,7 +136,7 @@ On success it prints "Data check passed" with the release and file count.
 | 2 | Usage error: a bad flag, value or combination, including an `--out` that is a file or is the input file. |
 | 3 | Bad input: the inventory, an override file, a columns file or the output could not be written (for example, through a symbolic link). |
 | 4 | A data check failed. |
-| 10 | Findings are present in a list named by `--fail-on`. Only returned with `--fail-on`. |
+| 10 | Findings named by `--fail-on` are present. Only returned with `--fail-on`. |
 | 70 | Unexpected error. The tool prints only the error type. |
 
 ## How names are matched
@@ -184,12 +184,55 @@ version column:
 
 If the check fails, the item is not decided (`NO_CYCLE`, product known).
 
-A version cell with more than one line, for example several versions of
-one program, is never decided from one of its lines. When the name gives
-the product, the item is `NO_CYCLE`. `preflight` counts these cells. Give
-each version its own row. Until you do, the item is in no end-of-life or
-KEV list, so `--fail-on past_eol`, `ends_soon` or `review_urgently` does
-not fail on it, even when one line is past end of life.
+### Several versions in one cell
+
+A version cell lists several versions when either is true:
+
+- it is one line that holds only version numbers (digits with `.` or `_`,
+  and an optional leading `v`), and they pick two or more different
+  release cycles of the product, for example `16.20.0 24.1.0` for
+  Node.js;
+- it has more than one line.
+
+Numbers may be separated by spaces, brackets, `,` `;` `|` `/` `&` or the
+words `and`, `or` and `also`. Labels such as `64-bit` are ignored, and
+four whole numbers joined by commas, such as `6, 0, 25, 8`, are one
+version. Only
+the first 50 distinct entries of a cell are read.
+
+No entry decides the item. When the name gives the product, the item is
+unmatched with the reason `SEVERAL_VERSIONS`, and the report flags it for
+review. The flag says when at least one listed version is past end of
+life, and shows the KEV line when it applies. This is a lower bound: an
+entry that picks no cycle is not checked.
+
+The item is in no end-of-life or KEV list, so `--fail-on past_eol`,
+`ends_soon` or `review_urgently` does not fail on it, even when one entry
+is past end of life. To fail a run on it, add
+`several_versions_past_eol` to `--fail-on`. It fails only when a listed
+version that was checked is past end of life: not for one that only ends
+soon or has a KEV line. `--fail-on unmatched` fails on every unmatched
+item. The
+`several_versions` counts show how many there are. Give each version its
+own row in the export.
+
+What this can get wrong:
+
+- A one-line list with any other word or character is not detected, for
+  example `22.04 LTS, 20.04 LTS`, `8.0.392+8 11.0.2` or entries with a
+  `-` suffix. This keeps a kernel or compiler number from being read as a
+  release of the product.
+- In a cell with several lines that also holds other words, the review
+  flag reads only a plain number that starts a line. A line such as
+  `8.0.392-1 LTS` is not checked.
+- A one-line list is also missed when only one entry picks a cycle, for
+  example a supported version beside one the data does not list.
+- A cell not detected as a list is read as before: by its start.
+- A single version written with two numbers that are both cycles, such as
+  a version and a build number, is flagged as a list.
+
+`preflight` counts cells with more than one line. It does not count
+one-line lists, which need the product data.
 
 ### Step 2: product titles
 
@@ -949,6 +992,8 @@ It prints:
   and the count in each state;
 - the count of items in each class (`classification bundle_member=K component=M governable=G unknown=U`);
 - the count of names to review (`ambiguous_review N`), with no names;
+- the counts of items whose version cell lists several versions
+  (`several_versions items=N past_eol=M kev=K`), with no names;
 - the support-record counts
   (`support_records listed=N ending_soon=M not_matched=K`), with no
   references, products or dates;
