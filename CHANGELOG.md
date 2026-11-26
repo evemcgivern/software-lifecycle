@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 - 2026-11-26
 
 ### When you upgrade
 
@@ -16,6 +16,8 @@
   fails on every unmatched item.
 - `report.json` `schema_version` is now 4. A script that requires version
   3 needs updating. `--previous` still reads versions 1, 2 and 3.
+- `--counts-only` and the desktop chat server print a new
+  `several_versions` line. `preflight` prints two new counts.
 
 ### Changes
 
@@ -23,9 +25,10 @@
   of them (issues #118 and #125). Before, an item could show as
   `supported` while the cell held another version. A list is a one-line
   cell of only version numbers that pick two or more different release
-  cycles, or a cell with more than one line. When the name gives the product, the item is unmatched
-  with the new reason code `SEVERAL_VERSIONS`. Such a cell is also no
-  longer used to link a part to its parent suite.
+  cycles, or a cell with more than one line. When the name gives the
+  product, the item is unmatched with the new reason code
+  `SEVERAL_VERSIONS`. Such a cell is also no longer used to link a part
+  to its parent suite.
 - A one-line list is not detected when it holds another word (such as
   `LTS`) or when only one of its numbers picks a cycle. Many of these now
   get a warning (issue #127): the result is unchanged, `report.md` lists
