@@ -21,10 +21,12 @@ from .normalize import normalize_name
 from .overrides import Exceptions, Golden
 from .support import attach as attach_support
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 # --previous reads a report of any of these versions. Version 2 added the
 # ambiguity code shared_support_lines; its states are those of version 1.
-PREVIOUS_SCHEMA_VERSIONS = (1, 2)
+# Version 3 added the dates_disagree code SUPPORT_DATE_DIFFERENT and the
+# item key support_export_raw; its states and lists are those of version 2.
+PREVIOUS_SCHEMA_VERSIONS = (1, 2, 3)
 STATES = ("supported", "mainstream_ended", "ends_soon", "past_eol",
           "unmatched")
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
@@ -35,6 +37,7 @@ _ID = re.compile(r"[0-9a-f]{12}")
 # dates_disagree codes (also used in decision_needed)
 DIFFERENT_DATE = "DIFFERENT_DATE"
 NO_ENDOFLIFE_DATE = "NO_ENDOFLIFE_DATE"
+SUPPORT_DATE_DIFFERENT = "SUPPORT_DATE_DIFFERENT"
 EXPORT_DATE_UNREADABLE = "EXPORT_DATE_UNREADABLE"
 EXPORT_DATES_CONFLICT = "EXPORT_DATES_CONFLICT"
 GOLDEN_EXPIRED = "GOLDEN_EXPIRED"
@@ -46,11 +49,16 @@ KEV_NOT_CURRENT = ("KEV snapshot is not current; the KEV overlay may be "
 GOLDEN_CLASH = ("%d item(s) matched two golden-source rows; the product-id "
                 "row was used.")
 PREVIOUS_UNUSABLE = "previous run could not be read; no diff"
-PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1 "
-                    "and 2; no diff")
+PREVIOUS_VERSION = ("previous run uses schema_version %s; this tool reads 1, "
+                    "2 and 3; no diff")
 PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row that was not "
                       "applied: no cycle, see Names to review.")
+SUPPORT_NOT_COMPARED = ("%d item(s) have an export support date that was "
+                        "not compared: the text is not a YYYY-MM-DD date, "
+                        "or rows of the item differ.")
+NO_SUPPORT_COLUMN = ("No export_support column was recognized, so no "
+                     "support dates were compared.")
 # Item "ambiguity" codes: a row the matcher refused on purpose, for a person
 # to review. Fixed text, never row data. Not a state, list or reason code.
 # shared_support_lines keeps its product; the others have none.
@@ -132,6 +140,17 @@ def _read_exports(texts: list):
     return None, False, False, raw
 
 
+def support_not_compared(groups: dict) -> int:
+    """Items whose export support dates are unreadable, or differ between
+    rows, so --compare-support cannot compare them."""
+    count = 0
+    for group in groups.values():
+        _, readable, conflict, _ = _read_exports(
+            list(group.get("export_supports") or []))
+        count += conflict or not readable
+    return count
+
+
 def _exception(exceptions: Exceptions, products: list, scopes: list,
                as_of: date):
     """(active, expired) for the most specific matching exception."""
@@ -146,7 +165,7 @@ def _exception(exceptions: Exceptions, products: list, scopes: list,
 
 def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
           tracking: dict, as_of: date, window_end: date,
-          golden_clashes: list) -> dict:
+          golden_clashes: list, compare_support: bool) -> dict:
     name, version = group["name"], group["version"]
     norm_name = normalize_name(name)
     match, ambiguity = match_noted(name, version, data.aliases,
@@ -156,6 +175,9 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
     cycle = match.cycle
     export_date, export_readable, export_conflict, export_raw = \
         _read_exports(list(group.get("export_eols") or []))
+    support_export, _, _, support_raw = \
+        _read_exports(list(group.get("export_supports") or [])
+                      if compare_support else [])
 
     eol_endoflife = cycle.get("eol") if cycle else None
     eol_used, eol_source = None, None
@@ -195,6 +217,18 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
                     disagree = disagree or NO_ENDOFLIFE_DATE
                 elif export_date != eol_endoflife:
                     disagree = disagree or DIFFERENT_DATE
+            # Opt-in (--compare-support). Compared only when both are
+            # dates: a flag, an unreadable text or rows that disagree are
+            # not. Many exports mean end of life by "end of support", so
+            # a date equal to the bundled end of life agrees. It never
+            # changes the state; it only asks a person to look.
+            bundled_support = cycle.get("support")
+            if (disagree is None and not export_conflict
+                    and support_export is not None
+                    and isinstance(bundled_support, date)
+                    and support_export not in (bundled_support,
+                                               eol_endoflife)):
+                disagree = SUPPORT_DATE_DIFFERENT
         state = _state(eol_used, cycle.get("support"), as_of, window_end)
         state_endoflife = _state(eol_endoflife, cycle.get("support"), as_of,
                                  window_end)
@@ -243,6 +277,7 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
         "eol_endoflife": _iso(eol_endoflife),
         "eol_export": _iso(export_date),
         "eol_export_raw": export_raw,
+        "support_export_raw": support_raw,
         "eol_used": _iso(eol_used),
         "eol_source": eol_source,
         "support": _iso(cycle.get("support")) if cycle else None,
@@ -343,7 +378,8 @@ def _diff(items: list, before: dict | None) -> dict:
 def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
            tracking: dict, as_of: date, lookahead_months: int = 12,
            previous: dict | None = None,
-           support_records: list | None = None) -> dict:
+           support_records: list | None = None,
+           compare_support: bool = False) -> dict:
     """Assess grouped inventory items against the loaded data.
 
     ``support_records`` (from swlc.support) only adds the item key
@@ -360,7 +396,8 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
 
     clashes: list = []
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
-                   window_end, clashes) for gid in sorted(groups)]
+                   window_end, clashes, compare_support)
+             for gid in sorted(groups)]
     apply_classification(items, groups, data)
     for it in items:
         # A part is reviewed with its parent, not as a name on its own.
@@ -376,6 +413,9 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
         warnings.append(KEV_NOT_CURRENT)
     if clashes:
         warnings.append(GOLDEN_CLASH % len(clashes))
+    skipped_support = support_not_compared(groups) if compare_support else 0
+    if skipped_support:
+        warnings.append(SUPPORT_NOT_COMPARED % skipped_support)
     # A golden source needs a cycle; a shared_support_lines item has none,
     # and its platform is unknown, so the row is not applied to it.
     skipped = sum(1 for it in items
@@ -451,6 +491,14 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
             # install_count.
             "count_invalid_cells": sum(
                 g.get("count_invalid_cells", 0) for g in groups.values()),
+            # Figures about the rows read, not about the estate. Counts
+            # only; shares are worked out where they are shown.
+            "data_quality": dict(
+                {"matched_rows": sum(it["rows"] for it in items
+                                     if it["state"] != "unmatched")},
+                **{key: sum(g.get(key, 0) for g in groups.values())
+                   for key in ("blank_owner_rows", "no_version_number_rows",
+                               "identical_repeat_rows")}),
         },
         "diff": _diff(items, before),
     }

@@ -96,11 +96,13 @@ def read_rows(path: str, encoding: str | None = None,
               max_rows: int = MAX_ROWS,
               max_field: int = 65_536,
               max_bytes: int = MAX_BYTES,
-              allow_empty: bool = False) -> tuple[list[dict], list[str]]:
+              allow_empty: bool = False,
+              hasher=None) -> tuple[list[dict], list[str]]:
     """Read a CSV into (rows, headers). Errors name line numbers only.
 
     With ``allow_empty`` a header-only file returns ``([], headers)``; a
-    zero-byte file still raises."""
+    zero-byte file still raises. ``hasher`` (a hashlib object) is fed the
+    same bytes that are parsed."""
     try:
         with open(path, "rb") as fh:
             data = fh.read(max_bytes + 1)
@@ -109,6 +111,8 @@ def read_rows(path: str, encoding: str | None = None,
             "cannot read input file (%s)" % exc.strerror) from None
     if len(data) > max_bytes:
         raise InputError("input file is larger than %d bytes" % max_bytes)
+    if hasher is not None:
+        hasher.update(data)
     if not data.strip():
         raise InputError("input file is empty")
     text = _decode(data, encoding)
@@ -226,7 +230,9 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
     keys: dict[str, tuple] = {}
     owners: dict[str, set] = {}
     eols: dict[str, set] = {}
+    supports: dict[str, set] = {}
     parents: dict[str, set] = {}
+    seen_rows: set = set()
     for row in rows:
         pub, name, ver = (cell(row, f) for f in ("publisher", "name", "version"))
         key = tuple(normalize_name(x) for x in (pub, name, ver))
@@ -238,20 +244,38 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
         grp = groups.get(gid)
         if grp is None:
             grp = groups[gid] = {"id": gid, "rows": 0, "owners": [],
-                                 "export_eols": [], "publisher": pub,
+                                 "export_eols": [], "export_supports": [],
+                                 "publisher": pub,
                                  "name": name, "version": ver,
                                  "install_count": None,
-                                 "count_invalid_cells": 0}
+                                 "count_invalid_cells": 0,
+                                 "blank_owner_rows": 0,
+                                 "no_version_number_rows": 0,
+                                 "identical_repeat_rows": 0}
             owners[gid] = set()
             eols[gid] = set()
+            supports[gid] = set()
             parents[gid] = set()
         grp["rows"] += 1
+        # Every column, so rows that differ only in, say, a device name
+        # are not repeats.
+        whole = tuple((v or "").strip() for v in row.values())
+        if whole in seen_rows:
+            grp["identical_repeat_rows"] += 1
+        seen_rows.add(whole)
+        if not any(c in "0123456789" for c in ver):
+            grp["no_version_number_rows"] += 1
         owner = cell(row, "owner")
         if owner:
             owners[gid].add(owner)
+        else:
+            grp["blank_owner_rows"] += 1
         eol = cell(row, "export_eol")
         if eol:
             eols[gid].add(eol)
+        support = cell(row, "export_support")
+        if support:
+            supports[gid].add(support)
         parent = cell(row, "parent")
         if parent:
             parents[gid].add(parent)
@@ -265,5 +289,6 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
     for gid, grp in groups.items():
         grp["owners"] = sorted(owners[gid])
         grp["export_eols"] = sorted(eols[gid])
+        grp["export_supports"] = sorted(supports[gid])
         grp["parents"] = sorted(parents[gid])
     return groups

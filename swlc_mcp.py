@@ -53,7 +53,7 @@ CLASSES = ("governable", "component", "bundle_member", "unknown")
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
          "accepted_risk", "ownerless", "review_urgently", "golden_overrides")
 FIELDS = ("name", "publisher", "version", "owner", "count", "export_eol",
-          "parent")
+          "export_support", "parent")
 LINE_ENDINGS = ("CRLF", "LF", "CR", "mixed", "none", "unknown")
 
 PRIVACY = ("Counts only. Never open, read, upload, summarise or quote the "
@@ -335,6 +335,14 @@ _PAIRS = re.compile(r"(states|classification)((?: [a-z_]{1,40}=[0-9]{1,12})+)")
 _AMBIG = re.compile(r"ambiguous_review ([0-9]{1,12})")
 _SUPPORT = re.compile(r"support_records listed=([0-9]{1,12}) "
                       r"ending_soon=([0-9]{1,12}) not_matched=([0-9]{1,12})")
+_QUALITY = re.compile(
+    r"data_quality matched_rows=([0-9]{1,12}) "
+    r"blank_owner_rows=([0-9]{1,12}) "
+    r"no_version_number_rows=([0-9]{1,12}) "
+    r"identical_repeat_rows=([0-9]{1,12})")
+QUALITY_CAVEAT = ("data_quality figures describe the rows read; they are not "
+                  "a score and do not show whether the inventory is "
+                  "complete")
 _TOTAL = re.compile(r"count_total ([0-9]{1,15})")
 _LIST = re.compile(r"(%s) ([0-9]{1,12})(?:: [0-9a-f]{12}(?: [0-9a-f]{12})*)?"
                    % "|".join(LISTS))
@@ -377,6 +385,12 @@ def counts_lines(stdout: str) -> list:
             out.append("support_records listed=%d ending_soon=%d "
                        "not_matched=%d" % tuple(int(g) for g in m.groups()))
             continue
+        m = _QUALITY.fullmatch(line)
+        if m:
+            out.append("data_quality matched_rows=%d blank_owner_rows=%d "
+                       "no_version_number_rows=%d identical_repeat_rows=%d"
+                       % tuple(int(g) for g in m.groups()))
+            continue
         m = _TOTAL.fullmatch(line)
         if m:
             out.append("count_total %d" % int(m.group(1)))
@@ -406,6 +420,8 @@ def tool_check_counts(path: Path) -> tuple:
     lines = counts_lines(stdout)
     if not lines or not lines[0].startswith("checked_on "):
         return True, "the tool's output was not in the expected form"
+    if any(line.startswith("data_quality ") for line in lines):
+        lines.append("note: " + QUALITY_CAVEAT)
     lines += [
         "note: counts are from your file; count_total is the sum of its "
         "count column",

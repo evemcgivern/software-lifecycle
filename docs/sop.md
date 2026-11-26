@@ -52,6 +52,9 @@ inventory.csv`. It shows which columns the tool found and what to fix.
 Real inventories are Confidential. Keep them on the machine that runs the
 tool.
 
+Note the date you made the export. To record it in `report.json`, add
+`--export-date YYYY-MM-DD` to the command in step 3.
+
 ### 3. Run the check locally
 
 Pass your override files and last quarter's report:
@@ -120,6 +123,11 @@ The ITAM lead picks the right date for each item. If it will keep
 recurring, record the choice as a row in `golden-sources.csv` with a
 `review_by` date.
 
+A golden-source row cannot record a support date. Do not add one to
+clear `SUPPORT_DATE_DIFFERENT`: an active row turns that check off for
+every version of the product, and also clears end-of-life date
+differences. Correct the export or note the decision in your own records.
+
 If two rows could apply to one item (one by product ID and one by name),
 the product-ID row is used and the report warns "N item(s) matched two
 golden-source rows; the product-id row was used." Remove the extra row.
@@ -167,8 +175,10 @@ with people who may see the inventory.
 
 Decide what to keep. A usual set:
 
-- `report.json` (it holds the data release ID, file hashes and override
-  file hashes)
+- `report.json` (it holds the data release ID, data file hashes, override
+  file hashes, the inventory file's hash and, if you gave it, the export
+  date). The inventory hash matches only that exact file. The tool keeps
+  no copy, so whether to keep the export is your records decision
 - the override files
 - the sign-off records from step 8
 

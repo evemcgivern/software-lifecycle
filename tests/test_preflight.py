@@ -129,6 +129,7 @@ class ColumnTests(Base):
         codes = {f["code"]: f["blocking"] for f in res["fix"]}
         self.assertEqual(codes, {"NO_PUBLISHER": False, "NO_OWNER": False,
                                  "NO_COUNT": False, "NO_EXPORT_EOL": False,
+                                 "NO_EXPORT_SUPPORT": False,
                                  "NO_PARENT": False})
         self.assertIsNone(res["columns"]["publisher"])
 
@@ -206,6 +207,23 @@ class ColumnTests(Base):
         self.assertIn("  export_eol: not found", out)
         self.assertIn("No end-of-life date column was found. That is fine",
                       out)
+
+    def test_missing_support_column_is_listed_as_not_found(self):
+        path = self.inv(["Product", "Version", "Vendor Support Ends"],
+                        [["a", "1", "2028-06-01"]])
+        _, out, _ = self.pre(path)
+        self.assertIn("  export_support: not found", out)
+        self.assertIn("--compare-support", out)
+        _, res, _ = self.pre_json(path)
+        self.assertIsNone(res["columns"]["export_support"])
+
+    def test_found_support_column_has_no_fix(self):
+        path = self.inv(["Product", "Version", "End of Support"],
+                        [["a", "1", "2028-06-01"]])
+        _, res, _ = self.pre_json(path)
+        self.assertEqual(res["columns"]["export_support"], "End of Support")
+        self.assertNotIn("NO_EXPORT_SUPPORT",
+                         [f["code"] for f in res["fix"]])
 
     def test_placeholders_count_for_the_parent_column(self):
         path = self.inv(["Product", "Version", "Parent"],

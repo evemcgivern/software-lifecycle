@@ -27,6 +27,7 @@ appear in CISA's list of known exploited vulnerabilities.
 |---|---|---|
 | `--data DIR` | Use this data directory instead of the bundled `data/`. | `--data tests/fixtures/data` |
 | `--as-of YYYY-MM-DD` | Check as of this date. Default is today. This is the only place the tool reads the clock. | `--as-of 2026-10-24` |
+| `--export-date YYYY-MM-DD` | The date the inventory was exported. Recorded in `report.json` as `meta.inventory.export_date`, beside the file's SHA-256. It changes no state or list. Without it the date is `null` (not found). | `--export-date 2026-10-20` |
 | `--lookahead-months N` | Months ahead to count as "ends within the lookahead window". Default 12. From 0 to 600. | `--lookahead-months 6` |
 | `--profile NAME` | Add a profile's extra column headings: `flexera`, `servicenow-mbs` or `rapid7`. Default `generic`. All three are Unverified. | `--profile rapid7` |
 | `--columns FILE` | JSON file that adds column headings. See `templates/columns.example.json`. | `--columns my-columns.json` |
@@ -34,6 +35,7 @@ appear in CISA's list of known exploited vulnerabilities.
 | `--exceptions FILE` | Exceptions CSV (accepted risk). | `--exceptions exceptions.csv` |
 | `--tracking FILE` | Tracking CSV (change and problem references). | `--tracking tracking.csv` |
 | `--support-records FILE` | Support-records CSV: your own support records, shown beside the vendor's dates. Never changes a state, a list or `--fail-on`. See "Support records" below. | `--support-records support-records.csv` |
+| `--compare-support` | Compare the `export_support` column with the endoflife.date support date. A difference lists the item under "dates disagree" (`SUPPORT_DATE_DIFFERENT`), so with `--fail-on dates_disagree` it can make a run that passed before exit 10. A date equal to the end-of-life date is not flagged. It never changes a state. A support date that is not YYYY-MM-DD, or rows of one item that differ, is not compared; the report warns with the number of items. If no `export_support` column is recognized, the report warns that no support dates were compared. What "support" means differs between vendors, so check each flag. Default off: the column is then not read. | `--compare-support` |
 | `--previous REPORT.json` | An earlier `report.json`. The new report then shows what is new, gone or changed. | `--previous last-quarter/report.json` |
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
@@ -67,7 +69,8 @@ writes nothing. It prints:
   name, publisher and version all match, and the fit that matches the most
   fields wins;
 - for name, publisher, version, owner, count, export end-of-life date
-  (`export_eol`) and parent: the column title found, or "not found";
+  (`export_eol`), export support date (`export_support`) and parent: the
+  column title found, or "not found";
 - the number of blank cells in each recognised column, of Parent cells
   that hold a placeholder (`n/a`, `none`, `unknown` and the like, which
   `check` reads as no parent) and of cells that start like a spreadsheet
@@ -88,8 +91,8 @@ name from a row, so its output is safe to show an AI agent.
 Exit codes:
 
 - A missing name or version column, or a file with no data rows, exits 3.
-- A missing publisher, owner, count, end-of-life date or parent column is
-  listed in "What to fix" and exits 0.
+- A missing publisher, owner, count, end-of-life date, support date or
+  parent column is listed in "What to fix" and exits 0.
 - An unreadable file exits 3 with the same error text as `check`.
 
 With no owner column, `check` lists every item under "Ownerless". Blank
@@ -942,6 +945,21 @@ It prints:
 - the support-record counts
   (`support_records listed=N ending_soon=M not_matched=K`), with no
   references, products or dates;
+- only with `--compare-support`, one line about support dates:
+  `support_dates column_found=false` when no `export_support` column was
+  recognized, so nothing was compared; otherwise
+  `support_dates column_found=true not_compared=N`, where N is the items
+  whose support date was unreadable or differed between rows.
+  `not_compared=0` does not mean every item was compared: an item with
+  another date code or an active golden source, or with no support date
+  on either side, is not compared or counted;
+- one line of figures about the rows read
+  (`data_quality matched_rows=N blank_owner_rows=N no_version_number_rows=N identical_repeat_rows=N`),
+  out of the row count above. `report.md` shows the same figures with
+  percentages, rounded down; a share above zero and below one percent
+  shows as "under 1%". They are not a score and do not show whether
+  the inventory is complete. See `counts.data_quality` in
+  [report-schema.md](report-schema.md);
 - `count_total N`, the sum of every item's count, only when the count
   column has at least one filled cell;
 - each list with its count and the item IDs, in item-ID order, so the

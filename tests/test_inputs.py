@@ -285,11 +285,23 @@ class GroupRowsTests(unittest.TestCase):
             (grp,) = group_rows(order, self.cm).values()
             self.assertEqual(grp["export_eols"], ["2026-01-01", "2027-05-01"])
 
+    def test_export_support_dates_sorted_distinct(self):
+        cm = dict(self.cm, export_support="S")
+        rows = [
+            {"N": "W", "V": "1", "P": "A", "S": "2027-05-01"},
+            {"N": "W", "V": "1", "P": "A", "S": "2026-01-01"},
+            {"N": "W", "V": "1", "P": "A", "S": ""},
+            {"N": "W", "V": "1", "P": "A", "S": "2027-05-01"},
+        ]
+        (grp,) = group_rows(rows, cm).values()
+        self.assertEqual(grp["export_supports"], ["2026-01-01", "2027-05-01"])
+
     def test_optional_columns_absent(self):
         g = group_rows([{"N": "W", "V": "1"}], {"name": "N", "version": "V"})
         (grp,) = g.values()
         self.assertEqual(grp["owners"], [])
         self.assertEqual(grp["export_eols"], [])
+        self.assertEqual(grp["export_supports"], [])
 
     def test_group_collects_distinct_parents(self):
         cm = {"name": "N", "version": "V", "parent": "S"}

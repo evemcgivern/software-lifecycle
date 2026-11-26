@@ -3,14 +3,16 @@ from __future__ import annotations
 
 import argparse
 import errno
+import hashlib
 import json
 import os
 import re
 import sys
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
-from .assess import LISTS, MAX_LOOKAHEAD_MONTHS, assess
+from .assess import (LISTS, MAX_LOOKAHEAD_MONTHS, NO_SUPPORT_COLUMN,
+                     assess, support_not_compared)
 from . import preflight
 from .data import load_data, load_profiles, tool_version, verify_data
 from .errors import DataError, InputError
@@ -104,14 +106,16 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
           columns: str | None = None, golden: str | None = None,
           exceptions: str | None = None, tracking: str | None = None,
           previous: str | None = None, encoding: str | None = None,
-          support_records: str | None = None):
+          support_records: str | None = None, compare_support: bool = False,
+          export_date: date | None = None):
     """Run the whole check; return (result, meta). Raises the tool's errors."""
-    result, meta, _records = _build(
+    result, meta, _records, _support = _build(
         inventory_path, as_of=as_of, data=data,
         lookahead_months=lookahead_months, profile=profile, columns=columns,
         golden=golden, exceptions=exceptions, tracking=tracking,
         previous=previous, encoding=encoding,
-        support_records=support_records)
+        support_records=support_records, compare_support=compare_support,
+        export_date=export_date)
     return result, meta
 
 
@@ -126,9 +130,17 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
            lookahead_months: int, profile: str, columns: str | None,
            golden: str | None, exceptions: str | None, tracking: str | None,
            previous: str | None, encoding: str | None,
-           support_records: str | None):
+           support_records: str | None, compare_support: bool = False,
+           export_date: date | None = None):
     """As build, plus the loaded support records (None when no file),
-    which report.md needs for its "Support records" section."""
+    which report.md needs for its "Support records" section, and the
+    --counts-only support-date line (None without --compare-support)."""
+    if export_date is not None:
+        if isinstance(export_date, datetime) \
+                or not isinstance(export_date, date):
+            raise TypeError("export_date must be a date")
+        if not MIN_YEAR <= export_date.year <= MAX_YEAR:
+            raise UsageError("a date is out of range")
     loaded = load_data(data or BUNDLED_DATA, as_of)
     _known_profile(loaded.profiles, profile)
     if profile == "generic":
@@ -138,7 +150,9 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
         columns_map = entry["columns"]
         status = entry.get("status") or "Unverified"
     extra = _read_columns(columns) if columns else None
-    rows, headers = read_rows(inventory_path, encoding)
+    inventory_hash = hashlib.sha256()
+    rows, headers = read_rows(inventory_path, encoding,
+                              hasher=inventory_hash)
     colmap = map_columns(headers, columns_map, extra)
     groups = group_rows(rows, colmap)
     prior = _read_json(previous, MAX_PREVIOUS_BYTES, "previous report") \
@@ -147,7 +161,15 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
     try:
         result = assess(groups, loaded, load_golden(golden),
                         load_exceptions(exceptions), load_tracking(tracking),
-                        as_of, lookahead_months, prior, records)
+                        as_of, lookahead_months, prior, records,
+                        compare_support)
+        support_line = None
+        if compare_support and "export_support" not in colmap:
+            result["warnings"].append(NO_SUPPORT_COLUMN)
+            support_line = "support_dates column_found=false"
+        elif compare_support:
+            support_line = ("support_dates column_found=true "
+                            "not_compared=%d" % support_not_compared(groups))
     except (OverflowError, ValueError):
         raise UsageError("a date is out of range") from None
     meta = {
@@ -160,12 +182,17 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
                             "tracking": file_hash(tracking)},
         "profile": {"name": profile, "status": status},
         "encoding": encoding or "utf-8",
+        # export_date is only what the user states; the tool never takes
+        # it from the file's own times.
+        "inventory": {"sha256": inventory_hash.hexdigest(),
+                      "export_date": export_date.isoformat()
+                      if export_date else None},
     }
     if support_records is not None:
         # Only with the flag, so a run without it keeps the old meta.
         meta["override_hashes"]["support_records"] = file_hash(
             support_records)
-    return result, meta, records
+    return result, meta, records, support_line
 
 
 def run(inventory_path: str, **options) -> dict:
@@ -204,6 +231,9 @@ def _parser() -> argparse.ArgumentParser:
                        help="data folder to use instead of the bundled data")
     check.add_argument("--as-of", type=_iso_date, metavar="YYYY-MM-DD",
                        help="check as of this date (default: today)")
+    check.add_argument("--export-date", type=_iso_date, metavar="YYYY-MM-DD",
+                       help="the date the inventory was exported, recorded "
+                            "in report.json (default: not recorded)")
     check.add_argument("--lookahead-months", type=int, default=12,
                        metavar="N",
                        help="months ahead that count as ends soon, 0 to "
@@ -225,6 +255,10 @@ def _parser() -> argparse.ArgumentParser:
                        help="support-records CSV: your own support records, "
                             "shown beside the dates; never changes a state "
                             "or a list")
+    check.add_argument("--compare-support", action="store_true",
+                       help="compare the export_support column with the "
+                            "bundled support date and list differences "
+                            "under dates_disagree (default: off)")
     check.add_argument("--previous", metavar="REPORT.json",
                        help="an earlier report.json, to show what changed")
     check.add_argument("--out", metavar="DIR",
@@ -314,7 +348,7 @@ def _write_out(out: str, inventory: str, result: dict, meta: dict,
             from None
 
 
-def _counts_text(result: dict) -> str:
+def _counts_text(result: dict, support_line: str | None = None) -> str:
     counts = result["counts"]
     lines = ["checked_on %s" % result["as_of"],
              "kev_current %s" % ("true" if result["kev_current"] else "false"),
@@ -328,6 +362,12 @@ def _counts_text(result: dict) -> str:
              "support_records " + " ".join(
                  "%s=%d" % (k, counts["support_records"][k])
                  for k in ("listed", "ending_soon", "not_matched"))]
+    if support_line:
+        lines.append(support_line)
+    lines.append("data_quality " + " ".join(
+        "%s=%d" % (k, counts["data_quality"][k])
+        for k in ("matched_rows", "blank_owner_rows",
+                  "no_version_number_rows", "identical_repeat_rows")))
     with_count = [it["install_count"] for it in result["items"]
                   if it["install_count"] is not None]
     if with_count or counts["count_invalid_cells"]:
@@ -351,18 +391,20 @@ def _check(args) -> int:
     if args.out:
         _check_out(args.out, args.inventory)
     as_of = args.as_of or date.today()  # only clock read in the tool
-    result, meta, records = _build(
+    result, meta, records, support_line = _build(
         args.inventory, as_of=as_of, data=args.data,
         lookahead_months=args.lookahead_months, profile=args.profile,
         columns=args.columns, golden=args.golden,
         exceptions=args.exceptions, tracking=args.tracking,
         previous=args.previous, encoding=args.encoding,
-        support_records=args.support_records)
+        support_records=args.support_records,
+        compare_support=args.compare_support,
+        export_date=args.export_date)
     if args.out:
         _write_out(args.out, args.inventory, result, meta,
                    args.governable_only, records)
     if args.counts_only:
-        sys.stdout.write(_counts_text(result))
+        sys.stdout.write(_counts_text(result, support_line))
     elif args.out:
         print("Wrote %s to %s" % (", ".join(OUTPUT_FILES), args.out))
         if args.governable_only:

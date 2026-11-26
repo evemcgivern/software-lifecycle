@@ -21,6 +21,15 @@ Items in each section are ordered by the count from your file, largest first, th
 
 Count cells ignored: 1. A count cell is used only when it is a whole number from 0 to 1000000000.
 
+Inventory rows read, of 60:
+
+- Matched: 49 of 60 (81%)
+- Blank owner cell, or no owner column: 1 of 60 (1%)
+- Version cell blank or without a digit: 1 of 60 (1%)
+- Identical to an earlier row: 0 of 60 (0%)
+
+These figures describe the rows read. They are not a score and do not show whether the inventory is complete.
+
 ## Past end of life (8)
 
 - **Quillbase Database** 12.0.6024.0, publisher Placeholder Labs (id `34f37eea99c2`)

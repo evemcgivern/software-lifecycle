@@ -28,7 +28,8 @@ It gives the chat app exactly two tools:
   return your column titles (the `preflight` command in a terminal does).
 - `check_counts`: runs the check with `--counts-only` and returns only the
   summary counts: `checked_on`, `kev_current`, `items`, `states`,
-  `classification`, `ambiguous_review`, `support_records`, `count_total`
+  `classification`, `ambiguous_review`, `support_records`, `data_quality`,
+  `count_total`
   and one count for each list. It never returns item IDs, names,
   versions, publishers or owners. The full report is written to a folder
   next to your CSV named after it: for `inventory.csv`, the folder is
@@ -214,6 +215,7 @@ The fix codes `preflight` can return:
 | `NO_OWNER` | No owner column was found; every item will be listed as ownerless. |
 | `NO_COUNT` | No count column was found. That is fine. |
 | `NO_EXPORT_EOL` | No end-of-life date column was found. That is fine. |
+| `NO_EXPORT_SUPPORT` | No support-date column was found. That is fine; this server does not compare support dates. |
 | `NO_PARENT` | No parent column was found. That is fine. |
 | `BLANK_NAME` | Some rows have a blank name cell. |
 | `BLANK_VERSION` | Some rows have a blank version cell. |

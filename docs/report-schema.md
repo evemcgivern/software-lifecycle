@@ -1,7 +1,7 @@
-# Report schema (version 2)
+# Report schema (version 3)
 
 `report.json` is the full result. `report.md` and `report.csv` are views of
-it. This page lists every key and code in schema version 2. A test in this
+it. This page lists every key and code in schema version 3. A test in this
 repo fails if a key in a real run is missing from this page.
 
 The file is UTF-8 JSON with sorted keys. It contains text from your
@@ -21,6 +21,11 @@ and which item key a column comes from.
 - **Review of ambiguous names.** `report.md` has a "Names to review"
   section and `report.csv` a "Review reason" column. Both are made from
   the item key `ambiguity` (see below).
+- **Data-quality figures.** `report.md` shows `counts.data_quality` as
+  counts with percentages, then "These figures describe the rows read.
+  They are not a score and do not show whether the inventory is
+  complete." The percentages are not keys. `report.csv` does not carry
+  the figures.
 - **Support records.** `report.csv` always has a column "Support records
   (from your file)", made from the item key `support_records` (see below),
   after "Review reason". A run without `--support-records` gets the column
@@ -56,7 +61,7 @@ and which item key a column comes from.
 
 | Key | Meaning |
 |---|---|
-| `schema_version` | The number 2. |
+| `schema_version` | The number 3. |
 | `as_of` | The date checked, `YYYY-MM-DD`. |
 | `lookahead_months` | The window in months (default 12). |
 | `data_release` | Which data was used. See below. |
@@ -66,7 +71,7 @@ and which item key a column comes from.
 | `lists` | Item IDs for each list. See below. |
 | `counts` | Counts of items, rows, states and lists. |
 | `diff` | Changes since the report given with `--previous`. |
-| `meta` | The tool version, data hashes, override file hashes, profile and encoding. |
+| `meta` | The tool version, data hashes, override file hashes, profile, encoding, and the inventory file's hash and export date. |
 
 ### data_release
 
@@ -90,6 +95,7 @@ and which item key a column comes from.
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
 | `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
 | `count_invalid_cells` | Number of count cells ignored because they are not a whole number from 0 to 1000000000: digits, optionally in comma groups of three (`1,234`), optionally ending in a decimal point and zeros only (`12.0`). A sign, another decimal (`1.234`), another separator (`1 234`), text or a formula is ignored. Blank cells are not counted. `0` with no count column. |
+| `data_quality` | Figures about the inventory rows read, for judging how far to trust a run. See `counts.data_quality`. |
 | `support_records` | Counts from the support-records file. See `counts.support_records`. Zeros when no file is given. A count only: a record never changes a state, a list or `--fail-on`. |
 | `inherited_attention` | Number of parts whose parent is `past_eol`, `ends_soon` or `mainstream_ended` (the `state` in `inherited_lifecycle`). A count only: a part never enters `past_eol` or `ends_soon` through its parent, and `--fail-on` never reads inherited dates. |
 
@@ -120,6 +126,19 @@ number and lists the other unmatched items in "Parts that could not be
 matched". The warning "N parts whose parent is not in this inventory"
 (`parent_absent` in `classification_basis`) appears in `warnings`.
 
+### counts.data_quality
+
+Each figure is a number of inventory rows out of `counts.rows`. They are
+not a score and do not show whether the inventory is complete. Added
+while at schema version 3 (issue #107).
+
+| Key | Meaning |
+|---|---|
+| `matched_rows` | Rows whose item's `state` is not `unmatched`. A matched row can still be matched wrongly; see "Names to review" and the match source. |
+| `blank_owner_rows` | Rows with an empty owner cell; every row when there is no owner column. It is not `lists.ownerless`, which counts items with no owner on any row. |
+| `no_version_number_rows` | Rows whose version cell is blank or has no digit, for example `latest`. Such a row can still match when the name holds the version. A cell with a digit is counted as having a number even if it matches no version. |
+| `identical_repeat_rows` | Rows that equal an earlier row in every column, after spaces around each cell are removed. Rows that differ in any column, such as a device name, are not repeats. An export with no such column can have many repeats that are separate installs, so a repeat is not proof of a mistake. |
+
 ### counts.support_records
 
 | Key | Meaning |
@@ -141,6 +160,7 @@ other two.
 | `override_hashes` | SHA-256 of the `golden`, `exceptions` and `tracking` files; empty text when a file was not given. With `--support-records`, also `support_records`. |
 | `profile` | `name`, and `status` (`Unverified` for a profile; `null` for `generic`). |
 | `encoding` | The inventory encoding (`utf-8` unless `--encoding` was used). |
+| `inventory` | Which inventory file the run read: `sha256` and `export_date`. In `report.json` only. |
 
 ### meta.data_release
 
@@ -157,6 +177,13 @@ other two.
 | `exceptions` | SHA-256 of the exceptions file; empty text if not given. |
 | `tracking` | SHA-256 of the tracking file; empty text if not given. |
 | `support_records` | SHA-256 of the support-records file. Present only when `--support-records` is given, so a report made without it is unchanged. |
+
+### meta.inventory
+
+| Key | Meaning |
+|---|---|
+| `sha256` | SHA-256 of the inventory file's bytes, as read by this run. Any change to the file, including line endings or encoding, gives a different value. It does not show who made the file or when. Anyone who has a copy of the same file can confirm that it matches, so keep it as private as the report. |
+| `export_date` | The date given with `--export-date`. `null` means not found: the tool never takes a date from the file's name, contents or times. |
 
 ### meta.profile
 
@@ -192,6 +219,7 @@ inventory.
 | `eol_endoflife` | The endoflife.date end-of-life value. |
 | `eol_export` | The export's end-of-life date, if it was readable. |
 | `eol_export_raw` | The export's end-of-life text as given. |
+| `support_export_raw` | The export's support-date text as given. `null` without `--compare-support` or without a value. Added in schema version 3. A text that is not a readable date, or rows of one item that differ, is kept here but not compared; `warnings` then gives the number of items. |
 | `eol_used` | The end-of-life value the tool used. |
 | `eol_source` | Where `eol_used` came from: `endoflife.date`, `export` or `manual`. |
 | `support` | The mainstream support value from endoflife.date. |
@@ -343,6 +371,7 @@ mean your version is affected. The tool never says "vulnerable".
 | Code | Meaning |
 |---|---|
 | `DIFFERENT_DATE` | The export date and the endoflife.date date differ. |
+| `SUPPORT_DATE_DIFFERENT` | The export support date and the endoflife.date support date differ. Added in schema version 3. Only with `--compare-support`. It is checked only when both are dates, the export date is not the endoflife.date end-of-life date and the item has no other code. It never changes the item's state. |
 | `NO_ENDOFLIFE_DATE` | The export has a date; endoflife.date has none to compare. |
 | `EXPORT_DATE_UNREADABLE` | The export date is not an ISO date. |
 | `EXPORT_DATES_CONFLICT` | Rows for the item carry different export dates. |
@@ -364,7 +393,7 @@ again, and the risk owner and an independent approver sign off.
 | `GOLDEN_EXPORT_UNUSABLE` | When it appears in `dates_disagree` (see that table). |
 | `EXCEPTION_EXPIRED` | An exceptions row matches the item and its `expires_on` date has passed. |
 
-`DIFFERENT_DATE` appears in `dates_disagree` but not in `decision_needed`.
+`DIFFERENT_DATE` and `SUPPORT_DATE_DIFFERENT` appear in `dates_disagree` but not in `decision_needed`.
 The Markdown report still prints a "Decision needed" line for it.
 
 ### classification_basis codes
@@ -419,7 +448,7 @@ past or near end of life".
 
 | Key | Meaning |
 |---|---|
-| `available` | `true` if `--previous` was a usable report of schema version 1 or 2. If not, the report adds a warning and the lists below are empty. |
+| `available` | `true` if `--previous` was a usable report of schema version 1, 2 or 3. If not, the report adds a warning and the lists below are empty. |
 | `new` | Item IDs not in the previous report. |
 | `resolved` | Item IDs in the previous report and not in this one. |
 | `changed_state` | Entries with `id`, `from` and `to`. |
@@ -541,10 +570,26 @@ of them adds a state, list, reason code or decision code.
 
 The keyword arguments of `swlc.cli.run` follow the same rule.
 
-The tool reads a `--previous` report of schema version 1 or 2. Any other
+The tool reads a `--previous` report of schema version 1, 2 or 3. Any other
 version gives no diff and the warning "previous run uses schema_version N;
-this tool reads 1 and 2; no diff", where N is the number found, or
+this tool reads 1, 2 and 3; no diff", where N is the number found, or
 `unreadable` when it is not a whole number.
+
+### Changes in schema version 3
+
+Version 3 adds one `dates_disagree` code, `SUPPORT_DATE_DIFFERENT`, and
+one item key, `support_export_raw` (issue #108). With the new
+`--compare-support` flag, off by default, the tool reads the optional
+`export_support` column and compares it with the endoflife.date support
+date. No key was removed or renamed, and the states, lists and
+other codes are those of version 2. `--previous` still reads a version 1
+or 2 report. An item the new code flags shows in `dates_disagree` and
+nowhere else; its state does not change. What "support" means differs
+between vendors, so the code asks a person to look and decides nothing.
+
+Also added while at version 3, as a new key that needs no version change:
+`meta.inventory` (issue #106). See "meta.inventory". So was
+`counts.data_quality` (issue #107). See "counts.data_quality".
 
 ### Changes in schema version 2
 
@@ -569,7 +614,8 @@ from the repo root, or put the repo on `sys.path`.
 
 Options are keyword arguments: `as_of` (required), `data`,
 `lookahead_months`, `profile`, `columns`, `golden`, `exceptions`,
-`tracking`, `support_records`, `previous` and `encoding`. They match the
+`tracking`, `support_records`, `compare_support`, `export_date`,
+`previous` and `encoding`. They match the
 command-line flags.
 
 It raises:
@@ -582,5 +628,6 @@ It raises:
   different items share one ID. The command line exits with 4.
 - `UsageError` (in `swlc.cli`) for an unknown `profile` or a date out of
   range. The command line exits with 2.
-- `TypeError` if `as_of` is a `datetime` instead of a `date`. Pass a
-  `date`.
+- `TypeError` if `as_of` is a `datetime` instead of a `date`, or if
+  `export_date` is given and is not a `date` (a `datetime` or text is
+  rejected). Pass a `date`.

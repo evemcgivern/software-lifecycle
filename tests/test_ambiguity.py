@@ -338,7 +338,7 @@ class ReportKeyTests(unittest.TestCase):
         self.assertEqual(set(self.out["lists"]), set(assess_mod.LISTS))
 
     def test_no_new_state_list_or_schema(self):
-        self.assertEqual(self.out["schema_version"], 2)
+        self.assertEqual(self.out["schema_version"], 3)
         self.assertEqual(set(self.out["counts"]["states"]),
                          set(assess_mod.STATES))
 
@@ -603,7 +603,7 @@ class SharedSupportLinesTests(unittest.TestCase):
                 self.assertEqual(it["cycle"], cycle)
                 self.assertEqual((it["ambiguity"] or {}).get("code"), code)
         self.assertEqual(self.report["counts"]["ambiguous_review"], 6)
-        self.assertEqual(self.report["schema_version"], 2)
+        self.assertEqual(self.report["schema_version"], 3)
 
     def test_no_date_or_state_from_cycle_11(self):
         for it in self.report["items"]:
