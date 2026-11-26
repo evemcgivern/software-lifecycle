@@ -187,7 +187,9 @@ If the check fails, the item is not decided (`NO_CYCLE`, product known).
 A version cell with more than one line, for example several versions of
 one program, is never decided from one of its lines. When the name gives
 the product, the item is `NO_CYCLE`. `preflight` counts these cells. Give
-each version its own row.
+each version its own row. Until you do, the item is in no end-of-life or
+KEV list, so `--fail-on past_eol`, `ends_soon` or `review_urgently` does
+not fail on it, even when one line is past end of life.
 
 ### Step 2: product titles
 
