@@ -271,7 +271,8 @@ class SupportDateDisagree(unittest.TestCase):
                 row("1", export_support="2030-01-01"),
                 row("1", export_support="2031-01-01")]
         warning = ("2 item(s) have an export support date that was not "
-                   "compared: the text is not read as one YYYY-MM-DD date.")
+                   "compared: the text is not a YYYY-MM-DD date, or rows of "
+                   "the item differ.")
         self.assertIn(warning, compare(rows)["warnings"])
         self.assertNotIn(warning, run(rows)["warnings"])
 

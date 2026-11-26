@@ -55,8 +55,8 @@ PARENTS_ABSENT = "%d parts whose parent is not in this inventory"
 GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row that was not "
                       "applied: no cycle, see Names to review.")
 SUPPORT_NOT_COMPARED = ("%d item(s) have an export support date that was "
-                        "not compared: the text is not read as one "
-                        "YYYY-MM-DD date.")
+                        "not compared: the text is not a YYYY-MM-DD date, "
+                        "or rows of the item differ.")
 NO_SUPPORT_COLUMN = ("No export_support column was recognized, so no "
                      "support dates were compared.")
 # Item "ambiguity" codes: a row the matcher refused on purpose, for a person
