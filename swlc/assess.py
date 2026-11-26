@@ -140,6 +140,17 @@ def _read_exports(texts: list):
     return None, False, False, raw
 
 
+def support_not_compared(groups: dict) -> int:
+    """Items whose export support dates are unreadable, or differ between
+    rows, so --compare-support cannot compare them."""
+    count = 0
+    for group in groups.values():
+        _, readable, conflict, _ = _read_exports(
+            list(group.get("export_supports") or []))
+        count += conflict or not readable
+    return count
+
+
 def _exception(exceptions: Exceptions, products: list, scopes: list,
                as_of: date):
     """(active, expired) for the most specific matching exception."""
@@ -154,8 +165,7 @@ def _exception(exceptions: Exceptions, products: list, scopes: list,
 
 def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
           tracking: dict, as_of: date, window_end: date,
-          golden_clashes: list, compare_support: bool,
-          support_skipped: list) -> dict:
+          golden_clashes: list, compare_support: bool) -> dict:
     name, version = group["name"], group["version"]
     norm_name = normalize_name(name)
     match, ambiguity = match_noted(name, version, data.aliases,
@@ -165,11 +175,9 @@ def _item(group: dict, data: Data, golden: Golden, exceptions: Exceptions,
     cycle = match.cycle
     export_date, export_readable, export_conflict, export_raw = \
         _read_exports(list(group.get("export_eols") or []))
-    support_export, support_readable, support_conflict, support_raw = \
+    support_export, _, _, support_raw = \
         _read_exports(list(group.get("export_supports") or [])
                       if compare_support else [])
-    if support_conflict or not support_readable:
-        support_skipped.append(group["id"])
 
     eol_endoflife = cycle.get("eol") if cycle else None
     eol_used, eol_source = None, None
@@ -387,9 +395,8 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
     window_end = add_months(as_of, lookahead_months)
 
     clashes: list = []
-    support_skipped: list = []
     items = [_item(groups[gid], data, golden, exceptions, tracking, as_of,
-                   window_end, clashes, compare_support, support_skipped)
+                   window_end, clashes, compare_support)
              for gid in sorted(groups)]
     apply_classification(items, groups, data)
     for it in items:
@@ -406,8 +413,9 @@ def assess(groups: dict, data: Data, golden: Golden, exceptions: Exceptions,
         warnings.append(KEV_NOT_CURRENT)
     if clashes:
         warnings.append(GOLDEN_CLASH % len(clashes))
-    if support_skipped:
-        warnings.append(SUPPORT_NOT_COMPARED % len(support_skipped))
+    skipped_support = support_not_compared(groups) if compare_support else 0
+    if skipped_support:
+        warnings.append(SUPPORT_NOT_COMPARED % skipped_support)
     # A golden source needs a cycle; a shared_support_lines item has none,
     # and its platform is unknown, so the row is not applied to it.
     skipped = sum(1 for it in items

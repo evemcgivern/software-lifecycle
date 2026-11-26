@@ -328,6 +328,36 @@ class CompareSupportFlag(unittest.TestCase):
                 self.assertEqual(warning in report["warnings"], expected,
                                  (title, extra))
 
+    def test_counts_only_says_what_was_not_compared(self):
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            flag = ("--compare-support",)
+            for title, values, extra, expected in (
+                    ("Vendor Support Ends", ["2028-06-01"], flag,
+                     "support_dates column_found=false"),
+                    ("End of Support", ["2028-06-01"], flag,
+                     "support_dates column_found=true not_compared=0"),
+                    ("End of Support", ["01/06/2028"], flag,
+                     "support_dates column_found=true not_compared=1"),
+                    ("End of Support", ["2028-06-01", "2029-06-01"], flag,
+                     "support_dates column_found=true not_compared=1"),
+                    ("End of Support", ["01/06/2028"], (), None)):
+                inventory.write_text(
+                    "Software Name,Version,%s\n" % title + "".join(
+                        "Demo OS 2.0,2.0,%s\n" % v for v in values),
+                    encoding="utf-8")
+                stdout = run_main(
+                    ["check", str(inventory), "--data", str(DATA),
+                     "--as-of", AS_OF, "--out", str(tmp / "out"),
+                     "--counts-only", *extra])[1]
+                found = [line for line in stdout.splitlines()
+                         if line.startswith("support_dates")]
+                self.assertEqual(found, [expected] if expected else [],
+                                 (title, values, extra))
+                for value in values:
+                    self.assertNotIn(value, stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -944,6 +944,14 @@ It prints:
 - the support-record counts
   (`support_records listed=N ending_soon=M not_matched=K`), with no
   references, products or dates;
+- only with `--compare-support`, one line about support dates:
+  `support_dates column_found=false` when no `export_support` column was
+  recognized, so nothing was compared; otherwise
+  `support_dates column_found=true not_compared=N`, where N is the items
+  whose support date was unreadable or differed between rows.
+  `not_compared=0` does not mean every item was compared: an item with
+  another date code or an active golden source, or with no support date
+  on either side, is not compared or counted;
 - `count_total N`, the sum of every item's count, only when the count
   column has at least one filled cell;
 - each list with its count and the item IDs, in item-ID order, so the

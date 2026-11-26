@@ -11,7 +11,7 @@ from datetime import date
 from pathlib import Path
 
 from .assess import (LISTS, MAX_LOOKAHEAD_MONTHS, NO_SUPPORT_COLUMN,
-                     assess)
+                     assess, support_not_compared)
 from . import preflight
 from .data import load_data, load_profiles, tool_version, verify_data
 from .errors import DataError, InputError
@@ -107,7 +107,7 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
           previous: str | None = None, encoding: str | None = None,
           support_records: str | None = None, compare_support: bool = False):
     """Run the whole check; return (result, meta). Raises the tool's errors."""
-    result, meta, _records = _build(
+    result, meta, _records, _support = _build(
         inventory_path, as_of=as_of, data=data,
         lookahead_months=lookahead_months, profile=profile, columns=columns,
         golden=golden, exceptions=exceptions, tracking=tracking,
@@ -129,7 +129,8 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
            previous: str | None, encoding: str | None,
            support_records: str | None, compare_support: bool = False):
     """As build, plus the loaded support records (None when no file),
-    which report.md needs for its "Support records" section."""
+    which report.md needs for its "Support records" section, and the
+    --counts-only support-date line (None without --compare-support)."""
     loaded = load_data(data or BUNDLED_DATA, as_of)
     _known_profile(loaded.profiles, profile)
     if profile == "generic":
@@ -150,8 +151,13 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
                         load_exceptions(exceptions), load_tracking(tracking),
                         as_of, lookahead_months, prior, records,
                         compare_support)
+        support_line = None
         if compare_support and "export_support" not in colmap:
             result["warnings"].append(NO_SUPPORT_COLUMN)
+            support_line = "support_dates column_found=false"
+        elif compare_support:
+            support_line = ("support_dates column_found=true "
+                            "not_compared=%d" % support_not_compared(groups))
     except (OverflowError, ValueError):
         raise UsageError("a date is out of range") from None
     meta = {
@@ -169,7 +175,7 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
         # Only with the flag, so a run without it keeps the old meta.
         meta["override_hashes"]["support_records"] = file_hash(
             support_records)
-    return result, meta, records
+    return result, meta, records, support_line
 
 
 def run(inventory_path: str, **options) -> dict:
@@ -322,7 +328,7 @@ def _write_out(out: str, inventory: str, result: dict, meta: dict,
             from None
 
 
-def _counts_text(result: dict) -> str:
+def _counts_text(result: dict, support_line: str | None = None) -> str:
     counts = result["counts"]
     lines = ["checked_on %s" % result["as_of"],
              "kev_current %s" % ("true" if result["kev_current"] else "false"),
@@ -336,6 +342,8 @@ def _counts_text(result: dict) -> str:
              "support_records " + " ".join(
                  "%s=%d" % (k, counts["support_records"][k])
                  for k in ("listed", "ending_soon", "not_matched"))]
+    if support_line:
+        lines.append(support_line)
     with_count = [it["install_count"] for it in result["items"]
                   if it["install_count"] is not None]
     if with_count or counts["count_invalid_cells"]:
@@ -359,7 +367,7 @@ def _check(args) -> int:
     if args.out:
         _check_out(args.out, args.inventory)
     as_of = args.as_of or date.today()  # only clock read in the tool
-    result, meta, records = _build(
+    result, meta, records, support_line = _build(
         args.inventory, as_of=as_of, data=args.data,
         lookahead_months=args.lookahead_months, profile=args.profile,
         columns=args.columns, golden=args.golden,
@@ -371,7 +379,7 @@ def _check(args) -> int:
         _write_out(args.out, args.inventory, result, meta,
                    args.governable_only, records)
     if args.counts_only:
-        sys.stdout.write(_counts_text(result))
+        sys.stdout.write(_counts_text(result, support_line))
     elif args.out:
         print("Wrote %s to %s" % (", ".join(OUTPUT_FILES), args.out))
         if args.governable_only:
