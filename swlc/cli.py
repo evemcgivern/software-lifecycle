@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import argparse
 import errno
+import hashlib
 import json
 import os
 import re
 import sys
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 from .assess import (LISTS, MAX_LOOKAHEAD_MONTHS, NO_SUPPORT_COLUMN,
@@ -105,14 +106,16 @@ def build(inventory_path: str, *, as_of: date, data: str | None = None,
           columns: str | None = None, golden: str | None = None,
           exceptions: str | None = None, tracking: str | None = None,
           previous: str | None = None, encoding: str | None = None,
-          support_records: str | None = None, compare_support: bool = False):
+          support_records: str | None = None, compare_support: bool = False,
+          export_date: date | None = None):
     """Run the whole check; return (result, meta). Raises the tool's errors."""
     result, meta, _records, _support = _build(
         inventory_path, as_of=as_of, data=data,
         lookahead_months=lookahead_months, profile=profile, columns=columns,
         golden=golden, exceptions=exceptions, tracking=tracking,
         previous=previous, encoding=encoding,
-        support_records=support_records, compare_support=compare_support)
+        support_records=support_records, compare_support=compare_support,
+        export_date=export_date)
     return result, meta
 
 
@@ -127,10 +130,17 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
            lookahead_months: int, profile: str, columns: str | None,
            golden: str | None, exceptions: str | None, tracking: str | None,
            previous: str | None, encoding: str | None,
-           support_records: str | None, compare_support: bool = False):
+           support_records: str | None, compare_support: bool = False,
+           export_date: date | None = None):
     """As build, plus the loaded support records (None when no file),
     which report.md needs for its "Support records" section, and the
     --counts-only support-date line (None without --compare-support)."""
+    if export_date is not None:
+        if isinstance(export_date, datetime) \
+                or not isinstance(export_date, date):
+            raise TypeError("export_date must be a date")
+        if not MIN_YEAR <= export_date.year <= MAX_YEAR:
+            raise UsageError("a date is out of range")
     loaded = load_data(data or BUNDLED_DATA, as_of)
     _known_profile(loaded.profiles, profile)
     if profile == "generic":
@@ -140,7 +150,9 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
         columns_map = entry["columns"]
         status = entry.get("status") or "Unverified"
     extra = _read_columns(columns) if columns else None
-    rows, headers = read_rows(inventory_path, encoding)
+    inventory_hash = hashlib.sha256()
+    rows, headers = read_rows(inventory_path, encoding,
+                              hasher=inventory_hash)
     colmap = map_columns(headers, columns_map, extra)
     groups = group_rows(rows, colmap)
     prior = _read_json(previous, MAX_PREVIOUS_BYTES, "previous report") \
@@ -170,6 +182,11 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
                             "tracking": file_hash(tracking)},
         "profile": {"name": profile, "status": status},
         "encoding": encoding or "utf-8",
+        # export_date is only what the user states; the tool never takes
+        # it from the file's own times.
+        "inventory": {"sha256": inventory_hash.hexdigest(),
+                      "export_date": export_date.isoformat()
+                      if export_date else None},
     }
     if support_records is not None:
         # Only with the flag, so a run without it keeps the old meta.
@@ -214,6 +231,9 @@ def _parser() -> argparse.ArgumentParser:
                        help="data folder to use instead of the bundled data")
     check.add_argument("--as-of", type=_iso_date, metavar="YYYY-MM-DD",
                        help="check as of this date (default: today)")
+    check.add_argument("--export-date", type=_iso_date, metavar="YYYY-MM-DD",
+                       help="the date the inventory was exported, recorded "
+                            "in report.json (default: not recorded)")
     check.add_argument("--lookahead-months", type=int, default=12,
                        metavar="N",
                        help="months ahead that count as ends soon, 0 to "
@@ -374,7 +394,8 @@ def _check(args) -> int:
         exceptions=args.exceptions, tracking=args.tracking,
         previous=args.previous, encoding=args.encoding,
         support_records=args.support_records,
-        compare_support=args.compare_support)
+        compare_support=args.compare_support,
+        export_date=args.export_date)
     if args.out:
         _write_out(args.out, args.inventory, result, meta,
                    args.governable_only, records)

@@ -151,6 +151,7 @@ class RankingTests(unittest.TestCase):
             body["items"].sort(key=lambda it: it["id"])
             body["lists"] = {k: sorted(v) for k, v in body["lists"].items()}
             body["meta"].pop("encoding")
+            body["meta"].pop("inventory")  # two files, two hashes
             return body
         self.assertEqual(strip(self.result), strip(self.plain))
 

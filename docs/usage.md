@@ -27,6 +27,7 @@ appear in CISA's list of known exploited vulnerabilities.
 |---|---|---|
 | `--data DIR` | Use this data directory instead of the bundled `data/`. | `--data tests/fixtures/data` |
 | `--as-of YYYY-MM-DD` | Check as of this date. Default is today. This is the only place the tool reads the clock. | `--as-of 2026-10-24` |
+| `--export-date YYYY-MM-DD` | The date the inventory was exported. Recorded in `report.json` as `meta.inventory.export_date`, beside the file's SHA-256. It changes no state or list. Without it the date is `null` (not found). | `--export-date 2026-10-20` |
 | `--lookahead-months N` | Months ahead to count as "ends within the lookahead window". Default 12. From 0 to 600. | `--lookahead-months 6` |
 | `--profile NAME` | Add a profile's extra column headings: `flexera`, `servicenow-mbs` or `rapid7`. Default `generic`. All three are Unverified. | `--profile rapid7` |
 | `--columns FILE` | JSON file that adds column headings. See `templates/columns.example.json`. | `--columns my-columns.json` |

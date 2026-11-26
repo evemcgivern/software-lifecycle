@@ -66,7 +66,7 @@ and which item key a column comes from.
 | `lists` | Item IDs for each list. See below. |
 | `counts` | Counts of items, rows, states and lists. |
 | `diff` | Changes since the report given with `--previous`. |
-| `meta` | The tool version, data hashes, override file hashes, profile and encoding. |
+| `meta` | The tool version, data hashes, override file hashes, profile, encoding, and the inventory file's hash and export date. |
 
 ### data_release
 
@@ -141,6 +141,7 @@ other two.
 | `override_hashes` | SHA-256 of the `golden`, `exceptions` and `tracking` files; empty text when a file was not given. With `--support-records`, also `support_records`. |
 | `profile` | `name`, and `status` (`Unverified` for a profile; `null` for `generic`). |
 | `encoding` | The inventory encoding (`utf-8` unless `--encoding` was used). |
+| `inventory` | Which inventory file the run read: `sha256` and `export_date`. In `report.json` only. |
 
 ### meta.data_release
 
@@ -157,6 +158,13 @@ other two.
 | `exceptions` | SHA-256 of the exceptions file; empty text if not given. |
 | `tracking` | SHA-256 of the tracking file; empty text if not given. |
 | `support_records` | SHA-256 of the support-records file. Present only when `--support-records` is given, so a report made without it is unchanged. |
+
+### meta.inventory
+
+| Key | Meaning |
+|---|---|
+| `sha256` | SHA-256 of the inventory file's bytes, as read by this run. Any change to the file, including line endings or encoding, gives a different value. It does not show who made the file or when. Anyone who has a copy of the same file can confirm that it matches, so keep it as private as the report. |
+| `export_date` | The date given with `--export-date`. `null` means not found: the tool never takes a date from the file's name, contents or times. |
 
 ### meta.profile
 
@@ -560,6 +568,9 @@ or 2 report. An item the new code flags shows in `dates_disagree` and
 nowhere else; its state does not change. What "support" means differs
 between vendors, so the code asks a person to look and decides nothing.
 
+Also added while at version 3, as a new key that needs no version change:
+`meta.inventory` (issue #106). See "meta.inventory".
+
 ### Changes in schema version 2
 
 Version 2 adds one `ambiguity` code, `shared_support_lines` (issue #21),
@@ -583,8 +594,8 @@ from the repo root, or put the repo on `sys.path`.
 
 Options are keyword arguments: `as_of` (required), `data`,
 `lookahead_months`, `profile`, `columns`, `golden`, `exceptions`,
-`tracking`, `support_records`, `compare_support`, `previous` and
-`encoding`. They match the
+`tracking`, `support_records`, `compare_support`, `export_date`,
+`previous` and `encoding`. They match the
 command-line flags.
 
 It raises:
@@ -597,5 +608,6 @@ It raises:
   different items share one ID. The command line exits with 4.
 - `UsageError` (in `swlc.cli`) for an unknown `profile` or a date out of
   range. The command line exits with 2.
-- `TypeError` if `as_of` is a `datetime` instead of a `date`. Pass a
-  `date`.
+- `TypeError` if `as_of` is a `datetime` instead of a `date`, or if
+  `export_date` is given and is not a `date` (a `datetime` or text is
+  rejected). Pass a `date`.

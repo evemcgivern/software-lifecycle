@@ -2476,6 +2476,10 @@
       "id": "fixture-1"
     },
     "encoding": "utf-8",
+    "inventory": {
+      "export_date": null,
+      "sha256": "0f428aa7251e2d3f7da1d226932a05ded4c862f4062fc7a6b65992e73c46a256"
+    },
     "override_hashes": {
       "exceptions": "ea685b612f8e8f15bc0b63f4852e5290c70f0ab03eb53029c55a809ed90947ac",
       "golden": "7173c2e82bd5ef9a66a2ecf0d987c470784aacfbcad162244ac434e402f33107",

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `report.json` records which inventory file a run read: the new key
+  `meta.inventory` holds the file's SHA-256 and the export date (issue
+  #106). The date is only what you give with the new `--export-date`
+  flag; otherwise it is `null`. Neither appears in `report.md`,
+  `report.csv` or `--counts-only` output.
 - New `--compare-support` flag for the optional `export_support` column
   (issue #108). It is off by default, so a run without it lists the same
   items and exits the same way as before. With it, a support date that
