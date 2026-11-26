@@ -151,6 +151,15 @@ COUNT_ORDER_LINE = ("Items in each section are ordered by the count from "
                     "your file, largest first, then items with no count. "
                     "The count is the sum of your file's count column, not "
                     "discovered installs.")
+QUALITY_HEADING = "Inventory rows read, of %d:"
+QUALITY_LINES = (
+    ("matched_rows", "Matched"),
+    ("blank_owner_rows", "Blank owner cell, or no owner column"),
+    ("no_version_number_rows", "Version cell blank or without a digit"),
+    ("identical_repeat_rows", "Identical to an earlier row"),
+)
+QUALITY_NOTE = ("These figures describe the rows read. They are not a score "
+                "and do not show whether the inventory is complete.")
 COUNT_INVALID_LINE = ("Count cells ignored: %d. A count cell is used only "
                       "when it is a whole number from 0 to 1000000000.")
 # Item sections whose items get a support-record note line.
@@ -166,6 +175,13 @@ CSV_COLUMNS = (
     SUPPORT_COLUMN, COUNT_COLUMN)
 
 _MD_SPECIAL = "\\`*_[]()#|~!"
+
+
+def _share(part: int, whole: int) -> str:
+    """A whole percentage, rounded down, so that only all rows read 100%
+    and only no rows read 0%."""
+    percent = part * 100 // whole if whole else 0
+    return "under 1%" if part and not percent else "%d%%" % percent
 
 
 # --- JSON ------------------------------------------------------------------
@@ -549,6 +565,13 @@ def render_markdown(result: dict, meta: dict,
         out += ["", COUNT_ORDER_LINE]
     if result["counts"].get("count_invalid_cells"):
         out += ["", COUNT_INVALID_LINE % result["counts"]["count_invalid_cells"]]
+    rows = result["counts"]["rows"]
+    quality = result["counts"]["data_quality"]
+    out += ["", QUALITY_HEADING % rows, ""]
+    out += ["- %s: %d of %d (%s)" % (label, quality[key], rows,
+                                     _share(quality[key], rows))
+            for key, label in QUALITY_LINES]
+    out += ["", QUALITY_NOTE]
     if governable_only:
         out += ["", hidden_line(result)]
 

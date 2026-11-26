@@ -232,6 +232,7 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
     eols: dict[str, set] = {}
     supports: dict[str, set] = {}
     parents: dict[str, set] = {}
+    seen_rows: set = set()
     for row in rows:
         pub, name, ver = (cell(row, f) for f in ("publisher", "name", "version"))
         key = tuple(normalize_name(x) for x in (pub, name, ver))
@@ -247,15 +248,28 @@ def group_rows(rows: list[dict], colmap: dict[str, str]) -> dict[str, dict]:
                                  "publisher": pub,
                                  "name": name, "version": ver,
                                  "install_count": None,
-                                 "count_invalid_cells": 0}
+                                 "count_invalid_cells": 0,
+                                 "blank_owner_rows": 0,
+                                 "no_version_number_rows": 0,
+                                 "identical_repeat_rows": 0}
             owners[gid] = set()
             eols[gid] = set()
             supports[gid] = set()
             parents[gid] = set()
         grp["rows"] += 1
+        # Every column, so rows that differ only in, say, a device name
+        # are not repeats.
+        whole = tuple((v or "").strip() for v in row.values())
+        if whole in seen_rows:
+            grp["identical_repeat_rows"] += 1
+        seen_rows.add(whole)
+        if not any(c in "0123456789" for c in ver):
+            grp["no_version_number_rows"] += 1
         owner = cell(row, "owner")
         if owner:
             owners[gid].add(owner)
+        else:
+            grp["blank_owner_rows"] += 1
         eol = cell(row, "export_eol")
         if eol:
             eols[gid].add(eol)

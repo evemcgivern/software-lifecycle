@@ -34,6 +34,7 @@ SECRETS = ["Zqxv Quokkasoft Suite", "Plumbline Wrenwick", "77.31.9q",
 # Every line check_counts may return starts with one of these labels.
 ALLOWED_FIRST = {"checked_on", "kev_current", "items", "states",
                  "classification", "ambiguous_review", "support_records",
+                 "data_quality",
                  "count_total", "note:"} | set(assess.LISTS)
 
 

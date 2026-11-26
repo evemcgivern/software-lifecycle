@@ -364,6 +364,10 @@ def _counts_text(result: dict, support_line: str | None = None) -> str:
                  for k in ("listed", "ending_soon", "not_matched"))]
     if support_line:
         lines.append(support_line)
+    lines.append("data_quality " + " ".join(
+        "%s=%d" % (k, counts["data_quality"][k])
+        for k in ("matched_rows", "blank_owner_rows",
+                  "no_version_number_rows", "identical_repeat_rows")))
     with_count = [it["install_count"] for it in result["items"]
                   if it["install_count"] is not None]
     if with_count or counts["count_invalid_cells"]:

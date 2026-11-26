@@ -953,6 +953,13 @@ It prints:
   `not_compared=0` does not mean every item was compared: an item with
   another date code or an active golden source, or with no support date
   on either side, is not compared or counted;
+- one line of figures about the rows read
+  (`data_quality matched_rows=N blank_owner_rows=N no_version_number_rows=N identical_repeat_rows=N`),
+  out of the row count above. `report.md` shows the same figures with
+  percentages, rounded down; a share above zero and below one percent
+  shows as "under 1%". They are not a score and do not show whether
+  the inventory is complete. See `counts.data_quality` in
+  [report-schema.md](report-schema.md);
 - `count_total N`, the sum of every item's count, only when the count
   column has at least one filled cell;
 - each list with its count and the item IDs, in item-ID order, so the

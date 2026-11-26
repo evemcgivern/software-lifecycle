@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- A run now shows how clean the rows it read were (issue #107): rows
+  matched, rows with a blank owner cell, rows with no digit in the version
+  cell, and rows identical to an earlier row. `report.md` shows counts
+  with percentages, `report.json` has the new key `counts.data_quality`,
+  and `--counts-only` and the desktop chat server print one new
+  `data_quality` line. They are not a score.
 - `report.json` records which inventory file a run read: the new key
   `meta.inventory` holds the file's SHA-256 and the export date (issue
   #106). The date is only what you give with the new `--export-date`

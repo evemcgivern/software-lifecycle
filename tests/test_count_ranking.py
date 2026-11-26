@@ -148,6 +148,9 @@ class RankingTests(unittest.TestCase):
             for it in body["items"]:
                 it.pop("install_count")
             body["counts"].pop("count_invalid_cells")
+            # Rows that differ only in their count become identical when
+            # the column is removed.
+            body["counts"]["data_quality"].pop("identical_repeat_rows")
             body["items"].sort(key=lambda it: it["id"])
             body["lists"] = {k: sorted(v) for k, v in body["lists"].items()}
             body["meta"].pop("encoding")

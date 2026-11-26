@@ -26,6 +26,7 @@ VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 ITEM_ID = re.compile(r"\b[0-9a-f]{12}\b")
 ALLOWED_FIRST = {"checked_on", "kev_current", "items", "states",
                  "classification", "ambiguous_review", "support_records",
+                 "data_quality",
                  "count_total", "note:"} | set(assess.LISTS)
 ALLOWED_PATH = re.compile(
     r"(?:manifest\.json|pyproject\.toml|README\.md|swlc_mcp\.py|"
