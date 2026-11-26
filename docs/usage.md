@@ -34,7 +34,7 @@ appear in CISA's list of known exploited vulnerabilities.
 | `--exceptions FILE` | Exceptions CSV (accepted risk). | `--exceptions exceptions.csv` |
 | `--tracking FILE` | Tracking CSV (change and problem references). | `--tracking tracking.csv` |
 | `--support-records FILE` | Support-records CSV: your own support records, shown beside the vendor's dates. Never changes a state, a list or `--fail-on`. See "Support records" below. | `--support-records support-records.csv` |
-| `--compare-support` | Compare the `export_support` column with the endoflife.date support date. A difference lists the item under "dates disagree" (`SUPPORT_DATE_DIFFERENT`), so with `--fail-on dates_disagree` it can make a run that passed before exit 10. A date equal to the end-of-life date is not flagged. It never changes a state. A support date that is not YYYY-MM-DD, or rows of one item that differ, is not compared; the report warns with the number of items. What "support" means differs between vendors, so check each flag. Default off: the column is then not read. | `--compare-support` |
+| `--compare-support` | Compare the `export_support` column with the endoflife.date support date. A difference lists the item under "dates disagree" (`SUPPORT_DATE_DIFFERENT`), so with `--fail-on dates_disagree` it can make a run that passed before exit 10. A date equal to the end-of-life date is not flagged. It never changes a state. A support date that is not YYYY-MM-DD, or rows of one item that differ, is not compared; the report warns with the number of items. If no `export_support` column is recognized, the report warns that no support dates were compared. What "support" means differs between vendors, so check each flag. Default off: the column is then not read. | `--compare-support` |
 | `--previous REPORT.json` | An earlier `report.json`. The new report then shows what is new, gone or changed. | `--previous last-quarter/report.json` |
 | `--out DIR` | Folder for the three report files. It must be a folder, not the input file; if it is a file or the input file, the tool exits with code 2. The tool will not write through a symbolic link (exit 3). Keep it outside the repo and outside an agent's reach. | `--out ../swlc-out` |
 | `--counts-only` | Print counts and item IDs only. Needs `--out`. | `--counts-only --out ../swlc-out` |
@@ -68,7 +68,8 @@ writes nothing. It prints:
   name, publisher and version all match, and the fit that matches the most
   fields wins;
 - for name, publisher, version, owner, count, export end-of-life date
-  (`export_eol`) and parent: the column title found, or "not found";
+  (`export_eol`), export support date (`export_support`) and parent: the
+  column title found, or "not found";
 - the number of blank cells in each recognised column, of Parent cells
   that hold a placeholder (`n/a`, `none`, `unknown` and the like, which
   `check` reads as no parent) and of cells that start like a spreadsheet
@@ -89,8 +90,8 @@ name from a row, so its output is safe to show an AI agent.
 Exit codes:
 
 - A missing name or version column, or a file with no data rows, exits 3.
-- A missing publisher, owner, count, end-of-life date or parent column is
-  listed in "What to fix" and exits 0.
+- A missing publisher, owner, count, end-of-life date, support date or
+  parent column is listed in "What to fix" and exits 0.
 - An unreadable file exits 3 with the same error text as `check`.
 
 With no owner column, `check` lists every item under "Ownerless". Blank

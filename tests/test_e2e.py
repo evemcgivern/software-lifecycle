@@ -301,6 +301,33 @@ class CompareSupportFlag(unittest.TestCase):
                      "--fail-on", "dates_disagree", *extra])[0])
         self.assertEqual(codes, [0, 10])
 
+    def test_flag_with_no_support_column_warns(self):
+        warning = ("No export_support column was recognized, so no support "
+                   "dates were compared.")
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            for title, extra, expected in (
+                    ("Vendor Support Ends", ("--compare-support",), True),
+                    (None, ("--compare-support",), True),
+                    ("End of Support", ("--compare-support",), False),
+                    ("Vendor Support Ends", (), False)):
+                head = "Software Name,Version"
+                line = "Demo OS 2.0,2.0"
+                if title:
+                    head, line = head + "," + title, line + ",2028-06-01"
+                inventory.write_text("%s\n%s\n" % (head, line),
+                                     encoding="utf-8")
+                out = tmp / "out"
+                code = run_main(
+                    ["check", str(inventory), "--data", str(DATA),
+                     "--as-of", AS_OF, "--out", str(out), *extra])[0]
+                report = json.loads(
+                    (out / "report.json").read_text("utf-8"))
+                self.assertEqual(code, 0, title)
+                self.assertEqual(warning in report["warnings"], expected,
+                                 (title, extra))
+
 
 if __name__ == "__main__":
     unittest.main()

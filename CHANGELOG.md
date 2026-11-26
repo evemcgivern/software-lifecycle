@@ -12,7 +12,11 @@
   mean that by "end of support". The check never changes a state and does
   not run when the item has another date code or an active golden source.
   The export's text is in the new item key `support_export_raw`.
-  A warning counts the items whose support date was not compared.
+  A warning counts the items whose support date was not compared, and
+  another says when no support-date column was recognized. `preflight`
+  now lists `export_support` as found or not found, with the new fix
+  code `NO_EXPORT_SUPPORT`; in `--json` the found title moved from
+  `other_columns` to `columns`.
   `report.json`
   `schema_version` is now 3; `--previous` still accepts a version 1 or 2
   report.

@@ -10,7 +10,8 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from .assess import LISTS, MAX_LOOKAHEAD_MONTHS, assess
+from .assess import (LISTS, MAX_LOOKAHEAD_MONTHS, NO_SUPPORT_COLUMN,
+                     assess)
 from . import preflight
 from .data import load_data, load_profiles, tool_version, verify_data
 from .errors import DataError, InputError
@@ -149,6 +150,8 @@ def _build(inventory_path: str, *, as_of: date, data: str | None,
                         load_exceptions(exceptions), load_tracking(tracking),
                         as_of, lookahead_months, prior, records,
                         compare_support)
+        if compare_support and "export_support" not in colmap:
+            result["warnings"].append(NO_SUPPORT_COLUMN)
     except (OverflowError, ValueError):
         raise UsageError("a date is out of range") from None
     meta = {

@@ -57,6 +57,8 @@ GOLDEN_NOT_APPLIED = ("%d item(s) have a golden-source row that was not "
 SUPPORT_NOT_COMPARED = ("%d item(s) have an export support date that was "
                         "not compared: the text is not read as one "
                         "YYYY-MM-DD date.")
+NO_SUPPORT_COLUMN = ("No export_support column was recognized, so no "
+                     "support dates were compared.")
 # Item "ambiguity" codes: a row the matcher refused on purpose, for a person
 # to review. Fixed text, never row data. Not a state, list or reason code.
 # shared_support_lines keeps its product; the others have none.
