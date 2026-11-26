@@ -55,7 +55,7 @@
 <dl class="lists">
 <dt>Past end of life</dt><dd>The end-of-life date has passed.</dd>
 <dt>Ends within the lookahead window</dt><dd>The window is 12 months unless you change it.</dd>
-<dt>Dates disagree</dt><dd>This covers three cases: the export's own date and the endoflife.date date differ; a golden source has expired; or a golden source says to use the export date and the export has no usable one (<code>GOLDEN_EXPORT_UNUSABLE</code>).</dd>
+<dt>Dates disagree</dt><dd>This covers four cases: the export's own date and the endoflife.date date differ; the export's support date and the endoflife.date support date differ (<code>SUPPORT_DATE_DIFFERENT</code>); a golden source has expired; or a golden source says to use the export date and the export has no usable one (<code>GOLDEN_EXPORT_UNUSABLE</code>).</dd>
 <dt>Couldn't match</dt><dd>The name and version did not map to a known product and cycle, and the tool claims no date for these. Some names it refused on purpose: a product title on a row with no publisher, or a row whose name and version fit more than one support line, such as Internet Explorer 11. Those are listed again under "Names to review". They are not a finding.</dd>
 <dt>In CISA KEV, past or near end of life</dt><dd>The item is past or near end of life, and its vendor and product appear in CISA KEV. The wording is "needs review". KEV matches vendor and product only, never version. The tool never says "vulnerable".</dd>
 <dt>Accepted risk</dt><dd>The item is listed in your exceptions file.</dd>

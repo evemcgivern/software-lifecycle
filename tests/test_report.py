@@ -48,6 +48,20 @@ class Base(unittest.TestCase):
         raise KeyError(name)
 
 
+class SupportExportLineTests(Base):
+    def test_export_support_text_shown_in_dates(self):
+        matched = next(i for i in self.result["items"]
+                       if i["state"] != "unmatched")
+        shown = dict(matched, support_export_raw="2026-03-01")
+        lines = report._date_lines(shown, "2026-10-20")
+        self.assertIn("Mainstream support per your export: 2026-03-01", lines)
+        hidden = dict(matched, support_export_raw=None)
+        self.assertFalse(any("per your export: " in line
+                             and line.startswith("Mainstream support")
+                             for line in report._date_lines(hidden,
+                                                            "2026-10-20")))
+
+
 class PartsBase(Base):
     inv_rows = PARENT_ROWS
     inv_header = PARENT_HEADER

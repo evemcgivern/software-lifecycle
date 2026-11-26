@@ -274,6 +274,9 @@ def _date_lines(it: dict, eol_snap: str) -> list:
     if it["support"] is not None:
         lines.append("Mainstream support: %s %s" % (
             _flag_val(it["support"], "ended", "ongoing"), eol_src))
+    if it.get("support_export_raw"):
+        lines.append("Mainstream support per your export: %s" % _disp(
+            it["support_export_raw"]))
     if it["extended_support"] is not None:
         lines.append("Extended support: %s %s" % (
             _flag_val(it["extended_support"], "ended", "ongoing"), eol_src))
