@@ -97,6 +97,52 @@ class CheckTests(CliBase):
         self.assertIn("kev.json", obj["meta"]["data_release"]["file_hashes"])
         self.assertEqual(obj["meta"]["profile"]["name"], "generic")
 
+    def report(self, *extra, inv=None):
+        self.assertEqual(self.check("--out", str(self.out), *extra,
+                                    inv=inv)[0], 0)
+        return json.loads((self.out / "report.json").read_text("utf-8"))
+
+    def test_meta_inventory_hash_is_of_the_file_bytes(self):
+        first = self.report()["meta"]["inventory"]
+        raw = Path(self.inv).read_bytes()
+        self.assertEqual(first, {"sha256": hashlib.sha256(raw).hexdigest(),
+                                 "export_date": None})
+        self.assertEqual(self.report()["meta"]["inventory"], first)
+        changed = self.root / "changed.csv"
+        changed.write_bytes(raw + b"\n")
+        other = self.report(inv=str(changed))
+        self.assertNotEqual(other["meta"]["inventory"]["sha256"],
+                            first["sha256"])
+
+    def test_export_date_is_only_what_the_user_states(self):
+        plain = self.report()
+        md = (self.out / "report.md").read_bytes()
+        stated = self.report("--export-date", "2026-10-01")
+        self.assertEqual(stated["meta"]["inventory"]["export_date"],
+                         "2026-10-01")
+        self.assertEqual((self.out / "report.md").read_bytes(), md)
+        stated["meta"]["inventory"]["export_date"] = None
+        self.assertEqual(stated, plain)
+        got = cli.run(self.inv, as_of=date(2026, 10, 24), data=self.data,
+                      export_date=date(2026, 10, 1))
+        self.assertEqual(got["meta"]["inventory"]["export_date"],
+                         "2026-10-01")
+
+    def test_bad_export_date_is_a_usage_error(self):
+        for value in ("01/10/2026", "2026-02-30", "today"):
+            self.assertEqual(self.check("--export-date", value)[0], 2, value)
+
+    def test_meta_inventory_and_counts_only_carry_no_inventory_text(self):
+        inv = self.root / "secret-name.csv"
+        inv.write_text("Name,Version,Owner\nZzSecretApp,9.9,ZzSecretOwner\n",
+                       encoding="utf-8")
+        block = self.report(inv=str(inv))["meta"]["inventory"]
+        self.assertEqual(set(block), {"sha256", "export_date"})
+        self.assertRegex(block["sha256"], r"\A[0-9a-f]{64}\Z")
+        out = self.check("--counts-only", "--out", str(self.out),
+                         inv=str(inv))[1]
+        self.assertNotIn(block["sha256"], out)
+
     def test_previous_gives_diff(self):
         self.check("--out", str(self.out))
         code, _, err = self.check("--previous", str(self.out / "report.json"),

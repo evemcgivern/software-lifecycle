@@ -96,11 +96,13 @@ def read_rows(path: str, encoding: str | None = None,
               max_rows: int = MAX_ROWS,
               max_field: int = 65_536,
               max_bytes: int = MAX_BYTES,
-              allow_empty: bool = False) -> tuple[list[dict], list[str]]:
+              allow_empty: bool = False,
+              hasher=None) -> tuple[list[dict], list[str]]:
     """Read a CSV into (rows, headers). Errors name line numbers only.
 
     With ``allow_empty`` a header-only file returns ``([], headers)``; a
-    zero-byte file still raises."""
+    zero-byte file still raises. ``hasher`` (a hashlib object) is fed the
+    same bytes that are parsed."""
     try:
         with open(path, "rb") as fh:
             data = fh.read(max_bytes + 1)
@@ -109,6 +111,8 @@ def read_rows(path: str, encoding: str | None = None,
             "cannot read input file (%s)" % exc.strerror) from None
     if len(data) > max_bytes:
         raise InputError("input file is larger than %d bytes" % max_bytes)
+    if hasher is not None:
+        hasher.update(data)
     if not data.strip():
         raise InputError("input file is empty")
     text = _decode(data, encoding)
