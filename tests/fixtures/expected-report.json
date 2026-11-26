@@ -2496,7 +2496,7 @@
       "name": "generic",
       "status": null
     },
-    "tool_version": "0.7.0"
+    "tool_version": "0.8.0"
   },
   "schema_version": 3,
   "warnings": [

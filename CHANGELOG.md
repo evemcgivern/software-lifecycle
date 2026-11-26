@@ -1,6 +1,18 @@
 # Changelog
 
-## Unreleased
+## 0.8.0 - 2026-11-26
+
+### When you upgrade
+
+- `report.json` `schema_version` is now 3. A script that requires version
+  2 needs updating. `--previous` still reads versions 1, 2 and 3.
+- `report.md` and `--counts-only` output have new data-quality figures,
+  and `report.json` has new keys.
+- `preflight` now lists `export_support`. In `--json` its found title
+  moved from `other_columns` to `columns`.
+- The support-date check is off unless you add `--compare-support`.
+
+### Changes
 
 - A run now shows how clean the rows it read were (issue #107): rows
   matched, rows with a blank owner cell, rows with no digit in the version
@@ -29,9 +41,8 @@
   code `NO_EXPORT_SUPPORT`; in `--json` the found title moved from
   `other_columns` to `columns`. With `--compare-support`,
   `--counts-only` also prints a `support_dates` line.
-  `report.json`
-  `schema_version` is now 3; `--previous` still accepts a version 1 or 2
-  report.
+  `report.json` `schema_version` is now 3; `--previous` still accepts a
+  version 1 or 2 report.
 - Reworded the three issue forms and added three more (issue #72): a
   test of an assistant or the MCP server, a column-name problem with an
   export (headers only), and a mistake in the docs or crosswalk. Every
@@ -46,6 +57,27 @@
   weekly data job. The hand and catalog count stays 758 on the bundled
   data and on the new cycles. `docs/sop.md` gives this as an example.
   Tests and docs only.
+- Refreshed the bundled endoflife.date snapshot (issues #101 and #104):
+  dated 2026-11-25, upstream commit `eda9a80`. The bundled CISA KEV
+  snapshot is still dated 2026-10-30; the data releases carry newer KEV
+  data.
+- A CouchDB 2.0.1 row now gets the product with no cycle: Apache did not
+  publish that version (issue #101). Two Tomcat 4 benchmark rows now
+  expect cycle 4.
+- Added a project website, with the demo output and screenshots (issues
+  #87 and #94).
+- Rewrote the README and docs in plainer words, added term explainers and
+  badges, and said who built the tool and why (issues #86 and #89). The
+  README also no longer says KEV data is published every day: a data
+  release goes out only when the data changed.
+- `docs/sop.md` now says who may see item IDs.
+- Added the results of a vendor-evidence pilot under `pilots/`. Its
+  search helper is not part of the tool.
+- Added a design note for reading an SBOM as an inventory input, and
+  recorded the decision to defer it (issue #19). No SBOM reader is built.
+- Test changes only: speed limits now count CPU time, four benchmark
+  cycles are stricter and benchmark case dates follow the data (issues
+  #78, #79, #82 and #90).
 
 ## 0.7.0 - 2026-11-01
 
