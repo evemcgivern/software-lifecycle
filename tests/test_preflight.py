@@ -68,6 +68,21 @@ class MultiLineVersionTests(Base):
                          [f["code"] for f in res["fix"]])
 
 
+class PossibleListTests(Base):
+    def test_one_line_cells_that_may_list_versions_are_counted(self):
+        path = self.inv(["Name", "Publisher", "Version"],
+                        [["a", "b", "1.0 2.0"], ["c", "b", "3.0 LTS, 4.0"],
+                         ["d", "b", "5.0\n6.0"], ["e", "b", "22.04.3 LTS"]])
+        code, res, err = self.pre_json(path)
+        self.assertEqual(code, 0, err)
+        self.assertEqual(res["possible_version_list_cells"], 2)
+        self.assertIn("POSSIBLE_VERSION_LIST",
+                      [f["code"] for f in res["fix"]])
+        code, out, err = self.pre(path)
+        self.assertIn("One-line version cells that may list several "
+                      "versions: 2", out)
+
+
 class ProfileTests(Base):
     def best(self, header):
         path = self.inv(header, [["a", "b", "1", "2"][:len(header)]])
@@ -401,7 +416,8 @@ class OutputTests(Base):
             "preflight_version", "ok", "file", "limits", "profile",
             "columns", "other_columns", "blank_cells", "placeholder_cells",
             "formula_cells", "unreadable_date_cells",
-            "multi_line_version_cells", "fix",
+            "multi_line_version_cells", "possible_version_list_cells",
+            "fix",
             "next_command", "next_command_counts_only"})
         self.assertEqual(set(res["file"]), {"readable", "encoding", "bom",
                                             "line_endings", "bytes", "rows"})

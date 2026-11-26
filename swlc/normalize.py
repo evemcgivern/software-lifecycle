@@ -69,6 +69,30 @@ def version_entries(raw: str) -> list[str]:
     return list(dict.fromkeys(pieces))
 
 
+_DOTTED_RE = re.compile(r"v?([0-9]+(?:[._][0-9]+)+)", re.I)
+
+
+def may_list_versions(raw: str) -> bool:
+    """Whether a one-line version cell may list several versions: it has
+    two or more different dotted numbers, none the start of another, or it
+    is four comma-joined whole numbers with no zero. For a warning only:
+    the same text can be one version."""
+    if is_multi_line(raw):
+        return False
+    text = _BITNESS_RE.sub(" ", raw).strip()
+    if _COMMA_VERSION_RE.fullmatch(text):
+        # Read as text: int() refuses a number of thousands of digits.
+        return all(p.strip().strip("0") for p in text.split(","))
+    found = {tuple(re.split(r"[._]", m.group(1)))
+             for m in map(_DOTTED_RE.match, _ENTRY_SPLIT_RE.split(text))
+             if m}
+    # Sorted, a number that starts another comes just before one it starts.
+    ordered = sorted(found)
+    starts = sum(later[:len(one)] == one
+                 for one, later in zip(ordered, ordered[1:]))
+    return len(ordered) - starts > 1
+
+
 def split_version(raw: str) -> list[str]:
     """Strip a leading ``v``; split on ``.``, ``-``, ``_`` and space."""
     text = unicodedata.normalize("NFKC", raw).casefold().strip()

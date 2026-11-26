@@ -651,7 +651,8 @@ class SeveralVersions(unittest.TestCase):
             self.assertNotIn("past_eol", on(out, it))
             self.assertNotIn("review_urgently", on(out, it))
             self.assertEqual(out["counts"]["several_versions"],
-                             {"items": 1, "past_eol": 1, "kev": 1})
+                             {"items": 1, "past_eol": 1, "kev": 1,
+                              "possible": 0})
 
     def test_supported_entries_have_no_past_eol_or_kev(self):
         it = only(run([row("5 11", publisher=KEV_PUB)]))
@@ -663,7 +664,28 @@ class SeveralVersions(unittest.TestCase):
         self.assertEqual([i["several_versions"] for i in out["items"]],
                          [None, None])
         self.assertEqual(out["counts"]["several_versions"],
-                         {"items": 0, "past_eol": 0, "kev": 0})
+                         {"items": 0, "past_eol": 0, "kev": 0,
+                          "possible": 0})
+
+
+class PossibleVersionList(unittest.TestCase):
+    """The warning never changes a result (#127)."""
+
+    def test_matched_item_is_marked_and_its_state_kept(self):
+        plain = only(run([row("5")]))
+        out = run([row("5.0 999.9")])
+        it = only(out)
+        self.assertTrue(it["possible_version_list"])
+        self.assertEqual((it["state"], it["cycle"], it["reason"]),
+                         (plain["state"], plain["cycle"], None))
+        self.assertEqual(on(out, it), on(run([row("5")]), plain))
+        self.assertEqual(out["counts"]["several_versions"]["possible"], 1)
+
+    def test_unmatched_and_single_versions_are_not_marked(self):
+        out = run([row("5"), row("999.1 999.2"), row("5 1")])
+        self.assertEqual({it["possible_version_list"]
+                          for it in out["items"]}, {False})
+        self.assertEqual(out["counts"]["several_versions"]["possible"], 0)
 
 
 class Shape(unittest.TestCase):

@@ -27,7 +27,14 @@
   with the new reason code `SEVERAL_VERSIONS`. Such a cell is also no
   longer used to link a part to its parent suite.
 - A one-line list is not detected when it holds another word (such as
-  `LTS`) or when only one of its numbers picks a cycle.
+  `LTS`) or when only one of its numbers picks a cycle. Many of these now
+  get a warning (issue #127): the result is unchanged, `report.md` lists
+  matched items under "Version cells to check", `report.json` has the new
+  key `possible_version_list`, and the counts line adds `possible=P`.
+  `--fail-on` does not read the warning, and a cell with fewer than two
+  dotted numbers gets none.
+- A cell with more than 50 distinct numbers and no other words is never
+  decided from one of them.
 - Review flag: for these items, `report.md` and the new item key
   `several_versions` say when at least one listed version is past end of
   life, and show the KEV line when it applies. The item stays unmatched.
@@ -37,7 +44,8 @@
   several versions has a listed version past end of life. It is off unless
   you name it.
 - `preflight` counts version cells with more than one line, with the new
-  fix code `MULTI_LINE_VERSION`. It does not count one-line lists.
+  fix code `MULTI_LINE_VERSION`, and one-line cells that may list several
+  versions, with the new fix code `POSSIBLE_VERSION_LIST`.
 
 ## 0.8.0 - 2026-11-26
 

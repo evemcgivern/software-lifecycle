@@ -150,6 +150,13 @@ class OneLineVersionListTests(unittest.TestCase):
             self.match(cell)
         self.assertLessEqual(spy.call_count, matching.MAX_ENTRIES + 1)
 
+    def test_more_entries_than_are_read_is_never_decided(self):
+        cell = " ".join("2.%d" % n for n in range(matching.MAX_ENTRIES + 1))
+        for version in (cell + " 3.0", "3.0 " + cell, cell):
+            self.assertEqual(self.match(version).reason, SEVERAL_VERSIONS)
+        at_limit = " ".join("2.%d" % n for n in range(matching.MAX_ENTRIES))
+        self.assertEqual(self.match(at_limit).cycle, {"cycle": "2"})
+
     def test_unknown_name_is_untouched(self):
         r = self.match("2.1 3.0", name="Other")
         self.assertEqual((r.product, r.reason), (None, NO_ALIAS))

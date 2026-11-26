@@ -163,6 +163,10 @@ These items are in no end-of-life or KEV list until you do. An automated
 run can fail on those with a listed version past end of life with
 `--fail-on several_versions_past_eol`.
 
+Also check each item under "Version cells to check", if the report has
+that section. These items are matched, but the cell may list a version
+that the result does not rest on. No `--fail-on` name reads this warning.
+
 ### 10. Assign owners to the "Ownerless" items
 
 Give each item in the "Ownerless" list an owner.

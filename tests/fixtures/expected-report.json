@@ -31,7 +31,8 @@
     "several_versions": {
       "items": 0,
       "kev": 0,
-      "past_eol": 0
+      "past_eol": 0,
+      "possible": 0
     },
     "states": {
       "ends_soon": 5,
@@ -118,6 +119,7 @@
         "Marketing Ops"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "lanternviewer",
       "publisher": "Example Corp",
@@ -173,6 +175,7 @@
         "Facilities"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "ironwoodscheduler",
       "publisher": "Placeholder Labs",
@@ -219,6 +222,7 @@
         "Infrastructure"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -264,6 +268,7 @@
         "Records Office"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "copperfieldnotes",
       "publisher": "Placeholder Labs",
@@ -309,6 +314,7 @@
         "Records Office"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "lanternviewer",
       "publisher": "Example Corp",
@@ -362,6 +368,7 @@
         "Infrastructure"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -408,6 +415,7 @@
         "Support Desk"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": "PRB-2001",
       "product": "demoos",
       "publisher": "Fictional Software Ltd",
@@ -453,6 +461,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -499,6 +508,7 @@
         "Support Desk"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "lanternviewer",
       "publisher": "Example Corp",
@@ -552,6 +562,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -598,6 +609,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -643,6 +655,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "examplesql",
       "publisher": "Example Vendor",
@@ -688,6 +701,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -733,6 +747,7 @@
         "Marketing Ops"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "harborviewcrm",
       "publisher": "Fictional Software Ltd",
@@ -778,6 +793,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -831,6 +847,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Hostile Corp",
@@ -876,6 +893,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Fictional Software Ltd",
@@ -921,6 +939,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "redwoodbackup",
       "publisher": "Sample Systems Inc",
@@ -966,6 +985,7 @@
         "Support Desk"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -1011,6 +1031,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "examplesql",
       "publisher": "Example Vendor",
@@ -1057,6 +1078,7 @@
         "Infrastructure"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "redwoodbackup",
       "publisher": "Sample Systems Inc",
@@ -1104,6 +1126,7 @@
         "Records Office"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "pineconearchive",
       "publisher": "Placeholder Labs",
@@ -1149,6 +1172,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Hostile Corp",
@@ -1194,6 +1218,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1239,6 +1264,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1284,6 +1310,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1330,6 +1357,7 @@
         "Marketing Ops"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -1376,6 +1404,7 @@
         "HR Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "brightlineeditor",
       "publisher": "Fictional Software Ltd",
@@ -1435,6 +1464,7 @@
         "kind": "item",
         "value": "5095e8b556dd"
       },
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Fictional Software Ltd",
@@ -1480,6 +1510,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "northwindgateway",
       "publisher": "Northwind Software",
@@ -1539,6 +1570,7 @@
         "kind": "product",
         "value": "demoos/2.0"
       },
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Placeholder Labs",
@@ -1584,6 +1616,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -1643,6 +1676,7 @@
         "kind": "os",
         "value": "faa0f833f626"
       },
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Acme Corp",
@@ -1688,6 +1722,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Hostile Corp",
@@ -1736,6 +1771,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "",
@@ -1781,6 +1817,7 @@
         "Records Office"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "lanternviewer",
       "publisher": "Example Corp",
@@ -1834,6 +1871,7 @@
         "Support Desk"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -1881,6 +1919,7 @@
         "Records Office"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -1926,6 +1965,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "examplesql",
       "publisher": "Sample Systems Inc",
@@ -1979,6 +2019,7 @@
         "Infrastructure"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -2022,6 +2063,7 @@
       "name": "Tidewater Suite",
       "owners": [],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -2067,6 +2109,7 @@
         "Support Desk"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "quillbase",
       "publisher": "Placeholder Labs",
@@ -2112,6 +2155,7 @@
         "Marketing Ops"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -2157,6 +2201,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "northwindgateway",
       "publisher": "Northwind Software",
@@ -2210,6 +2255,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -2263,6 +2309,7 @@
         "Records Office"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "copperfieldnotes",
       "publisher": "Placeholder Labs",
@@ -2308,6 +2355,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": null,
       "publisher": "Nobody Inc",
@@ -2353,6 +2401,7 @@
         "HR Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "mapletonreports",
       "publisher": "Fictional Software Ltd",
@@ -2398,6 +2447,7 @@
         "Finance Systems"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "tidewatersuite",
       "publisher": "Example Corp",
@@ -2445,6 +2495,7 @@
         "Infrastructure"
       ],
       "parent_ref": null,
+      "possible_version_list": false,
       "problem_ref": null,
       "product": "redwoodbackup",
       "publisher": "Sample Systems Inc",

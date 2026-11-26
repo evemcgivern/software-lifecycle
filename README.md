@@ -354,8 +354,9 @@ A few columns need a note:
 Give each version its own row. A cell that lists several versions of a
 product is not decided from one of them. The item stays unmatched, and the
 report flags it, saying when a listed version is past end of life. See
-"Several versions in one cell" in [docs/usage.md](docs/usage.md) for what
-this misses.
+"Several versions in one cell" in [docs/usage.md](docs/usage.md). Some
+lists cannot be told apart from one version; the tool warns about many of
+these and does not change the result.
 
 Export dates must be ISO dates (`2026-01-15`, optionally with a time).
 Day-first and month-first dates are never read. For a matched item with no

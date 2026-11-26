@@ -227,8 +227,11 @@ def _suite_cycles(tail: list, version: str, cycles: list) -> set:
     for word in found:
         parts.extend(split_version(word))
     if not parts and not is_multi_line(version):
+        entries = version_entries(version)
+        if len(entries) > MAX_ENTRIES:
+            return set()
         listed = set()
-        for entry in version_entries(version)[:MAX_ENTRIES]:
+        for entry in entries:
             listed.update(best_cycle(split_version(entry), cycles)[1])
         if len(listed) > 1:
             return listed

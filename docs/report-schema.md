@@ -93,7 +93,7 @@ and which item key a column comes from.
 | `lists` | Count of item IDs in each list. |
 | `classification` | Count of items in each class. See `counts.classification`. |
 | `unmatched_breakdown` | The unmatched total split three ways. See `counts.unmatched_breakdown`. |
-| `several_versions` | Added in schema version 4. `items` is the number of items with a non-null `several_versions`; `past_eol` is how many of them have `past_eol` `true`; `kev` is how many have `kev` `true`. These items stay unmatched and enter no list for this. The only `--fail-on` name that reads these counts is `several_versions_past_eol`, which fails when `past_eol` is above 0. |
+| `several_versions` | Added in schema version 4. `items` is the number of items with a non-null `several_versions`; `past_eol` is how many of them have `past_eol` `true`; `kev` is how many have `kev` `true`; `possible` is the number of items with `possible_version_list` `true`. The flagged items stay unmatched and enter no list for this. The only `--fail-on` name that reads these counts is `several_versions_past_eol`, which fails when `past_eol` is above 0. |
 | `ambiguous_review` | Number of items whose `ambiguity` is not `null`: unmatched rows the matcher refused on purpose, for a person to review. They stay in `lists.unmatched` and in `unmatched_breakdown`; a count only, not a list. See `ambiguity` below. |
 | `count_invalid_cells` | Number of count cells ignored because they are not a whole number from 0 to 1000000000: digits, optionally in comma groups of three (`1,234`), optionally ending in a decimal point and zeros only (`12.0`). A sign, another decimal (`1.234`), another separator (`1 234`), text or a formula is ignored. Blank cells are not counted. `0` with no count column. |
 | `data_quality` | Figures about the inventory rows read, for judging how far to trust a run. See `counts.data_quality`. |
@@ -217,6 +217,7 @@ inventory.
 | `state` | One of the states below. |
 | `state_endoflife` | The state using only the endoflife.date date. `null` if unmatched. |
 | `reason` | A reason code when `state` is `unmatched`; otherwise `null`. |
+| `possible_version_list` | `true` for a matched item whose one-line version cell may list several versions: it has two or more different dotted numbers, none the start of another, or is four comma-joined whole numbers with no zero. A warning only: it changes no state, list or `--fail-on`. See "Several versions in one cell" in `docs/usage.md`. |
 | `several_versions` | For an item with `reason` `SEVERAL_VERSIONS`, a flag for a person to review; otherwise `null`. Added in schema version 4. See `several_versions` below. |
 | `eol_endoflife` | The endoflife.date end-of-life value. |
 | `eol_export` | The export's end-of-life date, if it was readable. |
@@ -369,7 +370,7 @@ mean your version is affected. The tool never says "vulnerable".
 | `NO_ALIAS` | No alias entry and no product title fits this name, or the name has extra words after an alias that the strict tail-word rule rejects. |
 | `NO_CYCLE` | The product is known, but no cycle matches this version, or the version in the name and the version column disagree (they would pick different cycles), so the row is not decided. `product` and `match_source` are still set; `cycle` is `null`. |
 | `NO_VERSION` | No version was given. |
-| `SEVERAL_VERSIONS` | Added in schema version 4. The product is known, and the version cell lists several versions: its numbers pick two or more different cycles (see "Several versions in one cell" in `docs/usage.md`), or it has more than one line. No entry decides the item; `cycle` is `null`. See the item key `several_versions`. |
+| `SEVERAL_VERSIONS` | Added in schema version 4. The product is known, and the version cell lists several versions: its numbers pick two or more different cycles (see "Several versions in one cell" in `docs/usage.md`), or it has more than one line, or it holds more than 50 distinct numbers. No entry decides the item; `cycle` is `null`. See the item key `several_versions`. |
 | `AMBIGUOUS` | The name matches more than one product (aliases, product titles, or an alias and a title), or more than one cycle fits this version. |
 
 ### dates_disagree codes
@@ -602,6 +603,10 @@ removed or renamed, and the states and lists are those of version 3. An
 item whose version cell lists several versions is now unmatched with this
 code, where an earlier version could give it the state of one entry.
 `--previous` still reads a version 1, 2 or 3 report.
+
+Also added while at version 4, as new keys that need no version change:
+`possible_version_list` and `counts.several_versions.possible` (issue
+#127).
 
 ### Changes in schema version 3
 
