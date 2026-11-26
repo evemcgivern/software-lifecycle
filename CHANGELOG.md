@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- A version cell with more than one line is no longer decided from its
+  first line (issue #118). Before, an item could show as `supported` while
+  a second line held another version. It is now unmatched (`NO_CYCLE`
+  when the name gives the product), and `preflight` counts these cells
+  with the new fix code `MULTI_LINE_VERSION`. Such a cell is also no
+  longer used to link a part to its parent suite. Several versions on one
+  line are not covered by this change.
+
 ## 0.8.0 - 2026-11-26
 
 ### When you upgrade

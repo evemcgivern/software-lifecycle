@@ -78,6 +78,7 @@
 
 <h2 id="preflight">Before your first run</h2>
 <p>Run <code>preflight</code> on a new export. It says which columns it found and what to fix, without printing any row. On Windows, use <code>py</code> for <code>python3</code>.</p>
+<p>Give each version its own row. When a version cell holds more than one line, <code>check</code> decides no cycle for it, and <code>preflight</code> counts these cells.</p>
 <figure class="code code--oneline"><figcaption>Preflight check</figcaption><pre tabindex="0" role="region" aria-label="Preflight check"><code>python3 software_lifecycle.py preflight YOUR-INVENTORY.csv</code></pre></figure>
 
 <h2 id="demo">See it in a minute</h2>

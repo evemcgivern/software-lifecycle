@@ -33,6 +33,12 @@ def normalize_name(raw: str) -> str:
         text = new
 
 
+def is_multi_line(raw: str) -> bool:
+    """Whether a version cell holds more than one line. Line breaks at
+    either end are ignored."""
+    return len(raw.strip().splitlines()) > 1
+
+
 def split_version(raw: str) -> list[str]:
     """Strip a leading ``v``; split on ``.``, ``-``, ``_`` and space."""
     text = unicodedata.normalize("NFKC", raw).casefold().strip()

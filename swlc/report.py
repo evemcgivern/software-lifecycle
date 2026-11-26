@@ -37,8 +37,9 @@ STATE_TEXT = {
 }
 REASON_TEXT = {
     "NO_ALIAS": "no alias entry or product title fits this name",
-    "NO_CYCLE": ("no cycle matches this version, or the version in the name "
-                 "disagrees with it"),
+    "NO_CYCLE": ("no cycle matches this version, the version in the name "
+                 "disagrees with it, or the version cell has more than one "
+                 "line"),
     "NO_VERSION": "no version given",
     "AMBIGUOUS": "more than one cycle fits this version",
 }

@@ -48,6 +48,26 @@ class Base(unittest.TestCase):
                 self.assertNotIn(secret, text)
 
 
+class MultiLineVersionTests(Base):
+    def test_multi_line_version_cells_are_counted_and_flagged(self):
+        path = self.inv(["Name", "Publisher", "Version"],
+                        [["a", "b", "1.0\n2.0"], ["c", "b", "3.0\r\n4.0"],
+                         ["d", "b", "\n5.0\n"], ["e", "b", "6.0"]])
+        code, res, err = self.pre_json(path)
+        self.assertEqual(code, 0, err)
+        self.assertEqual(res["multi_line_version_cells"], 2)
+        self.assertIn("MULTI_LINE_VERSION", [f["code"] for f in res["fix"]])
+        code, out, err = self.pre(path)
+        self.assertIn("Version cells with more than one line: 2", out)
+
+    def test_no_flag_without_multi_line_cells(self):
+        path = self.inv(["Name", "Publisher", "Version"], [["a", "b", "1"]])
+        code, res, err = self.pre_json(path)
+        self.assertEqual(res["multi_line_version_cells"], 0)
+        self.assertNotIn("MULTI_LINE_VERSION",
+                         [f["code"] for f in res["fix"]])
+
+
 class ProfileTests(Base):
     def best(self, header):
         path = self.inv(header, [["a", "b", "1", "2"][:len(header)]])
@@ -380,7 +400,8 @@ class OutputTests(Base):
         self.assertEqual(set(res), {
             "preflight_version", "ok", "file", "limits", "profile",
             "columns", "other_columns", "blank_cells", "placeholder_cells",
-            "formula_cells", "unreadable_date_cells", "fix",
+            "formula_cells", "unreadable_date_cells",
+            "multi_line_version_cells", "fix",
             "next_command", "next_command_counts_only"})
         self.assertEqual(set(res["file"]), {"readable", "encoding", "bom",
                                             "line_endings", "bytes", "rows"})

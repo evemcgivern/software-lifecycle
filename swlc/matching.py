@@ -5,7 +5,8 @@ from functools import lru_cache
 
 from .catalog_match import TITLE_NEEDS_PUBLISHER, _has_run, tokens
 from .errors import DataError
-from .normalize import best_cycle, normalize_name, split_version
+from .normalize import (best_cycle, is_multi_line, normalize_name,
+                        split_version)
 
 NO_ALIAS = "NO_ALIAS"
 NO_CYCLE = "NO_CYCLE"
@@ -177,6 +178,21 @@ def match_noted(name: str, version: str, aliases: list[dict],
 
 def _match(name, version, aliases, products, catalog_index, publisher,
            noted: bool) -> tuple:
+    """_match_one, except for a version cell with more than one line. It
+    may list several versions, so no line of it is read: the name alone
+    finds the product, and no cycle is decided."""
+    if not is_multi_line(version or ""):
+        return _match_one(name, version, aliases, products, catalog_index,
+                          publisher, noted)
+    result, code = _match_one(name, "", aliases, products, catalog_index,
+                              publisher, noted)
+    if result.product is None:
+        return result, code
+    return replace(result, cycle=None, reason=NO_CYCLE, kev=None), code
+
+
+def _match_one(name, version, aliases, products, catalog_index, publisher,
+               noted: bool) -> tuple:
     hit, result, blocked = _curated(name, version, aliases, products,
                                     publisher)
     if result.product is not None:

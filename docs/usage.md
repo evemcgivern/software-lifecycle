@@ -103,7 +103,7 @@ owner cells and unreadable end-of-life dates are listed too.
 | `--profile NAME` | Use this profile instead of the best fit: `generic`, `flexera`, `servicenow-mbs` or `rapid7`. | `--profile flexera` |
 | `--columns FILE` | JSON file that adds column headings, as for `check`. | `--columns my-columns.json` |
 | `--encoding NAME` | Text encoding of the inventory if it is not UTF-8. | `--encoding cp1252` |
-| `--json` | Print the same result as JSON. The owner and export end-of-life date columns are under `columns` (`columns.owner`, `columns.export_eol`), and `unreadable_date_cells` counts dates not in YYYY-MM-DD form. `next_command` is the `check` command; `next_command_counts_only` is the same command with `--counts-only` added. On an error it prints `ok`, `exit_code` and `error` only. | `--json` |
+| `--json` | Print the same result as JSON. The owner and export end-of-life date columns are under `columns` (`columns.owner`, `columns.export_eol`), and `unreadable_date_cells` counts dates not in YYYY-MM-DD form. `multi_line_version_cells` counts version cells with more than one line. `next_command` is the `check` command; `next_command_counts_only` is the same command with `--counts-only` added. On an error it prints `ok`, `exit_code` and `error` only. | `--json` |
 
     python3 software_lifecycle.py preflight examples/software-inventory.csv
 
@@ -183,6 +183,11 @@ version column:
     `column_map` does not list it.
 
 If the check fails, the item is not decided (`NO_CYCLE`, product known).
+
+A version cell with more than one line, for example several versions of
+one program, is never decided from one of its lines. When the name gives
+the product, the item is `NO_CYCLE`. `preflight` counts these cells. Give
+each version its own row.
 
 ### Step 2: product titles
 

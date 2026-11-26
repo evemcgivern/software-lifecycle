@@ -351,6 +351,24 @@ class SuiteTailTests(unittest.TestCase):
         self.assertEqual(got.cls, "unknown")
 
 
+class MultiLineSuiteTests(unittest.TestCase):
+    """The suite-parent link never reads one line of a version cell that
+    has more than one (issue #118)."""
+
+    def test_multi_line_version_column_links_no_parent(self):
+        data = make_data(bundle_parents=[OUTLOOK])
+        for version in ("2021\n2016", "2016\n2021", "2021\r\n2021"):
+            got = run(data, "Microsoft Outlook", version,
+                      publisher="Microsoft")
+            self.assertIsNone(got.parent_ref, repr(version))
+            self.assertIn(C.SUITE_NO_FIT, got.basis, repr(version))
+
+    def test_line_break_around_one_version_still_links(self):
+        data = make_data(bundle_parents=[OUTLOOK])
+        got = run(data, "Microsoft Outlook", "2021\n", publisher="Microsoft")
+        self.assertEqual(got.parent_ref["value"], "office/2021")
+
+
 class SpeedTests(unittest.TestCase):
     def test_lib_rows_do_not_rescan_the_catalog(self):
         data = make_data()

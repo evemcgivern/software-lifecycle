@@ -15,7 +15,7 @@ from .assess import _parse_export
 from .classify import _PLACEHOLDERS
 from .errors import InputError
 from .inputs import _norm_header, _show, map_columns, read_rows
-from .normalize import normalize_name
+from .normalize import is_multi_line, normalize_name
 
 PREFLIGHT_VERSION = 1
 FIELDS = ("name", "publisher", "version", "owner", "count", "export_eol",
@@ -59,6 +59,10 @@ FIX_TEXT = {
                   "matched; fill them in or drop them.",
     "BLANK_VERSION": "Some rows have a blank version cell. Those rows cannot "
                      "be matched to a cycle; fill them in where you can.",
+    "MULTI_LINE_VERSION": "Some version cells hold more than one line, for "
+                          "example several versions of one program. check "
+                          "decides no cycle for them. Give each version its "
+                          "own row.",
     "BLANK_OWNER": "Some rows have a blank owner cell. An item with no "
                    "owner on any row is listed under \"Ownerless\".",
     "UNREADABLE_DATE": "Some end-of-life date cells are not in YYYY-MM-DD "
@@ -190,6 +194,7 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
     placeholder = {"parent": 0} if "parent" in colmap else {}
     formula = 0
     unreadable_dates = 0
+    multi_line_versions = 0
     for row in rows:
         for field, col in colmap.items():
             cell = row.get(col) or ""
@@ -200,6 +205,9 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
                 placeholder[field] += 1
             elif field == "export_eol" and not _parse_export(cell)[1]:
                 unreadable_dates += 1
+        if "version" in colmap:
+            multi_line_versions += is_multi_line(
+                row.get(colmap["version"]) or "")
         formula += sum(1 for cell in row.values()
                        if cell[:1] in FORMULA_START)
     fix = []
@@ -212,6 +220,8 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
         fix.append("BLANK_NAME")
     if blank.get("version"):
         fix.append("BLANK_VERSION")
+    if multi_line_versions:
+        fix.append("MULTI_LINE_VERSION")
     if blank.get("owner"):
         fix.append("BLANK_OWNER")
     if unreadable_dates:
@@ -246,6 +256,7 @@ def inspect(path: str, profiles: dict, profile: str | None = None,
         "placeholder_cells": placeholder,
         "formula_cells": formula,
         "unreadable_date_cells": unreadable_dates,
+        "multi_line_version_cells": multi_line_versions,
         "fix": [{"code": c, "blocking": c in BLOCKING, "text": FIX_TEXT[c]}
                 for c in fix],
         "next_command": _next_command(path, used, columns, encoding),
@@ -300,7 +311,9 @@ def render_text(result: dict) -> str:
     lines += ["", "Cells that start like a spreadsheet formula: %d"
               % result["formula_cells"],
               "End-of-life date cells not in YYYY-MM-DD form: %d"
-              % result["unreadable_date_cells"], "", "What to fix"]
+              % result["unreadable_date_cells"],
+              "Version cells with more than one line: %d"
+              % result["multi_line_version_cells"], "", "What to fix"]
     if result["fix"]:
         lines += ["  - %s%s" % ("[must fix] " if item["blocking"] else "",
                                 item["text"]) for item in result["fix"]]
