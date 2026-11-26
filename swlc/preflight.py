@@ -19,7 +19,7 @@ from .normalize import normalize_name
 
 PREFLIGHT_VERSION = 1
 FIELDS = ("name", "publisher", "version", "owner", "count", "export_eol",
-          "parent")
+          "export_support", "parent")
 CORE = ("name", "publisher", "version")
 SNIFF_BYTES = 64 * 1024
 # The same first characters that report.csv neutralizes.
@@ -48,6 +48,10 @@ FIX_TEXT = {
     "NO_EXPORT_EOL": "No end-of-life date column was found. That is fine: "
                      "the report uses the endoflife.date dates. Add an End "
                      "of Life column if the export has one.",
+    "NO_EXPORT_SUPPORT": "No support-date column was found. That is fine "
+                         "unless you use --compare-support, which then "
+                         "compares nothing. To use it, rename the column "
+                         "to End of Support, or pass --columns FILE.",
     "NO_PARENT": "No parent column was found. That is fine; add one if the "
                  "export has it (see \"The Parent column\" in "
                  "docs/usage.md).",

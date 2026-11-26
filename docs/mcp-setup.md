@@ -214,6 +214,7 @@ The fix codes `preflight` can return:
 | `NO_OWNER` | No owner column was found; every item will be listed as ownerless. |
 | `NO_COUNT` | No count column was found. That is fine. |
 | `NO_EXPORT_EOL` | No end-of-life date column was found. That is fine. |
+| `NO_EXPORT_SUPPORT` | No support-date column was found. That is fine; this server does not compare support dates. |
 | `NO_PARENT` | No parent column was found. That is fine. |
 | `BLANK_NAME` | Some rows have a blank name cell. |
 | `BLANK_VERSION` | Some rows have a blank version cell. |

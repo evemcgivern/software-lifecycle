@@ -53,7 +53,7 @@ CLASSES = ("governable", "component", "bundle_member", "unknown")
 LISTS = ("past_eol", "ends_soon", "dates_disagree", "unmatched",
          "accepted_risk", "ownerless", "review_urgently", "golden_overrides")
 FIELDS = ("name", "publisher", "version", "owner", "count", "export_eol",
-          "parent")
+          "export_support", "parent")
 LINE_ENDINGS = ("CRLF", "LF", "CR", "mixed", "none", "unknown")
 
 PRIVACY = ("Counts only. Never open, read, upload, summarise or quote the "

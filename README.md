@@ -242,10 +242,12 @@ The report has these lists. An item can be on more than one.
 - **Past end of life.**
 - **Ends within the lookahead window.** The window is 12 months unless you
   change it.
-- **Dates disagree.** This covers three cases: the export's own date and the
-  endoflife.date date differ; a golden source has expired; or a golden
-  source says to use the export date and the export has no usable one
-  (`GOLDEN_EXPORT_UNUSABLE`).
+- **Dates disagree.** This covers four cases: the export's own date and the
+  endoflife.date date differ; the export's support date and the
+  endoflife.date support date differ, with `--compare-support`
+  (`SUPPORT_DATE_DIFFERENT`); a golden
+  source has expired; or a golden source says to use the export date and
+  the export has no usable one (`GOLDEN_EXPORT_UNUSABLE`).
 - **Couldn't match.** The name and version did not map to a known product
   and cycle, and the tool claims no date for these. Some names it refused on
   purpose: a product title on a row with no publisher, or a row whose name
@@ -336,7 +338,12 @@ A few columns need a note:
   suite a part belongs to. A blank or placeholder cell (`n/a`, `none`)
   means no parent. See "The Parent column" in
   [docs/usage.md](docs/usage.md).
-- **`export_support`** is accepted but not used in this version.
+- **`export_support`** is optional and is read only with
+  `--compare-support`. A support date that differs from the endoflife.date
+  support date then lists the item under "dates disagree" with the code
+  `SUPPORT_DATE_DIFFERENT`. A date equal to the end-of-life date is not
+  flagged. It never changes the item's state. What "support" means differs
+  between vendors, so a person decides which date is right.
 - **`count`** orders each list, largest first. An item's count is the sum of
   its rows' count cells. It is a count from your file, not discovered
   installs; see "The count column" in [docs/usage.md](docs/usage.md).

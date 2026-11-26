@@ -55,6 +55,10 @@ DECISION_TEXT = {
     "DIFFERENT_DATE": (
         "The export date and the endoflife.date date differ. The ITAM lead "
         "settles which date to use. Nothing here is auto-resolved."),
+    "SUPPORT_DATE_DIFFERENT": (
+        "The export support date and the endoflife.date support date "
+        "differ. The ITAM lead checks which is right. A golden-source row "
+        "cannot record a support date. Nothing here is auto-resolved."),
     "NO_ENDOFLIFE_DATE": (
         "endoflife.date has no date to compare with the export date. The "
         "ITAM lead settles which date to use."),
@@ -270,6 +274,9 @@ def _date_lines(it: dict, eol_snap: str) -> list:
     if it["support"] is not None:
         lines.append("Mainstream support: %s %s" % (
             _flag_val(it["support"], "ended", "ongoing"), eol_src))
+    if it.get("support_export_raw"):
+        lines.append("Mainstream support per your export: %s" % _disp(
+            it["support_export_raw"]))
     if it["extended_support"] is not None:
         lines.append("Extended support: %s %s" % (
             _flag_val(it["extended_support"], "ended", "ongoing"), eol_src))

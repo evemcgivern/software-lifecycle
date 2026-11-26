@@ -115,6 +115,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2027-12-31",
@@ -168,6 +169,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "2.0"
     },
@@ -212,6 +214,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-01-01",
+      "support_export_raw": null,
       "support_records": [],
       "version": "6.4"
     },
@@ -255,6 +258,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-03-31",
+      "support_export_raw": null,
       "support_records": [],
       "version": "2.1"
     },
@@ -298,6 +302,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2027-12-31",
@@ -349,6 +354,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2019-07-09",
+      "support_export_raw": null,
       "support_records": [],
       "version": "12.0.6024.0"
     },
@@ -393,6 +399,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2024-06-30",
+      "support_export_raw": null,
       "support_records": [],
       "version": "1.0"
     },
@@ -436,6 +443,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "9.0"
     },
@@ -480,6 +488,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2027-12-31",
@@ -531,6 +540,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2025-10-24",
+      "support_export_raw": null,
       "support_records": [],
       "version": "1.0"
     },
@@ -575,6 +585,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": ""
     },
@@ -618,6 +629,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "16"
     },
@@ -661,6 +673,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2027-01-01",
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.0"
     },
@@ -704,6 +717,7 @@
       "state": "past_eol",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "5.1"
     },
@@ -747,6 +761,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2025-03-01",
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2027-06-30",
@@ -798,6 +813,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "1"
     },
@@ -841,6 +857,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "2"
     },
@@ -884,6 +901,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-06-30",
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.4"
     },
@@ -927,6 +945,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-02-29",
+      "support_export_raw": null,
       "support_records": [],
       "version": "15.0.2000.1"
     },
@@ -970,6 +989,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2024-12-31",
+      "support_export_raw": null,
       "support_records": [],
       "version": "15"
     },
@@ -1014,6 +1034,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-06-30",
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.0"
     },
@@ -1059,6 +1080,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2025-12-31",
+      "support_export_raw": null,
       "support_records": [],
       "version": "2.0"
     },
@@ -1102,6 +1124,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "9"
     },
@@ -1145,6 +1168,7 @@
       "state": "mainstream_ended",
       "state_endoflife": "mainstream_ended",
       "support": false,
+      "support_export_raw": null,
       "support_records": [],
       "version": "7.0"
     },
@@ -1188,6 +1212,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "8.1"
     },
@@ -1231,6 +1256,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "8.0"
     },
@@ -1275,6 +1301,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-01-01",
+      "support_export_raw": null,
       "support_records": [],
       "version": "6.1"
     },
@@ -1319,6 +1346,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "8.3"
     },
@@ -1376,6 +1404,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "5.1.2"
     },
@@ -1419,6 +1448,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-12-31",
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2029-01-31",
@@ -1476,6 +1506,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "1.2"
     },
@@ -1519,6 +1550,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2026-01-01",
+      "support_export_raw": null,
       "support_records": [],
       "version": "2.0"
     },
@@ -1576,6 +1608,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "1"
     },
@@ -1619,6 +1652,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "2"
     },
@@ -1665,6 +1699,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "2019"
     },
@@ -1708,6 +1743,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2027-12-31",
@@ -1759,6 +1795,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.2"
     },
@@ -1804,6 +1841,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.1"
     },
@@ -1847,6 +1885,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": false,
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2026-06-30",
@@ -1898,6 +1937,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-02-29",
+      "support_export_raw": null,
       "support_records": [],
       "version": "15.0.2000.5"
     },
@@ -1939,6 +1979,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-01-01",
+      "support_export_raw": null,
       "support_records": [],
       "version": "6.0"
     },
@@ -1982,6 +2023,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2028-02-29",
+      "support_export_raw": null,
       "support_records": [],
       "version": "15.0.2000.3"
     },
@@ -2025,6 +2067,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.5"
     },
@@ -2068,6 +2111,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2024-12-31",
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2029-01-31",
@@ -2119,6 +2163,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2026-03-15",
+      "support_export_raw": null,
       "support_records": [
         {
           "ends_on": "2028-03-31",
@@ -2170,6 +2215,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": "2029-03-31",
+      "support_export_raw": null,
       "support_records": [],
       "version": "2.3"
     },
@@ -2213,6 +2259,7 @@
       "state": "unmatched",
       "state_endoflife": null,
       "support": null,
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.1"
     },
@@ -2256,6 +2303,7 @@
       "state": "supported",
       "state_endoflife": "supported",
       "support": true,
+      "support_export_raw": null,
       "support_records": [],
       "version": "3.4"
     },
@@ -2299,6 +2347,7 @@
       "state": "ends_soon",
       "state_endoflife": "ends_soon",
       "support": "2026-03-15",
+      "support_export_raw": null,
       "support_records": [],
       "version": "5.1"
     },
@@ -2344,6 +2393,7 @@
       "state": "past_eol",
       "state_endoflife": "past_eol",
       "support": "2024-01-31",
+      "support_export_raw": null,
       "support_records": [],
       "version": "1.0"
     }
@@ -2438,7 +2488,7 @@
     },
     "tool_version": "0.7.0"
   },
-  "schema_version": 2,
+  "schema_version": 3,
   "warnings": [
     "1 parts whose parent is not in this inventory"
   ]

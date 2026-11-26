@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- New `--compare-support` flag for the optional `export_support` column
+  (issue #108). It is off by default, so a run without it lists the same
+  items and exits the same way as before. With it, a support date that
+  differs from the endoflife.date support date lists the item under "dates
+  disagree" with the new code `SUPPORT_DATE_DIFFERENT`, so
+  `--fail-on dates_disagree` can then exit 10 where it passed before. A
+  date equal to the end-of-life date is not flagged, because many exports
+  mean that by "end of support". The check never changes a state and does
+  not run when the item has another date code or an active golden source.
+  The export's text is in the new item key `support_export_raw`.
+  A warning counts the items whose support date was not compared, and
+  another says when no support-date column was recognized. `preflight`
+  now lists `export_support` as found or not found, with the new fix
+  code `NO_EXPORT_SUPPORT`; in `--json` the found title moved from
+  `other_columns` to `columns`. With `--compare-support`,
+  `--counts-only` also prints a `support_dates` line.
+  `report.json`
+  `schema_version` is now 3; `--previous` still accepts a version 1 or 2
+  report.
 - Reworded the three issue forms and added three more (issue #72): a
   test of an assistant or the MCP server, a column-name problem with an
   export (headers only), and a mistake in the docs or crosswalk. Every

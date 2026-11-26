@@ -253,5 +253,111 @@ class GeneratorTests(unittest.TestCase):
                 self.assertEqual(data, (EXAMPLES / name).read_bytes(), name)
 
 
+class CompareSupportFlag(unittest.TestCase):
+    """An export_support column changes nothing until the flag is given."""
+
+    def report(self, tmp: Path, inventory: Path, *extra):
+        out = tmp / "out"
+        args = check_args(out, "--fail-on", "dates_disagree", *extra)
+        args[1] = str(inventory)
+        code = run_main(args)[0]
+        return code, json.loads((out / "report.json").read_text("utf-8"))
+
+    def test_flag_turns_the_comparison_on(self):
+        with open(EXAMPLES / "software-inventory.csv", encoding="utf-8",
+                  newline="") as fh:
+            table = list(csv.reader(fh))
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            with open(inventory, "w", encoding="utf-8", newline="") as fh:
+                writer = csv.writer(fh)
+                writer.writerow(table[0] + ["End of Support"])
+                writer.writerows(r + ["1999-01-01"] for r in table[1:])
+            _, plain = self.report(
+                tmp, EXAMPLES / "software-inventory.csv")
+            _, off = self.report(tmp, inventory)
+            code, on = self.report(tmp, inventory, "--compare-support")
+        self.assertEqual(off["lists"], plain["lists"])
+        self.assertEqual(off["items"], plain["items"])
+        self.assertEqual(code, 10)
+        codes = [it["dates_disagree"] for it in on["items"]]
+        self.assertIn("SUPPORT_DATE_DIFFERENT", codes)
+        self.assertEqual(on["counts"]["states"], plain["counts"]["states"])
+
+    def test_flag_alone_changes_the_exit_code(self):
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            inventory.write_text(
+                "Software Name,Version,Publisher,Owner,End of Support\n"
+                "Demo OS 2.0,2.0,Fictional Software Ltd,Ops,2028-06-01\n",
+                encoding="utf-8")
+            codes = []
+            for extra in ((), ("--compare-support",)):
+                codes.append(run_main(
+                    ["check", str(inventory), "--data", str(DATA),
+                     "--as-of", AS_OF, "--out", str(tmp / "out"),
+                     "--fail-on", "dates_disagree", *extra])[0])
+        self.assertEqual(codes, [0, 10])
+
+    def test_flag_with_no_support_column_warns(self):
+        warning = ("No export_support column was recognized, so no support "
+                   "dates were compared.")
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            for title, extra, expected in (
+                    ("Vendor Support Ends", ("--compare-support",), True),
+                    (None, ("--compare-support",), True),
+                    ("End of Support", ("--compare-support",), False),
+                    ("Vendor Support Ends", (), False)):
+                head = "Software Name,Version"
+                line = "Demo OS 2.0,2.0"
+                if title:
+                    head, line = head + "," + title, line + ",2028-06-01"
+                inventory.write_text("%s\n%s\n" % (head, line),
+                                     encoding="utf-8")
+                out = tmp / "out"
+                code = run_main(
+                    ["check", str(inventory), "--data", str(DATA),
+                     "--as-of", AS_OF, "--out", str(out), *extra])[0]
+                report = json.loads(
+                    (out / "report.json").read_text("utf-8"))
+                self.assertEqual(code, 0, title)
+                self.assertEqual(warning in report["warnings"], expected,
+                                 (title, extra))
+
+    def test_counts_only_says_what_was_not_compared(self):
+        with tempfile.TemporaryDirectory() as name:
+            tmp = Path(name)
+            inventory = tmp / "inv.csv"
+            flag = ("--compare-support",)
+            for title, values, extra, expected in (
+                    ("Vendor Support Ends", ["2028-06-01"], flag,
+                     "support_dates column_found=false"),
+                    ("End of Support", ["2028-06-01"], flag,
+                     "support_dates column_found=true not_compared=0"),
+                    ("End of Support", ["01/06/2028"], flag,
+                     "support_dates column_found=true not_compared=1"),
+                    ("End of Support", ["2028-06-01", "2029-06-01"], flag,
+                     "support_dates column_found=true not_compared=1"),
+                    ("End of Support", ["01/06/2028"], (), None)):
+                inventory.write_text(
+                    "Software Name,Version,%s\n" % title + "".join(
+                        "Demo OS 2.0,2.0,%s\n" % v for v in values),
+                    encoding="utf-8")
+                stdout = run_main(
+                    ["check", str(inventory), "--data", str(DATA),
+                     "--as-of", AS_OF, "--out", str(tmp / "out"),
+                     "--counts-only", *extra])[1]
+                found = [line for line in stdout.splitlines()
+                         if line.startswith("support_dates")]
+                self.assertEqual(found, [expected] if expected else [],
+                                 (title, values, extra))
+                for value in values:
+                    self.assertNotIn(value, stdout)
+
+
 if __name__ == "__main__":
     unittest.main()
